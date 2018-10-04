@@ -4,7 +4,8 @@
   "description": "Tools for accessing Autodesk Forge APIs from Node.js apps.",
   "main": "src/index.js",
   "scripts": {
-    "test": "node test/basic.js"
+    "test": "node test/basic.js",
+    "docs": "node_modules/.bin/jsdoc --configure .jsdoc.json --verbose"
   },
   "repository": {
     "type": "git",
@@ -22,6 +23,8 @@
   },
   "homepage": "https://github.com/petrbroz/forge-tools#readme",
   "devDependencies": {
+    "jsdoc": "^3.5.5",
+    "jsdoc-template": "git+https://github.com/braintree/jsdoc-template.git"
   },
   "dependencies": {}
 }

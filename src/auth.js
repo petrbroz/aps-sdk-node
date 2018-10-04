@@ -2,10 +2,11 @@ const { post } = require('./request');
 
 /**
  * Client providing access to Autodesk Forge authentication APIs.
+ * {@link https://forge.autodesk.com/en/docs/oauth/v2/developers_guide/overview}.
  */
 class AuthenticationClient {
     /**
-     * Initializes new client with specific Forge app credentials.
+     * Initializes new client with Forge application credentials.
      * @param {string?} client_id Forge application client ID. If not provided,
      * the constructor will attempt to get the value from env. variable FORGE_CLIENT_ID.
      * @param {string?} client_secret Forge application client secret. If not provided,
@@ -18,9 +19,9 @@ class AuthenticationClient {
 
     /**
      * Retrieves 2-legged access token for specific set of scopes.
-     * See https://forge.autodesk.com/en/docs/oauth/v2/reference/http/authenticate-POST for more info.
      * @param {string[]} scopes List of requested scopes.
      * @returns {Promise<string>} 2-legged auth access token.
+     * {@link https://forge.autodesk.com/en/docs/oauth/v2/reference/http/authenticate-POST}
      */
     async authenticate(scopes) {
         const data = {
