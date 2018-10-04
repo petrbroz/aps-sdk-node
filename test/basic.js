@@ -5,8 +5,9 @@ async function test() {
     try {
         const buckets = await dataClient.buckets();
         for (const bucket of buckets) {
-            const objects = await dataClient.objects(bucket.bucketKey);
-            console.log('Bucket', bucket.bucketKey, 'objects', objects);
+            for await (const page of dataClient.objects(bucket.bucketKey, 4)) {
+                console.log('Bucket', bucket.bucketKey, 'page', page);
+            }
         }
     } catch(err) {
         console.error('Error when getting buckets', err);

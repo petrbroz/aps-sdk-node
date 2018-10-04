@@ -1,3 +1,5 @@
+const querystring = require('querystring');
+
 const { get } = require('./request');
 const { AuthenticationClient } = require('./auth');
 
@@ -15,10 +17,17 @@ class DataManagementClient {
         return response.items;
     }
 
-    async objects(bucket) {
+    async *objects(bucket, page = 16) {
         const access_token = await this.auth.authenticate(['bucket:read', 'data:read']);
-        const response = await get(`/oss/v2/buckets/${bucket}/objects?limit=32`, { 'Authorization': 'Bearer ' + access_token });
-        return response.items;
+        let response = await get(`/oss/v2/buckets/${bucket}/objects?limit=${page}`, { 'Authorization': 'Bearer ' + access_token });
+        yield response.items;
+
+        while (response.next) {
+            const next = new URL(response.next);
+            const startAt = querystring.escape(next.searchParams.get('startAt'));
+            response = await get(`/oss/v2/buckets/${bucket}/objects?startAt=${startAt}&limit=${page}`, { 'Authorization': 'Bearer ' + access_token });
+            yield response.items;
+        }
     }
 }
 
