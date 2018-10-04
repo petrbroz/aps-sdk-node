@@ -1,10 +1,15 @@
 language: node_js
-node_js:
-  - "node"
-  - "10"
+
 deploy:
   provider: npm
   email: $NPM_EMAIL
   api_key: $NPM_AUTH_TOKEN
   on:
     branch: master
+
+notifications:
+  email:
+    recipients:
+    - ipetrbroz@gmail.com
+    on_success: change
+    on_failure: always
