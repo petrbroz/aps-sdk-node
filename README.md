@@ -1,5 +1,7 @@
 # forge-tools
 
+[![Build Status](https://travis-ci.org/petrbroz/forge-tools.svg?branch=master)](https://travis-ci.org/petrbroz/forge-tools)
+
 Tools for accessing [Autodesk Forge](https://developer.autodesk.com/) APIs from Node.js apps.
 
 ## Usage
