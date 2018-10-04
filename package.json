@@ -1,5 +1,5 @@
 {
-  "name": "forge-tools",
+  "name": "autodesk-forge-tools",
   "version": "0.0.0",
   "description": "Tools for accessing Autodesk Forge APIs from Node.js apps.",
   "main": "src/index.js",
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/petrbroz/forge-tools.git"
+    "url": "git+https://github.com/petrbroz/autodesk-forge-tools.git"
   },
   "keywords": [
     "autodesk",
@@ -18,9 +18,9 @@
   "author": "Petr Broz <petr.broz@autodesk.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/petrbroz/forge-tools/issues"
+    "url": "https://github.com/petrbroz/autodesk-forge-tools/issues"
   },
-  "homepage": "https://github.com/petrbroz/forge-tools#readme",
+  "homepage": "https://github.com/petrbroz/autodesk-forge-tools#readme",
   "devDependencies": {
   },
   "dependencies": {}
