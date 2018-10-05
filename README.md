@@ -1,6 +1,9 @@
-# autodesk-forge-tools [![Build Status](https://travis-ci.org/petrbroz/autodesk-forge-tools.svg?branch=master)](https://travis-ci.org/petrbroz/autodesk-forge-tools)
+# autodesk-forge-tools [![Build Status](https://travis-ci.org/petrbroz/autodesk-forge-tools.svg?branch=master)](https://travis-ci.org/petrbroz/autodesk-forge-tools) [![npm version](https://badge.fury.io/js/autodesk-forge-tools.svg)](https://badge.fury.io/js/autodesk-forge-tools)
 
-Tools for accessing [Autodesk Forge](https://developer.autodesk.com/) APIs from Node.js apps.
+Unofficial tools for accessing [Autodesk Forge](https://developer.autodesk.com/) APIs
+from Node.js applications, using modern language features like
+[async/await](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function)
+or [generators](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*).
 
 ## Usage
 
@@ -22,8 +25,8 @@ for await (const buckets of await data.buckets()) {
         console.log('Bucket', bucket.bucketKey);
     }
 }
-// List objects in $FORGE_BUCKET
-for await (const objects of data.objects(FORGE_BUCKET)) {
+// List objects in bucket
+for await (const objects of data.objects("foo-bucket")) {
     for (const object of objects) {
         console.log('Object', object.objectId);
     }
