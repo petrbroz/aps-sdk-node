@@ -6,3 +6,4 @@ test/
 Thumbs.db
 .gitignore
 .travis.yml
+.jsdoc.json

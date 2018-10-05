@@ -9,7 +9,13 @@ function request(options, body) {
             let data = '';
             res.setEncoding('utf8');
             res.on('data', (chunk) => { data += chunk; });
-            res.on('end', () => resolve(JSON.parse(data)));
+            res.on('end', () => {
+                if (res.statusCode >= 200 && res.statusCode < 300) {
+                    resolve(JSON.parse(data));
+                } else {
+                    reject(data); // reject(JSON.parse(data));
+                }
+            });
             res.on('error', (err) => reject(err));
         });
         req.on('error', (err) => reject(err));
