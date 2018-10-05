@@ -3,16 +3,16 @@ const querystring = require('querystring');
 const { get } = require('./request');
 const { AuthenticationClient } = require('./auth');
 
+const RootPath = '/oss/v2';
 const ReadTokenScopes = ['bucket:read', 'data:read'];
 
 /**
- * Client providing access to Autodesk Forge data management APIs.
- * {@link https://forge.autodesk.com/en/docs/data/v2}
+ * Client providing access to Autodesk Forge {@link https://forge.autodesk.com/en/docs/data/v2|data management APIs}.
  */
 class DataManagementClient {
     /**
      * Initializes new client with specific Forge app credentials.
-     * @param {AuthenticationClient} [auth] Authentication client used to obtain tokens
+     * @param {AuthenticationClient} auth Authentication client used to obtain tokens
      * for data management requests.
      */
     constructor(auth) {
@@ -20,52 +20,46 @@ class DataManagementClient {
     }
 
     /**
-     * Gets a list of all buckets.
+     * Gets a paginated list of all buckets
+     * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/buckets-GET|docs}).
      * @async
-     * @param {number} [page] Max number of buckets to obtain in one request.
-     * @yields {object} Bucket object containing 'bucketKey', 'createdDate', and 'policyKey'.
-     * {@link https://forge.autodesk.com/en/docs/data/v2/reference/http/buckets-GET}
+     * @generator
+     * @param {number} [page] Max number of buckets to obtain in one yield.
+     * @yields {Promise<object[]>} List of bucket object containing 'bucketKey', 'createdDate', and 'policyKey'.
      */
     async *buckets(page = 16) {
         let access_token = await this.auth.authenticate(ReadTokenScopes);
-        let response = await get(`/oss/v2/buckets?limit=${page}`, { 'Authorization': 'Bearer ' + access_token });
-        for (const bucket of response.items) {
-            yield bucket;
-        }
+        let response = await get(`${RootPath}/buckets?limit=${page}`, { 'Authorization': 'Bearer ' + access_token });
+        yield response.items;
 
         while (response.next) {
             const next = new URL(response.next);
             const startAt = querystring.escape(next.searchParams.get('startAt'));
             access_token = await this.auth.authenticate(ReadTokenScopes);
-            response = await get(`/oss/v2/buckets?startAt=${startAt}&limit=${page}`, { 'Authorization': 'Bearer ' + access_token });
-            for (const bucket of response.items) {
-                yield bucket;
-            }
+            response = await get(`${RootPath}/buckets?startAt=${startAt}&limit=${page}`, { 'Authorization': 'Bearer ' + access_token });
+            yield response.items;
         }
     }
 
     /**
-     * Gets a list of all objects in a bucket.
+     * Gets a paginated list of all objects in a bucket
+     * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/buckets-:bucketKey-objects-GET|docs}).
      * @async
+     * @generator
      * @param {string} bucket Bucket key.
-     * @param {number} [page] Max number of objects to obtain in one request.
-     * @yields {object} Object containing 'bucketKey', 'objectKey', 'objectId', 'sha1', 'size', and 'location'.
-     * {@link https://forge.autodesk.com/en/docs/data/v2/reference/http/buckets-:bucketKey-objects-GET}
+     * @param {number} [page] Max number of objects to obtain in one yield.
+     * @yields {Promise<object[]>} List of object containing 'bucketKey', 'objectKey', 'objectId', 'sha1', 'size', and 'location'.
      */
     async *objects(bucket, page = 16) {
         const access_token = await this.auth.authenticate(ReadTokenScopes);
-        let response = await get(`/oss/v2/buckets/${bucket}/objects?limit=${page}`, { 'Authorization': 'Bearer ' + access_token });
-        for (const obj of response.items) {
-            yield obj;
-        }
+        let response = await get(`${RootPath}/buckets/${bucket}/objects?limit=${page}`, { 'Authorization': 'Bearer ' + access_token });
+        yield response.items;
 
         while (response.next) {
             const next = new URL(response.next);
             const startAt = querystring.escape(next.searchParams.get('startAt'));
-            response = await get(`/oss/v2/buckets/${bucket}/objects?startAt=${startAt}&limit=${page}`, { 'Authorization': 'Bearer ' + access_token });
-            for (const obj of response.items) {
-                yield obj;
-            }
+            response = await get(`${RootPath}/buckets/${bucket}/objects?startAt=${startAt}&limit=${page}`, { 'Authorization': 'Bearer ' + access_token });
+            yield response.items;
         }
     }
 }

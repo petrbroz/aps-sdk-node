@@ -1,12 +1,21 @@
 const { AuthenticationClient, DataManagementClient } = require('..');
 
+const { FORGE_CLIENT_ID, FORGE_CLIENT_SECRET, FORGE_BUCKET } = process.env;
+
 async function test() {
-    const authClient = new AuthenticationClient();
+    const authClient = new AuthenticationClient(FORGE_CLIENT_ID, FORGE_CLIENT_SECRET);
     const dataClient = new DataManagementClient(authClient);
     try {
-        for await (const bucket of await dataClient.buckets()) {
-            for await (const object of dataClient.objects(bucket.bucketKey)) {
-                console.log('[' + bucket.bucketKey + ']', object.objectId);
+        // List buckets
+        for await (const buckets of await dataClient.buckets()) {
+            for (const bucket of buckets) {
+                console.log('Bucket', bucket.bucketKey);
+            }
+        }
+        // List objects in $FORGE_BUCKET
+        for await (const objects of dataClient.objects(FORGE_BUCKET)) {
+            for (const object of objects) {
+                console.log('Object', object.objectId);
             }
         }
     } catch(err) {

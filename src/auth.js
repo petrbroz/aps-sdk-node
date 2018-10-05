@@ -1,5 +1,7 @@
 const { post } = require('./request');
 
+const RootPath = '/authentication/v1';
+
 /**
  * Client providing access to Autodesk Forge authentication APIs.
  * {@link https://forge.autodesk.com/en/docs/oauth/v2}
@@ -44,7 +46,7 @@ class AuthenticationClient {
             'grant_type': 'client_credentials',
             'scope': scopes.join(' ')
         };
-        const req = post('/authentication/v1/authenticate', data);
+        const req = post(`${RootPath}/authenticate`, data);
         const cache = {
             expires_at: Number.MAX_VALUE,
             promise: req.then(resp => resp.access_token)
