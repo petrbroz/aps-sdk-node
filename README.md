@@ -4,26 +4,37 @@ Tools for accessing [Autodesk Forge](https://developer.autodesk.com/) APIs from 
 
 ## Usage
 
-Every API class expects Forge client ID and client secret as arguments
-to the constructor. If the credentials are not provided, the code will
-attempt to obtain them from environment variables FORGE_CLIENT_ID
-and FORGE_CLIENT_SECRET.
+### Authentication
 
-### Data Management Client
+```js
+const auth = new AuthenticationClient(); // If no params, gets credentials from env. vars FORGE_CLIENT_ID and FORGE_CLIENT_SECRET
+const token = await auth.authenticate(['bucket:read', 'data:read']);
+console.log('2-legged Token', token);
+```
+
+### Data Management
 
 ```js
 const data = new DataManagementClient(new AuthenticationClient());
-try {
-    for await (const bucket of await data.buckets()) {
-        for await (const object of data.objects(bucket.bucketKey)) {
-            console.log('[' + bucket.bucketKey + ']', object.objectId);
-        }
+// List buckets
+for await (const buckets of await data.buckets()) {
+    for (const bucket of buckets) {
+        console.log('Bucket', bucket.bucketKey);
     }
-} catch(err) {
-    console.error('Error when listing buckets/objects', err);
+}
+// List objects in $FORGE_BUCKET
+for await (const objects of data.objects(FORGE_BUCKET)) {
+    for (const object of objects) {
+        console.log('Object', object.objectId);
+    }
 }
 ```
 
 ## Testing
 
-`FORGE_CLIENT_ID=<your-client-id> FORGE_CLIENT_SECRET=<your-client-secret> npm run test`
+```bash
+export FORGE_CLIENT_ID=<your-client-id>
+export FORGE_CLIENT_SECRET=<your-client-secret>
+export FORGE_BUCKET=<your-test-bucket>
+npm test
+```
