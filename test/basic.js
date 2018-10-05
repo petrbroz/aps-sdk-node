@@ -1,12 +1,12 @@
-const { DataManagementClient } = require('..');
+const { AuthenticationClient, DataManagementClient } = require('..');
 
 async function test() {
-    const dataClient = new DataManagementClient();
+    const authClient = new AuthenticationClient();
+    const dataClient = new DataManagementClient(authClient);
     try {
-        const buckets = await dataClient.buckets();
-        for (const bucket of buckets) {
-            for await (const page of dataClient.objects(bucket.bucketKey, 4)) {
-                console.log('Bucket', bucket.bucketKey, 'page', page);
+        for await (const bucket of await dataClient.buckets()) {
+            for await (const object of dataClient.objects(bucket.bucketKey)) {
+                console.log('[' + bucket.bucketKey + ']', object.objectId);
             }
         }
     } catch(err) {

@@ -12,16 +12,15 @@ and FORGE_CLIENT_SECRET.
 ### Data Management Client
 
 ```js
-const dataClient = new DataManagementClient();
+const data = new DataManagementClient(new AuthenticationClient());
 try {
-    const buckets = await dataClient.buckets();
-    for (const bucket of buckets) {
-        for await (const page of dataClient.objects(bucket.bucketKey, 4)) {
-            console.log('Bucket', bucket.bucketKey, 'page', page);
+    for await (const bucket of await data.buckets()) {
+        for await (const object of data.objects(bucket.bucketKey)) {
+            console.log('[' + bucket.bucketKey + ']', object.objectId);
         }
     }
 } catch(err) {
-    console.error('Error when getting buckets', err);
+    console.error('Error when listing buckets/objects', err);
 }
 ```
 
