@@ -3,16 +3,15 @@ const { post } = require('./request');
 const RootPath = '/authentication/v1';
 
 /**
- * Client providing access to Autodesk Forge authentication APIs.
- * {@link https://forge.autodesk.com/en/docs/oauth/v2}
+ * Client providing access to Autodesk Forge {@link https://forge.autodesk.com/en/docs/oauth/v2|authentication APIs}.
  */
 class AuthenticationClient {
     /**
      * Initializes new client with specific Forge app credentials.
-     * @param {string} [client_id] Forge application client ID. If not provided,
-     * the constructor will attempt to get the value from env. variable FORGE_CLIENT_ID.
-     * @param {string} [client_secret] Forge application client secret. If not provided,
-     * the constructor will attempt to get the value from env. variable FORGE_CLIENT_SECRET.
+     * If the credentials are not provided, the client will attempt to obtain them
+     * from env. variables FORGE_CLIENT_ID and FORGE_CLIENT_SECRET.
+     * @param {string} [client_id] Forge application client ID. 
+     * @param {string} [client_secret] Forge application client secret.
      */
     constructor(client_id, client_secret) {
         this.client_id = client_id || process.env.FORGE_CLIENT_ID;
@@ -21,13 +20,13 @@ class AuthenticationClient {
     }
 
     /**
-     * Retrieves 2-legged access token for a specific set of scopes.
+     * Retrieves 2-legged access token for a specific set of scopes
+     * ({@link https://forge.autodesk.com/en/docs/oauth/v2/reference/http/authenticate-POST|docs}).
      * Unless the {@see force} parameter is used, the access tokens are cached
      * based on their scopes and the 'expires_in' field in the response.
      * @param {string[]} scopes List of requested {@link https://forge.autodesk.com/en/docs/oauth/v2/developers_guide/scopes|scopes}.
      * @param {boolean} [force] Skip cache, if there is any, and retrieve a new token.
      * @returns {Promise<string>} 2-legged auth access token.
-     * {@link https://forge.autodesk.com/en/docs/oauth/v2/reference/http/authenticate-POST}
      */
     authenticate(scopes, force = false) {
         // Check if there's a cached token, unexpired, and with the same scopes
