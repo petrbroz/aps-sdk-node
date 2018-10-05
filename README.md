@@ -35,5 +35,6 @@ for await (const objects of data.objects(FORGE_BUCKET)) {
 ```bash
 export FORGE_CLIENT_ID=<your-client-id>
 export FORGE_CLIENT_SECRET=<your-client-secret>
+export FORGE_BUCKET=<your-test-bucket>
 npm test
 ```
