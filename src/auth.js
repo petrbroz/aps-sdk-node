@@ -45,16 +45,14 @@ class AuthenticationClient {
             'grant_type': 'client_credentials',
             'scope': scopes.join(' ')
         };
-        const req = post(`${RootPath}/authenticate`, data);
-        const cache = {
+        this._cached[key] = {
             expires_at: Number.MAX_VALUE,
-            promise: req.then(resp => resp.access_token)
+            promise: post(`${RootPath}/authenticate`, data).then((resp) => {
+                this._cached[key].expires_at = Date.now() + resp.expires_in * 1000;
+                return resp.access_token;
+            })
         };
-        this._cached[key] = cache;
-        req.then((response) => {
-            cache.expires_at = Date.now() + response.expires_in * 1000;
-        });
-        return cache.promise;
+        return this._cached[key].promise;
     }
 }
 
