@@ -29,6 +29,7 @@ class DataManagementClient {
      * @generator
      * @param {number} [page] Max number of buckets to obtain in one yield.
      * @yields {Promise<object[]>} List of bucket object containing 'bucketKey', 'createdDate', and 'policyKey'.
+     * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async *buckets(page = 16) {
         let access_token = await this.auth.authenticate(ReadTokenScopes);
@@ -51,6 +52,8 @@ class DataManagementClient {
      * @param {string} bucket Bucket key.
      * @returns {Promise<object>} Bucket details, with properties "bucketKey", "bucketOwner", "createdDate",
      * "permissions", and "policyKey".
+     * @throws Error when the request fails, for example, due to insufficient rights, or when a bucket
+     * with this name does not exist.
      */
     async bucketDetails(bucket) {
         const access_token = await this.auth.authenticate(ReadTokenScopes);
@@ -59,12 +62,15 @@ class DataManagementClient {
     }
 
     /**
-     * Creates a new bucket.
+     * Creates a new bucket
+     * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/buckets-POST|docs}).
      * @async
      * @param {string} bucket Bucket key.
      * @param {string} dataRetention One of the following: transient, temporary, permanent.
      * @returns {Promise<object>} Bucket details, with properties "bucketKey", "bucketOwner", "createdDate",
      * "permissions", and "policyKey".
+     * @throws Error when the request fails, for example, due to insufficient rights, incorrect scopes,
+     * or when a bucket with this name already exists.
      */
     async createBucket(bucket, dataRetention) {
         const access_token = await this.auth.authenticate(WriteTokenScopes);
@@ -86,6 +92,7 @@ class DataManagementClient {
      * @param {string} bucket Bucket key.
      * @param {number} [page] Max number of objects to obtain in one yield.
      * @yields {Promise<object[]>} List of object containing 'bucketKey', 'objectKey', 'objectId', 'sha1', 'size', and 'location'.
+     * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async *objects(bucket, page = 16) {
         const access_token = await this.auth.authenticate(ReadTokenScopes);
