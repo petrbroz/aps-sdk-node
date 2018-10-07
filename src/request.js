@@ -51,7 +51,13 @@ function post(path, data, headers = {}) {
     return request({ method: 'POST', host: FORGE_HOST, path, headers }, body);
 }
 
+function put(path, data, headers = {}) {
+    headers['Content-Length'] = Buffer.byteLength(data);
+    return request({ method: 'PUT', host: FORGE_HOST, path, headers }, data);
+}
+
 module.exports = {
     get,
-    post
+    post,
+    put
 };

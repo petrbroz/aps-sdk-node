@@ -1,6 +1,6 @@
 const querystring = require('querystring');
 
-const { get, post } = require('./request');
+const { get, post, put } = require('./request');
 const { AuthenticationClient } = require('./auth');
 
 const RootPath = '/oss/v2';
@@ -96,7 +96,7 @@ class DataManagementClient {
      */
     async *objects(bucket, page = 16) {
         const access_token = await this.auth.authenticate(ReadTokenScopes);
-        let response = await get(`${RootPath}/buckets/${bucket}/objects?limit=${page}`, { 'Authorization': 'Bearer ' + access_token });
+        let response = await get(`${RootPath}/buckets/${bucket}/objects?limit=${page}`, { xc });
         yield response.items;
 
         while (response.next) {
@@ -105,6 +105,27 @@ class DataManagementClient {
             response = await get(`${RootPath}/buckets/${bucket}/objects?startAt=${startAt}&limit=${page}`, { 'Authorization': 'Bearer ' + access_token });
             yield response.items;
         }
+    }
+
+    /**
+     * Uploads content to a specific bucket object
+     * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/buckets-:bucketKey-objects-:objectName-PUT|docs}).
+     * @async
+     * @param {string} bucket Bucket key.
+     * @param {string} name Name of uploaded object.
+     * @param {string} contentType Type of content to be used in HTTP headers, for example, "application/json".
+     * @param {Buffer} data Object content.
+     * @returns {Promise<object>} Object description containing 'bucketKey', 'objectKey', 'objectId',
+     * 'sha1', 'size', 'location', and 'contentType'.
+     * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
+     */
+    async uploadObject(bucket, name, contentType, data) {
+        const access_token = await this.auth.authenticate(WriteTokenScopes);
+        const response = await put(`${RootPath}/buckets/${bucket}/objects/${name}`, data, {
+            'Authorization': 'Bearer ' + access_token,
+            'Content-Type': contentType
+        });
+        return response;
     }
 }
 

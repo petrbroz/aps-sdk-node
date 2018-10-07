@@ -49,4 +49,15 @@ describe('DataManagementClient', function() {
                 });
         });
     });
+
+    describe('uploadObject()', function() {
+        it('should upload object content', async function() {
+            const objectName = 'test-file';
+            const buff = Buffer.from('This is a test string!', 'utf8');
+            const result = await this.client.uploadObject(this.bucket, objectName, 'text/plain; charset=UTF-8', buff);
+            assert(result);
+            assert(result.location);
+            assert(result.location.indexOf(objectName) !== -1);
+        });
+    });
 });
