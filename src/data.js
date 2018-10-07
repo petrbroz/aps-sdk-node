@@ -1,10 +1,11 @@
 const querystring = require('querystring');
 
-const { get } = require('./request');
+const { get, post } = require('./request');
 const { AuthenticationClient } = require('./auth');
 
 const RootPath = '/oss/v2';
 const ReadTokenScopes = ['bucket:read', 'data:read'];
+const WriteTokenScopes = ['bucket:create', 'data:write'];
 
 /**
  * Client providing access to Autodesk Forge {@link https://forge.autodesk.com/en/docs/data/v2|data management APIs}.
@@ -54,6 +55,24 @@ class DataManagementClient {
     async bucketDetails(bucket) {
         const access_token = await this.auth.authenticate(ReadTokenScopes);
         const response = await get(`${RootPath}/buckets/${bucket}/details`, { 'Authorization': 'Bearer ' + access_token });
+        return response;
+    }
+
+    /**
+     * Creates a new bucket.
+     * @async
+     * @param {string} bucket Bucket key.
+     * @param {string} dataRetention One of the following: transient, temporary, permanent.
+     * @returns {Promise<object>} Bucket details, with properties "bucketKey", "bucketOwner", "createdDate",
+     * "permissions", and "policyKey".
+     */
+    async createBucket(bucket, dataRetention) {
+        const access_token = await this.auth.authenticate(WriteTokenScopes);
+        const params = {
+            bucketKey: bucket,
+            policyKey: dataRetention
+        };
+        const response = await post(`${RootPath}/buckets`, { json: params }, { 'Authorization': 'Bearer ' + access_token });
         return response;
     }
 

@@ -32,4 +32,21 @@ describe('DataManagementClient', function() {
             assert(details.policyKey);
         });
     });
+
+    describe('createBucket()', function() {
+        /* Don't want to create a new bucket on every test run... */
+        // it('should create a new bucket', async function() {
+        //     const bucket = await this.client.createBucket('test.123456', 'transient');
+        //     assert(bucket);
+        //     console.log(bucket);
+        // });
+
+        it('should fail because a bucket with this name already exists', function(done) {
+            this.client.createBucket(this.bucket, 'transient')
+                .catch((err) => {
+                    //console.log(err);
+                    done();
+                });
+        });
+    });
 });

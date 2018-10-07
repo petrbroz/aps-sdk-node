@@ -26,7 +26,7 @@ function request(options, body) {
     });
 }
 
-function get(path, headers) {
+function get(path, headers = {}) {
     return request({
         method: 'GET',
         host: FORGE_HOST,
@@ -35,28 +35,20 @@ function get(path, headers) {
     });
 }
 
-function post(path, data) {
+function post(path, data, headers = {}) {
     let body = null;
-    let type = null;
     if (data.urlencoded) {
         body = querystring.stringify(data.urlencoded);
-        type = 'application/x-www-form-urlencoded';
+        headers['Content-Type'] = 'application/x-www-form-urlencoded';
     } else if (data.json) {
         body = JSON.stringify(data.json);
-        type = 'application/json';
+        headers['Content-Type'] = 'application/json';
     } else {
         throw new Error(`Content type not supported`);
     }
 
-    return request({
-        method: 'POST',
-        host: FORGE_HOST,
-        path,
-        headers: {
-            'Content-Type': type,
-            'Content-Length': Buffer.byteLength(body)
-        }
-    }, body);
+    headers['Content-Length'] = Buffer.byteLength(body);
+    return request({ method: 'POST', host: FORGE_HOST, path, headers }, body);
 }
 
 module.exports = {
