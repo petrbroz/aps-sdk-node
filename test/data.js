@@ -61,6 +61,14 @@ describe('DataManagementClient', function() {
         });
     });
 
+    describe('downloadObject()', function() {
+        it('should download object content', async function() {
+            const objectName = 'test-file';
+            const content = await this.client.downloadObject(this.bucket, objectName);
+            assert(content.indexOf('This is a test string!') !== -1);
+        });
+    });
+
     describe('objectDetails()', function() {
         it('should return object info', async function() {
             const details = await this.client.objectDetails(this.bucket, 'test-file');

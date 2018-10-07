@@ -130,6 +130,23 @@ class DataManagementClient {
     }
 
     /**
+     * Downloads content of a specific bucket object
+     * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/buckets-:bucketKey-objects-:objectName-GET|docs}).
+     * @async
+     * @param {string} bucket Bucket key.
+     * @param {string} object Object name.
+     * @returns {Promise<object>} Object content.
+     * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
+     */
+    async downloadObject(bucket, object) {
+        const access_token = await this.auth.authenticate(ReadTokenScopes);
+        const response = await get(`${RootPath}/buckets/${bucket}/objects/${object}`, {
+            'Authorization': 'Bearer ' + access_token,
+        }, false);
+        return response;
+    }
+
+    /**
      * Gets details of a specific bucket object
      * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/buckets-:bucketKey-objects-:objectName-details-GET|docs}).
      * @async

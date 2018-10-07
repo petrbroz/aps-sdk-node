@@ -3,7 +3,7 @@ const querystring = require('querystring');
 
 const FORGE_HOST = 'developer.api.autodesk.com';
 
-function request(options, body) {
+function request(options, body, json) {
     return new Promise((resolve, reject) => {
         const req = https.request(options, (res) => {
             let data = '';
@@ -11,7 +11,7 @@ function request(options, body) {
             res.on('data', (chunk) => { data += chunk; });
             res.on('end', () => {
                 if (res.statusCode >= 200 && res.statusCode < 300) {
-                    resolve(JSON.parse(data));
+                    resolve(json ? JSON.parse(data) : data);
                 } else {
                     reject(data); // reject(JSON.parse(data));
                 }
@@ -26,16 +26,16 @@ function request(options, body) {
     });
 }
 
-function get(path, headers = {}) {
+function get(path, headers = {}, json = true) {
     return request({
         method: 'GET',
         host: FORGE_HOST,
         path,
         headers
-    });
+    }, null, json);
 }
 
-function post(path, data, headers = {}) {
+function post(path, data, headers = {}, json = true) {
     let body = null;
     if (data.urlencoded) {
         body = querystring.stringify(data.urlencoded);
@@ -48,12 +48,12 @@ function post(path, data, headers = {}) {
     }
 
     headers['Content-Length'] = Buffer.byteLength(body);
-    return request({ method: 'POST', host: FORGE_HOST, path, headers }, body);
+    return request({ method: 'POST', host: FORGE_HOST, path, headers }, body, json);
 }
 
-function put(path, data, headers = {}) {
+function put(path, data, headers = {}, json = true) {
     headers['Content-Length'] = Buffer.byteLength(data);
-    return request({ method: 'PUT', host: FORGE_HOST, path, headers }, data);
+    return request({ method: 'PUT', host: FORGE_HOST, path, headers }, data, json);
 }
 
 module.exports = {
