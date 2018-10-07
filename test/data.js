@@ -60,4 +60,13 @@ describe('DataManagementClient', function() {
             assert(result.location.indexOf(objectName) !== -1);
         });
     });
+
+    describe('objectDetails()', function() {
+        it('should return object info', async function() {
+            const details = await this.client.objectDetails(this.bucket, 'test-file');
+            assert(details.bucketKey === this.bucket);
+            assert(details.objectId);
+            assert(details.objectKey === 'test-file');
+        });
+    });
 });

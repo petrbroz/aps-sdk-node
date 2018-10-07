@@ -128,6 +128,23 @@ class DataManagementClient {
         });
         return response;
     }
+
+    /**
+     * Gets details of a specific bucket object
+     * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/buckets-:bucketKey-objects-:objectName-details-GET|docs}).
+     * @async
+     * @param {string} bucket Bucket key.
+     * @param {string} object Object name.
+     * @returns {Promise<object>} Object description containing 'bucketKey', 'objectKey', 'objectId',
+     * 'sha1', 'size', 'location', and 'contentType'.
+     * @throws Error when the request fails, for example, due to insufficient rights, or when an object
+     * with this name does not exist.
+     */
+    async objectDetails(bucket, object) {
+        const access_token = await this.auth.authenticate(ReadTokenScopes);
+        const response = await get(`${RootPath}/buckets/${bucket}/objects/${object}/details`, { 'Authorization': 'Bearer ' + access_token });
+        return response;
+    }
 }
 
 module.exports = {
