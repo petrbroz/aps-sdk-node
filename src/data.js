@@ -19,6 +19,8 @@ class DataManagementClient {
         this.auth = auth;
     }
 
+    // Bucket APIs
+
     /**
      * Gets a paginated list of all buckets
      * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/buckets-GET|docs}).
@@ -40,6 +42,22 @@ class DataManagementClient {
             yield response.items;
         }
     }
+
+    /**
+     * Gets details of a specific bucket
+     * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/buckets-:bucketKey-details-GET|docs}).
+     * @async
+     * @param {string} bucket Bucket key.
+     * @returns {Promise<object>} Bucket details, with properties "bucketKey", "bucketOwner", "createdDate",
+     * "permissions", and "policyKey".
+     */
+    async bucketDetails(bucket) {
+        const access_token = await this.auth.authenticate(ReadTokenScopes);
+        const response = await get(`${RootPath}/buckets/${bucket}/details`, { 'Authorization': 'Bearer ' + access_token });
+        return response;
+    }
+
+    // Object APIs
 
     /**
      * Gets a paginated list of all objects in a bucket
