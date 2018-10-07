@@ -39,7 +39,7 @@ class AuthenticationClient {
         }
 
         // Otherwise request a new token and cache it
-        const data = {
+        const params = {
             'client_id': this.client_id,
             'client_secret': this.client_secret,
             'grant_type': 'client_credentials',
@@ -47,7 +47,7 @@ class AuthenticationClient {
         };
         this._cached[key] = {
             expires_at: Number.MAX_VALUE,
-            promise: post(`${RootPath}/authenticate`, data).then((resp) => {
+            promise: post(`${RootPath}/authenticate`, { urlencoded: params }).then((resp) => {
                 this._cached[key].expires_at = Date.now() + resp.expires_in * 1000;
                 return resp.access_token;
             })
