@@ -120,6 +120,7 @@ class DataManagementClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async uploadObject(bucket, name, contentType, data) {
+        // TODO: add support for large file uploads using "PUT buckets/:bucketKey/objects/:objectName/resumable"
         const access_token = await this.auth.authenticate(WriteTokenScopes);
         const response = await put(`${RootPath}/buckets/${bucket}/objects/${name}`, data, {
             'Authorization': 'Bearer ' + access_token,
