@@ -50,6 +50,15 @@ describe('DataManagementClient', function() {
         });
     });
 
+    describe('objects()', function() {
+        it('should return a list of objects', async function() {
+            for await (const objects of this.client.objects(this.bucket)) {
+                assert(objects.length > 0);
+                break; // Skip additional pages
+            }
+        });
+    });
+
     describe('uploadObject()', function() {
         it('should upload object content', async function() {
             const objectName = 'test-file';

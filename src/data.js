@@ -96,7 +96,7 @@ class DataManagementClient {
      */
     async *objects(bucket, page = 16) {
         const access_token = await this.auth.authenticate(ReadTokenScopes);
-        let response = await get(`${RootPath}/buckets/${bucket}/objects?limit=${page}`, { xc });
+        let response = await get(`${RootPath}/buckets/${bucket}/objects?limit=${page}`, { 'Authorization': 'Bearer ' + access_token });
         yield response.items;
 
         while (response.next) {
