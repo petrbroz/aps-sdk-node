@@ -1,6 +1,6 @@
 {
   "name": "autodesk-forge-tools",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Tools for accessing Autodesk Forge APIs from Node.js apps.",
   "main": "src/index.js",
   "scripts": {
