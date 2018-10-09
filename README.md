@@ -10,26 +10,24 @@ or [generators](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Referenc
 ### Authentication
 
 ```js
+const { AuthenticationClient } = require('autodesk-forge-tools');
 const auth = new AuthenticationClient(); // If no params, gets credentials from env. vars FORGE_CLIENT_ID and FORGE_CLIENT_SECRET
-const token = await auth.authenticate(['bucket:read', 'data:read']);
-console.log('2-legged Token', token);
+const authentication = await auth.authenticate(['bucket:read', 'data:read']);
+console.log('2-legged Token', authentication.access_token);
 ```
 
 ### Data Management
 
 ```js
+const { DataManagementClient, AuthenticationClient } = require('autodesk-forge-tools');
 const data = new DataManagementClient(new AuthenticationClient());
 // List buckets
 for await (const buckets of await data.buckets()) {
-    for (const bucket of buckets) {
-        console.log('Bucket', bucket.bucketKey);
-    }
+    console.log('Buckets', buckets.map(bucket => bucket.bucketKey).join(','));
 }
 // List objects in bucket
 for await (const objects of data.objects("foo-bucket")) {
-    for (const object of objects) {
-        console.log('Object', object.objectId);
-    }
+    console.log('Objects', objects.map(object => object.objectId).join(','));
 }
 ```
 

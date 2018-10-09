@@ -12,8 +12,9 @@ describe('AuthenticationClient', function() {
 
     describe('authenticate()', function() {
         it('should return a token for valid scopes', async function() {
-            const token = await this.client.authenticate(['viewables:read']);
-            assert(token.length > 0);
+            const authentication = await this.client.authenticate(['viewables:read']);
+            assert(authentication.access_token);
+            assert(authentication.expires_in > 0);
         });
 
         it('should reject promise for invalid scopes', function(done) {

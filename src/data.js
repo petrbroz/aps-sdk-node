@@ -32,15 +32,15 @@ class DataManagementClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async *buckets(page = 16) {
-        let access_token = await this.auth.authenticate(ReadTokenScopes);
-        let response = await get(`${RootPath}/buckets?limit=${page}`, { 'Authorization': 'Bearer ' + access_token });
+        let authentication = await this.auth.authenticate(ReadTokenScopes);
+        let response = await get(`${RootPath}/buckets?limit=${page}`, { 'Authorization': 'Bearer ' + authentication.access_token });
         yield response.items;
 
         while (response.next) {
             const next = new URL(response.next);
             const startAt = querystring.escape(next.searchParams.get('startAt'));
-            access_token = await this.auth.authenticate(ReadTokenScopes);
-            response = await get(`${RootPath}/buckets?startAt=${startAt}&limit=${page}`, { 'Authorization': 'Bearer ' + access_token });
+            authentication = await this.auth.authenticate(ReadTokenScopes);
+            response = await get(`${RootPath}/buckets?startAt=${startAt}&limit=${page}`, { 'Authorization': 'Bearer ' + authentication.access_token });
             yield response.items;
         }
     }
@@ -56,8 +56,8 @@ class DataManagementClient {
      * with this name does not exist.
      */
     async bucketDetails(bucket) {
-        const access_token = await this.auth.authenticate(ReadTokenScopes);
-        const response = await get(`${RootPath}/buckets/${bucket}/details`, { 'Authorization': 'Bearer ' + access_token });
+        const authentication = await this.auth.authenticate(ReadTokenScopes);
+        const response = await get(`${RootPath}/buckets/${bucket}/details`, { 'Authorization': 'Bearer ' + authentication.access_token });
         return response;
     }
 
@@ -73,12 +73,12 @@ class DataManagementClient {
      * or when a bucket with this name already exists.
      */
     async createBucket(bucket, dataRetention) {
-        const access_token = await this.auth.authenticate(WriteTokenScopes);
+        const authentication = await this.auth.authenticate(WriteTokenScopes);
         const params = {
             bucketKey: bucket,
             policyKey: dataRetention
         };
-        const response = await post(`${RootPath}/buckets`, { json: params }, { 'Authorization': 'Bearer ' + access_token });
+        const response = await post(`${RootPath}/buckets`, { json: params }, { 'Authorization': 'Bearer ' + authentication.access_token });
         return response;
     }
 
@@ -95,14 +95,15 @@ class DataManagementClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async *objects(bucket, page = 16) {
-        const access_token = await this.auth.authenticate(ReadTokenScopes);
-        let response = await get(`${RootPath}/buckets/${bucket}/objects?limit=${page}`, { 'Authorization': 'Bearer ' + access_token });
+        let authentication = await this.auth.authenticate(ReadTokenScopes);
+        let response = await get(`${RootPath}/buckets/${bucket}/objects?limit=${page}`, { 'Authorization': 'Bearer ' + authentication.access_token });
         yield response.items;
 
         while (response.next) {
             const next = new URL(response.next);
             const startAt = querystring.escape(next.searchParams.get('startAt'));
-            response = await get(`${RootPath}/buckets/${bucket}/objects?startAt=${startAt}&limit=${page}`, { 'Authorization': 'Bearer ' + access_token });
+            authentication = await this.auth.authenticate(ReadTokenScopes);
+            response = await get(`${RootPath}/buckets/${bucket}/objects?startAt=${startAt}&limit=${page}`, { 'Authorization': 'Bearer ' + authentication.access_token });
             yield response.items;
         }
     }
@@ -121,9 +122,9 @@ class DataManagementClient {
      */
     async uploadObject(bucket, name, contentType, data) {
         // TODO: add support for large file uploads using "PUT buckets/:bucketKey/objects/:objectName/resumable"
-        const access_token = await this.auth.authenticate(WriteTokenScopes);
+        const authentication = await this.auth.authenticate(WriteTokenScopes);
         const response = await put(`${RootPath}/buckets/${bucket}/objects/${name}`, data, {
-            'Authorization': 'Bearer ' + access_token,
+            'Authorization': 'Bearer ' + authentication.access_token,
             'Content-Type': contentType
         });
         return response;
@@ -139,9 +140,9 @@ class DataManagementClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async downloadObject(bucket, object) {
-        const access_token = await this.auth.authenticate(ReadTokenScopes);
+        const authentication = await this.auth.authenticate(ReadTokenScopes);
         const response = await get(`${RootPath}/buckets/${bucket}/objects/${object}`, {
-            'Authorization': 'Bearer ' + access_token,
+            'Authorization': 'Bearer ' + authentication.access_token,
         }, false);
         return response;
     }
@@ -158,8 +159,8 @@ class DataManagementClient {
      * with this name does not exist.
      */
     async objectDetails(bucket, object) {
-        const access_token = await this.auth.authenticate(ReadTokenScopes);
-        const response = await get(`${RootPath}/buckets/${bucket}/objects/${object}/details`, { 'Authorization': 'Bearer ' + access_token });
+        const authentication = await this.auth.authenticate(ReadTokenScopes);
+        const response = await get(`${RootPath}/buckets/${bucket}/objects/${object}/details`, { 'Authorization': 'Bearer ' + authentication.access_token });
         return response;
     }
 }
