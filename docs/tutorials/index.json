@@ -1,0 +1,8 @@
+{
+    "auth-basic": {
+        "title": "Basic Authentication"
+    },
+    "data-basic": {
+        "title": "Basic Data Management"
+    }
+}
