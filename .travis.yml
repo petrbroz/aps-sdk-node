@@ -8,10 +8,3 @@ deploy:
   api_key: $NPM_AUTH_TOKEN
   on:
     tags: true
-
-notifications:
-  email:
-    recipients:
-    - ipetrbroz@gmail.com
-    on_success: change
-    on_failure: always
