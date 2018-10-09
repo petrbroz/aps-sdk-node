@@ -20,6 +20,7 @@
         "encoding": "utf8",
         "private": true,
         "recurse": true,
-        "template": "./node_modules/jsdoc-template"
+        "template": "./node_modules/jsdoc-template",
+        "tutorials": "docs/tutorials"
     }
 }

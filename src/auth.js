@@ -4,6 +4,7 @@ const RootPath = '/authentication/v1';
 
 /**
  * Client providing access to Autodesk Forge {@link https://forge.autodesk.com/en/docs/oauth/v2|authentication APIs}.
+ * @tutorial auth-basic
  */
 class AuthenticationClient {
     /**
@@ -26,7 +27,7 @@ class AuthenticationClient {
      * based on their scopes and the 'expires_in' field in the response.
      * @param {string[]} scopes List of requested {@link https://forge.autodesk.com/en/docs/oauth/v2/developers_guide/scopes|scopes}.
      * @param {boolean} [force] Skip cache, if there is any, and retrieve a new token.
-     * @returns {Promise<object>} Object with 2-legged auth information. Contains two fields,
+     * @returns {Promise<object>} Promise of 2-legged authentication object containing two fields,
      * 'access_token' with the actual token, and 'expires_in' with expiration time (in seconds).
      */
     authenticate(scopes, force = false) {
