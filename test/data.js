@@ -11,12 +11,14 @@ describe('DataManagementClient', function() {
         const auth = new AuthenticationClient(FORGE_CLIENT_ID, FORGE_CLIENT_SECRET);
         this.client = new DataManagementClient(auth);
         this.bucket = FORGE_BUCKET;
+        this.timeout(5000); // Increase timeout to 5 seconds
     });
 
     describe('buckets()', function() {
         it('should return a list of buckets', async function() {
-            for await (const buckets of this.client.buckets()) {
+            for await (const buckets of this.client.buckets(8)) {
                 assert(buckets.length > 0);
+                break; // Skip additional pages
             }
         });
     });
@@ -52,7 +54,7 @@ describe('DataManagementClient', function() {
 
     describe('objects()', function() {
         it('should return a list of objects', async function() {
-            for await (const objects of this.client.objects(this.bucket)) {
+            for await (const objects of this.client.objects(this.bucket, 8)) {
                 assert(objects.length > 0);
                 break; // Skip additional pages
             }
