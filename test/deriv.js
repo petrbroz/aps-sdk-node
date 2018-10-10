@@ -21,7 +21,7 @@ describe('ModelDerivativeClient', function() {
 
     describe('submitJob()', function() {
         it('should return a job info', async function() {
-            const job = await this.client.submitJob(this.urn);
+            const job = await this.client.submitJob(this.urn, [{ type: 'svf', views: ['2d', '3d'] }]);
             assert(job);
             assert(job.result);
         });

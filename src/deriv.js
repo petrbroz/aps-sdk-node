@@ -38,19 +38,20 @@ class ModelDerivativeClient {
      * ({@link https://forge.autodesk.com/en/docs/model-derivative/v2/reference/http/job-POST|docs}).
      * @async
      * @param {string} urn Document to be translated.
-     * @returns {Promise<object>} Translation job details, with properties ...
+     * @param {object[]} outputs List of requested output formats. Currently the one
+     * supported format is `{ type: 'svf', views: ['2d', '3d'] }`.
+     * @returns {Promise<object>} Translation job details, with properties 'result',
+     * 'urn', and 'acceptedJobs'.
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
-    async submitJob(urn) {
+    async submitJob(urn, outputs) {
         const authentication = await this.auth.authenticate(WriteTokenScopes);
         const params = {
             input: {
                 urn: urn
             },
             output: {
-                formats: [
-                    { type: 'svf', views: ['2d', '3d'] }
-                ]
+                formats: outputs
             }
         };
         const response = await post(`${RootPath}/designdata/job`, { json: params }, { 'Authorization': 'Bearer ' + authentication.access_token });
