@@ -9,6 +9,7 @@ const WriteTokenScopes = ['bucket:create', 'data:write'];
 
 /**
  * Client providing access to Autodesk Forge {@link https://forge.autodesk.com/en/docs/data/v2|data management APIs}.
+ * @tutorial data-basic
  */
 class DataManagementClient {
     /**
