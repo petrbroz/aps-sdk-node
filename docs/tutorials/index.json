@@ -4,5 +4,8 @@
     },
     "data-basic": {
         "title": "Basic Data Management"
+    },
+    "deriv-basic": {
+        "title": "Basic Model Derivatives"
     }
 }
