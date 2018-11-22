@@ -13,10 +13,12 @@ class AuthenticationClient {
      * from env. variables FORGE_CLIENT_ID and FORGE_CLIENT_SECRET.
      * @param {string} [client_id] Forge application client ID. 
      * @param {string} [client_secret] Forge application client secret.
+     * @param {string} [host="developer.api.autodesk.com"] Forge API host.
      */
-    constructor(client_id, client_secret) {
+    constructor(client_id, client_secret, host) {
         this.client_id = client_id || process.env.FORGE_CLIENT_ID;
         this.client_secret = client_secret || process.env.FORGE_CLIENT_SECRET;
+        this.host = host;
         this._cached = {}; // Dictionary of { promise: Promise<string>, expires_at: Number } objects
     }
 
@@ -52,7 +54,7 @@ class AuthenticationClient {
         };
         const cache = this._cached[key] = {
             expires_at: Number.MAX_VALUE,
-            promise: post(`${RootPath}/authenticate`, { urlencoded: params }).then((resp) => {
+            promise: post(`${RootPath}/authenticate`, { urlencoded: params }, {}, true, this.host).then((resp) => {
                 this._cached[key].expires_at = Date.now() + resp.expires_in * 1000;
                 return resp.access_token;
             })

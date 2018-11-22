@@ -15,10 +15,12 @@ class DataManagementClient {
     /**
      * Initializes new client with specific Forge app credentials.
      * @param {AuthenticationClient} auth Authentication client used to obtain tokens
+     * @param {string} [host="developer.api.autodesk.com"] Forge API host.
      * for data management requests.
      */
-    constructor(auth) {
+    constructor(auth, host) {
         this.auth = auth;
+        this.host = host;
     }
 
     // Bucket APIs
@@ -34,14 +36,14 @@ class DataManagementClient {
      */
     async *buckets(page = 16) {
         let authentication = await this.auth.authenticate(ReadTokenScopes);
-        let response = await get(`${RootPath}/buckets?limit=${page}`, { 'Authorization': 'Bearer ' + authentication.access_token });
+        let response = await get(`${RootPath}/buckets?limit=${page}`, { 'Authorization': 'Bearer ' + authentication.access_token }, true, this.host);
         yield response.items;
 
         while (response.next) {
             const next = new URL(response.next);
             const startAt = querystring.escape(next.searchParams.get('startAt'));
             authentication = await this.auth.authenticate(ReadTokenScopes);
-            response = await get(`${RootPath}/buckets?startAt=${startAt}&limit=${page}`, { 'Authorization': 'Bearer ' + authentication.access_token });
+            response = await get(`${RootPath}/buckets?startAt=${startAt}&limit=${page}`, { 'Authorization': 'Bearer ' + authentication.access_token }, true, this.host);
             yield response.items;
         }
     }
@@ -58,7 +60,7 @@ class DataManagementClient {
      */
     async bucketDetails(bucket) {
         const authentication = await this.auth.authenticate(ReadTokenScopes);
-        const response = await get(`${RootPath}/buckets/${bucket}/details`, { 'Authorization': 'Bearer ' + authentication.access_token });
+        const response = await get(`${RootPath}/buckets/${bucket}/details`, { 'Authorization': 'Bearer ' + authentication.access_token }, true, this.host);
         return response;
     }
 
@@ -79,7 +81,7 @@ class DataManagementClient {
             bucketKey: bucket,
             policyKey: dataRetention
         };
-        const response = await post(`${RootPath}/buckets`, { json: params }, { 'Authorization': 'Bearer ' + authentication.access_token });
+        const response = await post(`${RootPath}/buckets`, { json: params }, { 'Authorization': 'Bearer ' + authentication.access_token }, true, this.host);
         return response;
     }
 
@@ -97,14 +99,14 @@ class DataManagementClient {
      */
     async *objects(bucket, page = 16) {
         let authentication = await this.auth.authenticate(ReadTokenScopes);
-        let response = await get(`${RootPath}/buckets/${bucket}/objects?limit=${page}`, { 'Authorization': 'Bearer ' + authentication.access_token });
+        let response = await get(`${RootPath}/buckets/${bucket}/objects?limit=${page}`, { 'Authorization': 'Bearer ' + authentication.access_token }, true, this.host);
         yield response.items;
 
         while (response.next) {
             const next = new URL(response.next);
             const startAt = querystring.escape(next.searchParams.get('startAt'));
             authentication = await this.auth.authenticate(ReadTokenScopes);
-            response = await get(`${RootPath}/buckets/${bucket}/objects?startAt=${startAt}&limit=${page}`, { 'Authorization': 'Bearer ' + authentication.access_token });
+            response = await get(`${RootPath}/buckets/${bucket}/objects?startAt=${startAt}&limit=${page}`, { 'Authorization': 'Bearer ' + authentication.access_token }, true, this.host);
             yield response.items;
         }
     }
@@ -127,7 +129,7 @@ class DataManagementClient {
         const response = await put(`${RootPath}/buckets/${bucket}/objects/${name}`, data, {
             'Authorization': 'Bearer ' + authentication.access_token,
             'Content-Type': contentType
-        });
+        }, true, this.host);
         return response;
     }
 
@@ -144,7 +146,7 @@ class DataManagementClient {
         const authentication = await this.auth.authenticate(ReadTokenScopes);
         const response = await get(`${RootPath}/buckets/${bucket}/objects/${object}`, {
             'Authorization': 'Bearer ' + authentication.access_token,
-        }, false);
+        }, false, this.host);
         return response;
     }
 
@@ -161,7 +163,7 @@ class DataManagementClient {
      */
     async objectDetails(bucket, object) {
         const authentication = await this.auth.authenticate(ReadTokenScopes);
-        const response = await get(`${RootPath}/buckets/${bucket}/objects/${object}/details`, { 'Authorization': 'Bearer ' + authentication.access_token });
+        const response = await get(`${RootPath}/buckets/${bucket}/objects/${object}/details`, { 'Authorization': 'Bearer ' + authentication.access_token }, true, this.host);
         return response;
     }
 }
