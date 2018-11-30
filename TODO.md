@@ -1,0 +1,1 @@
+- Unify the handling of 2-legged and 3-legged authentication
