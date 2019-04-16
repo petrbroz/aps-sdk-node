@@ -1,13 +1,15 @@
 # autodesk-forge-tools [![Build Status](https://travis-ci.org/petrbroz/autodesk-forge-tools.svg?branch=master)](https://travis-ci.org/petrbroz/autodesk-forge-tools) [![npm version](https://badge.fury.io/js/autodesk-forge-tools.svg)](https://badge.fury.io/js/autodesk-forge-tools)
 
 Unofficial tools for accessing [Autodesk Forge](https://developer.autodesk.com/) APIs
-from Node.js applications, using modern language features like
+from command line and from Node.js applications, using modern language features like
 [async/await](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function)
 or [generators](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*).
 
 ## Usage
 
-### Authentication
+### Node.js
+
+#### Authentication
 
 ```js
 const { AuthenticationClient } = require('autodesk-forge-tools');
@@ -16,13 +18,13 @@ const authentication = await auth.authenticate(['bucket:read', 'data:read']);
 console.log('2-legged Token', authentication.access_token);
 ```
 
-### Data Management
+#### Data Management
 
 ```js
 const { DataManagementClient, AuthenticationClient } = require('autodesk-forge-tools');
 const data = new DataManagementClient(new AuthenticationClient());
 // List buckets
-for await (const buckets of await data.buckets()) {
+for await (const buckets of data.buckets()) {
     console.log('Buckets', buckets.map(bucket => bucket.bucketKey).join(','));
 }
 // List objects in bucket
@@ -31,13 +33,27 @@ for await (const objects of data.objects('foo-bucket')) {
 }
 ```
 
-### Model Derivatives
+#### Model Derivatives
 
 ```js
 const { ModelDerivativeClient, AuthenticationClient } = require('autodesk-forge-tools');
 const derivatives = new ModelDerivativeClient(new AuthenticationClient());
 const job = await derivatives.submitJob('<your-document-urn>', [{ type: 'svf', views: ['2d', '3d'] }]);
 console.log('Job', job);
+```
+
+### Command Line
+
+#### Data Management
+
+```bash
+export FORGE_CLIENT_ID=<your-client-id>
+export FORGE_CLIENT_SECRET=<your-client-secret>
+forge-dm list-buckets # JSON array of all buckets
+forge-dm list-buckets --short # list of bucket keys
+forge-dm list-objects # shows interactive prompt for bucket ID and prints JSON of all its objects
+forge-dm list-objects <bucket> --short # lists IDs of all objects in given bucket
+forge-dm --help # for additional commands and options
 ```
 
 ## Testing
