@@ -1,4 +1,4 @@
-# forge-nodejs-tools [![Build Status](https://travis-ci.org/petrbroz/forge-nodejs-utils.svg?branch=master)](https://travis-ci.org/petrbroz/forge-nodejs-utils) [![npm version](https://badge.fury.io/js/forge-nodejs-utils.svg)](https://badge.fury.io/js/forge-nodejs-utils)
+# forge-nodejs-utils [![Build Status](https://travis-ci.org/petrbroz/forge-nodejs-utils.svg?branch=master)](https://travis-ci.org/petrbroz/forge-nodejs-utils) [![npm version](https://badge.fury.io/js/forge-nodejs-utils.svg)](https://badge.fury.io/js/forge-nodejs-utils)
 
 Unofficial tools for accessing [Autodesk Forge](https://developer.autodesk.com/) APIs
 from Node.js applications, using modern language features like
