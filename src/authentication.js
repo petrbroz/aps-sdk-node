@@ -4,7 +4,7 @@ const RootPath = '/authentication/v1';
 
 /**
  * Client providing access to Autodesk Forge {@link https://forge.autodesk.com/en/docs/oauth/v2|authentication APIs}.
- * @tutorial auth-basic
+ * @tutorial authentication
  */
 class AuthenticationClient {
     /**

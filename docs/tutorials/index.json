@@ -1,11 +1,14 @@
 {
-    "auth-basic": {
-        "title": "Basic Authentication"
+    "authentication": {
+        "title": "Authentication API"
     },
-    "data-basic": {
-        "title": "Basic Data Management"
+    "data-management": {
+        "title": "Data Management API"
     },
-    "deriv-basic": {
-        "title": "Basic Model Derivatives"
+    "model-derivative": {
+        "title": "Model Derivative API"
+    },
+    "design-automation": {
+        "title": "Design Automation API"
     }
 }

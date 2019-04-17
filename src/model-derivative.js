@@ -1,5 +1,5 @@
 const { get, post, put } = require('./request');
-const { AuthenticationClient } = require('./auth');
+const { AuthenticationClient } = require('./authentication');
 
 const RootPath = '/modelderivative/v2';
 const ReadTokenScopes = ['data:read'];
@@ -8,7 +8,7 @@ const WriteTokenScopes = ['data:read', 'data:write', 'data:create'];
 /**
  * Client providing access to Autodesk Forge
  * {@link https://forge.autodesk.com/en/docs/model-derivative/v2|model derivative APIs}.
- * @tutorial deriv-basic
+ * @tutorial model-derivative
  */
 class ModelDerivativeClient {
     /**
