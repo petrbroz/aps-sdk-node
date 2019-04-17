@@ -7,7 +7,7 @@ const ReadScopes = ['code:all'];
 /**
  * Client providing access to Autodesk Forge
  * {@link https://forge.autodesk.com/en/docs/design-automation/v3|design automation APIs}.
- * @tutorial design-automation-basic
+ * @tutorial design-automation
  */
 class DesignAutomationClient {
     /**
