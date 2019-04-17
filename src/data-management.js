@@ -70,7 +70,9 @@ class DataManagementClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async *bucketsPager(page = 16) {
-        return this._pager('/buckets', page, ReadTokenScopes);
+        for await (const buckets of this._pager('/buckets', page, ReadTokenScopes)) {
+            yield buckets;
+        }
     }
 
     /**
@@ -134,7 +136,9 @@ class DataManagementClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async *objectsPager(bucket, page = 16) {
-        return this._pager(`/buckets/${bucket}/objects`, page, ReadTokenScopes);
+        for await (const objects of this._pager(`/buckets/${bucket}/objects`, page, ReadTokenScopes)) {
+            yield objects;
+        }
     }
 
     /**

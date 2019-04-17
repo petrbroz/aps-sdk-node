@@ -60,7 +60,9 @@ class DesignAutomationClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async *enginesPager() {
-        return this._pager('/engines', ReadScopes);
+        for await (const engines of this._pager('/engines', ReadScopes)) {
+            yield engines;
+        }
     }
 
     /**
@@ -83,7 +85,9 @@ class DesignAutomationClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async *appBundlesPager() {
-        return this._pager('/appbundles', ReadScopes);
+        for await (const bundles of this._pager('/appbundles', ReadScopes)) {
+            yield bundles;
+        }
     }
 
     /**
@@ -183,7 +187,9 @@ class DesignAutomationClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async *activitiesPager() {
-        return this._pager('/activities', ReadScopes);
+        for await (const activities of this._pager('/activities', ReadScopes)) {
+            yield activities;
+        }
     }
 
     /**

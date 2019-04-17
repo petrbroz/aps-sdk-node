@@ -21,6 +21,15 @@ describe('DataManagementClient', function() {
         });
     });
 
+    describe('bucketsPager()', function() {
+        it('should iterate over buckets', async function() {
+            for await (const buckets of this.client.bucketsPager()) {
+                assert(buckets.length > 0);
+                break;
+            }
+        });
+    });
+
     describe('bucketDetails()', function() {
         it('should return bucket info', async function() {
             const details = await this.client.bucketDetails(this.bucket);
@@ -54,6 +63,15 @@ describe('DataManagementClient', function() {
         it('should return a list of objects', async function() {
             const objects = await this.client.objects(this.bucket);
             assert(objects.length > 0);
+        });
+    });
+
+    describe('objectsPager()', function() {
+        it('should iterate over objects', async function() {
+            for await (const objects of this.client.objectsPager(this.bucket)) {
+                assert(objects.length > 0);
+                break;
+            }
         });
     });
 
