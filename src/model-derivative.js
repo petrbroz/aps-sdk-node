@@ -1,5 +1,5 @@
 const { get, post, put } = require('./request');
-const { AuthenticationClient } = require('./auth');
+const { AuthenticationClient } = require('./authentication');
 
 const RootPath = '/modelderivative/v2';
 const ReadTokenScopes = ['data:read'];

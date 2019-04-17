@@ -1,7 +1,7 @@
 const querystring = require('querystring');
 
 const { get, post, put } = require('./request');
-const { AuthenticationClient } = require('./auth');
+const { AuthenticationClient } = require('./authentication');
 
 const RootPath = '/oss/v2';
 const ReadTokenScopes = ['bucket:read', 'data:read'];
@@ -134,7 +134,7 @@ class DataManagementClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async *objectsPager(bucket, page = 16) {
-        return this._pager(`${RootPath}/buckets/${bucket}/objects`, page, ReadTokenScopes);
+        return this._pager(`/buckets/${bucket}/objects`, page, ReadTokenScopes);
     }
 
     /**
@@ -146,7 +146,7 @@ class DataManagementClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async objects(bucket) {
-        return this._collect(`${RootPath}/buckets/${bucket}/objects`, ReadTokenScopes);
+        return this._collect(`/buckets/${bucket}/objects`, ReadTokenScopes);
     }
 
     /**
