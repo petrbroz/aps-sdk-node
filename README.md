@@ -40,11 +40,22 @@ const job = await derivatives.submitJob('<your-document-urn>', [{ type: 'svf', v
 console.log('Job', job);
 ```
 
+### Design Automation
+
+```js
+const { DesignAutomationClient, AuthenticationClient } = require('forge-nodejs-utils');
+const client = new DesignAutomationClient(new AuthenticationClient());
+for await (const appbundles of client.appbundles()) {
+    console.log('AppBundles', appbundles);
+}
+```
+
 ## Testing
 
 ```bash
 export FORGE_CLIENT_ID=<your-client-id>
 export FORGE_CLIENT_SECRET=<your-client-secret>
 export FORGE_BUCKET=<your-test-bucket>
+export FORGE_MODEL_URN=<testing-model-urn>
 npm test
 ```

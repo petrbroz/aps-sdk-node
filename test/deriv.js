@@ -4,12 +4,12 @@ const { AuthenticationClient, ModelDerivativeClient } = require('..');
 
 describe('ModelDerivativeClient', function() {
     beforeEach(function() {
-        const { FORGE_CLIENT_ID, FORGE_CLIENT_SECRET } = process.env;
+        const { FORGE_CLIENT_ID, FORGE_CLIENT_SECRET, FORGE_MODEL_URN } = process.env;
         assert(FORGE_CLIENT_ID);
         assert(FORGE_CLIENT_SECRET);
         const auth = new AuthenticationClient(FORGE_CLIENT_ID, FORGE_CLIENT_SECRET);
         this.client = new ModelDerivativeClient(auth);
-        this.urn = 'dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6cGV0cmJyb3otZGF0YXNhbXBsZXMvYmFzaWMucnZ0';
+        this.urn = FORGE_MODEL_URN;
     });
 
     describe('formats()', function() {
