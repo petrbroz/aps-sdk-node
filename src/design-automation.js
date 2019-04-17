@@ -48,6 +48,7 @@ class DesignAutomationClient {
             response = await get(`${RootPath}${endpoint}?page=${response.paginationToken}`, headers, true, this.host);
             results = results.concat(response.data);
         }
+        return results;
     }
 
     /**
