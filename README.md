@@ -1,4 +1,4 @@
-# autodesk-forge-tools [![Build Status](https://travis-ci.org/petrbroz/autodesk-forge-tools.svg?branch=master)](https://travis-ci.org/petrbroz/autodesk-forge-tools) [![npm version](https://badge.fury.io/js/autodesk-forge-tools.svg)](https://badge.fury.io/js/autodesk-forge-tools)
+# forge-nodejs-tools [![Build Status](https://travis-ci.org/petrbroz/forge-nodejs-utils.svg?branch=master)](https://travis-ci.org/petrbroz/forge-nodejs-utils) [![npm version](https://badge.fury.io/js/forge-nodejs-utils.svg)](https://badge.fury.io/js/forge-nodejs-utils)
 
 Unofficial tools for accessing [Autodesk Forge](https://developer.autodesk.com/) APIs
 from Node.js applications, using modern language features like
@@ -10,7 +10,7 @@ or [generators](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Referenc
 ### Authentication
 
 ```js
-const { AuthenticationClient } = require('autodesk-forge-tools');
+const { AuthenticationClient } = require('forge-nodejs-utils');
 const auth = new AuthenticationClient(); // If no params, gets credentials from env. vars FORGE_CLIENT_ID and FORGE_CLIENT_SECRET
 const authentication = await auth.authenticate(['bucket:read', 'data:read']);
 console.log('2-legged Token', authentication.access_token);
@@ -19,10 +19,10 @@ console.log('2-legged Token', authentication.access_token);
 ### Data Management
 
 ```js
-const { DataManagementClient, AuthenticationClient } = require('autodesk-forge-tools');
+const { DataManagementClient, AuthenticationClient } = require('forge-nodejs-utils');
 const data = new DataManagementClient(new AuthenticationClient());
 // List buckets
-for await (const buckets of await data.buckets()) {
+for await (const buckets of data.buckets()) {
     console.log('Buckets', buckets.map(bucket => bucket.bucketKey).join(','));
 }
 // List objects in bucket
@@ -34,7 +34,7 @@ for await (const objects of data.objects('foo-bucket')) {
 ### Model Derivatives
 
 ```js
-const { ModelDerivativeClient, AuthenticationClient } = require('autodesk-forge-tools');
+const { ModelDerivativeClient, AuthenticationClient } = require('forge-nodejs-utils');
 const derivatives = new ModelDerivativeClient(new AuthenticationClient());
 const job = await derivatives.submitJob('<your-document-urn>', [{ type: 'svf', views: ['2d', '3d'] }]);
 console.log('Job', job);

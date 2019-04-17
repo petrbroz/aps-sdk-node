@@ -13,10 +13,12 @@ class AuthenticationClient {
      * from env. variables FORGE_CLIENT_ID and FORGE_CLIENT_SECRET.
      * @param {string} [client_id] Forge application client ID. 
      * @param {string} [client_secret] Forge application client secret.
+     * @param {string} [host="developer.api.autodesk.com"] Forge API host.
      */
-    constructor(client_id, client_secret) {
+    constructor(client_id, client_secret, host = 'developer.api.autodesk.com') {
         this.client_id = client_id || process.env.FORGE_CLIENT_ID;
         this.client_secret = client_secret || process.env.FORGE_CLIENT_SECRET;
+        this.host = host;
         this._cached = {}; // Dictionary of { promise: Promise<string>, expires_at: Number } objects
     }
 
@@ -52,7 +54,7 @@ class AuthenticationClient {
         };
         const cache = this._cached[key] = {
             expires_at: Number.MAX_VALUE,
-            promise: post(`${RootPath}/authenticate`, { urlencoded: params }).then((resp) => {
+            promise: post(`${RootPath}/authenticate`, { urlencoded: params }, {}, true, this.host).then((resp) => {
                 this._cached[key].expires_at = Date.now() + resp.expires_in * 1000;
                 return resp.access_token;
             })
@@ -61,6 +63,37 @@ class AuthenticationClient {
             access_token: token,
             expires_in: Math.floor((cache.expires_at - Date.now()) / 1000)
         }));
+    }
+
+    /**
+     * Generates a URL for 3-legged authentication.
+     * @param {string[]} scopes List of requested {@link https://forge.autodesk.com/en/docs/oauth/v2/developers_guide/scopes|scopes}.
+     * @param {string} redirectUri Same redirect URI as defined by the Forge app.
+     * @returns {string} Autodesk login URL.
+     */
+    getAuthorizeRedirect(scopes, redirectUri) {
+        return `https://${this.host}${RootPath}/authorize?response_type=code&client_id=${this.client_id}&redirect_uri=${redirectUri}&scope=${scopes.join(' ')}`;
+    }
+
+    /**
+     * Exchanges 3-legged authentication code for an access token
+     * ({@link https://forge.autodesk.com/en/docs/oauth/v2/reference/http/gettoken-POST|docs}).
+     * @async
+     * @param {string} code Authentication code returned from the Autodesk login process.
+     * @param {string} redirectUri Same redirect URI as defined by the Forge app.
+     * @returns {Promise<object>} Promise of 3-legged authentication object containing
+     * 'access_token', 'refresh_token', and 'expires_in' with expiration time (in seconds).
+     */
+    async getToken(code, redirectUri) {
+        const params = {
+            'client_id': this.client_id,
+            'client_secret': this.client_secret,
+            'grant_type': 'authorization_code',
+            'code': code,
+            'redirect_uri': redirectUri
+        };
+        const token = await post(`${RootPath}/gettoken`, { urlencoded: params }, {}, true, this.host);
+        return token;
     }
 }
 
