@@ -69,7 +69,7 @@ class DataManagementClient {
      * @yields {Promise<object[]>} List of bucket object containing 'bucketKey', 'createdDate', and 'policyKey'.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async *bucketsPager(page = 16) {
+    async *iterateBuckets(page = 16) {
         for await (const buckets of this._pager('/buckets', page, ReadTokenScopes)) {
             yield buckets;
         }
@@ -82,7 +82,7 @@ class DataManagementClient {
      * @returns {Promise<object[]>} List of bucket objects.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async buckets() {
+    async listBuckets() {
         return this._collect('/buckets', ReadTokenScopes);
     }
 
@@ -96,7 +96,7 @@ class DataManagementClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or when a bucket
      * with this name does not exist.
      */
-    async bucketDetails(bucket) {
+    async getBucketDetails(bucket) {
         const authentication = await this.auth.authenticate(ReadTokenScopes);
         const response = await get(`${RootPath}/buckets/${bucket}/details`, { 'Authorization': 'Bearer ' + authentication.access_token }, true, this.host);
         return response;
@@ -135,7 +135,7 @@ class DataManagementClient {
      * @yields {Promise<object[]>} List of object containing 'bucketKey', 'objectKey', 'objectId', 'sha1', 'size', and 'location'.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async *objectsPager(bucket, page = 16) {
+    async *iterateObjects(bucket, page = 16) {
         for await (const objects of this._pager(`/buckets/${bucket}/objects`, page, ReadTokenScopes)) {
             yield objects;
         }
@@ -149,7 +149,7 @@ class DataManagementClient {
      * @returns {Promise<object[]>} List of object containing 'bucketKey', 'objectKey', 'objectId', 'sha1', 'size', and 'location'.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async objects(bucket) {
+    async listObjects(bucket) {
         return this._collect(`/buckets/${bucket}/objects`, ReadTokenScopes);
     }
 
@@ -203,7 +203,7 @@ class DataManagementClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or when an object
      * with this name does not exist.
      */
-    async objectDetails(bucket, object) {
+    async getObjectDetails(bucket, object) {
         const authentication = await this.auth.authenticate(ReadTokenScopes);
         const response = await get(`${RootPath}/buckets/${bucket}/objects/${object}/details`, { 'Authorization': 'Bearer ' + authentication.access_token }, true, this.host);
         return response;

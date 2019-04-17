@@ -59,7 +59,7 @@ class DesignAutomationClient {
      * @yields {Promise<object[]>} List of engines.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async *enginesPager() {
+    async *iterateEngines() {
         for await (const engines of this._pager('/engines', ReadScopes)) {
             yield engines;
         }
@@ -72,7 +72,7 @@ class DesignAutomationClient {
      * @returns {Promise<object[]>} List of engines.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async engines() {
+    async listEngines() {
         return this._collect('/engines', ReadScopes);
     }
 
@@ -84,7 +84,7 @@ class DesignAutomationClient {
      * @yields {Promise<object[]>} List of appbundle object.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async *appBundlesPager() {
+    async *iterateAppBundles() {
         for await (const bundles of this._pager('/appbundles', ReadScopes)) {
             yield bundles;
         }
@@ -97,7 +97,7 @@ class DesignAutomationClient {
      * @returns {Promise<object[]>} List of appbundle object.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async appBundles() {
+    async listAppBundles() {
         return this._collect('/appbundles', ReadScopes);
     }
 
@@ -186,7 +186,7 @@ class DesignAutomationClient {
      * @yields {Promise<object[]>} List of activities.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async *activitiesPager() {
+    async *iterateActivities() {
         for await (const activities of this._pager('/activities', ReadScopes)) {
             yield activities;
         }
@@ -199,7 +199,7 @@ class DesignAutomationClient {
      * @returns {Promise<object[]>} List of activities.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async activities() {
+    async listActivities() {
         return this._collect('/activities', ReadScopes);
     }
 
