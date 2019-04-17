@@ -30,6 +30,22 @@ describe('DesignAutomationClient', function() {
         });
     });
 
+    describe('createAppBundle()', function() {
+        /* Don't want to create a new app bundle on every test run... */
+        // it('should create a new bundle', async function() {
+        //     const bundle = this.client.createAppBundle('ForgeNodejsUtilsTestBundle', 'This bundle is only used for testing.', 'Autodesk.Revit+2019')
+        //     assert(bundle);
+        // });
+
+        it('should fail because a bundle with this name already exists', function(done) {
+            this.client.createAppBundle('ForgeNodejsUtilsTestBundle', 'This bundle is only used for testing.', 'Autodesk.Revit+2019')
+                .catch((err) => {
+                    //console.log(err);
+                    done();
+                });
+        });
+    });
+
     describe('activities()', function() {
         it('should return a list of activities', async function() {
             for await (const activities of this.client.activities()) {

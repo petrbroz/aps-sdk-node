@@ -61,6 +61,23 @@ class DesignAutomationClient {
     }
 
     /**
+     * Creates a new app bundle
+     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-POST|docs}).
+     * @async
+     * @param {string} name Unique name of the bundle.
+     * @param {string} description Bundle description.
+     * @param {string} engine ID of one of the supported {@link engines}.
+     * @returns {Promise<object>} Details of created app bundle.
+     * @throws Error when the request fails, for example, due to insufficient rights.
+     */
+    async createAppBundle(name, description, engine) {
+        const authentication = await this.auth.authenticate(ReadScopes);
+        const config = { id: name, description: description, engine: engine };
+        const response = await post(`${RootPath}/appbundles`, { json: config }, { 'Authorization': 'Bearer ' + authentication.access_token }, true, this.host);
+        return response;
+    }
+
+    /**
      * Gets a paginated list of all activities
      * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/activities-GET|docs}).
      * @async
