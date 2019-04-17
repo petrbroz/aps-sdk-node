@@ -20,48 +20,80 @@ class DesignAutomationClient {
         this.host = host;
     }
 
+    // Iterates (asynchronously) over pages of paginated results
+    async *_pager(endpoint, scopes) {
+        let authentication = await this.auth.authenticate(scopes);
+        let headers = { 'Authorization': 'Bearer ' + authentication.access_token };
+        let response = await get(`${RootPath}${endpoint}`, headers, true, this.host);
+        yield response.data;
+
+        while (response.paginationToken) {
+            authentication = await this.auth.authenticate(ReadScopes);
+            headers['Authorization'] = 'Bearer ' + authentication.access_token;
+            response = await get(`${RootPath}${endpoint}?page=${response.paginationToken}`, headers, true, this.host);
+            yield response.data;
+        }
+    }
+
+    // Collects all pages of paginated results
+    async _collect(endpoint, scopes) {
+        let authentication = await this.auth.authenticate(scopes);
+        let headers = { 'Authorization': 'Bearer ' + authentication.access_token };
+        let response = await get(`${RootPath}${endpoint}`, headers, true, this.host);
+        let results = response.data;
+
+        while (response.paginationToken) {
+            authentication = await this.auth.authenticate(ReadScopes);
+            headers['Authorization'] = 'Bearer ' + authentication.access_token;
+            response = await get(`${RootPath}${endpoint}?page=${response.paginationToken}`, headers, true, this.host);
+            results = results.concat(response.data);
+        }
+    }
+
     /**
-     * Gets a paginated list of all engines
+     * Iterates over all engines in pages of predefined size
      * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/engines-GET|docs}).
      * @async
      * @generator
      * @yields {Promise<object[]>} List of engines.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async *engines() {
-        let authentication = await this.auth.authenticate(ReadScopes);
-        let headers = { 'Authorization': 'Bearer ' + authentication.access_token };
-        let response = await get(`${RootPath}/engines`, headers, true, this.host);
-        yield response.data;
-
-        while (response.paginationToken) {
-            authentication = await this.auth.authenticate(ReadScopes);
-            headers['Authorization'] = 'Bearer ' + authentication.access_token;
-            response = await get(`${RootPath}/engines?page=${response.paginationToken}`, headers, true, this.host);
-            yield response.data;
-        }
+    async *enginesPager() {
+        return this._pager('/engines', ReadScopes);
     }
 
     /**
-     * Gets a paginated list of all appbundles
+     * Gets a list of all engines
+     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/engines-GET|docs}).
+     * @async
+     * @returns {Promise<object[]>} List of engines.
+     * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
+     */
+    async engines() {
+        return this._collect('/engines', ReadScopes);
+    }
+
+    /**
+     * Iterates over all app bundles in pages of predefined size
      * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-GET|docs}).
      * @async
      * @generator
      * @yields {Promise<object[]>} List of appbundle object.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async *appbundles() {
-        let authentication = await this.auth.authenticate(ReadScopes);
-        let headers = { 'Authorization': 'Bearer ' + authentication.access_token };
-        let response = await get(`${RootPath}/appbundles`, headers, true, this.host);
-        yield response.data;
+    async *appBundlesPager() {
+        return this._pager('/appbundles', ReadScopes);
+    }
 
-        while (response.paginationToken) {
-            authentication = await this.auth.authenticate(ReadScopes);
-            headers['Authorization'] = 'Bearer ' + authentication.access_token;
-            response = await get(`${RootPath}/appbundles?page=${response.paginationToken}`, headers, true, this.host);
-            yield response.data;
-        }
+    /**
+     * Gets a list of all appbundles
+     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-GET|docs}).
+     * @async
+     * @returns {Promise<object[]>} List of appbundle object.
+     * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
+     */
+    async appBundles() {
+        return this._collect('/appbundles', ReadScopes);
     }
 
     /**
@@ -117,25 +149,26 @@ class DesignAutomationClient {
     }
 
     /**
-     * Gets a paginated list of all activities
+     * Iterates over all activities in pages of predefined size
      * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/activities-GET|docs}).
      * @async
      * @generator
      * @yields {Promise<object[]>} List of activities.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async *activities() {
-        let authentication = await this.auth.authenticate(ReadScopes);
-        let headers = { 'Authorization': 'Bearer ' + authentication.access_token };
-        let response = await get(`${RootPath}/activities`, headers, true, this.host);
-        yield response.data;
+    async *activitiesPager() {
+        return this._pager('/activities', ReadScopes);
+    }
 
-        while (response.paginationToken) {
-            authentication = await this.auth.authenticate(ReadScopes);
-            headers['Authorization'] = 'Bearer ' + authentication.access_token;
-            response = await get(`${RootPath}/activities?page=${response.paginationToken}`, headers, true, this.host);
-            yield response.data;
-        }
+    /**
+     * Gets a list of all activities
+     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/activities-GET|docs}).
+     * @async
+     * @returns {Promise<object[]>} List of activities.
+     * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
+     */
+    async activities() {
+        return this._collect('/activities', ReadScopes);
     }
 
     // TODO: comments

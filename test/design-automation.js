@@ -14,19 +14,15 @@ describe('DesignAutomationClient', function() {
 
     describe('engines()', function() {
         it('should return a list of engines', async function() {
-            for await (const engines of this.client.engines()) {
-                assert(engines.length > 0);
-                break; // Skip additional pages
-            }
+            const engines = await this.client.engines();
+            assert(engines.length > 0);
         });
     });
 
-    describe('appbundles()', function() {
+    describe('appBundles()', function() {
         it('should return a list of appbundles', async function() {
-            for await (const appbundles of this.client.appbundles()) {
-                assert(appbundles.length > 0);
-                break; // Skip additional pages
-            }
+            const appBundles = await this.client.appBundles();
+            assert(appBundles.length > 0);
         });
     });
 
@@ -48,10 +44,8 @@ describe('DesignAutomationClient', function() {
 
     describe('activities()', function() {
         it('should return a list of activities', async function() {
-            for await (const activities of this.client.activities()) {
-                assert(activities.length > 0);
-                break; // Skip additional pages
-            }
+            const activities = await this.client.activities();
+            assert(activities.length > 0);
         });
     });
 });

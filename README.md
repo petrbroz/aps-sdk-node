@@ -45,9 +45,8 @@ console.log('Job', job);
 ```js
 const { DesignAutomationClient, AuthenticationClient } = require('forge-nodejs-utils');
 const client = new DesignAutomationClient(new AuthenticationClient());
-for await (const appbundles of client.appbundles()) {
-    console.log('AppBundles', appbundles);
-}
+const bundles = await client.appBundles();
+console.log('App Bundles', bundles);
 ```
 
 ## Testing
