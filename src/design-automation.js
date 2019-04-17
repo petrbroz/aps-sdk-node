@@ -28,7 +28,7 @@ class DesignAutomationClient {
         yield response.data;
 
         while (response.paginationToken) {
-            authentication = await this.auth.authenticate(ReadScopes);
+            authentication = await this.auth.authenticate(scopes);
             headers['Authorization'] = 'Bearer ' + authentication.access_token;
             response = await get(`${RootPath}${endpoint}?page=${response.paginationToken}`, headers, true, this.host);
             yield response.data;
@@ -43,7 +43,7 @@ class DesignAutomationClient {
         let results = response.data;
 
         while (response.paginationToken) {
-            authentication = await this.auth.authenticate(ReadScopes);
+            authentication = await this.auth.authenticate(scopes);
             headers['Authorization'] = 'Bearer ' + authentication.access_token;
             response = await get(`${RootPath}${endpoint}?page=${response.paginationToken}`, headers, true, this.host);
             results = results.concat(response.data);
