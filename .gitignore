@@ -1,6 +1,6 @@
 node_modules/
 .vscode/
-docs/autodesk-forge-tools/
+docs/forge-nodejs-utils/
 *.log
 .DS_Store
 Thumbs.db
