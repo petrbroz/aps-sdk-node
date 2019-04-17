@@ -16,10 +16,8 @@ describe('DataManagementClient', function() {
 
     describe('buckets()', function() {
         it('should return a list of buckets', async function() {
-            for await (const buckets of this.client.buckets(8)) {
-                assert(buckets.length > 0);
-                break; // Skip additional pages
-            }
+            const buckets = await this.client.buckets();
+            assert(buckets.length > 0);
         });
     });
 
@@ -54,10 +52,8 @@ describe('DataManagementClient', function() {
 
     describe('objects()', function() {
         it('should return a list of objects', async function() {
-            for await (const objects of this.client.objects(this.bucket, 8)) {
-                assert(objects.length > 0);
-                break; // Skip additional pages
-            }
+            const objects = await this.client.objects(this.bucket);
+            assert(objects.length > 0);
         });
     });
 

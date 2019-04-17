@@ -23,10 +23,45 @@ class DataManagementClient {
         this.host = host;
     }
 
+    // Iterates (asynchronously) over pages of paginated results
+    async *_pager(endpoint, page, scopes) {
+        let authentication = await this.auth.authenticate(scopes);
+        let headers = { 'Authorization': 'Bearer ' + authentication.access_token };
+        let response = await get(`${RootPath}${endpoint}?limit=${page}`, headers, true, this.host);
+        yield response.items;
+
+        while (response.next) {
+            const next = new URL(response.next);
+            const startAt = querystring.escape(next.searchParams.get('startAt'));
+            authentication = await this.auth.authenticate(scopes);
+            headers['Authorization'] = 'Bearer ' + authentication.access_token;
+            response = await get(`${RootPath}${endpoint}?startAt=${startAt}&limit=${page}`, headers, true, this.host);
+            yield response.items;
+        }
+    }
+
+    // Collects all pages of paginated results
+    async _collect(endpoint, scopes) {
+        let authentication = await this.auth.authenticate(scopes);
+        let headers = { 'Authorization': 'Bearer ' + authentication.access_token };
+        let response = await get(`${RootPath}${endpoint}`, headers, true, this.host);
+        let results = response.items;
+
+        while (response.next) {
+            const next = new URL(response.next);
+            const startAt = querystring.escape(next.searchParams.get('startAt'));
+            authentication = await this.auth.authenticate(scopes);
+            headers['Authorization'] = 'Bearer ' + authentication.access_token;
+            response = await get(`${RootPath}${endpoint}?startAt=${startAt}`, headers, true, this.host);
+            results = results.concat(response.items);
+        }
+        return results;
+    }
+
     // Bucket APIs
 
     /**
-     * Gets a paginated list of all buckets
+     * Iterates over all buckets in pages of predefined size
      * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/buckets-GET|docs}).
      * @async
      * @generator
@@ -34,18 +69,19 @@ class DataManagementClient {
      * @yields {Promise<object[]>} List of bucket object containing 'bucketKey', 'createdDate', and 'policyKey'.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async *buckets(page = 16) {
-        let authentication = await this.auth.authenticate(ReadTokenScopes);
-        let response = await get(`${RootPath}/buckets?limit=${page}`, { 'Authorization': 'Bearer ' + authentication.access_token }, true, this.host);
-        yield response.items;
+    async *bucketsPager(page = 16) {
+        return this._pager('/buckets', page, ReadTokenScopes);
+    }
 
-        while (response.next) {
-            const next = new URL(response.next);
-            const startAt = querystring.escape(next.searchParams.get('startAt'));
-            authentication = await this.auth.authenticate(ReadTokenScopes);
-            response = await get(`${RootPath}/buckets?startAt=${startAt}&limit=${page}`, { 'Authorization': 'Bearer ' + authentication.access_token }, true, this.host);
-            yield response.items;
-        }
+    /**
+     * Lists all buckets
+     * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/buckets-GET|docs}).
+     * @async
+     * @returns {Promise<object[]>} List of bucket objects.
+     * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
+     */
+    async buckets() {
+        return this._collect('/buckets', ReadTokenScopes);
     }
 
     /**
@@ -88,7 +124,7 @@ class DataManagementClient {
     // Object APIs
 
     /**
-     * Gets a paginated list of all objects in a bucket
+     * Iterates over all objects in a bucket in pages of predefined size
      * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/buckets-:bucketKey-objects-GET|docs}).
      * @async
      * @generator
@@ -97,18 +133,20 @@ class DataManagementClient {
      * @yields {Promise<object[]>} List of object containing 'bucketKey', 'objectKey', 'objectId', 'sha1', 'size', and 'location'.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async *objects(bucket, page = 16) {
-        let authentication = await this.auth.authenticate(ReadTokenScopes);
-        let response = await get(`${RootPath}/buckets/${bucket}/objects?limit=${page}`, { 'Authorization': 'Bearer ' + authentication.access_token }, true, this.host);
-        yield response.items;
+    async *objectsPager(bucket, page = 16) {
+        return this._pager(`${RootPath}/buckets/${bucket}/objects`, page, ReadTokenScopes);
+    }
 
-        while (response.next) {
-            const next = new URL(response.next);
-            const startAt = querystring.escape(next.searchParams.get('startAt'));
-            authentication = await this.auth.authenticate(ReadTokenScopes);
-            response = await get(`${RootPath}/buckets/${bucket}/objects?startAt=${startAt}&limit=${page}`, { 'Authorization': 'Bearer ' + authentication.access_token }, true, this.host);
-            yield response.items;
-        }
+    /**
+     * Lists all objects in a bucket
+     * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/buckets-:bucketKey-objects-GET|docs}).
+     * @async
+     * @param {string} bucket Bucket key.
+     * @returns {Promise<object[]>} List of object containing 'bucketKey', 'objectKey', 'objectId', 'sha1', 'size', and 'location'.
+     * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
+     */
+    async objects(bucket) {
+        return this._collect(`${RootPath}/buckets/${bucket}/objects`, ReadTokenScopes);
     }
 
     /**
