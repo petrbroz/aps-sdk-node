@@ -115,10 +115,18 @@ class DesignAutomationClient {
         return response;
     }
 
-    // TODO: comments
-    // TODO: tests
-    // TODO: maybe consolidate createAppBundle and createAppBundleVersion into one method
-    async createAppBundleVersion(name, engine = undefined, description = undefined) {
+    /**
+     * Updates an existing app bundle, creating its new version
+     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-id-versions-POST|docs}).
+     * @async
+     * @param {string} name Unique name of the bundle.
+     * @param {string} [engine] ID of one of the supported {@link engines}.
+     * @param {string} [description] Bundle description.
+     * @returns {Promise<object>} Details of updated app bundle.
+     * @throws Error when the request fails, for example, due to insufficient rights.
+     */
+    async updateAppBundle(name, engine = undefined, description = undefined) {
+        // TODO: tests
         const authentication = await this.auth.authenticate(ReadScopes);
         const headers = { 'Authorization': 'Bearer ' + authentication.access_token };
         const config = {};
@@ -128,9 +136,18 @@ class DesignAutomationClient {
         return response;
     }
 
-    // TODO: comments
-    // TODO: tests
+    /**
+     * Creates new alias for an app bundle
+     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-id-aliases-POST/|docs}).
+     * @async
+     * @param {string} name Name of the app bundle.
+     * @param {string} alias Alias name.
+     * @param {number} version Version of app bundle to link to this alias.
+     * @returns {Promise<object>} Details of the created alias.
+     * @throws Error when the request fails, for example, due to insufficient rights.
+     */
     async createAppBundleAlias(name, alias, version) {
+        // TODO: tests
         const authentication = await this.auth.authenticate(ReadScopes);
         const headers = { 'Authorization': 'Bearer ' + authentication.access_token };
         const config = { id: alias, version: version };
@@ -138,10 +155,18 @@ class DesignAutomationClient {
         return response;
     }
 
-    // TODO: comments
-    // TODO: tests
-    // TODO: maybe consolidate createAppBundleAlias and updateAppBundleAlias into one method
+    /**
+     * Updates existing alias for an app bundle
+     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-id-aliases-aliasId-PATCH/|docs}).
+     * @async
+     * @param {string} name Name of the app bundle.
+     * @param {string} alias Alias name.
+     * @param {number} version Version of app bundle to link to this alias.
+     * @returns {Promise<object>} Details of the updated alias.
+     * @throws Error when the request fails, for example, due to insufficient rights.
+     */
     async updateAppBundleAlias(name, alias, version) {
+        // TODO: tests
         const authentication = await this.auth.authenticate(ReadScopes);
         const headers = { 'Authorization': 'Bearer ' + authentication.access_token };
         const config = { version: version };
@@ -172,63 +197,115 @@ class DesignAutomationClient {
         return this._collect('/activities', ReadScopes);
     }
 
-    // TODO: comments
-    // TODO: tests
-    // TODO: flatten the config object
-    async createActivity(config) {
+    /**
+     * Creates new Inventor activity
+     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/activities-POST/|docs}).
+     * @async
+     * @param {string} id New activity ID.
+     * @param {string} description Activity description.
+     * @param {string} bundleName App bundle name.
+     * @param {string} bundleAlias App bundle alias.
+     * @param {string} engine ID of one of the supported {@link engines}.
+     * @param {object[]} inputs List of input descriptor objects, each containing properties `name` and `description`.
+     * @param {object[]} outputs List of output descriptor objects, each containing properties `name` and `description`,
+     * and optionally `localName`.
+     * @returns {Primise<object>} Details of created activity.
+     */
+    async createInventorActivity(id, description, bundleName, bundleAlias, engine, inputs, outputs) {
+        // TODO: tests
         const authentication = await this.auth.authenticate(ReadScopes);
         const headers = { 'Authorization': 'Bearer ' + authentication.access_token };
-        // const activityConfig = {
-        //     id: ACTIVITY_ID,
-        //     commandLine: [`$(engine.path)\\InventorCoreConsole.exe /i $(args[inputFile].path) /al $(appbundles[${APPBUNDLE_NAME}].path) $(args[paramsFile].path) $(args[modulesFile].path)`],
-        //     parameters: {
-        //         inputFile: { verb: 'get', description: '*.iam file to populate with modules.' },
-        //         paramsFile: { verb: 'get', description: '*.json file describing which modules to place where.' },
-        //         modulesFile: { verb: 'get', description: '*.zip file with STEP files for all required modules.' },
-        //         outputFile: {
-        //             verb: 'post',
-        //             zip: false,
-        //             localName: 'output.zip'
-        //         }
-        //     },
-        //     engine: APPBUNDLE_ENGINE,
-        //     appbundles: [appBundle.id + '+' + appBundleAlias.id],
-        //     description: APPBUNDLE_DESCRIPTION
-        // };
+        const config = {
+            id: id,
+            commandLine: [`$(engine.path)\\InventorCoreConsole.exe /al $(appbundles[${bundleName}].path)`],
+            parameters: {},
+            description: description,
+            engine: engine,
+            appbundles: [`${this.auth.client_id}.${bundleName}+${bundleAlias}`]
+        };
+        if (inputs.length > 0) {
+            config.commandLine[0] += ' /i';
+        }
+        for (const input of inputs) {
+            config.commandLine[0] += ` $(args[${input.name}].path)`;
+            config.parameters[input.name] = { verb: 'get' };
+            if (input.description) {
+                config.parameters[input.name].description = input.description;
+            }
+        }
+        for (const output of outputs) {
+            config.parameters[output.name] = { verb: 'put' };
+            if (output.description) {
+                config.parameters[output.name].description = output.description;
+            }
+            if (output.localName) {
+                config.parameters[output.name].localName = output.localName;
+            }
+        }
         const response = await post(`${RootPath}/activities`, { json: config }, headers, true, this.host);
         return response;
     }
 
-    // TODO: comments
-    // TODO: tests
-    // TODO: maybe consolidate createActivity and createActivityVersion into one method
-    // TODO: flatten the config object
-    async createActivityVersion(id, config) {
+    /**
+     * Updates existing Inventor activity, creating its new version
+     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/activities-id-versions-POST|docs}).
+     * @async
+     * @param {string} id ID of updated activity.
+     * @param {string} description Activity description.
+     * @param {string} bundleName App bundle name.
+     * @param {string} bundleAlias App bundle alias.
+     * @param {string} engine ID of one of the supported {@link engines}.
+     * @param {object[]} inputs List of input descriptor objects, each containing properties `name` and `description`.
+     * @param {object[]} outputs List of output descriptor objects, each containing properties `name` and `description`,
+     * and optionally `localName`.
+     * @returns {Primise<object>} Details of created activity.
+     */
+    async updateInventorActivity(id, description, bundleName, bundleAlias, engine, inputs, outputs) {
+        // TODO: tests
         const authentication = await this.auth.authenticate(ReadScopes);
         const headers = { 'Authorization': 'Bearer ' + authentication.access_token };
-        // const activityConfig = {
-        //     commandLine: [`$(engine.path)\\InventorCoreConsole.exe /i $(args[inputFile].path) /al $(appbundles[${APPBUNDLE_NAME}].path) $(args[paramsFile].path) $(args[modulesFile].path)`],
-        //     parameters: {
-        //         inputFile: { verb: 'get', description: '*.iam file to populate with modules.' },
-        //         paramsFile: { verb: 'get', description: '*.json file describing which modules to place where.' },
-        //         modulesFile: { verb: 'get', description: '*.zip file with STEP files for all required modules.' },
-        //         outputFile: {
-        //             verb: 'post',
-        //             zip: false,
-        //             localName: 'output.zip'
-        //         }
-        //     },
-        //     engine: APPBUNDLE_ENGINE,
-        //     appbundles: [appBundle.id + '+' + appBundleAlias.id],
-        //     description: APPBUNDLE_DESCRIPTION
-        // };
+        const config = {
+            commandLine: [`$(engine.path)\\InventorCoreConsole.exe /al $(appbundles[${bundleName}].path)`],
+            parameters: {},
+            description: description,
+            engine: engine,
+            appbundles: [`${this.auth.client_id}.${bundleName}+${bundleAlias}`]
+        };
+        if (inputs.length > 0) {
+            config.commandLine[0] += ' /i';
+        }
+        for (const input of inputs) {
+            config.commandLine[0] += ` $(args[${input.name}].path)`;
+            config.parameters[input.name] = { verb: 'get' };
+            if (input.description) {
+                config.parameters[input.name].description = input.description;
+            }
+            
+        }
+        for (const output of outputs) {
+            config.parameters[output.name] = { verb: 'put' };
+            if (output.description) {
+                config.parameters[output.name].description = output.description;
+            }
+            if (output.localName) {
+                config.parameters[output.name].localName = output.localName;
+            }
+        }
         const response = await post(`${RootPath}/activities/${id}/versions`, { json: config }, headers, true, this.host);
         return response;
     }
 
-    // TODO: comments
-    // TODO: tests
+    /**
+     * Creates new alias for an activity
+     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/activities-id-aliases-POST|docs}).
+     * @async
+     * @param {string} id Activity ID.
+     * @param {string} alias New alias name.
+     * @param {number} version Activity version to link to this alias.
+     * @returns {Promise<object>} Details of created alias.
+     */
     async createActivityAlias(id, alias, version) {
+        // TODO: tests
         const authentication = await this.auth.authenticate(ReadScopes);
         const headers = { 'Authorization': 'Bearer ' + authentication.access_token };
         const config = { id: alias, version: version };
@@ -236,10 +313,17 @@ class DesignAutomationClient {
         return response;
     }
 
-    // TODO: comments
-    // TODO: tests
-    // TODO: maybe consolidate createActivityAlias and updateActivityAlias into one method
+    /**
+     * Updates existing alias for an activity
+     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/activities-id-aliases-aliasId-PATCH|docs}).
+     * @async
+     * @param {string} id Activity ID.
+     * @param {string} alias Activity alias.
+     * @param {number} version Activity version to link to this alias.
+     * @returns {Promise<object>} Details of updated alias.
+     */
     async updateActivityAlias(id, alias, version) {
+        // TODO: tests
         const authentication = await this.auth.authenticate(ReadScopes);
         const headers = { 'Authorization': 'Bearer ' + authentication.access_token };
         const config = { version: version };
@@ -262,26 +346,32 @@ class DesignAutomationClient {
         return response;
     }
 
-    // TODO: comments
-    // TODO: tests
-    // TODO: flatten the config object
-    async createWorkItem(config) {
+    /**
+     * Creates new work item
+     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/workitems-POST|docs}).
+     * @async
+     * @param {string} activityId Activity ID.
+     * @param {object[]} inputs List of input descriptor objects, each containing properties `name` and `url`,
+     * and optionally `localName`.
+     * @param {object[]} outputs List of output descriptor objects, each containing properties `name` and `url`.
+     */
+    async createWorkItem(activityId, inputs, outputs) {
+        // TODO: tests
         const authentication = await this.auth.authenticate(ReadScopes);
         const headers = { 'Authorization': 'Bearer ' + authentication.access_token };
-        // const config = {
-        //     activityId: FULL_ACTIVITY_ID,
-        //     arguments: {
-        //         inputFile: { url: inputSignedUrl.signedUrl, zip: false },
-        //         paramsFile: { url: paramsSignedUrl.signedUrl, zip: false },
-        //         modulesFile: {
-        //             url: modulesSignedUrl.signedUrl,
-        //             localName: 'modules'
-        //             // if localName is not provided, DA fails with "failedDownload"...
-        //             // if localName is provided, DA fails with "failedInstructions: System.UnauthorizedAccessException: Access to the path 'T:\Aces\Jobs\64fdcc52796845cd9958d91a12c73de2\modules.zip' is denied."
-        //         },
-        //         outputFile: { url: outputSignedUrl.signedUrl, verb: 'put' }
-        //     }
-        // };
+        const config = {
+            activityId: activityId,
+            arguments: {}
+        };
+        for (const input of inputs) {
+            config.arguments[input.name] = { url: input.url };
+            if (input.localName) {
+                config.arguments[input.name].localName = input.localName;
+            }
+        }
+        for (const output of outputs) {
+            config.arguments[output.name] = { verb: 'put', url: output.url }
+        }
         const response = await post(`${RootPath}/workitems`, { json: config }, headers, true, this.host);
         return response;
     }
