@@ -21,6 +21,26 @@ class DesignAutomationClient {
     }
 
     /**
+     * Gets a paginated list of all engines
+     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/engines-GET|docs}).
+     * @async
+     * @generator
+     * @yields {Promise<object[]>} List of engines.
+     * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
+     */
+    async *engines() {
+        let authentication = await this.auth.authenticate(ReadScopes);
+        let response = await get(`${RootPath}/engines`, { 'Authorization': 'Bearer ' + authentication.access_token }, true, this.host);
+        yield response.data;
+
+        while (response.paginationToken) {
+            authentication = await this.auth.authenticate(ReadScopes);
+            response = await get(`${RootPath}/engines?page=${response.paginationToken}`, { 'Authorization': 'Bearer ' + authentication.access_token }, true, this.host);
+            yield response.data;
+        }
+    }
+
+    /**
      * Gets a paginated list of all appbundles
      * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-GET|docs}).
      * @async
@@ -35,9 +55,43 @@ class DesignAutomationClient {
 
         while (response.paginationToken) {
             authentication = await this.auth.authenticate(ReadScopes);
-            response = await get(`${RootPath}/appbundles?page=${appBundles.paginationToken}`, { 'Authorization': 'Bearer ' + authentication.access_token }, true, this.host);
+            response = await get(`${RootPath}/appbundles?page=${response.paginationToken}`, { 'Authorization': 'Bearer ' + authentication.access_token }, true, this.host);
             yield response.data;
         }
+    }
+
+    /**
+     * Gets a paginated list of all activities
+     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/activities-GET|docs}).
+     * @async
+     * @generator
+     * @yields {Promise<object[]>} List of activities.
+     * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
+     */
+    async *activities() {
+        let authentication = await this.auth.authenticate(ReadScopes);
+        let response = await get(`${RootPath}/activities`, { 'Authorization': 'Bearer ' + authentication.access_token }, true, this.host);
+        yield response.data;
+
+        while (response.paginationToken) {
+            authentication = await this.auth.authenticate(ReadScopes);
+            response = await get(`${RootPath}/activities?page=${response.paginationToken}`, { 'Authorization': 'Bearer ' + authentication.access_token }, true, this.host);
+            yield response.data;
+        }
+    }
+
+    /**
+     * Gets details of a specific work item
+     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/workitems-id-GET|docs}).
+     * @async
+     * @param {string} id Work item ID.
+     * @returns {Promise<object>} Work item details.
+     * @throws Error when the request fails, for example, due to insufficient rights.
+     */
+    async workItemDetails(id) {
+        const authentication = await this.auth.authenticate(ReadScopes);
+        const response = await get(`${RootPath}/workitems/${id}`, { 'Authorization': 'Bearer ' + authentication.access_token }, true, this.host);
+        return response;
     }
 }
 
