@@ -30,12 +30,14 @@ class DesignAutomationClient {
      */
     async *engines() {
         let authentication = await this.auth.authenticate(ReadScopes);
-        let response = await get(`${RootPath}/engines`, { 'Authorization': 'Bearer ' + authentication.access_token }, true, this.host);
+        let headers = { 'Authorization': 'Bearer ' + authentication.access_token };
+        let response = await get(`${RootPath}/engines`, headers, true, this.host);
         yield response.data;
 
         while (response.paginationToken) {
             authentication = await this.auth.authenticate(ReadScopes);
-            response = await get(`${RootPath}/engines?page=${response.paginationToken}`, { 'Authorization': 'Bearer ' + authentication.access_token }, true, this.host);
+            headers['Authorization'] = 'Bearer ' + authentication.access_token;
+            response = await get(`${RootPath}/engines?page=${response.paginationToken}`, headers, true, this.host);
             yield response.data;
         }
     }
@@ -50,12 +52,14 @@ class DesignAutomationClient {
      */
     async *appbundles() {
         let authentication = await this.auth.authenticate(ReadScopes);
-        let response = await get(`${RootPath}/appbundles`, { 'Authorization': 'Bearer ' + authentication.access_token }, true, this.host);
+        let headers = { 'Authorization': 'Bearer ' + authentication.access_token };
+        let response = await get(`${RootPath}/appbundles`, headers, true, this.host);
         yield response.data;
 
         while (response.paginationToken) {
             authentication = await this.auth.authenticate(ReadScopes);
-            response = await get(`${RootPath}/appbundles?page=${response.paginationToken}`, { 'Authorization': 'Bearer ' + authentication.access_token }, true, this.host);
+            headers['Authorization'] = 'Bearer ' + authentication.access_token;
+            response = await get(`${RootPath}/appbundles?page=${response.paginationToken}`, headers, true, this.host);
             yield response.data;
         }
     }
@@ -65,15 +69,50 @@ class DesignAutomationClient {
      * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-POST|docs}).
      * @async
      * @param {string} name Unique name of the bundle.
-     * @param {string} description Bundle description.
      * @param {string} engine ID of one of the supported {@link engines}.
+     * @param {string} description Bundle description.     * 
      * @returns {Promise<object>} Details of created app bundle.
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
-    async createAppBundle(name, description, engine) {
+    async createAppBundle(name, engine, description) {
         const authentication = await this.auth.authenticate(ReadScopes);
+        const headers = { 'Authorization': 'Bearer ' + authentication.access_token };
         const config = { id: name, description: description, engine: engine };
-        const response = await post(`${RootPath}/appbundles`, { json: config }, { 'Authorization': 'Bearer ' + authentication.access_token }, true, this.host);
+        const response = await post(`${RootPath}/appbundles`, { json: config }, headers, true, this.host);
+        return response;
+    }
+
+    // TODO: comments
+    // TODO: tests
+    // TODO: maybe consolidate createAppBundle and createAppBundleVersion into one method
+    async createAppBundleVersion(name, engine = undefined, description = undefined) {
+        const authentication = await this.auth.authenticate(ReadScopes);
+        const headers = { 'Authorization': 'Bearer ' + authentication.access_token };
+        const config = {};
+        if (description) config.description = description;
+        if (engine) config.engine = engine;
+        const response = await post(`${RootPath}/appbundles/${name}/versions`, { json: config }, headers, true, this.host);
+        return response;
+    }
+
+    // TODO: comments
+    // TODO: tests
+    async createAppBundleAlias(name, alias, version) {
+        const authentication = await this.auth.authenticate(ReadScopes);
+        const headers = { 'Authorization': 'Bearer ' + authentication.access_token };
+        const config = { id: alias, version: version };
+        const response = await post(`${RootPath}/appbundles/${name}/aliases`, { json: config }, headers, true, this.host);
+        return response;
+    }
+
+    // TODO: comments
+    // TODO: tests
+    // TODO: maybe consolidate createAppBundleAlias and updateAppBundleAlias into one method
+    async updateAppBundleAlias(name, alias, version) {
+        const authentication = await this.auth.authenticate(ReadScopes);
+        const headers = { 'Authorization': 'Bearer ' + authentication.access_token };
+        const config = { version: version };
+        const response = await patch(`${RootPath}/appbundles/${name}/aliases/${alias}`, { json: config }, headers, true, this.host);
         return response;
     }
 
@@ -87,14 +126,91 @@ class DesignAutomationClient {
      */
     async *activities() {
         let authentication = await this.auth.authenticate(ReadScopes);
-        let response = await get(`${RootPath}/activities`, { 'Authorization': 'Bearer ' + authentication.access_token }, true, this.host);
+        let headers = { 'Authorization': 'Bearer ' + authentication.access_token };
+        let response = await get(`${RootPath}/activities`, headers, true, this.host);
         yield response.data;
 
         while (response.paginationToken) {
             authentication = await this.auth.authenticate(ReadScopes);
-            response = await get(`${RootPath}/activities?page=${response.paginationToken}`, { 'Authorization': 'Bearer ' + authentication.access_token }, true, this.host);
+            headers['Authorization'] = 'Bearer ' + authentication.access_token;
+            response = await get(`${RootPath}/activities?page=${response.paginationToken}`, headers, true, this.host);
             yield response.data;
         }
+    }
+
+    // TODO: comments
+    // TODO: tests
+    // TODO: flatten the config object
+    async createActivity(config) {
+        const authentication = await this.auth.authenticate(ReadScopes);
+        const headers = { 'Authorization': 'Bearer ' + authentication.access_token };
+        // const activityConfig = {
+        //     id: ACTIVITY_ID,
+        //     commandLine: [`$(engine.path)\\InventorCoreConsole.exe /i $(args[inputFile].path) /al $(appbundles[${APPBUNDLE_NAME}].path) $(args[paramsFile].path) $(args[modulesFile].path)`],
+        //     parameters: {
+        //         inputFile: { verb: 'get', description: '*.iam file to populate with modules.' },
+        //         paramsFile: { verb: 'get', description: '*.json file describing which modules to place where.' },
+        //         modulesFile: { verb: 'get', description: '*.zip file with STEP files for all required modules.' },
+        //         outputFile: {
+        //             verb: 'post',
+        //             zip: false,
+        //             localName: 'output.zip'
+        //         }
+        //     },
+        //     engine: APPBUNDLE_ENGINE,
+        //     appbundles: [appBundle.id + '+' + appBundleAlias.id],
+        //     description: APPBUNDLE_DESCRIPTION
+        // };
+        const response = await post(`${RootPath}/activities`, { json: config }, headers, true, this.host);
+        return response;
+    }
+
+    // TODO: comments
+    // TODO: tests
+    // TODO: maybe consolidate createActivity and createActivityVersion into one method
+    // TODO: flatten the config object
+    async createActivityVersion(id, config) {
+        const authentication = await this.auth.authenticate(ReadScopes);
+        const headers = { 'Authorization': 'Bearer ' + authentication.access_token };
+        // const activityConfig = {
+        //     commandLine: [`$(engine.path)\\InventorCoreConsole.exe /i $(args[inputFile].path) /al $(appbundles[${APPBUNDLE_NAME}].path) $(args[paramsFile].path) $(args[modulesFile].path)`],
+        //     parameters: {
+        //         inputFile: { verb: 'get', description: '*.iam file to populate with modules.' },
+        //         paramsFile: { verb: 'get', description: '*.json file describing which modules to place where.' },
+        //         modulesFile: { verb: 'get', description: '*.zip file with STEP files for all required modules.' },
+        //         outputFile: {
+        //             verb: 'post',
+        //             zip: false,
+        //             localName: 'output.zip'
+        //         }
+        //     },
+        //     engine: APPBUNDLE_ENGINE,
+        //     appbundles: [appBundle.id + '+' + appBundleAlias.id],
+        //     description: APPBUNDLE_DESCRIPTION
+        // };
+        const response = await post(`${RootPath}/activities/${id}/versions`, { json: config }, headers, true, this.host);
+        return response;
+    }
+
+    // TODO: comments
+    // TODO: tests
+    async createActivityAlias(id, alias, version) {
+        const authentication = await this.auth.authenticate(ReadScopes);
+        const headers = { 'Authorization': 'Bearer ' + authentication.access_token };
+        const config = { id: alias, version: version };
+        const response = await post(`${RootPath}/activities/${id}/aliases`, { json: config }, headers, true, this.host);
+        return response;
+    }
+
+    // TODO: comments
+    // TODO: tests
+    // TODO: maybe consolidate createActivityAlias and updateActivityAlias into one method
+    async updateActivityAlias(id, alias, version) {
+        const authentication = await this.auth.authenticate(ReadScopes);
+        const headers = { 'Authorization': 'Bearer ' + authentication.access_token };
+        const config = { version: version };
+        const response = await patch(`${RootPath}/activities/${id}/aliases/${alias}`, { json: config }, headers, true, this.host);
+        return response;
     }
 
     /**
@@ -107,7 +223,32 @@ class DesignAutomationClient {
      */
     async workItemDetails(id) {
         const authentication = await this.auth.authenticate(ReadScopes);
-        const response = await get(`${RootPath}/workitems/${id}`, { 'Authorization': 'Bearer ' + authentication.access_token }, true, this.host);
+        const headers = { 'Authorization': 'Bearer ' + authentication.access_token };
+        const response = await get(`${RootPath}/workitems/${id}`, headers, true, this.host);
+        return response;
+    }
+
+    // TODO: comments
+    // TODO: tests
+    // TODO: flatten the config object
+    async createWorkItem(config) {
+        const authentication = await this.auth.authenticate(ReadScopes);
+        const headers = { 'Authorization': 'Bearer ' + authentication.access_token };
+        // const config = {
+        //     activityId: FULL_ACTIVITY_ID,
+        //     arguments: {
+        //         inputFile: { url: inputSignedUrl.signedUrl, zip: false },
+        //         paramsFile: { url: paramsSignedUrl.signedUrl, zip: false },
+        //         modulesFile: {
+        //             url: modulesSignedUrl.signedUrl,
+        //             localName: 'modules'
+        //             // if localName is not provided, DA fails with "failedDownload"...
+        //             // if localName is provided, DA fails with "failedInstructions: System.UnauthorizedAccessException: Access to the path 'T:\Aces\Jobs\64fdcc52796845cd9958d91a12c73de2\modules.zip' is denied."
+        //         },
+        //         outputFile: { url: outputSignedUrl.signedUrl, verb: 'put' }
+        //     }
+        // };
+        const response = await post(`${RootPath}/workitems`, { json: config }, headers, true, this.host);
         return response;
     }
 }
