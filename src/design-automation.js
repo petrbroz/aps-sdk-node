@@ -473,6 +473,33 @@ class DesignAutomationClient {
     }
 
     /**
+     * Iterates over all activity aliases in pages of predefined size
+     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/activities-id-aliases-GET|docs}).
+     * @async
+     * @generator
+     * @param {string} name Unique name of activity.
+     * @yields {Promise<object[]>} List of activity alias objects.
+     * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
+     */
+    async *iterateActivityAliases(name) {
+        for await (const aliases of this._pager(`/activities/${name}/aliases`, ReadScopes)) {
+            yield aliases;
+        }
+    }
+
+    /**
+     * Gets a list of all activity aliases
+     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/activities-id-aliases-GET|docs}).
+     * @async
+     * @param {string} name Unique name of activity.
+     * @returns {Promise<object[]>} List of activity alias objects.
+     * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
+     */
+    async listActivityAliases(name) {
+        return this._collect(`/activities/${name}/aliases`, ReadScopes);
+    }
+
+    /**
      * Creates new alias for an activity
      * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/activities-id-aliases-POST|docs}).
      * @async
