@@ -260,13 +260,15 @@ class DesignAutomationClient {
 
     _inventorActivityConfig(activityId, description, ownerId, bundleName, bundleAlias, engine, inputs, outputs) {
         const config = {
-            id: activityId,
             commandLine: [`$(engine.path)\\InventorCoreConsole.exe /al $(appbundles[${bundleName}].path)`],
             parameters: {},
             description: description,
             engine: engine,
             appbundles: [`${ownerId}.${bundleName}+${bundleAlias}`]
         };
+        if (activityId) {
+            config.id = activityId;
+        }
         if (inputs.length > 0) {
             config.commandLine[0] += ' /i';
             for (const input of inputs) {
@@ -456,16 +458,16 @@ class DesignAutomationClient {
         let config;
         switch (engineUri.name) {
             case 'AutoCAD':
-                config = this._autocadActivityConfig(id, description, this.auth.client_id, bundleName, bundleAlias, engine, inputs, outputs, script);
+                config = this._autocadActivityConfig(null, description, this.auth.client_id, bundleName, bundleAlias, engine, inputs, outputs, script);
                 break;
             case '3dsMax':
-                config = this._3dsmaxActivityConfig(id, description, this.auth.client_id, bundleName, bundleAlias, engine, inputs, outputs, script)
+                config = this._3dsmaxActivityConfig(null, description, this.auth.client_id, bundleName, bundleAlias, engine, inputs, outputs, script)
                 break;
             case 'Revit':
-                config = this._revitActivityConfig(id, description, this.auth.client_id, bundleName, bundleAlias, engine, inputs, outputs);
+                config = this._revitActivityConfig(null, description, this.auth.client_id, bundleName, bundleAlias, engine, inputs, outputs);
                 break;
             case 'Inventor':
-                config = this._inventorActivityConfig(id, description, this.auth.client_id, bundleName, bundleAlias, engine, inputs, outputs);
+                config = this._inventorActivityConfig(null, description, this.auth.client_id, bundleName, bundleAlias, engine, inputs, outputs);
                 break;
         }
         const response = await post(`${RootPath}/activities/${id}/versions`, { json: config }, headers, true, this.host);
