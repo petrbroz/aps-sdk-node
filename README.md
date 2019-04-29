@@ -22,10 +22,10 @@ console.log('2-legged Token', authentication.access_token);
 const { DataManagementClient, AuthenticationClient } = require('forge-nodejs-utils');
 const data = new DataManagementClient(new AuthenticationClient());
 
-const buckets = await data.buckets();
+const buckets = await data.listBuckets();
 console.log('Buckets', buckets.map(bucket => bucket.bucketKey).join(','));
 
-const objects = await data.objects('foo-bucket');
+const objects = await data.listObjects('foo-bucket');
 console.log('Objects', objects.map(object => object.objectId).join(','));
 ```
 
@@ -43,8 +43,8 @@ console.log('Job', job);
 ```js
 const { DesignAutomationClient, AuthenticationClient } = require('forge-nodejs-utils');
 const client = new DesignAutomationClient(new AuthenticationClient());
-const bundles = await client.appBundles();
-console.log('App Bundles', bundles);
+const bundles = await client.listAppBundles();
+console.log('App bundles', bundles);
 ```
 
 ## Testing

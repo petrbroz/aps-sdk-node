@@ -12,17 +12,35 @@ describe('DesignAutomationClient', function() {
         this.timeout(5000); // Increase timeout to 5 seconds
     });
 
-    describe('engines()', function() {
+    describe('listEngines()', function() {
         it('should return a list of engines', async function() {
-            const engines = await this.client.engines();
+            const engines = await this.client.listEngines();
             assert(engines.length > 0);
         });
     });
 
-    describe('appBundles()', function() {
+    describe('iterateEngines()', function() {
+        it('should iterate over engines', async function() {
+            for await (const engines of this.client.iterateEngines(this.bucket)) {
+                assert(engines.length > 0);
+                break;
+            }
+        });
+    });
+
+    describe('listAppBundles()', function() {
         it('should return a list of appbundles', async function() {
-            const appBundles = await this.client.appBundles();
+            const appBundles = await this.client.listAppBundles();
             assert(appBundles.length > 0);
+        });
+    });
+
+    describe('iterateAppBundles()', function() {
+        it('should iterate over app bundles', async function() {
+            for await (const bundles of this.client.iterateAppBundles()) {
+                assert(bundles.length > 0);
+                break;
+            }
         });
     });
 
@@ -42,10 +60,19 @@ describe('DesignAutomationClient', function() {
         });
     });
 
-    describe('activities()', function() {
+    describe('listActivities()', function() {
         it('should return a list of activities', async function() {
-            const activities = await this.client.activities();
+            const activities = await this.client.listActivities();
             assert(activities.length > 0);
+        });
+    });
+
+    describe('iterateActivities()', function() {
+        it('should iterate over activities', async function() {
+            for await (const activities of this.client.iterateActivities()) {
+                assert(activities.length > 0);
+                break;
+            }
         });
     });
 });

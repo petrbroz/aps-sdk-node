@@ -3,8 +3,8 @@
 ```js
 const { DesignAutomationClient, AuthenticationClient } = require('forge-nodejs-utils');
 const client = new DesignAutomationClient(new AuthenticationClient());
-const bundles = await client.appBundles();
-console.log('App Bundles', bundles);
+const bundles = await client.listAppBundles();
+console.log('App bundles', bundles);
 ```
 
 ## Creating new app bundle

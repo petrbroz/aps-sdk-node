@@ -51,8 +51,25 @@ function put(path, data, headers = {}, json = true, host = DefaultHost) {
     return request({ method: 'PUT', host, path, headers }, data, json);
 }
 
+function patch(path, data, headers = {}, json = true, host = DefaultHost) {
+    let body = null;
+    if (data.urlencoded) {
+        body = querystring.stringify(data.urlencoded);
+        headers['Content-Type'] = 'application/x-www-form-urlencoded';
+    } else if (data.json) {
+        body = JSON.stringify(data.json);
+        headers['Content-Type'] = 'application/json';
+    } else {
+        throw new Error(`Content type not supported`);
+    }
+
+    headers['Content-Length'] = Buffer.byteLength(body);
+    return request({ method: 'PATCH', host, path, headers }, body, json);
+}
+
 module.exports = {
     get,
     post,
-    put
+    put,
+    patch
 };

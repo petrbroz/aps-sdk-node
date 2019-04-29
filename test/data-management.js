@@ -14,16 +14,25 @@ describe('DataManagementClient', function() {
         this.timeout(5000); // Increase timeout to 5 seconds
     });
 
-    describe('buckets()', function() {
+    describe('listBuckets()', function() {
         it('should return a list of buckets', async function() {
-            const buckets = await this.client.buckets();
+            const buckets = await this.client.listBuckets();
             assert(buckets.length > 0);
         });
     });
 
-    describe('bucketDetails()', function() {
+    describe('iterateBuckets()', function() {
+        it('should iterate over buckets', async function() {
+            for await (const buckets of this.client.iterateBuckets()) {
+                assert(buckets.length > 0);
+                break;
+            }
+        });
+    });
+
+    describe('getBucketDetails()', function() {
         it('should return bucket info', async function() {
-            const details = await this.client.bucketDetails(this.bucket);
+            const details = await this.client.getBucketDetails(this.bucket);
             assert(details);
             assert(details.bucketKey === this.bucket);
             assert(details.bucketOwner);
@@ -50,10 +59,19 @@ describe('DataManagementClient', function() {
         });
     });
 
-    describe('objects()', function() {
+    describe('listObjects()', function() {
         it('should return a list of objects', async function() {
-            const objects = await this.client.objects(this.bucket);
+            const objects = await this.client.listObjects(this.bucket);
             assert(objects.length > 0);
+        });
+    });
+
+    describe('iterateObjects()', function() {
+        it('should iterate over objects', async function() {
+            for await (const objects of this.client.iterateObjects(this.bucket)) {
+                assert(objects.length > 0);
+                break;
+            }
         });
     });
 
@@ -76,9 +94,9 @@ describe('DataManagementClient', function() {
         });
     });
 
-    describe('objectDetails()', function() {
+    describe('getObjectDetails()', function() {
         it('should return object info', async function() {
-            const details = await this.client.objectDetails(this.bucket, 'test-file');
+            const details = await this.client.getObjectDetails(this.bucket, 'test-file');
             assert(details.bucketKey === this.bucket);
             assert(details.objectId);
             assert(details.objectKey === 'test-file');

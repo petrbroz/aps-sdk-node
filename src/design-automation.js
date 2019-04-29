@@ -1,4 +1,4 @@
-const { get, post, put } = require('./request');
+const { get, post, put, patch } = require('./request');
 const { AuthenticationClient } = require('./authentication');
 
 const RootPath = '/da/us-east/v3';
@@ -59,8 +59,10 @@ class DesignAutomationClient {
      * @yields {Promise<object[]>} List of engines.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async *enginesPager() {
-        return this._pager('/engines', ReadScopes);
+    async *iterateEngines() {
+        for await (const engines of this._pager('/engines', ReadScopes)) {
+            yield engines;
+        }
     }
 
     /**
@@ -70,7 +72,7 @@ class DesignAutomationClient {
      * @returns {Promise<object[]>} List of engines.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async engines() {
+    async listEngines() {
         return this._collect('/engines', ReadScopes);
     }
 
@@ -79,21 +81,23 @@ class DesignAutomationClient {
      * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-GET|docs}).
      * @async
      * @generator
-     * @yields {Promise<object[]>} List of appbundle object.
+     * @yields {Promise<object[]>} List of appbundle objects.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async *appBundlesPager() {
-        return this._pager('/appbundles', ReadScopes);
+    async *iterateAppBundles() {
+        for await (const bundles of this._pager('/appbundles', ReadScopes)) {
+            yield bundles;
+        }
     }
 
     /**
      * Gets a list of all appbundles
      * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-GET|docs}).
      * @async
-     * @returns {Promise<object[]>} List of appbundle object.
+     * @returns {Promise<object[]>} List of appbundle objects.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async appBundles() {
+    async listAppBundles() {
         return this._collect('/appbundles', ReadScopes);
     }
 
@@ -134,6 +138,60 @@ class DesignAutomationClient {
         if (engine) config.engine = engine;
         const response = await post(`${RootPath}/appbundles/${name}/versions`, { json: config }, headers, true, this.host);
         return response;
+    }
+
+    /**
+     * Iterates over all app bundle aliases in pages of predefined size
+     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-id-aliases-GET|docs}).
+     * @async
+     * @generator
+     * @param {string} name Unique name of the bundle.
+     * @yields {Promise<object[]>} List of appbundle alias objects.
+     * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
+     */
+    async *iterateAppBundleAliases(name) {
+        for await (const aliases of this._pager(`/appbundles/${name}/aliases`, ReadScopes)) {
+            yield aliases;
+        }
+    }
+
+    /**
+     * Gets a list of all appbundle aliases
+     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-id-aliases-GET|docs}).
+     * @async
+     * @param {string} name Unique name of the bundle.
+     * @returns {Promise<object[]>} List of appbundle alias objects.
+     * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
+     */
+    async listAppBundleAliases(name) {
+        return this._collect(`/appbundles/${name}/aliases`, ReadScopes);
+    }
+
+    /**
+     * Iterates over all app bundle versions in pages of predefined size
+     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-id-versions-GET|docs}).
+     * @async
+     * @generator
+     * @param {string} name Unique name of the bundle.
+     * @yields {Promise<number[]>} List of appbundle version numbers.
+     * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
+     */
+    async *iterateAppBundleVersions(name) {
+        for await (const versions of this._pager(`/appbundles/${name}/versions`, ReadScopes)) {
+            yield versions;
+        }
+    }
+
+    /**
+     * Gets a list of all appbundle versions
+     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-id-versions-GET|docs}).
+     * @async
+     * @param {string} name Unique name of the bundle.
+     * @returns {Promise<number[]>} List of appbundle version numbers.
+     * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
+     */
+    async listAppBundleVersions(name) {
+        return this._collect(`/appbundles/${name}/versions`, ReadScopes);
     }
 
     /**
@@ -182,8 +240,10 @@ class DesignAutomationClient {
      * @yields {Promise<object[]>} List of activities.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async *activitiesPager() {
-        return this._pager('/activities', ReadScopes);
+    async *iterateActivities() {
+        for await (const activities of this._pager('/activities', ReadScopes)) {
+            yield activities;
+        }
     }
 
     /**
@@ -193,7 +253,7 @@ class DesignAutomationClient {
      * @returns {Promise<object[]>} List of activities.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async activities() {
+    async listActivities() {
         return this._collect('/activities', ReadScopes);
     }
 
