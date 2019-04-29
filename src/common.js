@@ -5,15 +5,15 @@ class DesignAutomationURI {
         this.owner = id.substr(0, d);
         if (p === -1) {
             this.name = id.substr(d + 1);
-            this.version = undefined;
+            this.alias = undefined;
         } else {
             this.name = id.substr(d + 1, p - d - 1);
-            this.version = id.substr(p + 1);
+            this.alias = id.substr(p + 1);
         }
     }
 
     toString() {
-        return this.owner + '.' + this.name + (this.version ? '+' + this.version : '');
+        return this.owner + '.' + this.name + (this.alias ? '+' + this.alias : '');
     }
 }
 
