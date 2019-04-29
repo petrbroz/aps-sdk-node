@@ -1,5 +1,6 @@
 const { get, post, put, patch } = require('./request');
 const { AuthenticationClient } = require('./authentication');
+const { DesignAutomationURI } = require('./common');
 
 const RootPath = '/da/us-east/v3';
 const ReadScopes = ['code:all'];
@@ -257,38 +258,120 @@ class DesignAutomationClient {
         return this._collect('/activities', ReadScopes);
     }
 
-    /**
-     * Creates new Inventor activity
-     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/activities-POST/|docs}).
-     * @async
-     * @param {string} id New activity ID.
-     * @param {string} description Activity description.
-     * @param {string} bundleName App bundle name.
-     * @param {string} bundleAlias App bundle alias.
-     * @param {string} engine ID of one of the supported {@link engines}.
-     * @param {object[]} inputs List of input descriptor objects, each containing properties `name` and `description`.
-     * @param {object[]} outputs List of output descriptor objects, each containing properties `name` and `description`,
-     * and optionally `localName`.
-     * @returns {Primise<object>} Details of created activity.
-     */
-    async createInventorActivity(id, description, bundleName, bundleAlias, engine, inputs, outputs) {
-        // TODO: tests
-        const authentication = await this.auth.authenticate(ReadScopes);
-        const headers = { 'Authorization': 'Bearer ' + authentication.access_token };
+    _inventorActivityConfig(activityId, description, ownerId, bundleName, bundleAlias, engine, inputs, outputs) {
         const config = {
-            id: id,
+            id: activityId,
             commandLine: [`$(engine.path)\\InventorCoreConsole.exe /al $(appbundles[${bundleName}].path)`],
             parameters: {},
             description: description,
             engine: engine,
-            appbundles: [`${this.auth.client_id}.${bundleName}+${bundleAlias}`]
+            appbundles: [`${ownerId}.${bundleName}+${bundleAlias}`]
         };
         if (inputs.length > 0) {
             config.commandLine[0] += ' /i';
+            for (const input of inputs) {
+                config.commandLine[0] += ` $(args[${input.name}].path)`;
+                config.parameters[input.name] = { verb: 'get' };
+                if (input.description) {
+                    config.parameters[input.name].description = input.description;
+                }
+            }
         }
-        for (const input of inputs) {
-            config.commandLine[0] += ` $(args[${input.name}].path)`;
+        for (const output of outputs) {
+            config.parameters[output.name] = { verb: 'put' };
+            if (output.description) {
+                config.parameters[output.name].description = output.description;
+            }
+            if (output.localName) {
+                config.parameters[output.name].localName = output.localName;
+            }
+        }
+        return config;
+    }
+
+    _revitActivityConfig(activityId, description, ownerId, bundleName, bundleAlias, engine, inputs, outputs) {
+        const config = {
+            id: activityId,
+            commandLine: [`$(engine.path)\\revitcoreconsole.exe /al $(appbundles[${bundleName}].path)`],
+            parameters: {},
+            description: description,
+            engine: engine,
+            appbundles: [`${ownerId}.${bundleName}+${bundleAlias}`]
+        };
+        if (inputs.length > 0) {
+            config.commandLine[0] += ' /i';
+            for (const input of inputs) {
+                config.commandLine[0] += ` $(args[${input.name}].path)`;
+                config.parameters[input.name] = { verb: 'get' };
+                if (input.description) {
+                    config.parameters[input.name].description = input.description;
+                }
+            }
+        }
+        for (const output of outputs) {
+            config.parameters[output.name] = { verb: 'put' };
+            if (output.description) {
+                config.parameters[output.name].description = output.description;
+            }
+            if (output.localName) {
+                config.parameters[output.name].localName = output.localName;
+            }
+        }
+        return config;
+    }
+
+    _autocadActivityConfig(activityId, description, ownerId, bundleName, bundleAlias, engine, inputs, outputs, script) {
+        const config = {
+            id: activityId,
+            commandLine: [`$(engine.path)\\accoreconsole.exe /al $(appbundles[${bundleName}].path)`],
+            parameters: {},
+            description: description,
+            engine: engine,
+            appbundles: [`${ownerId}.${bundleName}+${bundleAlias}`]
+        };
+        if (inputs.length > 0) {
+            config.commandLine[0] += ' /i';
+            for (const input of inputs) {
+                config.commandLine[0] += ` $(args[${input.name}].path)`;
+                config.parameters[input.name] = { verb: 'get' };
+                if (input.description) {
+                    config.parameters[input.name].description = input.description;
+                }
+            }
+        }
+        for (const output of outputs) {
+            config.parameters[output.name] = { verb: 'put' };
+            if (output.description) {
+                config.parameters[output.name].description = output.description;
+            }
+            if (output.localName) {
+                config.parameters[output.name].localName = output.localName;
+            }
+        }
+        if (script) {
+            config.settings = {
+                script: script
+            };
+            config.commandLine[0] += ' /s $(settings[script].path)';
+        }
+        return config;
+    }
+
+    _3dsmaxActivityConfig(activityId, description, ownerId, bundleName, bundleAlias, engine, inputs, outputs, script) {
+        const config = {
+            id: activityId,
+            commandLine: `$(engine.path)\\3dsmaxbatch.exe`,
+            parameters: {},
+            description: description,
+            engine: engine,
+            appbundles: [`${ownerId}.${bundleName}+${bundleAlias}`]
+        };
+        if (inputs.length > 1) {
+            throw new Error('3dsMax engine only supports single input file.')
+        } else if (inputs.length > 0) {
+            const input = inputs[0];
             config.parameters[input.name] = { verb: 'get' };
+            config.commandLine += ` -sceneFile \"$(args[${input.name}].path)\"`;
             if (input.description) {
                 config.parameters[input.name].description = input.description;
             }
@@ -302,12 +385,56 @@ class DesignAutomationClient {
                 config.parameters[output.name].localName = output.localName;
             }
         }
+        if (script) {
+            config.settings = {
+                script: script
+            };
+            config.commandLine += ' \"$(settings[script].path)\"';
+        }
+        return config;
+    }
+
+    /**
+     * Creates new activity
+     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/activities-POST|docs}).
+     * @async
+     * @param {string} id New activity ID.
+     * @param {string} description Activity description.
+     * @param {string} bundleName App bundle name.
+     * @param {string} bundleAlias App bundle alias.
+     * @param {string} engine ID of one of the supported {@link engines}.
+     * @param {object[]} inputs List of input descriptor objects, each containing properties `name` and `description`.
+     * @param {object[]} outputs List of output descriptor objects, each containing properties `name` and `description`,
+     * and optionally `localName`.
+     * @param {string} [script] Optional engine-specific script to pass to the activity.
+     * @returns {Promise<object>} Details of created activity.
+     */
+    async createActivity(id, description, bundleName, bundleAlias, engine, inputs, outputs, script) {
+        // TODO: tests
+        const authentication = await this.auth.authenticate(ReadScopes);
+        const headers = { 'Authorization': 'Bearer ' + authentication.access_token };
+        const engineUri = new DesignAutomationURI(engine);
+        let config;
+        switch (engineUri.name) {
+            case 'AutoCAD':
+                config = this._autocadActivityConfig(id, description, this.auth.client_id, bundleName, bundleAlias, engine, inputs, outputs, script);
+                break;
+            case '3dsMax':
+                config = this._3dsmaxActivityConfig(id, description, this.auth.client_id, bundleName, bundleAlias, engine, inputs, outputs, script)
+                break;
+            case 'Revit':
+                config = this._revitActivityConfig(id, description, this.auth.client_id, bundleName, bundleAlias, engine, inputs, outputs);
+                break;
+            case 'Inventor':
+                config = this._inventorActivityConfig(id, description, this.auth.client_id, bundleName, bundleAlias, engine, inputs, outputs);
+                break;
+        }
         const response = await post(`${RootPath}/activities`, { json: config }, headers, true, this.host);
         return response;
     }
 
     /**
-     * Updates existing Inventor activity, creating its new version
+     * Updates existing activity, creating its new version
      * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/activities-id-versions-POST|docs}).
      * @async
      * @param {string} id ID of updated activity.
@@ -318,38 +445,28 @@ class DesignAutomationClient {
      * @param {object[]} inputs List of input descriptor objects, each containing properties `name` and `description`.
      * @param {object[]} outputs List of output descriptor objects, each containing properties `name` and `description`,
      * and optionally `localName`.
-     * @returns {Primise<object>} Details of created activity.
+     * @param {string} [script] Optional engine-specific script to pass to the activity.
+     * @returns {Promise<object>} Details of created activity.
      */
-    async updateInventorActivity(id, description, bundleName, bundleAlias, engine, inputs, outputs) {
+    async updateActivity(id, description, bundleName, bundleAlias, engine, inputs, outputs, script) {
         // TODO: tests
         const authentication = await this.auth.authenticate(ReadScopes);
         const headers = { 'Authorization': 'Bearer ' + authentication.access_token };
-        const config = {
-            commandLine: [`$(engine.path)\\InventorCoreConsole.exe /al $(appbundles[${bundleName}].path)`],
-            parameters: {},
-            description: description,
-            engine: engine,
-            appbundles: [`${this.auth.client_id}.${bundleName}+${bundleAlias}`]
-        };
-        if (inputs.length > 0) {
-            config.commandLine[0] += ' /i';
-        }
-        for (const input of inputs) {
-            config.commandLine[0] += ` $(args[${input.name}].path)`;
-            config.parameters[input.name] = { verb: 'get' };
-            if (input.description) {
-                config.parameters[input.name].description = input.description;
-            }
-            
-        }
-        for (const output of outputs) {
-            config.parameters[output.name] = { verb: 'put' };
-            if (output.description) {
-                config.parameters[output.name].description = output.description;
-            }
-            if (output.localName) {
-                config.parameters[output.name].localName = output.localName;
-            }
+        const engineUri = new DesignAutomationURI(engine);
+        let config;
+        switch (engineUri.name) {
+            case 'AutoCAD':
+                config = this._autocadActivityConfig(id, description, this.auth.client_id, bundleName, bundleAlias, engine, inputs, outputs, script);
+                break;
+            case '3dsMax':
+                config = this._3dsmaxActivityConfig(id, description, this.auth.client_id, bundleName, bundleAlias, engine, inputs, outputs, script)
+                break;
+            case 'Revit':
+                config = this._revitActivityConfig(id, description, this.auth.client_id, bundleName, bundleAlias, engine, inputs, outputs);
+                break;
+            case 'Inventor':
+                config = this._inventorActivityConfig(id, description, this.auth.client_id, bundleName, bundleAlias, engine, inputs, outputs);
+                break;
         }
         const response = await post(`${RootPath}/activities/${id}/versions`, { json: config }, headers, true, this.host);
         return response;
