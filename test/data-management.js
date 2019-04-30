@@ -102,4 +102,12 @@ describe('DataManagementClient', function() {
             assert(details.objectKey === 'test-file');
         });
     });
+
+    describe('createSignedUrl()', function() {
+        it('should return signed URL resource info', async function() {
+            const info = await this.client.createSignedUrl(this.bucket, 'nonexistent-file');
+            assert(info);
+            assert(info.signedUrl);
+        });
+    });
 });

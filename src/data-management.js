@@ -208,6 +208,23 @@ class DataManagementClient {
         const response = await get(`${RootPath}/buckets/${bucket}/objects/${object}/details`, { 'Authorization': 'Bearer ' + authentication.access_token }, true, this.host);
         return response;
     }
+
+    /**
+     * Creates signed URL for specific object
+     * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/buckets-:bucketKey-objects-:objectName-signed-POST|docs}).
+     * @async
+     * @param {string} bucketId Bucket key.
+     * @param {string} objectId Object key.
+     * @param {string} [access="readwrite"] Signed URL access authorization.
+     * @returns {Promise<object>} Description of the new signed URL resource.
+     * @throws Error when the request fails, for example, due to insufficient rights.
+     */
+    async createSignedUrl(bucketId, objectId, access = 'readwrite') {
+        const authentication = await this.auth.authenticate(WriteTokenScopes);
+        const headers = { 'Authorization': 'Bearer ' + authentication.access_token };
+        const signed = await post(`${RootPath}/buckets/${bucketId}/objects/${objectId}/signed?access=${access}`, { json: {} }, headers, true);
+        return signed;
+    }
 }
 
 module.exports = {
