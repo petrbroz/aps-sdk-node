@@ -90,7 +90,7 @@ describe('DataManagementClient', function() {
         it('should download object content', async function() {
             const objectName = 'test-file';
             const content = await this.client.downloadObject(this.bucket, objectName);
-            assert(content.indexOf('This is a test string!') !== -1);
+            assert(content.indexOf('This is a test string!') === 0);
         });
     });
 

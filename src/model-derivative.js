@@ -1,4 +1,4 @@
-const { get, post, put } = require('./request');
+const { get, post, DefaultHost } = require('./common');
 const { AuthenticationClient } = require('./authentication');
 
 const RootPath = '/modelderivative/v2';
@@ -14,10 +14,10 @@ class ModelDerivativeClient {
     /**
      * Initializes new client with specific Forge app credentials.
      * @param {AuthenticationClient} auth Authentication client used to obtain tokens
-     * @param {string} [host="developer.api.autodesk.com"] Forge API host.
+     * @param {string} [host="https://developer.api.autodesk.com"] Forge API host.
      * for all requests.
      */
-    constructor(auth, host) {
+    constructor(auth, host = DefaultHost) {
         this.auth = auth;
         this.host = host;
     }
@@ -32,7 +32,7 @@ class ModelDerivativeClient {
      */
     async formats() {
         const authentication = await this.auth.authenticate(ReadTokenScopes);
-        const response = await get(`${RootPath}/designdata/formats`, { 'Authorization': 'Bearer ' + authentication.access_token }, true, this.host);
+        const response = await get(`${this.host}${RootPath}/designdata/formats`, { 'Authorization': 'Bearer ' + authentication.access_token });
         return response.formats;
     }
 
@@ -57,7 +57,7 @@ class ModelDerivativeClient {
                 formats: outputs
             }
         };
-        const response = await post(`${RootPath}/designdata/job`, { json: params }, { 'Authorization': 'Bearer ' + authentication.access_token }, true, this.host);
+        const response = await post(`${this.host}${RootPath}/designdata/job`, { json: params }, { 'Authorization': 'Bearer ' + authentication.access_token });
         return response;
     }
 }

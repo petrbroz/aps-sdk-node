@@ -1,6 +1,5 @@
-const { get, post, put, patch } = require('./request');
+const { get, post, patch, DefaultHost, DesignAutomationURI } = require('./common');
 const { AuthenticationClient } = require('./authentication');
-const { DesignAutomationURI } = require('./common');
 
 const RootPath = '/da/us-east/v3';
 const ReadScopes = ['code:all'];
@@ -14,9 +13,9 @@ class DesignAutomationClient {
     /**
      * Initializes new client with specific Forge app credentials.
      * @param {AuthenticationClient} auth Authentication client used to obtain tokens.
-     * @param {string} [host="developer.api.autodesk.com"] Forge API host used for all requests.
+     * @param {string} [host="https://developer.api.autodesk.com"] Forge API host used for all requests.
      */
-    constructor(auth, host) {
+    constructor(auth, host = DefaultHost) {
         this.auth = auth;
         this.host = host;
     }
@@ -25,13 +24,13 @@ class DesignAutomationClient {
     async *_pager(endpoint, scopes) {
         let authentication = await this.auth.authenticate(scopes);
         let headers = { 'Authorization': 'Bearer ' + authentication.access_token };
-        let response = await get(`${RootPath}${endpoint}`, headers, true, this.host);
+        let response = await get(`${this.host}${RootPath}${endpoint}`, headers);
         yield response.data;
 
         while (response.paginationToken) {
             authentication = await this.auth.authenticate(scopes);
             headers['Authorization'] = 'Bearer ' + authentication.access_token;
-            response = await get(`${RootPath}${endpoint}?page=${response.paginationToken}`, headers, true, this.host);
+            response = await get(`${this.host}${RootPath}${endpoint}?page=${response.paginationToken}`, headers);
             yield response.data;
         }
     }
@@ -40,13 +39,13 @@ class DesignAutomationClient {
     async _collect(endpoint, scopes) {
         let authentication = await this.auth.authenticate(scopes);
         let headers = { 'Authorization': 'Bearer ' + authentication.access_token };
-        let response = await get(`${RootPath}${endpoint}`, headers, true, this.host);
+        let response = await get(`${this.host}${RootPath}${endpoint}`, headers);
         let results = response.data;
 
         while (response.paginationToken) {
             authentication = await this.auth.authenticate(scopes);
             headers['Authorization'] = 'Bearer ' + authentication.access_token;
-            response = await get(`${RootPath}${endpoint}?page=${response.paginationToken}`, headers, true, this.host);
+            response = await get(`${this.host}${RootPath}${endpoint}?page=${response.paginationToken}`, headers);
             results = results.concat(response.data);
         }
         return results;
@@ -116,7 +115,7 @@ class DesignAutomationClient {
         const authentication = await this.auth.authenticate(ReadScopes);
         const headers = { 'Authorization': 'Bearer ' + authentication.access_token };
         const config = { id: name, description: description, engine: engine };
-        const response = await post(`${RootPath}/appbundles`, { json: config }, headers, true, this.host);
+        const response = await post(`${this.host}${RootPath}/appbundles`, { json: config }, headers);
         return response;
     }
 
@@ -137,7 +136,7 @@ class DesignAutomationClient {
         const config = {};
         if (description) config.description = description;
         if (engine) config.engine = engine;
-        const response = await post(`${RootPath}/appbundles/${name}/versions`, { json: config }, headers, true, this.host);
+        const response = await post(`${this.host}${RootPath}/appbundles/${name}/versions`, { json: config }, headers);
         return response;
     }
 
@@ -210,7 +209,7 @@ class DesignAutomationClient {
         const authentication = await this.auth.authenticate(ReadScopes);
         const headers = { 'Authorization': 'Bearer ' + authentication.access_token };
         const config = { id: alias, version: version };
-        const response = await post(`${RootPath}/appbundles/${name}/aliases`, { json: config }, headers, true, this.host);
+        const response = await post(`${this.host}${RootPath}/appbundles/${name}/aliases`, { json: config }, headers);
         return response;
     }
 
@@ -229,7 +228,7 @@ class DesignAutomationClient {
         const authentication = await this.auth.authenticate(ReadScopes);
         const headers = { 'Authorization': 'Bearer ' + authentication.access_token };
         const config = { version: version };
-        const response = await patch(`${RootPath}/appbundles/${name}/aliases/${alias}`, { json: config }, headers, true, this.host);
+        const response = await patch(`${this.host}${RootPath}/appbundles/${name}/aliases/${alias}`, { json: config }, headers);
         return response;
     }
 
@@ -431,7 +430,7 @@ class DesignAutomationClient {
                 config = this._inventorActivityConfig(id, description, this.auth.client_id, bundleName, bundleAlias, engine, inputs, outputs);
                 break;
         }
-        const response = await post(`${RootPath}/activities`, { json: config }, headers, true, this.host);
+        const response = await post(`${this.host}${RootPath}/activities`, { json: config }, headers);
         return response;
     }
 
@@ -470,7 +469,7 @@ class DesignAutomationClient {
                 config = this._inventorActivityConfig(null, description, this.auth.client_id, bundleName, bundleAlias, engine, inputs, outputs);
                 break;
         }
-        const response = await post(`${RootPath}/activities/${id}/versions`, { json: config }, headers, true, this.host);
+        const response = await post(`${this.host}${RootPath}/activities/${id}/versions`, { json: config }, headers);
         return response;
     }
 
@@ -542,7 +541,7 @@ class DesignAutomationClient {
         const authentication = await this.auth.authenticate(ReadScopes);
         const headers = { 'Authorization': 'Bearer ' + authentication.access_token };
         const config = { id: alias, version: version };
-        const response = await post(`${RootPath}/activities/${id}/aliases`, { json: config }, headers, true, this.host);
+        const response = await post(`${this.host}${RootPath}/activities/${id}/aliases`, { json: config }, headers);
         return response;
     }
 
@@ -560,7 +559,7 @@ class DesignAutomationClient {
         const authentication = await this.auth.authenticate(ReadScopes);
         const headers = { 'Authorization': 'Bearer ' + authentication.access_token };
         const config = { version: version };
-        const response = await patch(`${RootPath}/activities/${id}/aliases/${alias}`, { json: config }, headers, true, this.host);
+        const response = await patch(`${this.host}${RootPath}/activities/${id}/aliases/${alias}`, { json: config }, headers);
         return response;
     }
 
@@ -575,7 +574,7 @@ class DesignAutomationClient {
     async workItemDetails(id) {
         const authentication = await this.auth.authenticate(ReadScopes);
         const headers = { 'Authorization': 'Bearer ' + authentication.access_token };
-        const response = await get(`${RootPath}/workitems/${id}`, headers, true, this.host);
+        const response = await get(`${this.host}${RootPath}/workitems/${id}`, headers);
         return response;
     }
 
@@ -605,7 +604,7 @@ class DesignAutomationClient {
         for (const output of outputs) {
             config.arguments[output.name] = { verb: 'put', url: output.url }
         }
-        const response = await post(`${RootPath}/workitems`, { json: config }, headers, true, this.host);
+        const response = await post(`${this.host}${RootPath}/workitems`, { json: config }, headers);
         return response;
     }
 }

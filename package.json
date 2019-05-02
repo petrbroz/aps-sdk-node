@@ -27,5 +27,7 @@
     "jsdoc-template": "git+https://github.com/braintree/jsdoc-template.git",
     "mocha": "^5.2.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "node-fetch": "^2.5.0"
+  }
 }

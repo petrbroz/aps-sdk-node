@@ -1,6 +1,6 @@
 const querystring = require('querystring');
 
-const { get, post, put } = require('./request');
+const { get, post, put, DefaultHost } = require('./common');
 const { AuthenticationClient } = require('./authentication');
 
 const RootPath = '/oss/v2';
@@ -15,10 +15,10 @@ class DataManagementClient {
     /**
      * Initializes new client with specific Forge app credentials.
      * @param {AuthenticationClient} auth Authentication client used to obtain tokens
-     * @param {string} [host="developer.api.autodesk.com"] Forge API host.
+     * @param {string} [host="https://developer.api.autodesk.com"] Forge API host.
      * for data management requests.
      */
-    constructor(auth, host) {
+    constructor(auth, host = DefaultHost) {
         this.auth = auth;
         this.host = host;
     }
@@ -27,7 +27,7 @@ class DataManagementClient {
     async *_pager(endpoint, page, scopes) {
         let authentication = await this.auth.authenticate(scopes);
         let headers = { 'Authorization': 'Bearer ' + authentication.access_token };
-        let response = await get(`${RootPath}${endpoint}?limit=${page}`, headers, true, this.host);
+        let response = await get(`${this.host}${RootPath}${endpoint}?limit=${page}`, headers);
         yield response.items;
 
         while (response.next) {
@@ -35,7 +35,7 @@ class DataManagementClient {
             const startAt = querystring.escape(next.searchParams.get('startAt'));
             authentication = await this.auth.authenticate(scopes);
             headers['Authorization'] = 'Bearer ' + authentication.access_token;
-            response = await get(`${RootPath}${endpoint}?startAt=${startAt}&limit=${page}`, headers, true, this.host);
+            response = await get(`${this.host}${RootPath}${endpoint}?startAt=${startAt}&limit=${page}`, headers);
             yield response.items;
         }
     }
@@ -44,7 +44,7 @@ class DataManagementClient {
     async _collect(endpoint, scopes) {
         let authentication = await this.auth.authenticate(scopes);
         let headers = { 'Authorization': 'Bearer ' + authentication.access_token };
-        let response = await get(`${RootPath}${endpoint}`, headers, true, this.host);
+        let response = await get(`${this.host}${RootPath}${endpoint}`, headers);
         let results = response.items;
 
         while (response.next) {
@@ -52,7 +52,7 @@ class DataManagementClient {
             const startAt = querystring.escape(next.searchParams.get('startAt'));
             authentication = await this.auth.authenticate(scopes);
             headers['Authorization'] = 'Bearer ' + authentication.access_token;
-            response = await get(`${RootPath}${endpoint}?startAt=${startAt}`, headers, true, this.host);
+            response = await get(`${this.host}${RootPath}${endpoint}?startAt=${startAt}`, headers);
             results = results.concat(response.items);
         }
         return results;
@@ -98,7 +98,7 @@ class DataManagementClient {
      */
     async getBucketDetails(bucket) {
         const authentication = await this.auth.authenticate(ReadTokenScopes);
-        const response = await get(`${RootPath}/buckets/${bucket}/details`, { 'Authorization': 'Bearer ' + authentication.access_token }, true, this.host);
+        const response = await get(`${this.host}${RootPath}/buckets/${bucket}/details`, { 'Authorization': 'Bearer ' + authentication.access_token });
         return response;
     }
 
@@ -119,7 +119,7 @@ class DataManagementClient {
             bucketKey: bucket,
             policyKey: dataRetention
         };
-        const response = await post(`${RootPath}/buckets`, { json: params }, { 'Authorization': 'Bearer ' + authentication.access_token }, true, this.host);
+        const response = await post(`${this.host}${RootPath}/buckets`, { json: params }, { 'Authorization': 'Bearer ' + authentication.access_token });
         return response;
     }
 
@@ -168,10 +168,10 @@ class DataManagementClient {
     async uploadObject(bucket, name, contentType, data) {
         // TODO: add support for large file uploads using "PUT buckets/:bucketKey/objects/:objectName/resumable"
         const authentication = await this.auth.authenticate(WriteTokenScopes);
-        const response = await put(`${RootPath}/buckets/${bucket}/objects/${name}`, data, {
+        const response = await put(`${this.host}${RootPath}/buckets/${bucket}/objects/${name}`, { buffer: data }, {
             'Authorization': 'Bearer ' + authentication.access_token,
             'Content-Type': contentType
-        }, true, this.host);
+        });
         return response;
     }
 
@@ -186,9 +186,9 @@ class DataManagementClient {
      */
     async downloadObject(bucket, object) {
         const authentication = await this.auth.authenticate(ReadTokenScopes);
-        const response = await get(`${RootPath}/buckets/${bucket}/objects/${object}`, {
+        const response = await get(`${this.host}${RootPath}/buckets/${bucket}/objects/${object}`, {
             'Authorization': 'Bearer ' + authentication.access_token,
-        }, false, this.host);
+        });
         return response;
     }
 
@@ -205,7 +205,7 @@ class DataManagementClient {
      */
     async getObjectDetails(bucket, object) {
         const authentication = await this.auth.authenticate(ReadTokenScopes);
-        const response = await get(`${RootPath}/buckets/${bucket}/objects/${object}/details`, { 'Authorization': 'Bearer ' + authentication.access_token }, true, this.host);
+        const response = await get(`${this.host}${RootPath}/buckets/${bucket}/objects/${object}/details`, { 'Authorization': 'Bearer ' + authentication.access_token });
         return response;
     }
 
@@ -222,7 +222,7 @@ class DataManagementClient {
     async createSignedUrl(bucketId, objectId, access = 'readwrite') {
         const authentication = await this.auth.authenticate(WriteTokenScopes);
         const headers = { 'Authorization': 'Bearer ' + authentication.access_token };
-        const signed = await post(`${RootPath}/buckets/${bucketId}/objects/${objectId}/signed?access=${access}`, { json: {} }, headers, true);
+        const signed = await post(`${this.host}${RootPath}/buckets/${bucketId}/objects/${objectId}/signed?access=${access}`, { json: {} }, headers);
         return signed;
     }
 }
@@ -230,3 +230,4 @@ class DataManagementClient {
 module.exports = {
     DataManagementClient
 };
+

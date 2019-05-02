@@ -1,6 +1,6 @@
-const { post } = require('./request');
+const { post, DefaultHost } = require('./common');
 
-const RootPath = '/authentication/v1';
+const RootPath = `/authentication/v1`;
 
 /**
  * Client providing access to Autodesk Forge {@link https://forge.autodesk.com/en/docs/oauth/v2|authentication APIs}.
@@ -13,9 +13,9 @@ class AuthenticationClient {
      * from env. variables FORGE_CLIENT_ID and FORGE_CLIENT_SECRET.
      * @param {string} [client_id] Forge application client ID. 
      * @param {string} [client_secret] Forge application client secret.
-     * @param {string} [host="developer.api.autodesk.com"] Forge API host.
+     * @param {string} [host="https://developer.api.autodesk.com"] Forge API host.
      */
-    constructor(client_id, client_secret, host = 'developer.api.autodesk.com') {
+    constructor(client_id, client_secret, host = DefaultHost) {
         this.client_id = client_id || process.env.FORGE_CLIENT_ID;
         this.client_secret = client_secret || process.env.FORGE_CLIENT_SECRET;
         this.host = host;
@@ -54,7 +54,7 @@ class AuthenticationClient {
         };
         const cache = this._cached[key] = {
             expires_at: Number.MAX_VALUE,
-            promise: post(`${RootPath}/authenticate`, { urlencoded: params }, {}, true, this.host).then((resp) => {
+            promise: post(`${this.host}${RootPath}/authenticate`, { urlencoded: params }).then((resp) => {
                 this._cached[key].expires_at = Date.now() + resp.expires_in * 1000;
                 return resp.access_token;
             })
@@ -72,7 +72,7 @@ class AuthenticationClient {
      * @returns {string} Autodesk login URL.
      */
     getAuthorizeRedirect(scopes, redirectUri) {
-        return `https://${this.host}${RootPath}/authorize?response_type=code&client_id=${this.client_id}&redirect_uri=${redirectUri}&scope=${scopes.join(' ')}`;
+        return `${this.host}${RootPath}/authorize?response_type=code&client_id=${this.client_id}&redirect_uri=${redirectUri}&scope=${scopes.join(' ')}`;
     }
 
     /**
@@ -92,7 +92,7 @@ class AuthenticationClient {
             'code': code,
             'redirect_uri': redirectUri
         };
-        const token = await post(`${RootPath}/gettoken`, { urlencoded: params }, {}, true, this.host);
+        const token = await post(`${this.host}${RootPath}/gettoken`, { urlencoded: params });
         return token;
     }
 }
