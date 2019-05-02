@@ -60,6 +60,64 @@ class ModelDerivativeClient {
         const response = await post(`${this.host}${RootPath}/designdata/job`, { json: params }, { 'Authorization': 'Bearer ' + authentication.access_token });
         return response;
     }
+
+    /**
+     * Retrieves manifest of a derivative.
+     * ({@link https://forge.autodesk.com/en/docs/model-derivative/v2/reference/http/urn-manifest-GET|docs}).
+     * @async
+     * @param {string} urn Document derivative URN.
+     * @returns {Promise<object>} Document derivative manifest.
+     * @throws Error when the request fails, for example, due to insufficient rights.
+     */
+    async getManifest(urn) {
+        const authentication = await this.auth.authenticate(ReadTokenScopes);
+        const response = await get(`${this.host}${RootPath}/designdata/${urn}/manifest`, { 'Authorization': 'Bearer ' + authentication.access_token });
+        return response;
+    }
+
+    /**
+     * Retrieves metadata of a derivative.
+     * ({@link https://forge.autodesk.com/en/docs/model-derivative/v2/reference/http/urn-metadata-GET|docs}).
+     * @async
+     * @param {string} urn Document derivative URN.
+     * @returns {Promise<object>} Document derivative metadata.
+     * @throws Error when the request fails, for example, due to insufficient rights.
+     */
+    async getMetadata(urn) {
+        const authentication = await this.auth.authenticate(ReadTokenScopes);
+        const response = await get(`${this.host}${RootPath}/designdata/${urn}/metadata`, { 'Authorization': 'Bearer ' + authentication.access_token });
+        return response;
+    }
+
+    /**
+     * Retrieves object tree of a specific viewable.
+     * ({@link https://forge.autodesk.com/en/docs/model-derivative/v2/reference/http/urn-metadata-guid-GET|docs}).
+     * @async
+     * @param {string} urn Document derivative URN.
+     * @param {string} guid Viewable GUID.
+     * @returns {Promise<object>} Viewable object tree.
+     * @throws Error when the request fails, for example, due to insufficient rights.
+     */
+    async getViewableTree(urn, guid) {
+        const authentication = await this.auth.authenticate(ReadTokenScopes);
+        const response = await get(`${this.host}${RootPath}/designdata/${urn}/metadata/${guid}`, { 'Authorization': 'Bearer ' + authentication.access_token });
+        return response;
+    }
+
+    /**
+     * Retrieves properties of a specific viewable.
+     * ({@link https://forge.autodesk.com/en/docs/model-derivative/v2/reference/http/urn-metadata-guid-properties-GET|docs}).
+     * @async
+     * @param {string} urn Document derivative URN.
+     * @param {string} guid Viewable GUID.
+     * @returns {Promise<object>} Viewable properties.
+     * @throws Error when the request fails, for example, due to insufficient rights.
+     */
+    async getViewableProperties(urn, guid) {
+        const authentication = await this.auth.authenticate(ReadTokenScopes);
+        const response = await get(`${this.host}${RootPath}/designdata/${urn}/metadata/${guid}/properties`, { 'Authorization': 'Bearer ' + authentication.access_token });
+        return response;
+    }
 }
 
 module.exports = {
