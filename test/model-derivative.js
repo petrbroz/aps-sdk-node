@@ -26,4 +26,18 @@ describe('ModelDerivativeClient', function() {
             assert(job.result);
         });
     });
+
+    describe('getManifest()', function() {
+        it('should return derivative manifest', async function() {
+            const manifest = await this.client.getManifest(this.urn);
+            assert(manifest);
+        });
+    });
+
+    describe('getMetadata()', function() {
+        it('should return derivative metadata', async function() {
+            const metadata = await this.client.getMetadata(this.urn);
+            assert(metadata);
+        });
+    });
 });
