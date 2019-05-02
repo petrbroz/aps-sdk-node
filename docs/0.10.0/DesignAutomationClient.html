@@ -1,0 +1,4779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>
+      DesignAutomationClient - Documentation
+  </title>
+
+  <link href="https://www.braintreepayments.com/images/favicon-ccda0b14.png" rel="icon" type="image/png">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.7.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+
+  <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+  <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+  
+
+  
+
+  <!-- start Mixpanel -->
+  <script type="text/javascript">(function(e,a){if(!a.__SV){var b=window;try{var c,l,i,j=b.location,g=j.hash;c=function(a,b){return(l=a.match(RegExp(b+"=([^&]*)")))?l[1]:null};g&&c(g,"state")&&(i=JSON.parse(decodeURIComponent(c(g,"state"))),"mpeditor"===i.action&&(b.sessionStorage.setItem("_mpcehash",g),history.replaceState(i.desiredHash||"",e.title,j.pathname+j.search)))}catch(m){}var k,h;window.mixpanel=a;a._i=[];a.init=function(b,c,f){function e(b,a){var c=a.split(".");2==c.length&&(b=b[c[0]],a=c[1]);b[a]=function(){b.push([a].concat(Array.prototype.slice.call(arguments,
+  0)))}}var d=a;"undefined"!==typeof f?d=a[f]=[]:f="mixpanel";d.people=d.people||[];d.toString=function(b){var a="mixpanel";"mixpanel"!==f&&(a+="."+f);b||(a+=" (stub)");return a};d.people.toString=function(){return d.toString(1)+".people (stub)"};k="disable time_event track track_pageview track_links track_forms register register_once alias unregister identify name_tag set_config reset people.set people.set_once people.increment people.append people.union people.track_charge people.clear_charges people.delete_user".split(" ");
+  for(h=0;h<k.length;h++)e(d,k[h]);a._i.push([b,c,f])};a.__SV=1.2;b=e.createElement("script");b.type="text/javascript";b.async=!0;b.src="undefined"!==typeof MIXPANEL_CUSTOM_LIB_URL?MIXPANEL_CUSTOM_LIB_URL:"file:"===e.location.protocol&&"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js".match(/^\/\//)?"https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js":"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js";c=e.getElementsByTagName("script")[0];c.parentNode.insertBefore(b,c)}})(document,window.mixpanel||[]);
+  mixpanel.init("1919205b2da72e4da3b9b6639b444d59");</script>
+  <!-- end Mixpanel -->
+</head>
+
+<body>
+  <svg style="display: none;">
+    <defs>
+      <symbol id="linkIcon" fill="#706d77" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0 0h24v24H0z" fill="none"/>
+          <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+  <label for="nav-trigger" class="navicon-button x">
+    <div class="navicon"></div>
+  </label>
+
+  <label for="nav-trigger" class="overlay"></label>
+
+  <div class="top-nav-wrapper">
+    <ul>
+      <li >
+        <a href="index.html">
+          
+            <svg fill="#6D6D6D" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+              <path d="M0 0h24v24H0z" fill="none"/>
+            </svg>
+          
+          
+        </a>
+      </li>
+
+      
+
+    </ul>
+  </div>
+
+  <nav>
+    <h3 class="reference-title">
+      Autodesk Forge Tools
+    </h3>
+
+    
+
+    <h3>Classes</h3><ul><li id="AuthenticationClient-nav"><a href="AuthenticationClient.html">AuthenticationClient</a><ul class='methods'><li data-type="method" id="AuthenticationClient-authenticate-nav"><a href="AuthenticationClient.html#authenticate">authenticate</a></li><li data-type="method" id="AuthenticationClient-getAuthorizeRedirect-nav"><a href="AuthenticationClient.html#getAuthorizeRedirect">getAuthorizeRedirect</a></li><li data-type="method" id="AuthenticationClient-getToken-nav"><a href="AuthenticationClient.html#getToken">getToken</a></li></ul></li><li id="BIM360Client-nav"><a href="BIM360Client.html">BIM360Client</a><ul class='methods'><li data-type="method" id="BIM360Client-contents-nav"><a href="BIM360Client.html#contents">contents</a></li><li data-type="method" id="BIM360Client-folders-nav"><a href="BIM360Client.html#folders">folders</a></li><li data-type="method" id="BIM360Client-hub-nav"><a href="BIM360Client.html#hub">hub</a></li><li data-type="method" id="BIM360Client-hubs-nav"><a href="BIM360Client.html#hubs">hubs</a></li><li data-type="method" id="BIM360Client-projects-nav"><a href="BIM360Client.html#projects">projects</a></li><li data-type="method" id="BIM360Client-tip-nav"><a href="BIM360Client.html#tip">tip</a></li><li data-type="method" id="BIM360Client-versions-nav"><a href="BIM360Client.html#versions">versions</a></li></ul></li><li id="DataManagementClient-nav"><a href="DataManagementClient.html">DataManagementClient</a><ul class='methods'><li data-type="method" id="DataManagementClient-createBucket-nav"><a href="DataManagementClient.html#createBucket">createBucket</a></li><li data-type="method" id="DataManagementClient-createSignedUrl-nav"><a href="DataManagementClient.html#createSignedUrl">createSignedUrl</a></li><li data-type="method" id="DataManagementClient-downloadObject-nav"><a href="DataManagementClient.html#downloadObject">downloadObject</a></li><li data-type="method" id="DataManagementClient-getBucketDetails-nav"><a href="DataManagementClient.html#getBucketDetails">getBucketDetails</a></li><li data-type="method" id="DataManagementClient-getObjectDetails-nav"><a href="DataManagementClient.html#getObjectDetails">getObjectDetails</a></li><li data-type="method" id="DataManagementClient-iterateBuckets-nav"><a href="DataManagementClient.html#iterateBuckets">iterateBuckets</a></li><li data-type="method" id="DataManagementClient-iterateObjects-nav"><a href="DataManagementClient.html#iterateObjects">iterateObjects</a></li><li data-type="method" id="DataManagementClient-listBuckets-nav"><a href="DataManagementClient.html#listBuckets">listBuckets</a></li><li data-type="method" id="DataManagementClient-listObjects-nav"><a href="DataManagementClient.html#listObjects">listObjects</a></li><li data-type="method" id="DataManagementClient-uploadObject-nav"><a href="DataManagementClient.html#uploadObject">uploadObject</a></li></ul></li><li id="DesignAutomationClient-nav"><a href="DesignAutomationClient.html">DesignAutomationClient</a><ul class='methods'><li data-type="method" id="DesignAutomationClient-createActivity-nav"><a href="DesignAutomationClient.html#createActivity">createActivity</a></li><li data-type="method" id="DesignAutomationClient-createActivityAlias-nav"><a href="DesignAutomationClient.html#createActivityAlias">createActivityAlias</a></li><li data-type="method" id="DesignAutomationClient-createAppBundle-nav"><a href="DesignAutomationClient.html#createAppBundle">createAppBundle</a></li><li data-type="method" id="DesignAutomationClient-createAppBundleAlias-nav"><a href="DesignAutomationClient.html#createAppBundleAlias">createAppBundleAlias</a></li><li data-type="method" id="DesignAutomationClient-createWorkItem-nav"><a href="DesignAutomationClient.html#createWorkItem">createWorkItem</a></li><li data-type="method" id="DesignAutomationClient-iterateActivities-nav"><a href="DesignAutomationClient.html#iterateActivities">iterateActivities</a></li><li data-type="method" id="DesignAutomationClient-iterateActivityAliases-nav"><a href="DesignAutomationClient.html#iterateActivityAliases">iterateActivityAliases</a></li><li data-type="method" id="DesignAutomationClient-iterateActivityVersions-nav"><a href="DesignAutomationClient.html#iterateActivityVersions">iterateActivityVersions</a></li><li data-type="method" id="DesignAutomationClient-iterateAppBundleAliases-nav"><a href="DesignAutomationClient.html#iterateAppBundleAliases">iterateAppBundleAliases</a></li><li data-type="method" id="DesignAutomationClient-iterateAppBundles-nav"><a href="DesignAutomationClient.html#iterateAppBundles">iterateAppBundles</a></li><li data-type="method" id="DesignAutomationClient-iterateAppBundleVersions-nav"><a href="DesignAutomationClient.html#iterateAppBundleVersions">iterateAppBundleVersions</a></li><li data-type="method" id="DesignAutomationClient-iterateEngines-nav"><a href="DesignAutomationClient.html#iterateEngines">iterateEngines</a></li><li data-type="method" id="DesignAutomationClient-listActivities-nav"><a href="DesignAutomationClient.html#listActivities">listActivities</a></li><li data-type="method" id="DesignAutomationClient-listActivityAliases-nav"><a href="DesignAutomationClient.html#listActivityAliases">listActivityAliases</a></li><li data-type="method" id="DesignAutomationClient-listActivityVersions-nav"><a href="DesignAutomationClient.html#listActivityVersions">listActivityVersions</a></li><li data-type="method" id="DesignAutomationClient-listAppBundleAliases-nav"><a href="DesignAutomationClient.html#listAppBundleAliases">listAppBundleAliases</a></li><li data-type="method" id="DesignAutomationClient-listAppBundles-nav"><a href="DesignAutomationClient.html#listAppBundles">listAppBundles</a></li><li data-type="method" id="DesignAutomationClient-listAppBundleVersions-nav"><a href="DesignAutomationClient.html#listAppBundleVersions">listAppBundleVersions</a></li><li data-type="method" id="DesignAutomationClient-listEngines-nav"><a href="DesignAutomationClient.html#listEngines">listEngines</a></li><li data-type="method" id="DesignAutomationClient-updateActivity-nav"><a href="DesignAutomationClient.html#updateActivity">updateActivity</a></li><li data-type="method" id="DesignAutomationClient-updateActivityAlias-nav"><a href="DesignAutomationClient.html#updateActivityAlias">updateActivityAlias</a></li><li data-type="method" id="DesignAutomationClient-updateAppBundle-nav"><a href="DesignAutomationClient.html#updateAppBundle">updateAppBundle</a></li><li data-type="method" id="DesignAutomationClient-updateAppBundleAlias-nav"><a href="DesignAutomationClient.html#updateAppBundleAlias">updateAppBundleAlias</a></li><li data-type="method" id="DesignAutomationClient-workItemDetails-nav"><a href="DesignAutomationClient.html#workItemDetails">workItemDetails</a></li></ul></li><li id="ModelDerivativeClient-nav"><a href="ModelDerivativeClient.html">ModelDerivativeClient</a><ul class='methods'><li data-type="method" id="ModelDerivativeClient-formats-nav"><a href="ModelDerivativeClient.html#formats">formats</a></li><li data-type="method" id="ModelDerivativeClient-getManifest-nav"><a href="ModelDerivativeClient.html#getManifest">getManifest</a></li><li data-type="method" id="ModelDerivativeClient-getMetadata-nav"><a href="ModelDerivativeClient.html#getMetadata">getMetadata</a></li><li data-type="method" id="ModelDerivativeClient-getViewableProperties-nav"><a href="ModelDerivativeClient.html#getViewableProperties">getViewableProperties</a></li><li data-type="method" id="ModelDerivativeClient-getViewableTree-nav"><a href="ModelDerivativeClient.html#getViewableTree">getViewableTree</a></li><li data-type="method" id="ModelDerivativeClient-submitJob-nav"><a href="ModelDerivativeClient.html#submitJob">submitJob</a></li></ul></li></ul>
+  </nav>
+
+  <div id="main">
+    
+      <h1 class="page-title">
+        DesignAutomationClient
+      </h1>
+    
+
+    
+
+<section>
+  <header>
+    
+      <h2>
+        
+        DesignAutomationClient
+        
+      </h2>
+
+      
+        <div class="class-description">
+          <p>Client providing access to Autodesk Forge
+<a href="https://forge.autodesk.com/en/docs/design-automation/v3">design automation APIs</a>.</p>
+        </div>
+      
+    
+  </header>
+
+  <article>
+    <div class="container-overview">
+      
+        
+
+
+  
+    <h2>Constructor</h2>
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#DesignAutomationClient">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="DesignAutomationClient">
+      <span class="type-signature"></span>new DesignAutomationClient<span class="signature">(auth, host<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Initializes new client with specific Forge app credentials.</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+        <th>Attributes</th>
+      
+
+      
+        <th>Default</th>
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>auth</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      <a href="AuthenticationClient.html">AuthenticationClient</a>
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+          <td class="attributes">
+            
+
+            
+
+            
+          </td>
+        
+
+        
+          <td class="default">
+            
+          </td>
+        
+
+        <td class="description last">
+          <p>Authentication client used to obtain tokens.</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>host</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+          <td class="attributes">
+            
+              &lt;optional><br>
+            
+
+            
+
+            
+          </td>
+        
+
+        
+          <td class="default">
+            
+              "https://developer.api.autodesk.com"
+            
+          </td>
+        
+
+        <td class="description last">
+          <p>Forge API host used for all requests.</p>
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line12">line 12</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+    <dt class="tag-tutorial">Tutorials:</dt>
+    <dd class="tag-tutorial">
+      <ul>
+        
+          <li>
+            <a href="tutorial-design-automation.html">Design Automation API</a>
+          </li>
+        
+      </ul>
+    </dd>
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+    </div>
+
+    
+
+    
+
+    
+
+     
+
+    
+
+    
+
+    
+      <h3 class="subsection-title">Methods</h3>
+
+      
+        
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#createActivity">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="createActivity">
+      <span class="type-signature">(async) </span>createActivity<span class="signature">(id, description, bundleName, bundleAlias, engine, inputs, outputs, script<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise.&lt;object>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Creates new activity
+(<a href="https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/activities-POST">docs</a>).</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+        <th>Attributes</th>
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>id</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+          <td class="attributes">
+            
+
+            
+
+            
+          </td>
+        
+
+        
+
+        <td class="description last">
+          <p>New activity ID.</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>description</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+          <td class="attributes">
+            
+
+            
+
+            
+          </td>
+        
+
+        
+
+        <td class="description last">
+          <p>Activity description.</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>bundleName</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+          <td class="attributes">
+            
+
+            
+
+            
+          </td>
+        
+
+        
+
+        <td class="description last">
+          <p>App bundle name.</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>bundleAlias</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+          <td class="attributes">
+            
+
+            
+
+            
+          </td>
+        
+
+        
+
+        <td class="description last">
+          <p>App bundle alias.</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>engine</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+          <td class="attributes">
+            
+
+            
+
+            
+          </td>
+        
+
+        
+
+        <td class="description last">
+          <p>ID of one of the supported engines.</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>inputs</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      Array.&lt;object>
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+          <td class="attributes">
+            
+
+            
+
+            
+          </td>
+        
+
+        
+
+        <td class="description last">
+          <p>List of input descriptor objects, each containing properties <code>name</code> and <code>description</code>.</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>outputs</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      Array.&lt;object>
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+          <td class="attributes">
+            
+
+            
+
+            
+          </td>
+        
+
+        
+
+        <td class="description last">
+          <p>List of output descriptor objects, each containing properties <code>name</code> and <code>description</code>,
+and optionally <code>localName</code>.</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>script</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+          <td class="attributes">
+            
+              &lt;optional><br>
+            
+
+            
+
+            
+          </td>
+        
+
+        
+
+        <td class="description last">
+          <p>Optional engine-specific script to pass to the activity.</p>
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line413">line 413</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+        
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#createActivityAlias">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="createActivityAlias">
+      <span class="type-signature">(async) </span>createActivityAlias<span class="signature">(id, alias, version)</span><span class="type-signature"> &rarr; {Promise.&lt;object>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Creates new alias for an activity
+(<a href="https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/activities-id-aliases-POST">docs</a>).</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>id</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          <p>Activity ID.</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>alias</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          <p>New alias name.</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>version</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      number
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          <p>Activity version to link to this alias.</p>
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line539">line 539</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+        
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#createAppBundle">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="createAppBundle">
+      <span class="type-signature">(async) </span>createAppBundle<span class="signature">(name, engine, description)</span><span class="type-signature"> &rarr; {Promise.&lt;object>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Creates a new app bundle
+(<a href="https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-POST">docs</a>).</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>name</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          <p>Unique name of the bundle.</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>engine</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          <p>ID of one of the supported engines.</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>description</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          <p>Bundle description.     *</p>
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line114">line 114</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+  <h5>Throws:</h5>
+  
+      
+
+  <div class="param-desc">
+    
+      <p>Error when the request fails, for example, due to insufficient rights.</p>
+    
+  </div>
+
+
+    
+
+
+
+      
+        
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#createAppBundleAlias">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="createAppBundleAlias">
+      <span class="type-signature">(async) </span>createAppBundleAlias<span class="signature">(name, alias, version)</span><span class="type-signature"> &rarr; {Promise.&lt;object>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Creates new alias for an app bundle
+(<a href="https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-id-aliases-POST/">docs</a>).</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>name</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          <p>Name of the app bundle.</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>alias</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          <p>Alias name.</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>version</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      number
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          <p>Version of app bundle to link to this alias.</p>
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line207">line 207</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+  <h5>Throws:</h5>
+  
+      
+
+  <div class="param-desc">
+    
+      <p>Error when the request fails, for example, due to insufficient rights.</p>
+    
+  </div>
+
+
+    
+
+
+
+      
+        
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#createWorkItem">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="createWorkItem">
+      <span class="type-signature">(async) </span>createWorkItem<span class="signature">(activityId, inputs, outputs)</span><span class="type-signature"></span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Creates new work item
+(<a href="https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/workitems-POST">docs</a>).</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>activityId</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          <p>Activity ID.</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>inputs</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      Array.&lt;object>
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          <p>List of input descriptor objects, each containing properties <code>name</code> and <code>url</code>,
+and optionally <code>localName</code>.</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>outputs</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      Array.&lt;object>
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          <p>List of output descriptor objects, each containing properties <code>name</code> and <code>url</code>.</p>
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line590">line 590</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+        
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#iterateActivities">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="iterateActivities">
+      <span class="type-signature">(async, generator) </span>iterateActivities<span class="signature">()</span><span class="type-signature"></span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Iterates over all activities in pages of predefined size
+(<a href="https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/activities-GET">docs</a>).</p>
+  </div>
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line243">line 243</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+  <h5>Throws:</h5>
+  
+      
+
+  <div class="param-desc">
+    
+      <p>Error when the request fails, for example, due to insufficient rights, or incorrect scopes.</p>
+    
+  </div>
+
+
+    
+
+
+
+      
+        
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#iterateActivityAliases">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="iterateActivityAliases">
+      <span class="type-signature">(async, generator) </span>iterateActivityAliases<span class="signature">(name)</span><span class="type-signature"></span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Iterates over all activity aliases in pages of predefined size
+(<a href="https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/activities-id-aliases-GET">docs</a>).</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>name</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          <p>Unique name of activity.</p>
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line485">line 485</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+  <h5>Throws:</h5>
+  
+      
+
+  <div class="param-desc">
+    
+      <p>Error when the request fails, for example, due to insufficient rights, or incorrect scopes.</p>
+    
+  </div>
+
+
+    
+
+
+
+      
+        
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#iterateActivityVersions">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="iterateActivityVersions">
+      <span class="type-signature">(async, generator) </span>iterateActivityVersions<span class="signature">(name)</span><span class="type-signature"></span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Iterates over all activity versions in pages of predefined size
+(<a href="https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/activities-id-versions-GET">docs</a>).</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>name</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          <p>Unique name of activity.</p>
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line512">line 512</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+  <h5>Throws:</h5>
+  
+      
+
+  <div class="param-desc">
+    
+      <p>Error when the request fails, for example, due to insufficient rights, or incorrect scopes.</p>
+    
+  </div>
+
+
+    
+
+
+
+      
+        
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#iterateAppBundleAliases">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="iterateAppBundleAliases">
+      <span class="type-signature">(async, generator) </span>iterateAppBundleAliases<span class="signature">(name)</span><span class="type-signature"></span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Iterates over all app bundle aliases in pages of predefined size
+(<a href="https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-id-aliases-GET">docs</a>).</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>name</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          <p>Unique name of the bundle.</p>
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line152">line 152</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+  <h5>Throws:</h5>
+  
+      
+
+  <div class="param-desc">
+    
+      <p>Error when the request fails, for example, due to insufficient rights, or incorrect scopes.</p>
+    
+  </div>
+
+
+    
+
+
+
+      
+        
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#iterateAppBundles">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="iterateAppBundles">
+      <span class="type-signature">(async, generator) </span>iterateAppBundles<span class="signature">()</span><span class="type-signature"></span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Iterates over all app bundles in pages of predefined size
+(<a href="https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-GET">docs</a>).</p>
+  </div>
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line87">line 87</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+  <h5>Throws:</h5>
+  
+      
+
+  <div class="param-desc">
+    
+      <p>Error when the request fails, for example, due to insufficient rights, or incorrect scopes.</p>
+    
+  </div>
+
+
+    
+
+
+
+      
+        
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#iterateAppBundleVersions">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="iterateAppBundleVersions">
+      <span class="type-signature">(async, generator) </span>iterateAppBundleVersions<span class="signature">(name)</span><span class="type-signature"></span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Iterates over all app bundle versions in pages of predefined size
+(<a href="https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-id-versions-GET">docs</a>).</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>name</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          <p>Unique name of the bundle.</p>
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line179">line 179</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+  <h5>Throws:</h5>
+  
+      
+
+  <div class="param-desc">
+    
+      <p>Error when the request fails, for example, due to insufficient rights, or incorrect scopes.</p>
+    
+  </div>
+
+
+    
+
+
+
+      
+        
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#iterateEngines">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="iterateEngines">
+      <span class="type-signature">(async, generator) </span>iterateEngines<span class="signature">()</span><span class="type-signature"></span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Iterates over all engines in pages of predefined size
+(<a href="https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/engines-GET">docs</a>).</p>
+  </div>
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line62">line 62</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+  <h5>Throws:</h5>
+  
+      
+
+  <div class="param-desc">
+    
+      <p>Error when the request fails, for example, due to insufficient rights, or incorrect scopes.</p>
+    
+  </div>
+
+
+    
+
+
+
+      
+        
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#listActivities">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="listActivities">
+      <span class="type-signature">(async) </span>listActivities<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;Array.&lt;object>>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Gets a list of all activities
+(<a href="https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/activities-GET">docs</a>).</p>
+  </div>
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line256">line 256</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+  <h5>Throws:</h5>
+  
+      
+
+  <div class="param-desc">
+    
+      <p>Error when the request fails, for example, due to insufficient rights, or incorrect scopes.</p>
+    
+  </div>
+
+
+    
+
+
+
+      
+        
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#listActivityAliases">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="listActivityAliases">
+      <span class="type-signature">(async) </span>listActivityAliases<span class="signature">(name)</span><span class="type-signature"> &rarr; {Promise.&lt;Array.&lt;object>>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Gets a list of all activity aliases
+(<a href="https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/activities-id-aliases-GET">docs</a>).</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>name</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          <p>Unique name of activity.</p>
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line499">line 499</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+  <h5>Throws:</h5>
+  
+      
+
+  <div class="param-desc">
+    
+      <p>Error when the request fails, for example, due to insufficient rights, or incorrect scopes.</p>
+    
+  </div>
+
+
+    
+
+
+
+      
+        
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#listActivityVersions">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="listActivityVersions">
+      <span class="type-signature">(async) </span>listActivityVersions<span class="signature">(name)</span><span class="type-signature"> &rarr; {Promise.&lt;Array.&lt;object>>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Gets a list of all activity versions
+(<a href="https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/activities-id-versions-GET">docs</a>).</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>name</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          <p>Unique name of activity.</p>
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line526">line 526</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+  <h5>Throws:</h5>
+  
+      
+
+  <div class="param-desc">
+    
+      <p>Error when the request fails, for example, due to insufficient rights, or incorrect scopes.</p>
+    
+  </div>
+
+
+    
+
+
+
+      
+        
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#listAppBundleAliases">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="listAppBundleAliases">
+      <span class="type-signature">(async) </span>listAppBundleAliases<span class="signature">(name)</span><span class="type-signature"> &rarr; {Promise.&lt;Array.&lt;object>>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Gets a list of all appbundle aliases
+(<a href="https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-id-aliases-GET">docs</a>).</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>name</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          <p>Unique name of the bundle.</p>
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line166">line 166</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+  <h5>Throws:</h5>
+  
+      
+
+  <div class="param-desc">
+    
+      <p>Error when the request fails, for example, due to insufficient rights, or incorrect scopes.</p>
+    
+  </div>
+
+
+    
+
+
+
+      
+        
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#listAppBundles">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="listAppBundles">
+      <span class="type-signature">(async) </span>listAppBundles<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;Array.&lt;object>>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Gets a list of all appbundles
+(<a href="https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-GET">docs</a>).</p>
+  </div>
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line100">line 100</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+  <h5>Throws:</h5>
+  
+      
+
+  <div class="param-desc">
+    
+      <p>Error when the request fails, for example, due to insufficient rights, or incorrect scopes.</p>
+    
+  </div>
+
+
+    
+
+
+
+      
+        
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#listAppBundleVersions">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="listAppBundleVersions">
+      <span class="type-signature">(async) </span>listAppBundleVersions<span class="signature">(name)</span><span class="type-signature"> &rarr; {Promise.&lt;Array.&lt;number>>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Gets a list of all appbundle versions
+(<a href="https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-id-versions-GET">docs</a>).</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>name</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          <p>Unique name of the bundle.</p>
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line193">line 193</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+  <h5>Throws:</h5>
+  
+      
+
+  <div class="param-desc">
+    
+      <p>Error when the request fails, for example, due to insufficient rights, or incorrect scopes.</p>
+    
+  </div>
+
+
+    
+
+
+
+      
+        
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#listEngines">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="listEngines">
+      <span class="type-signature">(async) </span>listEngines<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;Array.&lt;object>>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Gets a list of all engines
+(<a href="https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/engines-GET">docs</a>).</p>
+  </div>
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line75">line 75</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+  <h5>Throws:</h5>
+  
+      
+
+  <div class="param-desc">
+    
+      <p>Error when the request fails, for example, due to insufficient rights, or incorrect scopes.</p>
+    
+  </div>
+
+
+    
+
+
+
+      
+        
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#updateActivity">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="updateActivity">
+      <span class="type-signature">(async) </span>updateActivity<span class="signature">(id, description, bundleName, bundleAlias, engine, inputs, outputs, script<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise.&lt;object>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Updates existing activity, creating its new version
+(<a href="https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/activities-id-versions-POST">docs</a>).</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+        <th>Attributes</th>
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>id</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+          <td class="attributes">
+            
+
+            
+
+            
+          </td>
+        
+
+        
+
+        <td class="description last">
+          <p>ID of updated activity.</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>description</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+          <td class="attributes">
+            
+
+            
+
+            
+          </td>
+        
+
+        
+
+        <td class="description last">
+          <p>Activity description.</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>bundleName</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+          <td class="attributes">
+            
+
+            
+
+            
+          </td>
+        
+
+        
+
+        <td class="description last">
+          <p>App bundle name.</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>bundleAlias</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+          <td class="attributes">
+            
+
+            
+
+            
+          </td>
+        
+
+        
+
+        <td class="description last">
+          <p>App bundle alias.</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>engine</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+          <td class="attributes">
+            
+
+            
+
+            
+          </td>
+        
+
+        
+
+        <td class="description last">
+          <p>ID of one of the supported engines.</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>inputs</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      Array.&lt;object>
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+          <td class="attributes">
+            
+
+            
+
+            
+          </td>
+        
+
+        
+
+        <td class="description last">
+          <p>List of input descriptor objects, each containing properties <code>name</code> and <code>description</code>.</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>outputs</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      Array.&lt;object>
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+          <td class="attributes">
+            
+
+            
+
+            
+          </td>
+        
+
+        
+
+        <td class="description last">
+          <p>List of output descriptor objects, each containing properties <code>name</code> and <code>description</code>,
+and optionally <code>localName</code>.</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>script</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+          <td class="attributes">
+            
+              &lt;optional><br>
+            
+
+            
+
+            
+          </td>
+        
+
+        
+
+        <td class="description last">
+          <p>Optional engine-specific script to pass to the activity.</p>
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line452">line 452</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+        
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#updateActivityAlias">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="updateActivityAlias">
+      <span class="type-signature">(async) </span>updateActivityAlias<span class="signature">(id, alias, version)</span><span class="type-signature"> &rarr; {Promise.&lt;object>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Updates existing alias for an activity
+(<a href="https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/activities-id-aliases-aliasId-PATCH">docs</a>).</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>id</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          <p>Activity ID.</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>alias</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          <p>Activity alias.</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>version</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      number
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          <p>Activity version to link to this alias.</p>
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line557">line 557</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+        
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#updateAppBundle">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="updateAppBundle">
+      <span class="type-signature">(async) </span>updateAppBundle<span class="signature">(name, engine<span class="signature-attributes">opt</span>, description<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise.&lt;object>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Updates an existing app bundle, creating its new version
+(<a href="https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-id-versions-POST">docs</a>).</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+        <th>Attributes</th>
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>name</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+          <td class="attributes">
+            
+
+            
+
+            
+          </td>
+        
+
+        
+
+        <td class="description last">
+          <p>Unique name of the bundle.</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>engine</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+          <td class="attributes">
+            
+              &lt;optional><br>
+            
+
+            
+
+            
+          </td>
+        
+
+        
+
+        <td class="description last">
+          <p>ID of one of the supported engines.</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>description</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+          <td class="attributes">
+            
+              &lt;optional><br>
+            
+
+            
+
+            
+          </td>
+        
+
+        
+
+        <td class="description last">
+          <p>Bundle description.</p>
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line132">line 132</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+  <h5>Throws:</h5>
+  
+      
+
+  <div class="param-desc">
+    
+      <p>Error when the request fails, for example, due to insufficient rights.</p>
+    
+  </div>
+
+
+    
+
+
+
+      
+        
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#updateAppBundleAlias">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="updateAppBundleAlias">
+      <span class="type-signature">(async) </span>updateAppBundleAlias<span class="signature">(name, alias, version)</span><span class="type-signature"> &rarr; {Promise.&lt;object>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Updates existing alias for an app bundle
+(<a href="https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-id-aliases-aliasId-PATCH/">docs</a>).</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>name</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          <p>Name of the app bundle.</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>alias</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          <p>Alias name.</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>version</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      number
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          <p>Version of app bundle to link to this alias.</p>
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line226">line 226</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+  <h5>Throws:</h5>
+  
+      
+
+  <div class="param-desc">
+    
+      <p>Error when the request fails, for example, due to insufficient rights.</p>
+    
+  </div>
+
+
+    
+
+
+
+      
+        
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#workItemDetails">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="workItemDetails">
+      <span class="type-signature">(async) </span>workItemDetails<span class="signature">(id)</span><span class="type-signature"> &rarr; {Promise.&lt;object>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    <p>Gets details of a specific work item
+(<a href="https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/workitems-id-GET">docs</a>).</p>
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>id</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          <p>Work item ID.</p>
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line574">line 574</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+  <h5>Throws:</h5>
+  
+      
+
+  <div class="param-desc">
+    
+      <p>Error when the request fails, for example, due to insufficient rights.</p>
+    
+  </div>
+
+
+    
+
+
+
+      
+    
+
+    
+
+    
+  </article>
+</section>
+
+
+
+
+  </div>
+
+  <br class="clear">
+
+  <footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a>
+  </footer>
+
+  <script src="scripts/linenumber.js"></script>
+  <script src="scripts/pagelocation.js"></script>
+
+  
+
+</body>
+</html>
