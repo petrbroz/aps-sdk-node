@@ -120,7 +120,7 @@
       </svg>
     </a>
     <h4 class="name" id="ModelDerivativeClient">
-      <span class="type-signature"></span>new ModelDerivativeClient<span class="signature">(auth, host<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span>
+      <span class="type-signature"></span>new ModelDerivativeClient<span class="signature">(auth<span class="signature-attributes">opt</span>, host<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span>
     </h4>
   </span>
 
@@ -129,7 +129,7 @@
 
 
   <div class="description">
-    <p>Initializes new client with specific Forge app credentials.</p>
+    <p>Initializes new client with specific authentication method.</p>
   </div>
 
 
@@ -173,7 +173,7 @@
           
             
     <span class="param-type">
-      <a href="AuthenticationClient.html">AuthenticationClient</a>
+      object
     </span>
 
     
@@ -185,6 +185,8 @@
         
           <td class="attributes">
             
+              &lt;optional><br>
+            
 
             
 
@@ -195,11 +197,15 @@
         
           <td class="default">
             
+              {client_id: FORGE_CLIENT_ID, client_secret: FORGE_CLIENT_SECRET}
+            
           </td>
         
 
         <td class="description last">
-          <p>Authentication client used to obtain tokens</p>
+          <p>Authentication object,
+containing either <code>client_id</code> and <code>client_secret</code> properties (for 2-legged authentication),
+or a single <code>token</code> property (for 2-legged or 3-legged authentication with pre-generated access token).</p>
           
         </td>
       </tr>
@@ -244,8 +250,7 @@
         
 
         <td class="description last">
-          <p>Forge API host.
-for all requests.</p>
+          <p>Forge API host.</p>
           
         </td>
       </tr>
@@ -289,7 +294,7 @@ for all requests.</p>
     <dd class="tag-source">
       <ul class="dummy">
         <li>
-          <a href="model-derivative.js.html">model-derivative.js</a>, <a href="model-derivative.js.html#line13">line 13</a>
+          <a href="model-derivative.js.html">model-derivative.js</a>, <a href="model-derivative.js.html#line15">line 15</a>
         </li>
       </ul>
     </dd>
@@ -410,7 +415,7 @@ for all requests.</p>
     <dd class="tag-source">
       <ul class="dummy">
         <li>
-          <a href="model-derivative.js.html">model-derivative.js</a>, <a href="model-derivative.js.html#line33">line 33</a>
+          <a href="model-derivative.js.html">model-derivative.js</a>, <a href="model-derivative.js.html#line75">line 75</a>
         </li>
       </ul>
     </dd>
@@ -569,7 +574,7 @@ for all requests.</p>
     <dd class="tag-source">
       <ul class="dummy">
         <li>
-          <a href="model-derivative.js.html">model-derivative.js</a>, <a href="model-derivative.js.html#line72">line 72</a>
+          <a href="model-derivative.js.html">model-derivative.js</a>, <a href="model-derivative.js.html#line111">line 111</a>
         </li>
       </ul>
     </dd>
@@ -728,7 +733,7 @@ for all requests.</p>
     <dd class="tag-source">
       <ul class="dummy">
         <li>
-          <a href="model-derivative.js.html">model-derivative.js</a>, <a href="model-derivative.js.html#line86">line 86</a>
+          <a href="model-derivative.js.html">model-derivative.js</a>, <a href="model-derivative.js.html#line123">line 123</a>
         </li>
       </ul>
     </dd>
@@ -916,7 +921,7 @@ for all requests.</p>
     <dd class="tag-source">
       <ul class="dummy">
         <li>
-          <a href="model-derivative.js.html">model-derivative.js</a>, <a href="model-derivative.js.html#line116">line 116</a>
+          <a href="model-derivative.js.html">model-derivative.js</a>, <a href="model-derivative.js.html#line149">line 149</a>
         </li>
       </ul>
     </dd>
@@ -1104,7 +1109,7 @@ for all requests.</p>
     <dd class="tag-source">
       <ul class="dummy">
         <li>
-          <a href="model-derivative.js.html">model-derivative.js</a>, <a href="model-derivative.js.html#line101">line 101</a>
+          <a href="model-derivative.js.html">model-derivative.js</a>, <a href="model-derivative.js.html#line136">line 136</a>
         </li>
       </ul>
     </dd>
@@ -1293,7 +1298,7 @@ supported format is <code>{ type: 'svf', views: ['2d', '3d'] }</code>.</p>
     <dd class="tag-source">
       <ul class="dummy">
         <li>
-          <a href="model-derivative.js.html">model-derivative.js</a>, <a href="model-derivative.js.html#line50">line 50</a>
+          <a href="model-derivative.js.html">model-derivative.js</a>, <a href="model-derivative.js.html#line91">line 91</a>
         </li>
       </ul>
     </dd>

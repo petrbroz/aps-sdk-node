@@ -95,21 +95,28 @@
 from Node.js applications, using modern language features like
 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function">async/await</a>
 or <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*">generators</a>.</p>
-<h2>Usage</h2><h3>Authentication</h3><pre class="prettyprint source lang-js"><code>const { AuthenticationClient } = require('forge-nodejs-utils');
+<h2>Usage</h2><h3>Authentication</h3><p>If you need to generate <a href="https://forge.autodesk.com/en/docs/oauth/v2/tutorials/get-2-legged-token">2-legged tokens</a>
+manually, you can use the <code>AuthenticationClient</code> class:</p>
+<pre class="prettyprint source lang-js"><code>const { AuthenticationClient } = require('forge-nodejs-utils');
 const auth = new AuthenticationClient(); // If no params, gets credentials from env. vars FORGE_CLIENT_ID and FORGE_CLIENT_SECRET
 const authentication = await auth.authenticate(['bucket:read', 'data:read']);
-console.log('2-legged Token', authentication.access_token);</code></pre><h3>Data Management</h3><pre class="prettyprint source lang-js"><code>const { DataManagementClient, AuthenticationClient } = require('forge-nodejs-utils');
-const data = new DataManagementClient(new AuthenticationClient());
+console.log('2-legged token', authentication.access_token);</code></pre><p>Other API clients in this library are typically configured using a simple JavaScript object
+containing either <code>client_id</code> and <code>client_secret</code> properties (for 2-legged authentication),
+or a single <code>token</code> property (for authentication using a pre-generated access token):</p>
+<pre class="prettyprint source lang-js"><code>const { DataManagementClient, BIM360Client } = require('forge-nodejs-utils');
+const dm = new DataManagementClient({ client_id: '...', client_secret: '...' });
+const bim360 = new BIM360Client({ token: '...' });</code></pre><h3>Data Management</h3><pre class="prettyprint source lang-js"><code>const { DataManagementClient } = require('forge-nodejs-utils');
+const data = new DataManagementClient(); // If no params, gets credentials from env. vars FORGE_CLIENT_ID and FORGE_CLIENT_SECRET
 
 const buckets = await data.listBuckets();
 console.log('Buckets', buckets.map(bucket => bucket.bucketKey).join(','));
 
 const objects = await data.listObjects('foo-bucket');
-console.log('Objects', objects.map(object => object.objectId).join(','));</code></pre><h3>Model Derivatives</h3><pre class="prettyprint source lang-js"><code>const { ModelDerivativeClient, AuthenticationClient } = require('forge-nodejs-utils');
-const derivatives = new ModelDerivativeClient(new AuthenticationClient());
+console.log('Objects', objects.map(object => object.objectId).join(','));</code></pre><h3>Model Derivatives</h3><pre class="prettyprint source lang-js"><code>const { ModelDerivativeClient } = require('forge-nodejs-utils');
+const derivatives = new ModelDerivativeClient(); // If no params, gets credentials from env. vars FORGE_CLIENT_ID and FORGE_CLIENT_SECRET
 const job = await derivatives.submitJob('&lt;your-document-urn>', [{ type: 'svf', views: ['2d', '3d'] }]);
 console.log('Job', job);</code></pre><h3>Design Automation</h3><pre class="prettyprint source lang-js"><code>const { DesignAutomationClient, AuthenticationClient } = require('forge-nodejs-utils');
-const client = new DesignAutomationClient(new AuthenticationClient());
+const client = new DesignAutomationClient(); // If no params, gets credentials from env. vars FORGE_CLIENT_ID and FORGE_CLIENT_SECRET
 const bundles = await client.listAppBundles();
 console.log('App bundles', bundles);</code></pre><h2>Testing</h2><pre class="prettyprint source lang-bash"><code>export FORGE_CLIENT_ID=&lt;your-client-id>
 export FORGE_CLIENT_SECRET=&lt;your-client-secret>

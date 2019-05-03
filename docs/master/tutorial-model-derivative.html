@@ -93,8 +93,9 @@
   </header>
 
   <article>
-    <h1>Basic usage of model derivative APIs</h1><pre class="prettyprint source lang-js"><code>const { ModelDerivativeClient, AuthenticationClient } = require('forge-nodejs-utils');
-const derivatives = new ModelDerivativeClient(new AuthenticationClient());
+    <h1>Basic usage of Model Derivative APIs</h1><pre class="prettyprint source lang-js"><code>const { ModelDerivativeClient } = require('forge-nodejs-utils');
+// Assuming FORGE_CLIENT_ID and FORGE_CLIENT_SECRET are available as env. vars
+const derivatives = new ModelDerivativeClient();
 const job = await derivatives.submitJob('&lt;your-document-urn>', [{ type: 'svf', views: ['2d', '3d'] }]);
 console.log('Job', job);</code></pre>
   </article>

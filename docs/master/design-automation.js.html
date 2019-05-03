@@ -103,41 +103,85 @@ const ReadScopes = ['code:all'];
  */
 class DesignAutomationClient {
     /**
-     * Initializes new client with specific Forge app credentials.
-     * @param {AuthenticationClient} auth Authentication client used to obtain tokens.
-     * @param {string} [host="https://developer.api.autodesk.com"] Forge API host used for all requests.
+     * Initializes new client with specific authentication method.
+     * @param {object} [auth={client_id: FORGE_CLIENT_ID, client_secret: FORGE_CLIENT_SECRET}] Authentication object,
+     * containing either `client_id` and `client_secret` properties (for 2-legged authentication),
+     * or a single `token` property (for 2-legged or 3-legged authentication with pre-generated access token).
+     * @param {string} [host="https://developer.api.autodesk.com"] Forge API host.
      */
-    constructor(auth, host = DefaultHost) {
-        this.auth = auth;
+    constructor(auth = { client_id: FORGE_CLIENT_ID, client_secret: FORGE_CLIENT_SECRET }, host = DefaultHost) {
+        if (auth.client_id &amp;&amp; auth.client_secret) {
+            this.auth = new AuthenticationClient(auth.client_id, auth.client_secret, host);
+        } else if (auth.token) {
+            this.token = auth.token;
+        } else {
+            throw new Error('Authentication parameters missing or incorrect.');
+        }
         this.host = host;
+    }
+
+    // Helper method for GET requests
+    async _get(endpoint, headers = {}, scopes = ReadScopes) {
+        if (this.auth) {
+            const authentication = await this.auth.authenticate(scopes);
+            headers['Authorization'] = 'Bearer ' + authentication.access_token;
+        } else {
+            headers['Authorization'] = 'Bearer ' + this.token;
+        }
+        return get(this.host + RootPath + endpoint, headers);
+    }
+
+    // Helper method for POST requests
+    async _post(endpoint, data, headers = {}, scopes = ReadScopes) {
+        if (this.auth) {
+            const authentication = await this.auth.authenticate(scopes);
+            headers['Authorization'] = 'Bearer ' + authentication.access_token;
+        } else {
+            headers['Authorization'] = 'Bearer ' + this.token;
+        }
+        return post(this.host + RootPath + endpoint, data, headers);
+    }
+
+    // Helper method for PUT requests
+    async _put(endpoint, data, headers = {}, scopes = ReadScopes) {
+        if (this.auth) {
+            const authentication = await this.auth.authenticate(scopes);
+            headers['Authorization'] = 'Bearer ' + authentication.access_token;
+        } else {
+            headers['Authorization'] = 'Bearer ' + this.token;
+        }
+        return put(this.host + RootPath + endpoint, data, headers);
+    }
+
+    // Helper method for PATCH requests
+    async _patch(endpoint, data, headers = {}, scopes = ReadScopes) {
+        if (this.auth) {
+            const authentication = await this.auth.authenticate(scopes);
+            headers['Authorization'] = 'Bearer ' + authentication.access_token;
+        } else {
+            headers['Authorization'] = 'Bearer ' + this.token;
+        }
+        return patch(this.host + RootPath + endpoint, data, headers);
     }
 
     // Iterates (asynchronously) over pages of paginated results
     async *_pager(endpoint, scopes) {
-        let authentication = await this.auth.authenticate(scopes);
-        let headers = { 'Authorization': 'Bearer ' + authentication.access_token };
-        let response = await get(`${this.host}${RootPath}${endpoint}`, headers);
+        let response = await this._get(endpoint);
         yield response.data;
 
         while (response.paginationToken) {
-            authentication = await this.auth.authenticate(scopes);
-            headers['Authorization'] = 'Bearer ' + authentication.access_token;
-            response = await get(`${this.host}${RootPath}${endpoint}?page=${response.paginationToken}`, headers);
+            response = await this._get(`${endpoint}?page=${response.paginationToken}`);
             yield response.data;
         }
     }
 
     // Collects all pages of paginated results
     async _collect(endpoint, scopes) {
-        let authentication = await this.auth.authenticate(scopes);
-        let headers = { 'Authorization': 'Bearer ' + authentication.access_token };
-        let response = await get(`${this.host}${RootPath}${endpoint}`, headers);
+        let response = await this._get(endpoint);
         let results = response.data;
 
         while (response.paginationToken) {
-            authentication = await this.auth.authenticate(scopes);
-            headers['Authorization'] = 'Bearer ' + authentication.access_token;
-            response = await get(`${this.host}${RootPath}${endpoint}?page=${response.paginationToken}`, headers);
+            response = await this._get(`${endpoint}?page=${response.paginationToken}`);
             results = results.concat(response.data);
         }
         return results;
@@ -204,11 +248,8 @@ class DesignAutomationClient {
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
     async createAppBundle(name, engine, description) {
-        const authentication = await this.auth.authenticate(ReadScopes);
-        const headers = { 'Authorization': 'Bearer ' + authentication.access_token };
         const config = { id: name, description: description, engine: engine };
-        const response = await post(`${this.host}${RootPath}/appbundles`, { json: config }, headers);
-        return response;
+        return this._post('/appbundles', { json: config });
     }
 
     /**
@@ -223,13 +264,10 @@ class DesignAutomationClient {
      */
     async updateAppBundle(name, engine = undefined, description = undefined) {
         // TODO: tests
-        const authentication = await this.auth.authenticate(ReadScopes);
-        const headers = { 'Authorization': 'Bearer ' + authentication.access_token };
         const config = {};
         if (description) config.description = description;
         if (engine) config.engine = engine;
-        const response = await post(`${this.host}${RootPath}/appbundles/${name}/versions`, { json: config }, headers);
-        return response;
+        return this._post(`/appbundles/${name}/versions`, { json: config });
     }
 
     /**
@@ -298,11 +336,8 @@ class DesignAutomationClient {
      */
     async createAppBundleAlias(name, alias, version) {
         // TODO: tests
-        const authentication = await this.auth.authenticate(ReadScopes);
-        const headers = { 'Authorization': 'Bearer ' + authentication.access_token };
         const config = { id: alias, version: version };
-        const response = await post(`${this.host}${RootPath}/appbundles/${name}/aliases`, { json: config }, headers);
-        return response;
+        return this._post(`/appbundles/${name}/aliases`, { json: config });
     }
 
     /**
@@ -317,11 +352,8 @@ class DesignAutomationClient {
      */
     async updateAppBundleAlias(name, alias, version) {
         // TODO: tests
-        const authentication = await this.auth.authenticate(ReadScopes);
-        const headers = { 'Authorization': 'Bearer ' + authentication.access_token };
         const config = { version: version };
-        const response = await patch(`${this.host}${RootPath}/appbundles/${name}/aliases/${alias}`, { json: config }, headers);
-        return response;
+        return this._patch(`/appbundles/${name}/aliases/${alias}`, { json: config });
     }
 
     /**
@@ -504,8 +536,6 @@ class DesignAutomationClient {
      */
     async createActivity(id, description, bundleName, bundleAlias, engine, inputs, outputs, script) {
         // TODO: tests
-        const authentication = await this.auth.authenticate(ReadScopes);
-        const headers = { 'Authorization': 'Bearer ' + authentication.access_token };
         const engineUri = new DesignAutomationURI(engine);
         let config;
         switch (engineUri.name) {
@@ -522,8 +552,7 @@ class DesignAutomationClient {
                 config = this._inventorActivityConfig(id, description, this.auth.client_id, bundleName, bundleAlias, engine, inputs, outputs);
                 break;
         }
-        const response = await post(`${this.host}${RootPath}/activities`, { json: config }, headers);
-        return response;
+        return this._post('/activities', { json: config });
     }
 
     /**
@@ -543,8 +572,6 @@ class DesignAutomationClient {
      */
     async updateActivity(id, description, bundleName, bundleAlias, engine, inputs, outputs, script) {
         // TODO: tests
-        const authentication = await this.auth.authenticate(ReadScopes);
-        const headers = { 'Authorization': 'Bearer ' + authentication.access_token };
         const engineUri = new DesignAutomationURI(engine);
         let config;
         switch (engineUri.name) {
@@ -561,8 +588,7 @@ class DesignAutomationClient {
                 config = this._inventorActivityConfig(null, description, this.auth.client_id, bundleName, bundleAlias, engine, inputs, outputs);
                 break;
         }
-        const response = await post(`${this.host}${RootPath}/activities/${id}/versions`, { json: config }, headers);
-        return response;
+        return this._post(`/activities/${id}/versions`, { json: config });
     }
 
     /**
@@ -630,11 +656,8 @@ class DesignAutomationClient {
      */
     async createActivityAlias(id, alias, version) {
         // TODO: tests
-        const authentication = await this.auth.authenticate(ReadScopes);
-        const headers = { 'Authorization': 'Bearer ' + authentication.access_token };
         const config = { id: alias, version: version };
-        const response = await post(`${this.host}${RootPath}/activities/${id}/aliases`, { json: config }, headers);
-        return response;
+        return this._post(`/activities/${id}/aliases`, { json: config });
     }
 
     /**
@@ -648,11 +671,8 @@ class DesignAutomationClient {
      */
     async updateActivityAlias(id, alias, version) {
         // TODO: tests
-        const authentication = await this.auth.authenticate(ReadScopes);
-        const headers = { 'Authorization': 'Bearer ' + authentication.access_token };
         const config = { version: version };
-        const response = await patch(`${this.host}${RootPath}/activities/${id}/aliases/${alias}`, { json: config }, headers);
-        return response;
+        return this._patch(`/activities/${id}/aliases/${alias}`, { json: config });
     }
 
     /**
@@ -664,10 +684,7 @@ class DesignAutomationClient {
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
     async workItemDetails(id) {
-        const authentication = await this.auth.authenticate(ReadScopes);
-        const headers = { 'Authorization': 'Bearer ' + authentication.access_token };
-        const response = await get(`${this.host}${RootPath}/workitems/${id}`, headers);
-        return response;
+        return this._get(`/workitems/${id}`);
     }
 
     /**
@@ -681,8 +698,6 @@ class DesignAutomationClient {
      */
     async createWorkItem(activityId, inputs, outputs) {
         // TODO: tests
-        const authentication = await this.auth.authenticate(ReadScopes);
-        const headers = { 'Authorization': 'Bearer ' + authentication.access_token };
         const config = {
             activityId: activityId,
             arguments: {}
@@ -696,8 +711,7 @@ class DesignAutomationClient {
         for (const output of outputs) {
             config.arguments[output.name] = { verb: 'put', url: output.url }
         }
-        const response = await post(`${this.host}${RootPath}/workitems`, { json: config }, headers);
-        return response;
+        return this._post('/workitems', { json: config });
     }
 }
 

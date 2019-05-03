@@ -120,7 +120,7 @@
       </svg>
     </a>
     <h4 class="name" id="BIM360Client">
-      <span class="type-signature"></span>new BIM360Client<span class="signature">(access_token, host<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span>
+      <span class="type-signature"></span>new BIM360Client<span class="signature">(auth<span class="signature-attributes">opt</span>, host<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span>
     </h4>
   </span>
 
@@ -129,7 +129,7 @@
 
 
   <div class="description">
-    <p>Initializes new client with specific 2-legged or 3-legged access token.</p>
+    <p>Initializes new client with specific authentication method.</p>
   </div>
 
 
@@ -166,14 +166,14 @@
     
       <tr>
         
-          <td class="name"><code>access_token</code></td>
+          <td class="name"><code>auth</code></td>
         
 
         <td class="type">
           
             
     <span class="param-type">
-      string
+      object
     </span>
 
     
@@ -185,6 +185,8 @@
         
           <td class="attributes">
             
+              &lt;optional><br>
+            
 
             
 
@@ -195,11 +197,15 @@
         
           <td class="default">
             
+              {token: FORGE_ACCESS_TOKEN}
+            
           </td>
         
 
         <td class="description last">
-          <p>Access token to be used for all requests.</p>
+          <p>Authentication object,
+containing either <code>client_id</code> and <code>client_secret</code> properties (for 2-legged authentication),
+or a single <code>token</code> property (for authentication with pre-generated access token).</p>
           
         </td>
       </tr>
@@ -481,7 +487,7 @@
     <dd class="tag-source">
       <ul class="dummy">
         <li>
-          <a href="bim360.js.html">bim360.js</a>, <a href="bim360.js.html#line79">line 79</a>
+          <a href="bim360.js.html">bim360.js</a>, <a href="bim360.js.html#line89">line 89</a>
         </li>
       </ul>
     </dd>
@@ -656,7 +662,7 @@
     <dd class="tag-source">
       <ul class="dummy">
         <li>
-          <a href="bim360.js.html">bim360.js</a>, <a href="bim360.js.html#line67">line 67</a>
+          <a href="bim360.js.html">bim360.js</a>, <a href="bim360.js.html#line77">line 77</a>
         </li>
       </ul>
     </dd>
@@ -802,7 +808,7 @@
     <dd class="tag-source">
       <ul class="dummy">
         <li>
-          <a href="bim360.js.html">bim360.js</a>, <a href="bim360.js.html#line40">line 40</a>
+          <a href="bim360.js.html">bim360.js</a>, <a href="bim360.js.html#line54">line 54</a>
         </li>
       </ul>
     </dd>
@@ -894,7 +900,7 @@
     <dd class="tag-source">
       <ul class="dummy">
         <li>
-          <a href="bim360.js.html">bim360.js</a>, <a href="bim360.js.html#line29">line 29</a>
+          <a href="bim360.js.html">bim360.js</a>, <a href="bim360.js.html#line43">line 43</a>
         </li>
       </ul>
     </dd>
@@ -1040,7 +1046,7 @@
     <dd class="tag-source">
       <ul class="dummy">
         <li>
-          <a href="bim360.js.html">bim360.js</a>, <a href="bim360.js.html#line55">line 55</a>
+          <a href="bim360.js.html">bim360.js</a>, <a href="bim360.js.html#line65">line 65</a>
         </li>
       </ul>
     </dd>
@@ -1215,7 +1221,7 @@
     <dd class="tag-source">
       <ul class="dummy">
         <li>
-          <a href="bim360.js.html">bim360.js</a>, <a href="bim360.js.html#line103">line 103</a>
+          <a href="bim360.js.html">bim360.js</a>, <a href="bim360.js.html#line113">line 113</a>
         </li>
       </ul>
     </dd>
@@ -1390,7 +1396,7 @@
     <dd class="tag-source">
       <ul class="dummy">
         <li>
-          <a href="bim360.js.html">bim360.js</a>, <a href="bim360.js.html#line91">line 91</a>
+          <a href="bim360.js.html">bim360.js</a>, <a href="bim360.js.html#line101">line 101</a>
         </li>
       </ul>
     </dd>

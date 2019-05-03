@@ -120,7 +120,7 @@
       </svg>
     </a>
     <h4 class="name" id="DesignAutomationClient">
-      <span class="type-signature"></span>new DesignAutomationClient<span class="signature">(auth, host<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span>
+      <span class="type-signature"></span>new DesignAutomationClient<span class="signature">(auth<span class="signature-attributes">opt</span>, host<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span>
     </h4>
   </span>
 
@@ -129,7 +129,7 @@
 
 
   <div class="description">
-    <p>Initializes new client with specific Forge app credentials.</p>
+    <p>Initializes new client with specific authentication method.</p>
   </div>
 
 
@@ -173,7 +173,7 @@
           
             
     <span class="param-type">
-      <a href="AuthenticationClient.html">AuthenticationClient</a>
+      object
     </span>
 
     
@@ -185,6 +185,8 @@
         
           <td class="attributes">
             
+              &lt;optional><br>
+            
 
             
 
@@ -195,11 +197,15 @@
         
           <td class="default">
             
+              {client_id: FORGE_CLIENT_ID, client_secret: FORGE_CLIENT_SECRET}
+            
           </td>
         
 
         <td class="description last">
-          <p>Authentication client used to obtain tokens.</p>
+          <p>Authentication object,
+containing either <code>client_id</code> and <code>client_secret</code> properties (for 2-legged authentication),
+or a single <code>token</code> property (for 2-legged or 3-legged authentication with pre-generated access token).</p>
           
         </td>
       </tr>
@@ -244,7 +250,7 @@
         
 
         <td class="description last">
-          <p>Forge API host used for all requests.</p>
+          <p>Forge API host.</p>
           
         </td>
       </tr>
@@ -736,7 +742,7 @@ and optionally <code>localName</code>.</p>
     <dd class="tag-source">
       <ul class="dummy">
         <li>
-          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line413">line 413</a>
+          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line445">line 445</a>
         </li>
       </ul>
     </dd>
@@ -941,7 +947,7 @@ and optionally <code>localName</code>.</p>
     <dd class="tag-source">
       <ul class="dummy">
         <li>
-          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line539">line 539</a>
+          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line565">line 565</a>
         </li>
       </ul>
     </dd>
@@ -1146,7 +1152,7 @@ and optionally <code>localName</code>.</p>
     <dd class="tag-source">
       <ul class="dummy">
         <li>
-          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line114">line 114</a>
+          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line158">line 158</a>
         </li>
       </ul>
     </dd>
@@ -1363,7 +1369,7 @@ and optionally <code>localName</code>.</p>
     <dd class="tag-source">
       <ul class="dummy">
         <li>
-          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line207">line 207</a>
+          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line245">line 245</a>
         </li>
       </ul>
     </dd>
@@ -1581,7 +1587,7 @@ and optionally <code>localName</code>.</p>
     <dd class="tag-source">
       <ul class="dummy">
         <li>
-          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line590">line 590</a>
+          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line607">line 607</a>
         </li>
       </ul>
     </dd>
@@ -1673,7 +1679,7 @@ and optionally <code>localName</code>.</p>
     <dd class="tag-source">
       <ul class="dummy">
         <li>
-          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line243">line 243</a>
+          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line275">line 275</a>
         </li>
       </ul>
     </dd>
@@ -1832,7 +1838,7 @@ and optionally <code>localName</code>.</p>
     <dd class="tag-source">
       <ul class="dummy">
         <li>
-          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line485">line 485</a>
+          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line511">line 511</a>
         </li>
       </ul>
     </dd>
@@ -1991,7 +1997,7 @@ and optionally <code>localName</code>.</p>
     <dd class="tag-source">
       <ul class="dummy">
         <li>
-          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line512">line 512</a>
+          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line538">line 538</a>
         </li>
       </ul>
     </dd>
@@ -2150,7 +2156,7 @@ and optionally <code>localName</code>.</p>
     <dd class="tag-source">
       <ul class="dummy">
         <li>
-          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line152">line 152</a>
+          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line190">line 190</a>
         </li>
       </ul>
     </dd>
@@ -2254,7 +2260,7 @@ and optionally <code>localName</code>.</p>
     <dd class="tag-source">
       <ul class="dummy">
         <li>
-          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line87">line 87</a>
+          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line131">line 131</a>
         </li>
       </ul>
     </dd>
@@ -2413,7 +2419,7 @@ and optionally <code>localName</code>.</p>
     <dd class="tag-source">
       <ul class="dummy">
         <li>
-          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line179">line 179</a>
+          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line217">line 217</a>
         </li>
       </ul>
     </dd>
@@ -2517,7 +2523,7 @@ and optionally <code>localName</code>.</p>
     <dd class="tag-source">
       <ul class="dummy">
         <li>
-          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line62">line 62</a>
+          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line106">line 106</a>
         </li>
       </ul>
     </dd>
@@ -2621,7 +2627,7 @@ and optionally <code>localName</code>.</p>
     <dd class="tag-source">
       <ul class="dummy">
         <li>
-          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line256">line 256</a>
+          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line288">line 288</a>
         </li>
       </ul>
     </dd>
@@ -2780,7 +2786,7 @@ and optionally <code>localName</code>.</p>
     <dd class="tag-source">
       <ul class="dummy">
         <li>
-          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line499">line 499</a>
+          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line525">line 525</a>
         </li>
       </ul>
     </dd>
@@ -2939,7 +2945,7 @@ and optionally <code>localName</code>.</p>
     <dd class="tag-source">
       <ul class="dummy">
         <li>
-          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line526">line 526</a>
+          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line552">line 552</a>
         </li>
       </ul>
     </dd>
@@ -3098,7 +3104,7 @@ and optionally <code>localName</code>.</p>
     <dd class="tag-source">
       <ul class="dummy">
         <li>
-          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line166">line 166</a>
+          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line204">line 204</a>
         </li>
       </ul>
     </dd>
@@ -3202,7 +3208,7 @@ and optionally <code>localName</code>.</p>
     <dd class="tag-source">
       <ul class="dummy">
         <li>
-          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line100">line 100</a>
+          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line144">line 144</a>
         </li>
       </ul>
     </dd>
@@ -3361,7 +3367,7 @@ and optionally <code>localName</code>.</p>
     <dd class="tag-source">
       <ul class="dummy">
         <li>
-          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line193">line 193</a>
+          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line231">line 231</a>
         </li>
       </ul>
     </dd>
@@ -3465,7 +3471,7 @@ and optionally <code>localName</code>.</p>
     <dd class="tag-source">
       <ul class="dummy">
         <li>
-          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line75">line 75</a>
+          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line119">line 119</a>
         </li>
       </ul>
     </dd>
@@ -3896,7 +3902,7 @@ and optionally <code>localName</code>.</p>
     <dd class="tag-source">
       <ul class="dummy">
         <li>
-          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line452">line 452</a>
+          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line481">line 481</a>
         </li>
       </ul>
     </dd>
@@ -4101,7 +4107,7 @@ and optionally <code>localName</code>.</p>
     <dd class="tag-source">
       <ul class="dummy">
         <li>
-          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line557">line 557</a>
+          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line580">line 580</a>
         </li>
       </ul>
     </dd>
@@ -4336,7 +4342,7 @@ and optionally <code>localName</code>.</p>
     <dd class="tag-source">
       <ul class="dummy">
         <li>
-          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line132">line 132</a>
+          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line173">line 173</a>
         </li>
       </ul>
     </dd>
@@ -4553,7 +4559,7 @@ and optionally <code>localName</code>.</p>
     <dd class="tag-source">
       <ul class="dummy">
         <li>
-          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line226">line 226</a>
+          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line261">line 261</a>
         </li>
       </ul>
     </dd>
@@ -4712,7 +4718,7 @@ and optionally <code>localName</code>.</p>
     <dd class="tag-source">
       <ul class="dummy">
         <li>
-          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line574">line 574</a>
+          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line594">line 594</a>
         </li>
       </ul>
     </dd>

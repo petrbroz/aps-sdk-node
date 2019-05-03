@@ -93,8 +93,10 @@
   </header>
 
   <article>
-    <h1>Basic usage of data APIs</h1><pre class="prettyprint source lang-js"><code>const { DataManagementClient, AuthenticationClient } = require('forge-nodejs-utils');
-const data = new DataManagementClient(new AuthenticationClient());
+    <h1>Basic usage of Data Management APIs</h1><pre class="prettyprint source lang-js"><code>// Assuming FORGE_CLIENT_ID and FORGE_CLIENT_SECRET are available as env. vars
+
+const { DataManagementClient } = require('forge-nodejs-utils');
+const data = new DataManagementClient();
 
 const buckets = await data.listBuckets();
 console.log('Buckets', buckets.map(bucket => bucket.bucketKey).join(','));

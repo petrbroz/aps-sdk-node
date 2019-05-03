@@ -93,11 +93,13 @@
   </header>
 
   <article>
-    <h1>Basic usage of design automation APIs</h1><pre class="prettyprint source lang-js"><code>const { DesignAutomationClient, AuthenticationClient } = require('forge-nodejs-utils');
-const client = new DesignAutomationClient(new AuthenticationClient());
+    <h1>Basic usage of Design Automation APIs</h1><pre class="prettyprint source lang-js"><code>const { DesignAutomationClient } = require('forge-nodejs-utils');
+// Assuming FORGE_CLIENT_ID and FORGE_CLIENT_SECRET are available as env. vars
+const client = new DesignAutomationClient();
 const bundles = await client.listAppBundles();
-console.log('App bundles', bundles);</code></pre><h2>Creating new app bundle</h2><pre class="prettyprint source lang-js"><code>const { DesignAutomationClient, AuthenticationClient } = require('forge-nodejs-utils');
-const client = new DesignAutomationClient(new AuthenticationClient());
+console.log('App bundles', bundles);</code></pre><h2>Creating new app bundle</h2><pre class="prettyprint source lang-js"><code>const { DesignAutomationClient } = require('forge-nodejs-utils');
+// Assuming FORGE_CLIENT_ID and FORGE_CLIENT_SECRET are available as env. vars
+const client = new DesignAutomationClient();
 await client.createAppBundle('&lt;appbundle name>', '&lt;appbundle description>', '&lt;one of the engine IDs>');</code></pre>
   </article>
 </section>

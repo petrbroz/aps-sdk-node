@@ -93,8 +93,9 @@
   </header>
 
   <article>
-    <h1>Basic usage of authentication APIs</h1><pre class="prettyprint source lang-js"><code>const { AuthenticationClient } = require('forge-nodejs-utils');
-const auth = new AuthenticationClient(); // If no params, gets credentials from env. vars FORGE_CLIENT_ID and FORGE_CLIENT_SECRET
+    <h1>Basic usage of Authentication APIs</h1><pre class="prettyprint source lang-js"><code>const { AuthenticationClient } = require('forge-nodejs-utils');
+// Assuming FORGE_CLIENT_ID and FORGE_CLIENT_SECRET are available as env. vars
+const auth = new AuthenticationClient();
 const authentication = await auth.authenticate(['bucket:read', 'data:read']);
 console.log('2-legged Token', authentication.access_token);</code></pre>
   </article>

@@ -119,7 +119,7 @@
       </svg>
     </a>
     <h4 class="name" id="DataManagementClient">
-      <span class="type-signature"></span>new DataManagementClient<span class="signature">(auth, host<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span>
+      <span class="type-signature"></span>new DataManagementClient<span class="signature">(auth<span class="signature-attributes">opt</span>, host<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span>
     </h4>
   </span>
 
@@ -128,7 +128,7 @@
 
 
   <div class="description">
-    <p>Initializes new client with specific Forge app credentials.</p>
+    <p>Initializes new client with specific authentication method.</p>
   </div>
 
 
@@ -172,7 +172,7 @@
           
             
     <span class="param-type">
-      <a href="AuthenticationClient.html">AuthenticationClient</a>
+      object
     </span>
 
     
@@ -184,6 +184,8 @@
         
           <td class="attributes">
             
+              &lt;optional><br>
+            
 
             
 
@@ -194,11 +196,15 @@
         
           <td class="default">
             
+              {client_id: FORGE_CLIENT_ID, client_secret: FORGE_CLIENT_SECRET}
+            
           </td>
         
 
         <td class="description last">
-          <p>Authentication client used to obtain tokens</p>
+          <p>Authentication object,
+containing either <code>client_id</code> and <code>client_secret</code> properties (for 2-legged authentication),
+or a single <code>token</code> property (for 2-legged or 3-legged authentication with pre-generated access token).</p>
           
         </td>
       </tr>
@@ -243,8 +249,7 @@
         
 
         <td class="description last">
-          <p>Forge API host.
-for data management requests.</p>
+          <p>Forge API host.</p>
           
         </td>
       </tr>
@@ -288,7 +293,7 @@ for data management requests.</p>
     <dd class="tag-source">
       <ul class="dummy">
         <li>
-          <a href="data-management.js.html">data-management.js</a>, <a href="data-management.js.html#line14">line 14</a>
+          <a href="data-management.js.html">data-management.js</a>, <a href="data-management.js.html#line16">line 16</a>
         </li>
       </ul>
     </dd>
@@ -493,7 +498,7 @@ for data management requests.</p>
     <dd class="tag-source">
       <ul class="dummy">
         <li>
-          <a href="data-management.js.html">data-management.js</a>, <a href="data-management.js.html#line116">line 116</a>
+          <a href="data-management.js.html">data-management.js</a>, <a href="data-management.js.html#line148">line 148</a>
         </li>
       </ul>
     </dd>
@@ -755,7 +760,7 @@ or when a bucket with this name already exists.</p>
     <dd class="tag-source">
       <ul class="dummy">
         <li>
-          <a href="data-management.js.html">data-management.js</a>, <a href="data-management.js.html#line222">line 222</a>
+          <a href="data-management.js.html">data-management.js</a>, <a href="data-management.js.html#line238">line 238</a>
         </li>
       </ul>
     </dd>
@@ -943,7 +948,7 @@ or when a bucket with this name already exists.</p>
     <dd class="tag-source">
       <ul class="dummy">
         <li>
-          <a href="data-management.js.html">data-management.js</a>, <a href="data-management.js.html#line187">line 187</a>
+          <a href="data-management.js.html">data-management.js</a>, <a href="data-management.js.html#line209">line 209</a>
         </li>
       </ul>
     </dd>
@@ -1102,7 +1107,7 @@ or when a bucket with this name already exists.</p>
     <dd class="tag-source">
       <ul class="dummy">
         <li>
-          <a href="data-management.js.html">data-management.js</a>, <a href="data-management.js.html#line99">line 99</a>
+          <a href="data-management.js.html">data-management.js</a>, <a href="data-management.js.html#line133">line 133</a>
         </li>
       </ul>
     </dd>
@@ -1291,7 +1296,7 @@ with this name does not exist.</p>
     <dd class="tag-source">
       <ul class="dummy">
         <li>
-          <a href="data-management.js.html">data-management.js</a>, <a href="data-management.js.html#line206">line 206</a>
+          <a href="data-management.js.html">data-management.js</a>, <a href="data-management.js.html#line224">line 224</a>
         </li>
       </ul>
     </dd>
@@ -1343,7 +1348,7 @@ with this name does not exist.</p>
       </svg>
     </a>
     <h4 class="name" id="iterateBuckets">
-      <span class="type-signature">(async, generator) </span>iterateBuckets<span class="signature">(page<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span>
+      <span class="type-signature">(async, generator) </span>iterateBuckets<span class="signature">(limit<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span>
     </h4>
   </span>
 
@@ -1390,7 +1395,7 @@ with this name does not exist.</p>
     
       <tr>
         
-          <td class="name"><code>page</code></td>
+          <td class="name"><code>limit</code></td>
         
 
         <td class="type">
@@ -1427,7 +1432,7 @@ with this name does not exist.</p>
         
 
         <td class="description last">
-          <p>Max number of buckets to obtain in one yield.</p>
+          <p>Max number of buckets to receive in one batch.</p>
           
         </td>
       </tr>
@@ -1471,7 +1476,7 @@ with this name does not exist.</p>
     <dd class="tag-source">
       <ul class="dummy">
         <li>
-          <a href="data-management.js.html">data-management.js</a>, <a href="data-management.js.html#line72">line 72</a>
+          <a href="data-management.js.html">data-management.js</a>, <a href="data-management.js.html#line106">line 106</a>
         </li>
       </ul>
     </dd>
@@ -1522,7 +1527,7 @@ with this name does not exist.</p>
       </svg>
     </a>
     <h4 class="name" id="iterateObjects">
-      <span class="type-signature">(async, generator) </span>iterateObjects<span class="signature">(bucket, page<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span>
+      <span class="type-signature">(async, generator) </span>iterateObjects<span class="signature">(bucket, limit<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span>
     </h4>
   </span>
 
@@ -1610,7 +1615,7 @@ with this name does not exist.</p>
     
       <tr>
         
-          <td class="name"><code>page</code></td>
+          <td class="name"><code>limit</code></td>
         
 
         <td class="type">
@@ -1647,7 +1652,7 @@ with this name does not exist.</p>
         
 
         <td class="description last">
-          <p>Max number of objects to obtain in one yield.</p>
+          <p>Max number of objects to receive in one batch.</p>
           
         </td>
       </tr>
@@ -1691,7 +1696,7 @@ with this name does not exist.</p>
     <dd class="tag-source">
       <ul class="dummy">
         <li>
-          <a href="data-management.js.html">data-management.js</a>, <a href="data-management.js.html#line138">line 138</a>
+          <a href="data-management.js.html">data-management.js</a>, <a href="data-management.js.html#line165">line 165</a>
         </li>
       </ul>
     </dd>
@@ -1795,7 +1800,7 @@ with this name does not exist.</p>
     <dd class="tag-source">
       <ul class="dummy">
         <li>
-          <a href="data-management.js.html">data-management.js</a>, <a href="data-management.js.html#line85">line 85</a>
+          <a href="data-management.js.html">data-management.js</a>, <a href="data-management.js.html#line119">line 119</a>
         </li>
       </ul>
     </dd>
@@ -1954,7 +1959,7 @@ with this name does not exist.</p>
     <dd class="tag-source">
       <ul class="dummy">
         <li>
-          <a href="data-management.js.html">data-management.js</a>, <a href="data-management.js.html#line152">line 152</a>
+          <a href="data-management.js.html">data-management.js</a>, <a href="data-management.js.html#line179">line 179</a>
         </li>
       </ul>
     </dd>
@@ -2200,7 +2205,7 @@ with this name does not exist.</p>
     <dd class="tag-source">
       <ul class="dummy">
         <li>
-          <a href="data-management.js.html">data-management.js</a>, <a href="data-management.js.html#line168">line 168</a>
+          <a href="data-management.js.html">data-management.js</a>, <a href="data-management.js.html#line195">line 195</a>
         </li>
       </ul>
     </dd>
