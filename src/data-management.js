@@ -1,11 +1,13 @@
 const querystring = require('querystring');
 
-const { get, post, put, DefaultHost } = require('./common');
+const { get, post, put, DefaultHost, TwoLeggedAuth, ThreeLeggedAuth } = require('./common');
 const { AuthenticationClient } = require('./authentication');
 
 const RootPath = '/oss/v2';
 const ReadTokenScopes = ['bucket:read', 'data:read'];
 const WriteTokenScopes = ['bucket:create', 'data:write'];
+
+const { FORGE_CLIENT_ID, FORGE_CLIENT_SECRET } = process.env;
 
 /**
  * Client providing access to Autodesk Forge {@link https://forge.autodesk.com/en/docs/data/v2|data management APIs}.
@@ -13,34 +15,53 @@ const WriteTokenScopes = ['bucket:create', 'data:write'];
  */
 class DataManagementClient {
     /**
-     * Initializes new client with specific Forge app credentials.
-     * @param {AuthenticationClient} auth Authentication client used to obtain tokens
+     * Initializes new client with specific authentication method.
+     * @param {object} [auth={client_id: FORGE_CLIENT_ID, client_secret: FORGE_CLIENT_SECRET}] Authentication object,
+     * containing either `client_id` and `client_secret` properties (for 2-legged authentication),
+     * or a single `token` property (for 2-legged or 3-legged authentication with pre-generated access token).
      * @param {string} [host="https://developer.api.autodesk.com"] Forge API host.
-     * for data management requests.
      */
-    constructor(auth, host = DefaultHost) {
-        this.auth = auth;
+    constructor(auth = { client_id: FORGE_CLIENT_ID, client_secret: FORGE_CLIENT_SECRET }, host = DefaultHost) {
+        if (auth.client_id && auth.client_secret) {
+            this.auth = new AuthenticationClient(auth.client_id, auth.client_secret, host);
+        } else if (auth.token) {
+            this.token = auth.token;
+        } else {
+            throw new Error('Authentication parameters missing or incorrect.');
+        }
         this.host = host;
     }
 
-    // Helper method for GET requests with two-legged auth (read scope)
+    // Helper method for GET requests
     async _get(endpoint, headers = {}, scopes = ReadTokenScopes) {
-        const authentication = await this.auth.authenticate(scopes);
-        headers['Authorization'] = 'Bearer ' + authentication.access_token;
+        if (this.auth) {
+            const authentication = await this.auth.authenticate(scopes);
+            headers['Authorization'] = 'Bearer ' + authentication.access_token;
+        } else {
+            headers['Authorization'] = 'Bearer ' + this.token;
+        }
         return get(this.host + RootPath + endpoint, headers);
     }
 
-    // Helper method for POST requests with two-legged auth (write scope)
+    // Helper method for POST requests
     async _post(endpoint, data, headers = {}, scopes = WriteTokenScopes) {
-        const authentication = await this.auth.authenticate(scopes);
-        headers['Authorization'] = 'Bearer ' + authentication.access_token;
+        if (this.auth) {
+            const authentication = await this.auth.authenticate(scopes);
+            headers['Authorization'] = 'Bearer ' + authentication.access_token;
+        } else {
+            headers['Authorization'] = 'Bearer ' + this.token;
+        }
         return post(this.host + RootPath + endpoint, data, headers);
     }
 
-    // Helper method for PUT requests with two-legged auth (write scope)
+    // Helper method for PUT requests
     async _put(endpoint, data, headers = {}, scopes = WriteTokenScopes) {
-        const authentication = await this.auth.authenticate(scopes);
-        headers['Authorization'] = 'Bearer ' + authentication.access_token;
+        if (this.auth) {
+            const authentication = await this.auth.authenticate(scopes);
+            headers['Authorization'] = 'Bearer ' + authentication.access_token;
+        } else {
+            headers['Authorization'] = 'Bearer ' + this.token;
+        }
         return put(this.host + RootPath + endpoint, data, headers);
     }
 

@@ -9,18 +9,31 @@ or [generators](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Referenc
 
 ### Authentication
 
+If you need to generate [2-legged tokens](https://forge.autodesk.com/en/docs/oauth/v2/tutorials/get-2-legged-token)
+manually, you can use the `AuthenticationClient` class:
+
 ```js
 const { AuthenticationClient } = require('forge-nodejs-utils');
 const auth = new AuthenticationClient(); // If no params, gets credentials from env. vars FORGE_CLIENT_ID and FORGE_CLIENT_SECRET
 const authentication = await auth.authenticate(['bucket:read', 'data:read']);
-console.log('2-legged Token', authentication.access_token);
+console.log('2-legged token', authentication.access_token);
+```
+
+Other API clients in this library are typically configured using a simple JavaScript object
+containing either `client_id` and `client_secret` properties (for 2-legged authentication),
+or a single `token` property (for authentication using a pre-generated access token):
+
+```js
+const { DataManagementClient, BIM360Client } = require('forge-nodejs-utils');
+const dm = new DataManagementClient({ client_id: '...', client_secret: '...' });
+const bim360 = new BIM360Client({ token: '...' });
 ```
 
 ### Data Management
 
 ```js
-const { DataManagementClient, AuthenticationClient } = require('forge-nodejs-utils');
-const data = new DataManagementClient(new AuthenticationClient());
+const { DataManagementClient } = require('forge-nodejs-utils');
+const data = new DataManagementClient(); // If no params, gets credentials from env. vars FORGE_CLIENT_ID and FORGE_CLIENT_SECRET
 
 const buckets = await data.listBuckets();
 console.log('Buckets', buckets.map(bucket => bucket.bucketKey).join(','));
@@ -32,8 +45,8 @@ console.log('Objects', objects.map(object => object.objectId).join(','));
 ### Model Derivatives
 
 ```js
-const { ModelDerivativeClient, AuthenticationClient } = require('forge-nodejs-utils');
-const derivatives = new ModelDerivativeClient(new AuthenticationClient());
+const { ModelDerivativeClient } = require('forge-nodejs-utils');
+const derivatives = new ModelDerivativeClient(); // If no params, gets credentials from env. vars FORGE_CLIENT_ID and FORGE_CLIENT_SECRET
 const job = await derivatives.submitJob('<your-document-urn>', [{ type: 'svf', views: ['2d', '3d'] }]);
 console.log('Job', job);
 ```
@@ -42,7 +55,7 @@ console.log('Job', job);
 
 ```js
 const { DesignAutomationClient, AuthenticationClient } = require('forge-nodejs-utils');
-const client = new DesignAutomationClient(new AuthenticationClient());
+const client = new DesignAutomationClient(); // If no params, gets credentials from env. vars FORGE_CLIENT_ID and FORGE_CLIENT_SECRET
 const bundles = await client.listAppBundles();
 console.log('App bundles', bundles);
 ```

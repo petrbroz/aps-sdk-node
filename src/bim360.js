@@ -1,7 +1,7 @@
 const { get, DefaultHost } = require('./common');
+const { AuthenticationClient } = require('./authentication');
 
-const RootPath = '/project/v1';
-const DataRootPath = '/data/v1';
+const { FORGE_ACCESS_TOKEN } = process.env;
 
 /**
  * Client providing access to Autodesk Forge
@@ -9,13 +9,27 @@ const DataRootPath = '/data/v1';
  */
 class BIM360Client {
     /**
-     * Initializes new client with specific 2-legged or 3-legged access token.
-     * @param {string} access_token Access token to be used for all requests.
+     * Initializes new client with specific authentication method.
+     * @param {object} [auth={token: FORGE_ACCESS_TOKEN}] Authentication object,
+     * containing either `client_id` and `client_secret` properties (for 2-legged authentication),
+     * or a single `token` property (for authentication with pre-generated access token).
      * @param {string} [host="https://developer.api.autodesk.com"] Forge API host.
      */
-    constructor(access_token, host = DefaultHost) {
-        this.access_token = access_token;
+    constructor(auth = { token: FORGE_ACCESS_TOKEN }, host = DefaultHost) {
+        if (auth.client_id && auth.client_secret) {
+            this.auth = new AuthenticationClient(auth.client_id, auth.client_secret, host);
+        } else if (auth.token) {
+            this.token = auth.token;
+        } else {
+            throw new Error('Authentication parameters missing or incorrect.');
+        }
         this.host = host;
+    }
+
+    // Helper method for GET requests
+    async _get(endpoint, headers = {}) {
+        headers['Authorization'] = 'Bearer ' + this.token;
+        return get(this.host + endpoint, headers);
     }
 
     // Hub APIs
@@ -27,7 +41,7 @@ class BIM360Client {
      * @returns {Promise<object[]>} List of hubs.
      */
     async hubs() {
-        let response = await get(`${this.host}${RootPath}/hubs`, { 'Authorization': 'Bearer ' + this.access_token });
+        const response = await this._get(`/project/v1/hubs`);
         return response.data;
     }
 
@@ -38,12 +52,8 @@ class BIM360Client {
      * @returns {Promise<object>} Hub or null if there isn't one.
      */
     async hub(id) {
-        try {
-            let response = await get(`${this.host}${RootPath}/hubs/${id}`, { 'Authorization': 'Bearer ' + this.access_token }, true);
-            return response.data;
-        } catch(err) {
-            return null;
-        }
+        const response = await this._get(`/project/v1/hubs/${id}`);
+        return response.data;
     }
 
     /**
@@ -53,7 +63,7 @@ class BIM360Client {
      * @returns {Promise<object[]>} List of projects.
      */
     async projects(hub) {
-        let response = await get(`${this.host}${RootPath}/hubs/${hub}/projects`, { 'Authorization': 'Bearer ' + this.access_token });
+        const response = await this._get(`/project/v1/hubs/${hub}/projects`);
         return response.data;
     }
 
@@ -65,7 +75,7 @@ class BIM360Client {
      * @returns {Promise<object[]>} List of folder records.
      */
     async folders(hub, project) {
-        let response = await get(`${this.host}${RootPath}/hubs/${hub}/projects/${project}/topFolders`, { 'Authorization': 'Bearer ' + this.access_token });
+        const response = await this._get(`/project/v1/hubs/${hub}/projects/${project}/topFolders`);
         return response.data;
     }
 
@@ -77,7 +87,7 @@ class BIM360Client {
      * @returns {Promise<object[]>} List of folder contents.
      */
     async contents(project, folder) {
-        let response = await get(`${this.host}${DataRootPath}/projects/${project}/folders/${folder}/contents`, { 'Authorization': 'Bearer ' + this.access_token });
+        const response = await this._get(`/data/v1/projects/${project}/folders/${folder}/contents`);
         return response.data;
     }
 
@@ -89,7 +99,7 @@ class BIM360Client {
      * @returns {Promise<object[]>} List of item versions.
      */
     async versions(project, item) {
-        let response = await get(`${this.host}${DataRootPath}/projects/${project}/items/${item}/versions`, { 'Authorization': 'Bearer ' + this.access_token });
+        const response = await this._get(`/data/v1/projects/${project}/items/${item}/versions`);
         return response.data;
     }
 
@@ -101,7 +111,7 @@ class BIM360Client {
      * @returns {Promise<object>} Tip version of the item.
      */
     async tip(project, item) {
-        let response = await get(`${this.host}${DataRootPath}/projects/${project}/items/${item}/tip`, { 'Authorization': 'Bearer ' + this.access_token });
+        const response = await this._get(`/data/v1/projects/${project}/items/${item}/tip`);
         return response.data;
     }
 }

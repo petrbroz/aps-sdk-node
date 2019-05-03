@@ -1,14 +1,13 @@
 const assert = require('assert');
 
-const { AuthenticationClient, ModelDerivativeClient } = require('..');
+const { ModelDerivativeClient } = require('..');
 
 describe('ModelDerivativeClient', function() {
     beforeEach(function() {
         const { FORGE_CLIENT_ID, FORGE_CLIENT_SECRET, FORGE_MODEL_URN } = process.env;
         assert(FORGE_CLIENT_ID);
         assert(FORGE_CLIENT_SECRET);
-        const auth = new AuthenticationClient(FORGE_CLIENT_ID, FORGE_CLIENT_SECRET);
-        this.client = new ModelDerivativeClient(auth);
+        this.client = new ModelDerivativeClient({ client_id: FORGE_CLIENT_ID, client_secret: FORGE_CLIENT_SECRET });
         this.urn = FORGE_MODEL_URN;
     });
 

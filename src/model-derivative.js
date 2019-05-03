@@ -5,6 +5,8 @@ const RootPath = '/modelderivative/v2';
 const ReadTokenScopes = ['data:read'];
 const WriteTokenScopes = ['data:read', 'data:write', 'data:create'];
 
+const { FORGE_CLIENT_ID, FORGE_CLIENT_SECRET } = process.env;
+
 /**
  * Client providing access to Autodesk Forge
  * {@link https://forge.autodesk.com/en/docs/model-derivative/v2|model derivative APIs}.
@@ -12,14 +14,54 @@ const WriteTokenScopes = ['data:read', 'data:write', 'data:create'];
  */
 class ModelDerivativeClient {
     /**
-     * Initializes new client with specific Forge app credentials.
-     * @param {AuthenticationClient} auth Authentication client used to obtain tokens
+     * Initializes new client with specific authentication method.
+     * @param {object} [auth={client_id: FORGE_CLIENT_ID, client_secret: FORGE_CLIENT_SECRET}] Authentication object,
+     * containing either `client_id` and `client_secret` properties (for 2-legged authentication),
+     * or a single `token` property (for 2-legged or 3-legged authentication with pre-generated access token).
      * @param {string} [host="https://developer.api.autodesk.com"] Forge API host.
-     * for all requests.
      */
-    constructor(auth, host = DefaultHost) {
-        this.auth = auth;
+    constructor(auth = { client_id: FORGE_CLIENT_ID, client_secret: FORGE_CLIENT_SECRET }, host = DefaultHost) {
+        if (auth.client_id && auth.client_secret) {
+            this.auth = new AuthenticationClient(auth.client_id, auth.client_secret, host);
+        } else if (auth.token) {
+            this.token = auth.token;
+        } else {
+            throw new Error('Authentication parameters missing or incorrect.');
+        }
         this.host = host;
+    }
+
+    // Helper method for GET requests
+    async _get(endpoint, headers = {}, scopes = ReadTokenScopes) {
+        if (this.auth) {
+            const authentication = await this.auth.authenticate(scopes);
+            headers['Authorization'] = 'Bearer ' + authentication.access_token;
+        } else {
+            headers['Authorization'] = 'Bearer ' + this.token;
+        }
+        return get(this.host + RootPath + endpoint, headers);
+    }
+
+    // Helper method for POST requests
+    async _post(endpoint, data, headers = {}, scopes = WriteTokenScopes) {
+        if (this.auth) {
+            const authentication = await this.auth.authenticate(scopes);
+            headers['Authorization'] = 'Bearer ' + authentication.access_token;
+        } else {
+            headers['Authorization'] = 'Bearer ' + this.token;
+        }
+        return post(this.host + RootPath + endpoint, data, headers);
+    }
+
+    // Helper method for PUT requests
+    async _put(endpoint, data, headers = {}, scopes = WriteTokenScopes) {
+        if (this.auth) {
+            const authentication = await this.auth.authenticate(scopes);
+            headers['Authorization'] = 'Bearer ' + authentication.access_token;
+        } else {
+            headers['Authorization'] = 'Bearer ' + this.token;
+        }
+        return put(this.host + RootPath + endpoint, data, headers);
     }
 
     /**
@@ -31,8 +73,7 @@ class ModelDerivativeClient {
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
     async formats() {
-        const authentication = await this.auth.authenticate(ReadTokenScopes);
-        const response = await get(`${this.host}${RootPath}/designdata/formats`, { 'Authorization': 'Bearer ' + authentication.access_token });
+        const response = await this._get('/designdata/formats');
         return response.formats;
     }
 
@@ -48,7 +89,6 @@ class ModelDerivativeClient {
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
     async submitJob(urn, outputs) {
-        const authentication = await this.auth.authenticate(WriteTokenScopes);
         const params = {
             input: {
                 urn: urn
@@ -57,8 +97,7 @@ class ModelDerivativeClient {
                 formats: outputs
             }
         };
-        const response = await post(`${this.host}${RootPath}/designdata/job`, { json: params }, { 'Authorization': 'Bearer ' + authentication.access_token });
-        return response;
+        return this._post('/designdata/job', { json: params });
     }
 
     /**
@@ -70,9 +109,7 @@ class ModelDerivativeClient {
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
     async getManifest(urn) {
-        const authentication = await this.auth.authenticate(ReadTokenScopes);
-        const response = await get(`${this.host}${RootPath}/designdata/${urn}/manifest`, { 'Authorization': 'Bearer ' + authentication.access_token });
-        return response;
+        return this._get(`/designdata/${urn}/manifest`);
     }
 
     /**
@@ -84,9 +121,7 @@ class ModelDerivativeClient {
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
     async getMetadata(urn) {
-        const authentication = await this.auth.authenticate(ReadTokenScopes);
-        const response = await get(`${this.host}${RootPath}/designdata/${urn}/metadata`, { 'Authorization': 'Bearer ' + authentication.access_token });
-        return response;
+        return this._get(`/designdata/${urn}/metadata`);
     }
 
     /**
@@ -99,9 +134,7 @@ class ModelDerivativeClient {
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
     async getViewableTree(urn, guid) {
-        const authentication = await this.auth.authenticate(ReadTokenScopes);
-        const response = await get(`${this.host}${RootPath}/designdata/${urn}/metadata/${guid}`, { 'Authorization': 'Bearer ' + authentication.access_token });
-        return response;
+        return this._get(`/designdata/${urn}/metadata/${guid}`);
     }
 
     /**
@@ -114,9 +147,7 @@ class ModelDerivativeClient {
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
     async getViewableProperties(urn, guid) {
-        const authentication = await this.auth.authenticate(ReadTokenScopes);
-        const response = await get(`${this.host}${RootPath}/designdata/${urn}/metadata/${guid}/properties`, { 'Authorization': 'Bearer ' + authentication.access_token });
-        return response;
+        return this._get(`/designdata/${urn}/metadata/${guid}/properties`);
     }
 }
 
