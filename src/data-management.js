@@ -1,11 +1,13 @@
 const querystring = require('querystring');
 
-const { get, post, put, DefaultHost } = require('./common');
+const { get, post, put, DefaultHost, TwoLeggedAuth, ThreeLeggedAuth } = require('./common');
 const { AuthenticationClient } = require('./authentication');
 
 const RootPath = '/oss/v2';
 const ReadTokenScopes = ['bucket:read', 'data:read'];
 const WriteTokenScopes = ['bucket:create', 'data:write'];
+
+const { FORGE_CLIENT_ID, FORGE_CLIENT_SECRET } = process.env;
 
 /**
  * Client providing access to Autodesk Forge {@link https://forge.autodesk.com/en/docs/data/v2|data management APIs}.
@@ -13,46 +15,78 @@ const WriteTokenScopes = ['bucket:create', 'data:write'];
  */
 class DataManagementClient {
     /**
-     * Initializes new client with specific Forge app credentials.
-     * @param {AuthenticationClient} auth Authentication client used to obtain tokens
+     * Initializes new client with specific authentication method.
+     * @param {object} [auth={client_id: FORGE_CLIENT_ID, client_secret: FORGE_CLIENT_SECRET}] Authentication object,
+     * containing either `client_id` and `client_secret` properties (for 2-legged authentication),
+     * or a single `token` property (for 2-legged or 3-legged authentication with pre-generated access token).
      * @param {string} [host="https://developer.api.autodesk.com"] Forge API host.
-     * for data management requests.
      */
-    constructor(auth, host = DefaultHost) {
-        this.auth = auth;
+    constructor(auth = { client_id: FORGE_CLIENT_ID, client_secret: FORGE_CLIENT_SECRET }, host = DefaultHost) {
+        if (auth.client_id && auth.client_secret) {
+            this.auth = new AuthenticationClient(auth.client_id, auth.client_secret, host);
+        } else if (auth.token) {
+            this.token = auth.token;
+        } else {
+            throw new Error('Authentication parameters missing or incorrect.');
+        }
         this.host = host;
     }
 
+    // Helper method for GET requests
+    async _get(endpoint, headers = {}, scopes = ReadTokenScopes) {
+        if (this.auth) {
+            const authentication = await this.auth.authenticate(scopes);
+            headers['Authorization'] = 'Bearer ' + authentication.access_token;
+        } else {
+            headers['Authorization'] = 'Bearer ' + this.token;
+        }
+        return get(this.host + RootPath + endpoint, headers);
+    }
+
+    // Helper method for POST requests
+    async _post(endpoint, data, headers = {}, scopes = WriteTokenScopes) {
+        if (this.auth) {
+            const authentication = await this.auth.authenticate(scopes);
+            headers['Authorization'] = 'Bearer ' + authentication.access_token;
+        } else {
+            headers['Authorization'] = 'Bearer ' + this.token;
+        }
+        return post(this.host + RootPath + endpoint, data, headers);
+    }
+
+    // Helper method for PUT requests
+    async _put(endpoint, data, headers = {}, scopes = WriteTokenScopes) {
+        if (this.auth) {
+            const authentication = await this.auth.authenticate(scopes);
+            headers['Authorization'] = 'Bearer ' + authentication.access_token;
+        } else {
+            headers['Authorization'] = 'Bearer ' + this.token;
+        }
+        return put(this.host + RootPath + endpoint, data, headers);
+    }
+
     // Iterates (asynchronously) over pages of paginated results
-    async *_pager(endpoint, page, scopes) {
-        let authentication = await this.auth.authenticate(scopes);
-        let headers = { 'Authorization': 'Bearer ' + authentication.access_token };
-        let response = await get(`${this.host}${RootPath}${endpoint}?limit=${page}`, headers);
+    async *_pager(endpoint, limit) {
+        let response = await this._get(`${endpoint}?limit=${limit}`);
         yield response.items;
 
         while (response.next) {
             const next = new URL(response.next);
             const startAt = querystring.escape(next.searchParams.get('startAt'));
-            authentication = await this.auth.authenticate(scopes);
-            headers['Authorization'] = 'Bearer ' + authentication.access_token;
-            response = await get(`${this.host}${RootPath}${endpoint}?startAt=${startAt}&limit=${page}`, headers);
+            response = await this._get(`${endpoint}?startAt=${startAt}&limit=${limit}`);
             yield response.items;
         }
     }
 
     // Collects all pages of paginated results
-    async _collect(endpoint, scopes) {
-        let authentication = await this.auth.authenticate(scopes);
-        let headers = { 'Authorization': 'Bearer ' + authentication.access_token };
-        let response = await get(`${this.host}${RootPath}${endpoint}`, headers);
+    async _collect(endpoint) {
+        let response = await this._get(endpoint);
         let results = response.items;
 
         while (response.next) {
             const next = new URL(response.next);
             const startAt = querystring.escape(next.searchParams.get('startAt'));
-            authentication = await this.auth.authenticate(scopes);
-            headers['Authorization'] = 'Bearer ' + authentication.access_token;
-            response = await get(`${this.host}${RootPath}${endpoint}?startAt=${startAt}`, headers);
+            response = await this._get(`${endpoint}?startAt=${startAt}`);
             results = results.concat(response.items);
         }
         return results;
@@ -65,12 +99,12 @@ class DataManagementClient {
      * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/buckets-GET|docs}).
      * @async
      * @generator
-     * @param {number} [page] Max number of buckets to obtain in one yield.
+     * @param {number} [limit=16] Max number of buckets to receive in one batch.
      * @yields {Promise<object[]>} List of bucket object containing 'bucketKey', 'createdDate', and 'policyKey'.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async *iterateBuckets(page = 16) {
-        for await (const buckets of this._pager('/buckets', page, ReadTokenScopes)) {
+    async *iterateBuckets(limit = 16) {
+        for await (const buckets of this._pager('/buckets', limit)) {
             yield buckets;
         }
     }
@@ -83,7 +117,7 @@ class DataManagementClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async listBuckets() {
-        return this._collect('/buckets', ReadTokenScopes);
+        return this._collect('/buckets');
     }
 
     /**
@@ -97,9 +131,7 @@ class DataManagementClient {
      * with this name does not exist.
      */
     async getBucketDetails(bucket) {
-        const authentication = await this.auth.authenticate(ReadTokenScopes);
-        const response = await get(`${this.host}${RootPath}/buckets/${bucket}/details`, { 'Authorization': 'Bearer ' + authentication.access_token });
-        return response;
+        return this._get(`/buckets/${bucket}/details`);
     }
 
     /**
@@ -114,13 +146,8 @@ class DataManagementClient {
      * or when a bucket with this name already exists.
      */
     async createBucket(bucket, dataRetention) {
-        const authentication = await this.auth.authenticate(WriteTokenScopes);
-        const params = {
-            bucketKey: bucket,
-            policyKey: dataRetention
-        };
-        const response = await post(`${this.host}${RootPath}/buckets`, { json: params }, { 'Authorization': 'Bearer ' + authentication.access_token });
-        return response;
+        const params = { bucketKey: bucket, policyKey: dataRetention };
+        return this._post('/buckets', { json: params });
     }
 
     // Object APIs
@@ -131,12 +158,12 @@ class DataManagementClient {
      * @async
      * @generator
      * @param {string} bucket Bucket key.
-     * @param {number} [page] Max number of objects to obtain in one yield.
+     * @param {number} [limit=16] Max number of objects to receive in one batch.
      * @yields {Promise<object[]>} List of object containing 'bucketKey', 'objectKey', 'objectId', 'sha1', 'size', and 'location'.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async *iterateObjects(bucket, page = 16) {
-        for await (const objects of this._pager(`/buckets/${bucket}/objects`, page, ReadTokenScopes)) {
+    async *iterateObjects(bucket, limit = 16) {
+        for await (const objects of this._pager(`/buckets/${bucket}/objects`, limit)) {
             yield objects;
         }
     }
@@ -150,7 +177,7 @@ class DataManagementClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async listObjects(bucket) {
-        return this._collect(`/buckets/${bucket}/objects`, ReadTokenScopes);
+        return this._collect(`/buckets/${bucket}/objects`);
     }
 
     /**
@@ -167,12 +194,7 @@ class DataManagementClient {
      */
     async uploadObject(bucket, name, contentType, data) {
         // TODO: add support for large file uploads using "PUT buckets/:bucketKey/objects/:objectName/resumable"
-        const authentication = await this.auth.authenticate(WriteTokenScopes);
-        const response = await put(`${this.host}${RootPath}/buckets/${bucket}/objects/${name}`, { buffer: data }, {
-            'Authorization': 'Bearer ' + authentication.access_token,
-            'Content-Type': contentType
-        });
-        return response;
+        return this._put(`/buckets/${bucket}/objects/${name}`, { buffer: data }, { 'Content-Type': contentType });
     }
 
     /**
@@ -185,11 +207,7 @@ class DataManagementClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async downloadObject(bucket, object) {
-        const authentication = await this.auth.authenticate(ReadTokenScopes);
-        const response = await get(`${this.host}${RootPath}/buckets/${bucket}/objects/${object}`, {
-            'Authorization': 'Bearer ' + authentication.access_token,
-        });
-        return response;
+        return this._get(`/buckets/${bucket}/objects/${object}`);
     }
 
     /**
@@ -204,9 +222,7 @@ class DataManagementClient {
      * with this name does not exist.
      */
     async getObjectDetails(bucket, object) {
-        const authentication = await this.auth.authenticate(ReadTokenScopes);
-        const response = await get(`${this.host}${RootPath}/buckets/${bucket}/objects/${object}/details`, { 'Authorization': 'Bearer ' + authentication.access_token });
-        return response;
+        return this._get(`/buckets/${bucket}/objects/${object}/details`);
     }
 
     /**
@@ -220,14 +236,10 @@ class DataManagementClient {
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
     async createSignedUrl(bucketId, objectId, access = 'readwrite') {
-        const authentication = await this.auth.authenticate(WriteTokenScopes);
-        const headers = { 'Authorization': 'Bearer ' + authentication.access_token };
-        const signed = await post(`${this.host}${RootPath}/buckets/${bucketId}/objects/${objectId}/signed?access=${access}`, { json: {} }, headers);
-        return signed;
+        return this._post(`/buckets/${bucketId}/objects/${objectId}/signed?access=${access}`, { json: {} });
     }
 }
 
 module.exports = {
     DataManagementClient
 };
-

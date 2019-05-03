@@ -2,9 +2,16 @@ const querystring = require('querystring');
 const fetch = require('node-fetch');
 
 const DefaultHost = 'https://developer.api.autodesk.com';
+const RetryDelay = 5000; // Delay (in milliseconds) before retrying after a "202 Accepted" response
+
+function sleep(ms) { return new Promise(function(resolve) { setTimeout(resolve, ms); }); }
 
 async function _fetch(url, options) {
-    const response = await fetch(url, options);
+    let response = await fetch(url, options);
+    while (response.status === 202) {
+        sleep(RetryDelay);
+        response = await fetch(url, options)
+    }
     const contentType = response.headers.get('Content-Type').split(';')[0];
     if (response.ok) {
         switch (contentType) {

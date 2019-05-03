@@ -1,6 +1,6 @@
 const assert = require('assert');
 
-const { AuthenticationClient, DataManagementClient } = require('..');
+const { DataManagementClient } = require('..');
 
 describe('DataManagementClient', function() {
     beforeEach(function() {
@@ -8,8 +8,7 @@ describe('DataManagementClient', function() {
         assert(FORGE_CLIENT_ID);
         assert(FORGE_CLIENT_SECRET);
         assert(FORGE_BUCKET);
-        const auth = new AuthenticationClient(FORGE_CLIENT_ID, FORGE_CLIENT_SECRET);
-        this.client = new DataManagementClient(auth);
+        this.client = new DataManagementClient({ client_id: FORGE_CLIENT_ID, client_secret: FORGE_CLIENT_SECRET });
         this.bucket = FORGE_BUCKET;
         this.timeout(5000); // Increase timeout to 5 seconds
     });
