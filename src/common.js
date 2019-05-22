@@ -4,6 +4,15 @@ const fetch = require('node-fetch');
 const DefaultHost = 'https://developer.api.autodesk.com';
 const RetryDelay = 5000; // Delay (in milliseconds) before retrying after a "202 Accepted" response
 
+class ForgeError extends Error {
+    constructor(url, status, data) {
+        super(JSON.stringify(data));
+        this.url = url;
+        this.status = status;
+        this.data = data;
+    }
+}
+
 function sleep(ms) { return new Promise(function(resolve) { setTimeout(resolve, ms); }); }
 
 async function _fetch(url, options) {
@@ -29,8 +38,8 @@ async function _fetch(url, options) {
     } else {
         switch (contentType) {
             case 'application/json':
-                const json = await response.json();
-                throw new Error(json);
+                const data = await response.json();
+                throw new ForgeError(url, response.status, data);
             default:
                 const text = await response.text();
                 throw new Error(text);
@@ -134,5 +143,6 @@ module.exports = {
     get,
     post,
     put,
-    patch
+    patch,
+    ForgeError
 };
