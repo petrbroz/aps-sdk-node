@@ -21,7 +21,8 @@ async function _fetch(url, options) {
         sleep(RetryDelay);
         response = await fetch(url, options)
     }
-    const contentType = response.headers.get('Content-Type').split(';')[0];
+    const contentTypeHeader = response.headers.get('Content-Type') || '';
+    const contentType = contentTypeHeader.split(';')[0];
     if (response.ok) {
         switch (contentType) {
             case 'application/json':
