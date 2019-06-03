@@ -146,6 +146,18 @@ class DesignAutomationClient {
     }
 
     /**
+     * Gets single appbundle details
+     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-id-GET|docs}).
+     * @async
+     * @param {string} bundleId Fully qualified appbundle ID.
+     * @returns {Promise<object>} Appbundle details.
+     * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
+     */
+    async getAppBundle(bundleId) {
+        return this._get(`/appbundles/${bundleId}`);
+    }
+
+    /**
      * Creates a new app bundle
      * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-POST|docs}).
      * @async
