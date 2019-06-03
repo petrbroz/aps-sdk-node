@@ -121,6 +121,18 @@ class DesignAutomationClient {
     }
 
     /**
+     * Gets single engine details
+     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/engines-id-GET|docs}).
+     * @async
+     * @param {string} engineId Fully qualified engine ID.
+     * @returns {Promise<object>} Engine details.
+     * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
+     */
+    async getEngine(engineId) {
+        return this._get(`/engines/${engineId}`);
+    }
+
+    /**
      * Iterates over all app bundles in pages of predefined size
      * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-GET|docs}).
      * @async
