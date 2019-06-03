@@ -289,6 +289,18 @@ class DesignAutomationClient {
         return this._collect('/activities', ReadScopes);
     }
 
+    /**
+     * Gets single activity details
+     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/activities-id-GET|docs}).
+     * @async
+     * @param {string} activityId Fully qualified activity ID.
+     * @returns {Promise<object>} Activity details.
+     * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
+     */
+    async getActivity(activityId) {
+        return this._get(`/activities/${activityId}`);
+    }
+
     _inventorActivityConfig(activityId, description, ownerId, bundleName, bundleAlias, engine, inputs, outputs) {
         const config = {
             commandLine: [`$(engine.path)\\InventorCoreConsole.exe /al $(appbundles[${bundleName}].path)`],
