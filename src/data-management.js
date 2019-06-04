@@ -201,8 +201,8 @@ class DataManagementClient {
      * Uploads content to a specific bucket object using the resumable capabilities
      * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/buckets-:bucketKey-objects-:objectName-resumable-PUT|docs}).
      * @async
-     * @param {string} bucket Bucket key.
-     * @param {string} name Name of uploaded object.
+     * @param {string} bucketKey Bucket key.
+     * @param {string} objectName Name of uploaded object.
      * @param {Buffer} data Object content.
      * @param {number} byteOffset Byte offset of the uploaded blob in the target object.
      * @param {number} totalBytes Total byte size of the target object.
@@ -210,14 +210,29 @@ class DataManagementClient {
      * @param {string} [contentType='application/stream'] Type of content to be used in HTTP headers, for example, "application/json".
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async uploadObjectResumable(bucket, name, data, byteOffset, totalBytes, sessionId, contentType = 'application/stream') {
-        const headers = {
-            'Content-Type': contentType,
-            'Content-Length': data.byteLength,
-            'Content-Range': `bytes ${byteOffset}-${byteOffset + data.byteLength - 1}/${totalBytes}`,
-            'Session-Id': sessionId,
+    async uploadObjectResumable(bucketKey, objectName, data, byteOffset, totalBytes, sessionId, contentType = 'application/stream') {
+        // TODO: get rid of rawFetch; add support for disabling 202 retries in put/get methods
+        const options = {
+            method: 'PUT',
+            headers: {
+                'Content-Type': contentType,
+                'Content-Length': data.byteLength,
+                'Content-Range': `bytes ${byteOffset}-${byteOffset + data.byteLength - 1}/${totalBytes}`,
+                'Session-Id': sessionId
+            },
+            body: data
         };
-        await this._put(`/buckets/${bucket}/objects/${name}/resumable`, { buffer: data }, headers);
+        if (this.auth) {
+            const authentication = await this.auth.authenticate(WriteTokenScopes);
+            options.headers['Authorization'] = 'Bearer ' + authentication.access_token;
+        } else {
+            options.headers['Authorization'] = 'Bearer ' + this.token;
+        }
+        const response = await rawFetch(this.host + RootPath + `/buckets/${bucketKey}/objects/${objectName}/resumable`, options);
+        if (!response.ok) {
+            const text = await response.text();
+            throw new Error(text);
+        }
     }
 
     /**
@@ -232,6 +247,7 @@ class DataManagementClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async getResumableUploadStatus(bucketKey, objectName, sessionId) {
+        // TODO: get rid of rawFetch; add support for disabling 202 retries in put/get methods
         const options = { method: 'GET', headers: {} };
         if (this.auth) {
             const authentication = await this.auth.authenticate(ReadTokenScopes);
