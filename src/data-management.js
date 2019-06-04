@@ -1,6 +1,6 @@
 const querystring = require('querystring');
 
-const { get, post, put, DefaultHost, TwoLeggedAuth, ThreeLeggedAuth } = require('./common');
+const { get, post, put, DefaultHost, TwoLeggedAuth, ThreeLeggedAuth, rawFetch } = require('./common');
 const { AuthenticationClient } = require('./authentication');
 
 const RootPath = '/oss/v2';
@@ -195,6 +195,85 @@ class DataManagementClient {
     async uploadObject(bucket, name, contentType, data) {
         // TODO: add support for large file uploads using "PUT buckets/:bucketKey/objects/:objectName/resumable"
         return this._put(`/buckets/${bucket}/objects/${name}`, { buffer: data }, { 'Content-Type': contentType });
+    }
+
+    /**
+     * Uploads content to a specific bucket object using the resumable capabilities
+     * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/buckets-:bucketKey-objects-:objectName-resumable-PUT|docs}).
+     * @async
+     * @param {string} bucketKey Bucket key.
+     * @param {string} objectName Name of uploaded object.
+     * @param {Buffer} data Object content.
+     * @param {number} byteOffset Byte offset of the uploaded blob in the target object.
+     * @param {number} totalBytes Total byte size of the target object.
+     * @param {string} sessionId Resumable session ID.
+     * @param {string} [contentType='application/stream'] Type of content to be used in HTTP headers, for example, "application/json".
+     * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
+     */
+    async uploadObjectResumable(bucketKey, objectName, data, byteOffset, totalBytes, sessionId, contentType = 'application/stream') {
+        // TODO: get rid of rawFetch; add support for disabling 202 retries in put/get methods
+        const options = {
+            method: 'PUT',
+            headers: {
+                'Content-Type': contentType,
+                'Content-Length': data.byteLength,
+                'Content-Range': `bytes ${byteOffset}-${byteOffset + data.byteLength - 1}/${totalBytes}`,
+                'Session-Id': sessionId
+            },
+            body: data
+        };
+        if (this.auth) {
+            const authentication = await this.auth.authenticate(WriteTokenScopes);
+            options.headers['Authorization'] = 'Bearer ' + authentication.access_token;
+        } else {
+            options.headers['Authorization'] = 'Bearer ' + this.token;
+        }
+        const response = await rawFetch(this.host + RootPath + `/buckets/${bucketKey}/objects/${objectName}/resumable`, options);
+        if (!response.ok) {
+            const text = await response.text();
+            throw new Error(text);
+        }
+    }
+
+    /**
+     * Gets status of a resumable upload session
+     * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/buckets-:bucketKey-objects-:objectName-status-:sessionId-GET|docs}).
+     * @async
+     * @param {string} bucketKey Bucket key.
+     * @param {string} objectName Name of uploaded object.
+     * @param {string} sessionId Resumable session ID.
+     * @returns {Promise<object[]>} List of range objects, with each object specifying 'start' and 'end' byte offsets
+     * of data that has already been uploaded.
+     * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
+     */
+    async getResumableUploadStatus(bucketKey, objectName, sessionId) {
+        // TODO: get rid of rawFetch; add support for disabling 202 retries in put/get methods
+        const options = { method: 'GET', headers: {} };
+        if (this.auth) {
+            const authentication = await this.auth.authenticate(ReadTokenScopes);
+            options.headers['Authorization'] = 'Bearer ' + authentication.access_token;
+        } else {
+            options.headers['Authorization'] = 'Bearer ' + this.token;
+        }
+        const response = await rawFetch(this.host + RootPath + `/buckets/${bucketKey}/objects/${objectName}/status/${sessionId}`, options);
+        if (response.ok) {
+            const ranges = response.headers.get('Range');
+            const match = ranges.match(/^bytes=(\d+-\d+(,\d+-\d+)*)$/);
+            if (match) {
+                return match[1].split(',').map(str => {
+                    const tokens = str.split('-');
+                    return {
+                        start: parseInt(tokens[0]),
+                        end: parseInt(tokens[1])
+                    };
+                });
+            } else {
+                throw new Error('Unexpected range format: ' + ranges);
+            }
+        } else {
+            const text = await response.text();
+            throw new Error(text);
+        }
     }
 
     /**
