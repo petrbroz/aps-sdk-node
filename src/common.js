@@ -48,6 +48,10 @@ async function _fetch(url, options) {
     }
 }
 
+async function rawFetch(url, options) {
+    return fetch(url, options);
+}
+
 async function get(url, headers = {}) {
     const options = {
         method: 'GET',
@@ -145,5 +149,6 @@ module.exports = {
     post,
     put,
     patch,
-    ForgeError
+    ForgeError,
+    rawFetch
 };

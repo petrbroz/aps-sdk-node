@@ -109,4 +109,25 @@ describe('DataManagementClient', function() {
             assert(info.signedUrl);
         });
     });
+
+    describe('uploadObjectResumable()', function() {
+        it('should upload multiple chunks in one session', async function() {
+            const ObjectName = 'forge-nodejs-utils-test-file-' + new Date().toISOString();
+            const SessionID = 'test-session';
+            const arr = new Uint8Array(5 << 20);
+            for (let i = 0; i < arr.length; i++) {
+                arr[i] = i % 255;
+            }
+            let ranges = null;
+
+            this.timeout(10000);
+
+            await this.client.uploadObjectResumable(this.bucket, ObjectName, arr, 0, 10 << 20, SessionID, 'text/plain');
+            ranges = await this.client.getResumableUploadStatus(this.bucket, ObjectName, SessionID);
+            assert(ranges && ranges.length === 1);
+            await this.client.uploadObjectResumable(this.bucket, ObjectName, arr, 5 << 20, 10 << 20, SessionID, 'text/plain');
+            ranges = await this.client.getResumableUploadStatus(this.bucket, ObjectName, SessionID);
+            assert(ranges && ranges.length === 2);
+        });
+    });
 });
