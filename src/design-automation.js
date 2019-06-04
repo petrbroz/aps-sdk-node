@@ -637,8 +637,9 @@ class DesignAutomationClient {
      * @async
      * @param {string} activityId Activity ID.
      * @param {object[]} inputs List of input descriptor objects, each containing properties `name` and `url`,
-     * and optionally `localName`.
-     * @param {object[]} outputs List of output descriptor objects, each containing properties `name` and `url`.
+     * and optionally `localName` and `headers`.
+     * @param {object[]} outputs List of output descriptor objects, each containing properties `name` and `url`,
+     * and optionally `localName` and `headers`.
      */
     async createWorkItem(activityId, inputs, outputs) {
         // TODO: tests
@@ -651,9 +652,18 @@ class DesignAutomationClient {
             if (input.localName) {
                 config.arguments[input.name].localName = input.localName;
             }
+            if (input.headers) {
+                config.arguments[input.name].headers = input.headers;
+            }
         }
         for (const output of outputs) {
             config.arguments[output.name] = { verb: 'put', url: output.url }
+            if (output.localName) {
+                config.arguments[output.name].localName = output.localName;
+            }
+            if (output.headers) {
+                config.arguments[output.name].headers = output.headers;
+            }
         }
         return this._post('/workitems', { json: config });
     }
