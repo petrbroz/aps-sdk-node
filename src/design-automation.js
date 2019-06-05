@@ -344,6 +344,12 @@ class DesignAutomationClient {
                 if (input.description) {
                     config.parameters[input.name].description = input.description;
                 }
+                if (input.localName) {
+                    config.parameters[input.name].localName = input.localName;
+                }
+                if (input.zip) {
+                    config.parameters[input.name].zip = input.zip;
+                }
             }
         }
         for (const output of outputs) {
