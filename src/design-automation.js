@@ -5,6 +5,7 @@ const RootPath = '/da/us-east/v3';
 const ReadScopes = ['code:all'];
 
 const ActivityParameterProps = ['description', 'localName', 'required', 'zip', 'ondemand'];
+const WorkitemParameterProps = ['localName', 'optional', 'pathInZip', 'headers'];
 
 /**
  * Client providing access to Autodesk Forge
@@ -644,10 +645,10 @@ class DesignAutomationClient {
      * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/workitems-POST|docs}).
      * @async
      * @param {string} activityId Activity ID.
-     * @param {object[]} inputs List of input descriptor objects, each containing properties `name` and `url`,
-     * and optionally `localName` and `headers`.
-     * @param {object[]} outputs List of output descriptor objects, each containing properties `name` and `url`,
-     * and optionally `localName` and `headers`.
+     * @param {object[]} inputs List of input descriptor objects, each containing required properties `name`, `url`,
+     * and optional properties `localName`, `optional`, `pathInZip`, `headers`, and `verb` ("get" by default).
+     * @param {object[]} outputs List of output descriptor objects, each containing required properties `name`, `url`,
+     * and optional properties `localName`, `optional`, `pathInZip`, `headers`, and `verb` ("put" by default).
      */
     async createWorkItem(activityId, inputs, outputs) {
         // TODO: tests
@@ -656,21 +657,19 @@ class DesignAutomationClient {
             arguments: {}
         };
         for (const input of inputs) {
-            config.arguments[input.name] = { url: input.url };
-            if (input.localName) {
-                config.arguments[input.name].localName = input.localName;
-            }
-            if (input.headers) {
-                config.arguments[input.name].headers = input.headers;
+            const param = config.arguments[input.name] = { verb: input.verb || 'get', url: input.url };
+            for (const prop of WorkitemParameterProps) {
+                if (input.hasOwnProperty(prop)) {
+                    param[prop] = input[prop];
+                }
             }
         }
         for (const output of outputs) {
-            config.arguments[output.name] = { verb: 'put', url: output.url }
-            if (output.localName) {
-                config.arguments[output.name].localName = output.localName;
-            }
-            if (output.headers) {
-                config.arguments[output.name].headers = output.headers;
+            const param = config.arguments[output.name] = { verb: output.verb || 'put', url: output.url };
+            for (const prop of WorkitemParameterProps) {
+                if (output.hasOwnProperty(prop)) {
+                    param[prop] = output[prop];
+                }
             }
         }
         return this._post('/workitems', { json: config });
