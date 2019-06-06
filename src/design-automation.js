@@ -8,6 +8,47 @@ const ActivityParameterProps = ['description', 'localName', 'required', 'zip', '
 const WorkitemParameterProps = ['localName', 'optional', 'pathInZip', 'headers'];
 
 /**
+ * Helper class for working with Design Automation
+ * {@link https://forge.autodesk.com/en/docs/design-automation/v3/developers_guide/aliases-and-ids|aliases and IDs}.
+ */
+class DesignAutomationID {
+    static Regex = /^([a-zA-Z0-9_]+)\.([a-zA-Z0-9_]+)\+([a-zA-Z0-9_]+)$/;
+
+    /**
+     * Parses fully qualified ID.
+     * @param {string} str Fully qualified ID.
+     * @returns {DesignAutomationID|null} Parsed ID or null if the format was not correct.
+     */
+    static parse(str) {
+        const match = str.match(DesignAutomationID.Regex);
+        if (match) {
+            return new DesignAutomationID(match[1], match[2], match[3]);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Creates new fully qualified ID.
+     * @param {string} owner Owner part of the fully qualified ID. Must consist of a-z, A-Z, 0-9 and _ characters only.
+     * @param {string} id ID part of the fully qualified ID. Must consist of a-z, A-Z, 0-9 and _ characters only.
+     * @param {string} alias Alias part of the fully qualified ID. Must consist of a-z, A-Z, 0-9 and _ characters only.
+     */
+    constructor(owner, id, alias) {
+        this.owner = owner;
+        this.id = id;
+        this.alias = alias;
+    }
+
+    /**
+     * Outputs the fully qualified ID in a form expected by Design Automation endpoints.
+     */
+    toString() {
+        return `${this.owner}.${this.id}+${this.alias}`;
+    }
+}
+
+/**
  * Client providing access to Autodesk Forge
  * {@link https://forge.autodesk.com/en/docs/design-automation/v3|design automation APIs}.
  * @tutorial design-automation
@@ -488,9 +529,9 @@ class DesignAutomationClient {
      */
     async createActivity(id, description, bundleName, bundleAlias, engine, inputs, outputs, script) {
         // TODO: tests
-        const engineUri = new DesignAutomationURI(engine);
+        const engineId = DesignAutomationID.parse(engine);
         let config;
-        switch (engineUri.name) {
+        switch (engineId.id) {
             case 'AutoCAD':
                 config = this._autocadActivityConfig(id, description, this.auth.client_id, bundleName, bundleAlias, engine, inputs, outputs, script);
                 break;
@@ -525,9 +566,9 @@ class DesignAutomationClient {
      */
     async updateActivity(id, description, bundleName, bundleAlias, engine, inputs, outputs, script) {
         // TODO: tests
-        const engineUri = new DesignAutomationURI(engine);
+        const engineId = DesignAutomationID.parse(engine);
         let config;
-        switch (engineUri.name) {
+        switch (engineId.id) {
             case 'AutoCAD':
                 config = this._autocadActivityConfig(null, description, this.auth.client_id, bundleName, bundleAlias, engine, inputs, outputs, script);
                 break;
@@ -677,5 +718,6 @@ class DesignAutomationClient {
 }
 
 module.exports = {
-    DesignAutomationClient
+    DesignAutomationClient,
+    DesignAutomationID
 };
