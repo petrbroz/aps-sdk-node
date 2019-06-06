@@ -12,15 +12,13 @@ const WorkitemParameterProps = ['localName', 'optional', 'pathInZip', 'headers']
  * {@link https://forge.autodesk.com/en/docs/design-automation/v3/developers_guide/aliases-and-ids|aliases and IDs}.
  */
 class DesignAutomationID {
-    static Regex = /^([a-zA-Z0-9_]+)\.([a-zA-Z0-9_]+)\+([a-zA-Z0-9_]+)$/;
-
     /**
      * Parses fully qualified ID.
      * @param {string} str Fully qualified ID.
      * @returns {DesignAutomationID|null} Parsed ID or null if the format was not correct.
      */
     static parse(str) {
-        const match = str.match(DesignAutomationID.Regex);
+        const match = str.match(/^([a-zA-Z0-9_]+)\.([a-zA-Z0-9_]+)\+([a-zA-Z0-9_]+)$/);
         if (match) {
             return new DesignAutomationID(match[1], match[2], match[3]);
         } else {
