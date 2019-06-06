@@ -4,6 +4,8 @@ const { AuthenticationClient } = require('./authentication');
 const RootPath = '/da/us-east/v3';
 const ReadScopes = ['code:all'];
 
+const ActivityParameterProps = ['description', 'localName', 'required', 'zip', 'ondemand'];
+
 /**
  * Client providing access to Autodesk Forge
  * {@link https://forge.autodesk.com/en/docs/design-automation/v3|design automation APIs}.
@@ -340,25 +342,20 @@ class DesignAutomationClient {
             config.commandLine[0] += ' /i';
             for (const input of inputs) {
                 config.commandLine[0] += ` $(args[${input.name}].path)`;
-                config.parameters[input.name] = { verb: 'get' };
-                if (input.description) {
-                    config.parameters[input.name].description = input.description;
-                }
-                if (input.localName) {
-                    config.parameters[input.name].localName = input.localName;
-                }
-                if (input.zip) {
-                    config.parameters[input.name].zip = input.zip;
+                const param = config.parameters[input.name] = { verb: input.verb || 'get' };
+                for (const prop of ActivityParameterProps) {
+                    if (input.hasOwnProperty(prop)) {
+                        param[prop] = input[prop];
+                    }
                 }
             }
         }
         for (const output of outputs) {
-            config.parameters[output.name] = { verb: 'put' };
-            if (output.description) {
-                config.parameters[output.name].description = output.description;
-            }
-            if (output.localName) {
-                config.parameters[output.name].localName = output.localName;
+            const param = config.parameters[output.name] = { verb: output.verb || 'put' };
+            for (const prop of ActivityParameterProps) {
+                if (output.hasOwnProperty(prop)) {
+                    param[prop] = output[prop];
+                }
             }
         }
         return config;
@@ -377,19 +374,20 @@ class DesignAutomationClient {
             config.commandLine[0] += ' /i';
             for (const input of inputs) {
                 config.commandLine[0] += ` $(args[${input.name}].path)`;
-                config.parameters[input.name] = { verb: 'get' };
-                if (input.description) {
-                    config.parameters[input.name].description = input.description;
+                const param = config.parameters[input.name] = { verb: input.verb || 'get' };
+                for (const prop of ActivityParameterProps) {
+                    if (input.hasOwnProperty(prop)) {
+                        param[prop] = input[prop];
+                    }
                 }
             }
         }
         for (const output of outputs) {
-            config.parameters[output.name] = { verb: 'put' };
-            if (output.description) {
-                config.parameters[output.name].description = output.description;
-            }
-            if (output.localName) {
-                config.parameters[output.name].localName = output.localName;
+            const param = config.parameters[output.name] = { verb: output.verb || 'put' };
+            for (const prop of ActivityParameterProps) {
+                if (output.hasOwnProperty(prop)) {
+                    param[prop] = output[prop];
+                }
             }
         }
         return config;
@@ -408,19 +406,20 @@ class DesignAutomationClient {
             config.commandLine[0] += ' /i';
             for (const input of inputs) {
                 config.commandLine[0] += ` $(args[${input.name}].path)`;
-                config.parameters[input.name] = { verb: 'get' };
-                if (input.description) {
-                    config.parameters[input.name].description = input.description;
+                const param = config.parameters[input.name] = { verb: input.verb || 'get' };
+                for (const prop of ActivityParameterProps) {
+                    if (input.hasOwnProperty(prop)) {
+                        param[prop] = input[prop];
+                    }
                 }
             }
         }
         for (const output of outputs) {
-            config.parameters[output.name] = { verb: 'put' };
-            if (output.description) {
-                config.parameters[output.name].description = output.description;
-            }
-            if (output.localName) {
-                config.parameters[output.name].localName = output.localName;
+            const param = config.parameters[output.name] = { verb: output.verb || 'put' };
+            for (const prop of ActivityParameterProps) {
+                if (output.hasOwnProperty(prop)) {
+                    param[prop] = output[prop];
+                }
             }
         }
         if (script) {
@@ -445,19 +444,20 @@ class DesignAutomationClient {
             throw new Error('3dsMax engine only supports single input file.')
         } else if (inputs.length > 0) {
             const input = inputs[0];
-            config.parameters[input.name] = { verb: 'get' };
             config.commandLine += ` -sceneFile \"$(args[${input.name}].path)\"`;
-            if (input.description) {
-                config.parameters[input.name].description = input.description;
+            const param = config.parameters[input.name] = { verb: input.verb || 'get' };
+            for (const prop of ActivityParameterProps) {
+                if (input.hasOwnProperty(prop)) {
+                    param[prop] = input[prop];
+                }
             }
         }
         for (const output of outputs) {
-            config.parameters[output.name] = { verb: 'put' };
-            if (output.description) {
-                config.parameters[output.name].description = output.description;
-            }
-            if (output.localName) {
-                config.parameters[output.name].localName = output.localName;
+            const param = config.parameters[output.name] = { verb: output.verb || 'put' };
+            for (const prop of ActivityParameterProps) {
+                if (output.hasOwnProperty(prop)) {
+                    param[prop] = output[prop];
+                }
             }
         }
         if (script) {
@@ -478,9 +478,10 @@ class DesignAutomationClient {
      * @param {string} bundleName App bundle name.
      * @param {string} bundleAlias App bundle alias.
      * @param {string} engine ID of one of the supported {@link engines}.
-     * @param {object[]} inputs List of input descriptor objects, each containing properties `name` and `description`.
-     * @param {object[]} outputs List of output descriptor objects, each containing properties `name` and `description`,
-     * and optionally `localName`.
+     * @param {object[]} inputs List of input descriptor objects, each containing required property `name`
+     * and optional properties `description`, `localName`, `required`, `zip`, `ondemand`, and `verb` ("get" by default).
+     * @param {object[]} outputs List of output descriptor objects, each containing required property `name`
+     * and optional properties `description`, `localName`, `required`, `zip`, `ondemand`, and `verb` ("put" by default).
      * @param {string} [script] Optional engine-specific script to pass to the activity.
      * @returns {Promise<object>} Details of created activity.
      */
@@ -514,9 +515,10 @@ class DesignAutomationClient {
      * @param {string} bundleName App bundle name.
      * @param {string} bundleAlias App bundle alias.
      * @param {string} engine ID of one of the supported {@link engines}.
-     * @param {object[]} inputs List of input descriptor objects, each containing properties `name` and `description`.
-     * @param {object[]} outputs List of output descriptor objects, each containing properties `name` and `description`,
-     * and optionally `localName`.
+     * @param {object[]} inputs List of input descriptor objects, each containing required property `name`
+     * and optional properties `description`, `localName`, `required`, `zip`, `ondemand`, and `verb` ("get" by default).
+     * @param {object[]} outputs List of output descriptor objects, each containing required property `name`
+     * and optional properties `description`, `localName`, `required`, `zip`, `ondemand`, and `verb` ("put" by default).
      * @param {string} [script] Optional engine-specific script to pass to the activity.
      * @returns {Promise<object>} Details of created activity.
      */
