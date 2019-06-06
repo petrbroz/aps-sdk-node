@@ -4,6 +4,50 @@ const { AuthenticationClient } = require('./authentication');
 const RootPath = '/da/us-east/v3';
 const ReadScopes = ['code:all'];
 
+const ActivityParameterProps = ['description', 'localName', 'required', 'zip', 'ondemand'];
+const WorkitemParameterProps = ['localName', 'optional', 'pathInZip', 'headers'];
+
+/**
+ * Helper class for working with Design Automation
+ * {@link https://forge.autodesk.com/en/docs/design-automation/v3/developers_guide/aliases-and-ids|aliases and IDs}.
+ */
+class DesignAutomationID {
+    static Regex = /^([a-zA-Z0-9_]+)\.([a-zA-Z0-9_]+)\+([a-zA-Z0-9_]+)$/;
+
+    /**
+     * Parses fully qualified ID.
+     * @param {string} str Fully qualified ID.
+     * @returns {DesignAutomationID|null} Parsed ID or null if the format was not correct.
+     */
+    static parse(str) {
+        const match = str.match(DesignAutomationID.Regex);
+        if (match) {
+            return new DesignAutomationID(match[1], match[2], match[3]);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Creates new fully qualified ID.
+     * @param {string} owner Owner part of the fully qualified ID. Must consist of a-z, A-Z, 0-9 and _ characters only.
+     * @param {string} id ID part of the fully qualified ID. Must consist of a-z, A-Z, 0-9 and _ characters only.
+     * @param {string} alias Alias part of the fully qualified ID. Must consist of a-z, A-Z, 0-9 and _ characters only.
+     */
+    constructor(owner, id, alias) {
+        this.owner = owner;
+        this.id = id;
+        this.alias = alias;
+    }
+
+    /**
+     * Outputs the fully qualified ID in a form expected by Design Automation endpoints.
+     */
+    toString() {
+        return `${this.owner}.${this.id}+${this.alias}`;
+    }
+}
+
 /**
  * Client providing access to Autodesk Forge
  * {@link https://forge.autodesk.com/en/docs/design-automation/v3|design automation APIs}.
@@ -340,25 +384,20 @@ class DesignAutomationClient {
             config.commandLine[0] += ' /i';
             for (const input of inputs) {
                 config.commandLine[0] += ` $(args[${input.name}].path)`;
-                config.parameters[input.name] = { verb: 'get' };
-                if (input.description) {
-                    config.parameters[input.name].description = input.description;
-                }
-                if (input.localName) {
-                    config.parameters[input.name].localName = input.localName;
-                }
-                if (input.zip) {
-                    config.parameters[input.name].zip = input.zip;
+                const param = config.parameters[input.name] = { verb: input.verb || 'get' };
+                for (const prop of ActivityParameterProps) {
+                    if (input.hasOwnProperty(prop)) {
+                        param[prop] = input[prop];
+                    }
                 }
             }
         }
         for (const output of outputs) {
-            config.parameters[output.name] = { verb: 'put' };
-            if (output.description) {
-                config.parameters[output.name].description = output.description;
-            }
-            if (output.localName) {
-                config.parameters[output.name].localName = output.localName;
+            const param = config.parameters[output.name] = { verb: output.verb || 'put' };
+            for (const prop of ActivityParameterProps) {
+                if (output.hasOwnProperty(prop)) {
+                    param[prop] = output[prop];
+                }
             }
         }
         return config;
@@ -377,19 +416,20 @@ class DesignAutomationClient {
             config.commandLine[0] += ' /i';
             for (const input of inputs) {
                 config.commandLine[0] += ` $(args[${input.name}].path)`;
-                config.parameters[input.name] = { verb: 'get' };
-                if (input.description) {
-                    config.parameters[input.name].description = input.description;
+                const param = config.parameters[input.name] = { verb: input.verb || 'get' };
+                for (const prop of ActivityParameterProps) {
+                    if (input.hasOwnProperty(prop)) {
+                        param[prop] = input[prop];
+                    }
                 }
             }
         }
         for (const output of outputs) {
-            config.parameters[output.name] = { verb: 'put' };
-            if (output.description) {
-                config.parameters[output.name].description = output.description;
-            }
-            if (output.localName) {
-                config.parameters[output.name].localName = output.localName;
+            const param = config.parameters[output.name] = { verb: output.verb || 'put' };
+            for (const prop of ActivityParameterProps) {
+                if (output.hasOwnProperty(prop)) {
+                    param[prop] = output[prop];
+                }
             }
         }
         return config;
@@ -408,19 +448,20 @@ class DesignAutomationClient {
             config.commandLine[0] += ' /i';
             for (const input of inputs) {
                 config.commandLine[0] += ` $(args[${input.name}].path)`;
-                config.parameters[input.name] = { verb: 'get' };
-                if (input.description) {
-                    config.parameters[input.name].description = input.description;
+                const param = config.parameters[input.name] = { verb: input.verb || 'get' };
+                for (const prop of ActivityParameterProps) {
+                    if (input.hasOwnProperty(prop)) {
+                        param[prop] = input[prop];
+                    }
                 }
             }
         }
         for (const output of outputs) {
-            config.parameters[output.name] = { verb: 'put' };
-            if (output.description) {
-                config.parameters[output.name].description = output.description;
-            }
-            if (output.localName) {
-                config.parameters[output.name].localName = output.localName;
+            const param = config.parameters[output.name] = { verb: output.verb || 'put' };
+            for (const prop of ActivityParameterProps) {
+                if (output.hasOwnProperty(prop)) {
+                    param[prop] = output[prop];
+                }
             }
         }
         if (script) {
@@ -445,19 +486,20 @@ class DesignAutomationClient {
             throw new Error('3dsMax engine only supports single input file.')
         } else if (inputs.length > 0) {
             const input = inputs[0];
-            config.parameters[input.name] = { verb: 'get' };
             config.commandLine += ` -sceneFile \"$(args[${input.name}].path)\"`;
-            if (input.description) {
-                config.parameters[input.name].description = input.description;
+            const param = config.parameters[input.name] = { verb: input.verb || 'get' };
+            for (const prop of ActivityParameterProps) {
+                if (input.hasOwnProperty(prop)) {
+                    param[prop] = input[prop];
+                }
             }
         }
         for (const output of outputs) {
-            config.parameters[output.name] = { verb: 'put' };
-            if (output.description) {
-                config.parameters[output.name].description = output.description;
-            }
-            if (output.localName) {
-                config.parameters[output.name].localName = output.localName;
+            const param = config.parameters[output.name] = { verb: output.verb || 'put' };
+            for (const prop of ActivityParameterProps) {
+                if (output.hasOwnProperty(prop)) {
+                    param[prop] = output[prop];
+                }
             }
         }
         if (script) {
@@ -478,17 +520,18 @@ class DesignAutomationClient {
      * @param {string} bundleName App bundle name.
      * @param {string} bundleAlias App bundle alias.
      * @param {string} engine ID of one of the supported {@link engines}.
-     * @param {object[]} inputs List of input descriptor objects, each containing properties `name` and `description`.
-     * @param {object[]} outputs List of output descriptor objects, each containing properties `name` and `description`,
-     * and optionally `localName`.
+     * @param {object[]} inputs List of input descriptor objects, each containing required property `name`
+     * and optional properties `description`, `localName`, `required`, `zip`, `ondemand`, and `verb` ("get" by default).
+     * @param {object[]} outputs List of output descriptor objects, each containing required property `name`
+     * and optional properties `description`, `localName`, `required`, `zip`, `ondemand`, and `verb` ("put" by default).
      * @param {string} [script] Optional engine-specific script to pass to the activity.
      * @returns {Promise<object>} Details of created activity.
      */
     async createActivity(id, description, bundleName, bundleAlias, engine, inputs, outputs, script) {
         // TODO: tests
-        const engineUri = new DesignAutomationURI(engine);
+        const engineId = DesignAutomationID.parse(engine);
         let config;
-        switch (engineUri.name) {
+        switch (engineId.id) {
             case 'AutoCAD':
                 config = this._autocadActivityConfig(id, description, this.auth.client_id, bundleName, bundleAlias, engine, inputs, outputs, script);
                 break;
@@ -514,17 +557,18 @@ class DesignAutomationClient {
      * @param {string} bundleName App bundle name.
      * @param {string} bundleAlias App bundle alias.
      * @param {string} engine ID of one of the supported {@link engines}.
-     * @param {object[]} inputs List of input descriptor objects, each containing properties `name` and `description`.
-     * @param {object[]} outputs List of output descriptor objects, each containing properties `name` and `description`,
-     * and optionally `localName`.
+     * @param {object[]} inputs List of input descriptor objects, each containing required property `name`
+     * and optional properties `description`, `localName`, `required`, `zip`, `ondemand`, and `verb` ("get" by default).
+     * @param {object[]} outputs List of output descriptor objects, each containing required property `name`
+     * and optional properties `description`, `localName`, `required`, `zip`, `ondemand`, and `verb` ("put" by default).
      * @param {string} [script] Optional engine-specific script to pass to the activity.
      * @returns {Promise<object>} Details of created activity.
      */
     async updateActivity(id, description, bundleName, bundleAlias, engine, inputs, outputs, script) {
         // TODO: tests
-        const engineUri = new DesignAutomationURI(engine);
+        const engineId = DesignAutomationID.parse(engine);
         let config;
-        switch (engineUri.name) {
+        switch (engineId.id) {
             case 'AutoCAD':
                 config = this._autocadActivityConfig(null, description, this.auth.client_id, bundleName, bundleAlias, engine, inputs, outputs, script);
                 break;
@@ -642,10 +686,10 @@ class DesignAutomationClient {
      * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/workitems-POST|docs}).
      * @async
      * @param {string} activityId Activity ID.
-     * @param {object[]} inputs List of input descriptor objects, each containing properties `name` and `url`,
-     * and optionally `localName` and `headers`.
-     * @param {object[]} outputs List of output descriptor objects, each containing properties `name` and `url`,
-     * and optionally `localName` and `headers`.
+     * @param {object[]} inputs List of input descriptor objects, each containing required properties `name`, `url`,
+     * and optional properties `localName`, `optional`, `pathInZip`, `headers`, and `verb` ("get" by default).
+     * @param {object[]} outputs List of output descriptor objects, each containing required properties `name`, `url`,
+     * and optional properties `localName`, `optional`, `pathInZip`, `headers`, and `verb` ("put" by default).
      */
     async createWorkItem(activityId, inputs, outputs) {
         // TODO: tests
@@ -654,21 +698,19 @@ class DesignAutomationClient {
             arguments: {}
         };
         for (const input of inputs) {
-            config.arguments[input.name] = { url: input.url };
-            if (input.localName) {
-                config.arguments[input.name].localName = input.localName;
-            }
-            if (input.headers) {
-                config.arguments[input.name].headers = input.headers;
+            const param = config.arguments[input.name] = { verb: input.verb || 'get', url: input.url };
+            for (const prop of WorkitemParameterProps) {
+                if (input.hasOwnProperty(prop)) {
+                    param[prop] = input[prop];
+                }
             }
         }
         for (const output of outputs) {
-            config.arguments[output.name] = { verb: 'put', url: output.url }
-            if (output.localName) {
-                config.arguments[output.name].localName = output.localName;
-            }
-            if (output.headers) {
-                config.arguments[output.name].headers = output.headers;
+            const param = config.arguments[output.name] = { verb: output.verb || 'put', url: output.url };
+            for (const prop of WorkitemParameterProps) {
+                if (output.hasOwnProperty(prop)) {
+                    param[prop] = output[prop];
+                }
             }
         }
         return this._post('/workitems', { json: config });
@@ -676,5 +718,6 @@ class DesignAutomationClient {
 }
 
 module.exports = {
-    DesignAutomationClient
+    DesignAutomationClient,
+    DesignAutomationID
 };

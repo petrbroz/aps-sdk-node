@@ -123,6 +123,7 @@ async function patch(url, data, headers = {}) {
     return _fetch(url, options);
 }
 
+/** @deprecated Use {@link DesgnAutomationID} instead. */
 class DesignAutomationURI {
     constructor(id) {
         const d = id.indexOf('.');
