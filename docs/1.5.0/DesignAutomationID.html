@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>
-      BIM360Client - Documentation
+      DesignAutomationID - Documentation
   </title>
 
   <link href="https://www.braintreepayments.com/images/favicon-ccda0b14.png" rel="icon" type="image/png">
@@ -79,7 +79,7 @@
   <div id="main">
     
       <h1 class="page-title">
-        BIM360Client
+        DesignAutomationID
       </h1>
     
 
@@ -90,14 +90,14 @@
     
       <h2>
         
-        BIM360Client
+        DesignAutomationID
         
       </h2>
 
       
         <div class="class-description">
-          <p>Client providing access to Autodesk Forge
-<a href="https://forge.autodesk.com/en/docs/bim360/v1">BIM360 APIs</a>.</p>
+          <p>Helper class for working with Design Automation
+<a href="https://forge.autodesk.com/en/docs/design-automation/v3/developers_guide/aliases-and-ids">aliases and IDs</a>.</p>
         </div>
       
     
@@ -114,13 +114,13 @@
   
 
   <span class='name-container'>
-    <a class="link-icon" href="#BIM360Client">
+    <a class="link-icon" href="#DesignAutomationID">
       <svg height="20" width="20" style="fill: black;">
         <use xlink:href="#linkIcon"></use>
       </svg>
     </a>
-    <h4 class="name" id="BIM360Client">
-      <span class="type-signature"></span>new BIM360Client<span class="signature">(auth<span class="signature-attributes">opt</span>, host<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span>
+    <h4 class="name" id="DesignAutomationID">
+      <span class="type-signature"></span>new DesignAutomationID<span class="signature">(owner, id, alias)</span><span class="type-signature"></span>
     </h4>
   </span>
 
@@ -129,7 +129,7 @@
 
 
   <div class="description">
-    <p>Initializes new client with specific authentication method.</p>
+    <p>Creates new fully qualified ID.</p>
   </div>
 
 
@@ -151,11 +151,7 @@
       <th>Type</th>
 
       
-        <th>Attributes</th>
-      
 
-      
-        <th>Default</th>
       
 
       <th class="last">Description</th>
@@ -166,54 +162,7 @@
     
       <tr>
         
-          <td class="name"><code>auth</code></td>
-        
-
-        <td class="type">
-          
-            
-    <span class="param-type">
-      object
-    </span>
-
-    
-
-
-          
-        </td>
-
-        
-          <td class="attributes">
-            
-              &lt;optional><br>
-            
-
-            
-
-            
-          </td>
-        
-
-        
-          <td class="default">
-            
-              {token: FORGE_ACCESS_TOKEN}
-            
-          </td>
-        
-
-        <td class="description last">
-          <p>Authentication object,
-containing either <code>client_id</code> and <code>client_secret</code> properties (for 2-legged authentication),
-or a single <code>token</code> property (for authentication with pre-generated access token).</p>
-          
-        </td>
-      </tr>
-
-    
-      <tr>
-        
-          <td class="name"><code>host</code></td>
+          <td class="name"><code>owner</code></td>
         
 
         <td class="type">
@@ -230,27 +179,69 @@ or a single <code>token</code> property (for authentication with pre-generated a
         </td>
 
         
-          <td class="attributes">
-            
-              &lt;optional><br>
-            
 
-            
-
-            
-          </td>
-        
-
-        
-          <td class="default">
-            
-              "https://developer.api.autodesk.com"
-            
-          </td>
         
 
         <td class="description last">
-          <p>Forge API host.</p>
+          <p>Owner part of the fully qualified ID. Must consist of a-z, A-Z, 0-9 and _ characters only.</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>id</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          <p>ID part of the fully qualified ID. Must consist of a-z, A-Z, 0-9 and _ characters only.</p>
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>alias</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          <p>Alias part of the fully qualified ID. Must consist of a-z, A-Z, 0-9 and _ characters only.</p>
           
         </td>
       </tr>
@@ -294,7 +285,7 @@ or a single <code>token</code> property (for authentication with pre-generated a
     <dd class="tag-source">
       <ul class="dummy">
         <li>
-          <a href="bim360.js.html">bim360.js</a>, <a href="bim360.js.html#line18">line 18</a>
+          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line35">line 35</a>
         </li>
       </ul>
     </dd>
@@ -345,13 +336,13 @@ or a single <code>token</code> property (for authentication with pre-generated a
   
 
   <span class='name-container'>
-    <a class="link-icon" href="#contents">
+    <a class="link-icon" href="#.parse">
       <svg height="20" width="20" style="fill: black;">
         <use xlink:href="#linkIcon"></use>
       </svg>
     </a>
-    <h4 class="name" id="contents">
-      <span class="type-signature">(async) </span>contents<span class="signature">(project, folder)</span><span class="type-signature"> &rarr; {Promise.&lt;Array.&lt;object>>}</span>
+    <h4 class="name" id=".parse">
+      <span class="type-signature">(static) </span>parse<span class="signature">(str)</span><span class="type-signature"> &rarr; {<a href="DesignAutomationID.html">DesignAutomationID</a>|null}</span>
     </h4>
   </span>
 
@@ -360,7 +351,7 @@ or a single <code>token</code> property (for authentication with pre-generated a
 
 
   <div class="description">
-    <p>Gets contents of a folder.</p>
+    <p>Parses fully qualified ID.</p>
   </div>
 
 
@@ -393,7 +384,7 @@ or a single <code>token</code> property (for authentication with pre-generated a
     
       <tr>
         
-          <td class="name"><code>project</code></td>
+          <td class="name"><code>str</code></td>
         
 
         <td class="type">
@@ -414,36 +405,7 @@ or a single <code>token</code> property (for authentication with pre-generated a
         
 
         <td class="description last">
-          <p>Project ID.</p>
-          
-        </td>
-      </tr>
-
-    
-      <tr>
-        
-          <td class="name"><code>folder</code></td>
-        
-
-        <td class="type">
-          
-            
-    <span class="param-type">
-      string
-    </span>
-
-    
-
-
-          
-        </td>
-
-        
-
-        
-
-        <td class="description last">
-          <p>Folder ID.</p>
+          <p>Fully qualified ID.</p>
           
         </td>
       </tr>
@@ -487,7 +449,7 @@ or a single <code>token</code> property (for authentication with pre-generated a
     <dd class="tag-source">
       <ul class="dummy">
         <li>
-          <a href="bim360.js.html">bim360.js</a>, <a href="bim360.js.html#line89">line 89</a>
+          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line20">line 20</a>
         </li>
       </ul>
     </dd>
@@ -520,13 +482,13 @@ or a single <code>token</code> property (for authentication with pre-generated a
   
 
   <span class='name-container'>
-    <a class="link-icon" href="#folders">
+    <a class="link-icon" href="#toString">
       <svg height="20" width="20" style="fill: black;">
         <use xlink:href="#linkIcon"></use>
       </svg>
     </a>
-    <h4 class="name" id="folders">
-      <span class="type-signature">(async) </span>folders<span class="signature">(hub, project)</span><span class="type-signature"> &rarr; {Promise.&lt;Array.&lt;object>>}</span>
+    <h4 class="name" id="toString">
+      <span class="type-signature"></span>toString<span class="signature">()</span><span class="type-signature"></span>
     </h4>
   </span>
 
@@ -535,329 +497,7 @@ or a single <code>token</code> property (for authentication with pre-generated a
 
 
   <div class="description">
-    <p>Gets a list of top folders in a project.</p>
-  </div>
-
-
-
-
-
-
-
-  <h5>Parameters:</h5>
-  
-
-<table class="params">
-  <thead>
-    <tr>
-      
-        <th>Name</th>
-      
-
-      <th>Type</th>
-
-      
-
-      
-
-      <th class="last">Description</th>
-    </tr>
-  </thead>
-
-  <tbody>
-    
-      <tr>
-        
-          <td class="name"><code>hub</code></td>
-        
-
-        <td class="type">
-          
-            
-    <span class="param-type">
-      string
-    </span>
-
-    
-
-
-          
-        </td>
-
-        
-
-        
-
-        <td class="description last">
-          <p>Hub ID.</p>
-          
-        </td>
-      </tr>
-
-    
-      <tr>
-        
-          <td class="name"><code>project</code></td>
-        
-
-        <td class="type">
-          
-            
-    <span class="param-type">
-      string
-    </span>
-
-    
-
-
-          
-        </td>
-
-        
-
-        
-
-        <td class="description last">
-          <p>Project ID.</p>
-          
-        </td>
-      </tr>
-
-    
-  </tbody>
-</table>
-
-
-
-
-
-<dl class="details">
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source">
-      <ul class="dummy">
-        <li>
-          <a href="bim360.js.html">bim360.js</a>, <a href="bim360.js.html#line77">line 77</a>
-        </li>
-      </ul>
-    </dd>
-  
-
-  
-
-  
-
-  
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      
-        
-
-
-  
-
-  <span class='name-container'>
-    <a class="link-icon" href="#hub">
-      <svg height="20" width="20" style="fill: black;">
-        <use xlink:href="#linkIcon"></use>
-      </svg>
-    </a>
-    <h4 class="name" id="hub">
-      <span class="type-signature">(async) </span>hub<span class="signature">(id)</span><span class="type-signature"> &rarr; {Promise.&lt;object>}</span>
-    </h4>
-  </span>
-
-  
-
-
-
-  <div class="description">
-    <p>Gets a hub with specific ID.</p>
-  </div>
-
-
-
-
-
-
-
-  <h5>Parameters:</h5>
-  
-
-<table class="params">
-  <thead>
-    <tr>
-      
-        <th>Name</th>
-      
-
-      <th>Type</th>
-
-      
-
-      
-
-      <th class="last">Description</th>
-    </tr>
-  </thead>
-
-  <tbody>
-    
-      <tr>
-        
-          <td class="name"><code>id</code></td>
-        
-
-        <td class="type">
-          
-            
-    <span class="param-type">
-      string
-    </span>
-
-    
-
-
-          
-        </td>
-
-        
-
-        
-
-        <td class="description last">
-          <p>Hub ID.</p>
-          
-        </td>
-      </tr>
-
-    
-  </tbody>
-</table>
-
-
-
-
-
-<dl class="details">
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source">
-      <ul class="dummy">
-        <li>
-          <a href="bim360.js.html">bim360.js</a>, <a href="bim360.js.html#line54">line 54</a>
-        </li>
-      </ul>
-    </dd>
-  
-
-  
-
-  
-
-  
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      
-        
-
-
-  
-
-  <span class='name-container'>
-    <a class="link-icon" href="#hubs">
-      <svg height="20" width="20" style="fill: black;">
-        <use xlink:href="#linkIcon"></use>
-      </svg>
-    </a>
-    <h4 class="name" id="hubs">
-      <span class="type-signature">(async) </span>hubs<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;Array.&lt;object>>}</span>
-    </h4>
-  </span>
-
-  
-
-
-
-  <div class="description">
-    <p>Gets a list of all hubs accessible to given credentials
-(<a href="https://forge.autodesk.com/en/docs/data/v2/reference/http/hubs-GET">docs</a>).</p>
+    <p>Outputs the fully qualified ID in a form expected by Design Automation endpoints.</p>
   </div>
 
 
@@ -900,503 +540,7 @@ or a single <code>token</code> property (for authentication with pre-generated a
     <dd class="tag-source">
       <ul class="dummy">
         <li>
-          <a href="bim360.js.html">bim360.js</a>, <a href="bim360.js.html#line43">line 43</a>
-        </li>
-      </ul>
-    </dd>
-  
-
-  
-
-  
-
-  
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      
-        
-
-
-  
-
-  <span class='name-container'>
-    <a class="link-icon" href="#projects">
-      <svg height="20" width="20" style="fill: black;">
-        <use xlink:href="#linkIcon"></use>
-      </svg>
-    </a>
-    <h4 class="name" id="projects">
-      <span class="type-signature">(async) </span>projects<span class="signature">(hub)</span><span class="type-signature"> &rarr; {Promise.&lt;Array.&lt;object>>}</span>
-    </h4>
-  </span>
-
-  
-
-
-
-  <div class="description">
-    <p>Gets a list of all projects in a hub.</p>
-  </div>
-
-
-
-
-
-
-
-  <h5>Parameters:</h5>
-  
-
-<table class="params">
-  <thead>
-    <tr>
-      
-        <th>Name</th>
-      
-
-      <th>Type</th>
-
-      
-
-      
-
-      <th class="last">Description</th>
-    </tr>
-  </thead>
-
-  <tbody>
-    
-      <tr>
-        
-          <td class="name"><code>hub</code></td>
-        
-
-        <td class="type">
-          
-            
-    <span class="param-type">
-      string
-    </span>
-
-    
-
-
-          
-        </td>
-
-        
-
-        
-
-        <td class="description last">
-          <p>Hub ID.</p>
-          
-        </td>
-      </tr>
-
-    
-  </tbody>
-</table>
-
-
-
-
-
-<dl class="details">
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source">
-      <ul class="dummy">
-        <li>
-          <a href="bim360.js.html">bim360.js</a>, <a href="bim360.js.html#line65">line 65</a>
-        </li>
-      </ul>
-    </dd>
-  
-
-  
-
-  
-
-  
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      
-        
-
-
-  
-
-  <span class='name-container'>
-    <a class="link-icon" href="#tip">
-      <svg height="20" width="20" style="fill: black;">
-        <use xlink:href="#linkIcon"></use>
-      </svg>
-    </a>
-    <h4 class="name" id="tip">
-      <span class="type-signature">(async) </span>tip<span class="signature">(project, item)</span><span class="type-signature"> &rarr; {Promise.&lt;object>}</span>
-    </h4>
-  </span>
-
-  
-
-
-
-  <div class="description">
-    <p>Gets &quot;tip&quot; version of a folder item.</p>
-  </div>
-
-
-
-
-
-
-
-  <h5>Parameters:</h5>
-  
-
-<table class="params">
-  <thead>
-    <tr>
-      
-        <th>Name</th>
-      
-
-      <th>Type</th>
-
-      
-
-      
-
-      <th class="last">Description</th>
-    </tr>
-  </thead>
-
-  <tbody>
-    
-      <tr>
-        
-          <td class="name"><code>project</code></td>
-        
-
-        <td class="type">
-          
-            
-    <span class="param-type">
-      string
-    </span>
-
-    
-
-
-          
-        </td>
-
-        
-
-        
-
-        <td class="description last">
-          <p>Project ID.</p>
-          
-        </td>
-      </tr>
-
-    
-      <tr>
-        
-          <td class="name"><code>item</code></td>
-        
-
-        <td class="type">
-          
-            
-    <span class="param-type">
-      string
-    </span>
-
-    
-
-
-          
-        </td>
-
-        
-
-        
-
-        <td class="description last">
-          <p>Item ID.</p>
-          
-        </td>
-      </tr>
-
-    
-  </tbody>
-</table>
-
-
-
-
-
-<dl class="details">
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source">
-      <ul class="dummy">
-        <li>
-          <a href="bim360.js.html">bim360.js</a>, <a href="bim360.js.html#line113">line 113</a>
-        </li>
-      </ul>
-    </dd>
-  
-
-  
-
-  
-
-  
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      
-        
-
-
-  
-
-  <span class='name-container'>
-    <a class="link-icon" href="#versions">
-      <svg height="20" width="20" style="fill: black;">
-        <use xlink:href="#linkIcon"></use>
-      </svg>
-    </a>
-    <h4 class="name" id="versions">
-      <span class="type-signature">(async) </span>versions<span class="signature">(project, item)</span><span class="type-signature"> &rarr; {Promise.&lt;Array.&lt;object>>}</span>
-    </h4>
-  </span>
-
-  
-
-
-
-  <div class="description">
-    <p>Gets versions of a folder item.</p>
-  </div>
-
-
-
-
-
-
-
-  <h5>Parameters:</h5>
-  
-
-<table class="params">
-  <thead>
-    <tr>
-      
-        <th>Name</th>
-      
-
-      <th>Type</th>
-
-      
-
-      
-
-      <th class="last">Description</th>
-    </tr>
-  </thead>
-
-  <tbody>
-    
-      <tr>
-        
-          <td class="name"><code>project</code></td>
-        
-
-        <td class="type">
-          
-            
-    <span class="param-type">
-      string
-    </span>
-
-    
-
-
-          
-        </td>
-
-        
-
-        
-
-        <td class="description last">
-          <p>Project ID.</p>
-          
-        </td>
-      </tr>
-
-    
-      <tr>
-        
-          <td class="name"><code>item</code></td>
-        
-
-        <td class="type">
-          
-            
-    <span class="param-type">
-      string
-    </span>
-
-    
-
-
-          
-        </td>
-
-        
-
-        
-
-        <td class="description last">
-          <p>Item ID.</p>
-          
-        </td>
-      </tr>
-
-    
-  </tbody>
-</table>
-
-
-
-
-
-<dl class="details">
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source">
-      <ul class="dummy">
-        <li>
-          <a href="bim360.js.html">bim360.js</a>, <a href="bim360.js.html#line101">line 101</a>
+          <a href="design-automation.js.html">design-automation.js</a>, <a href="design-automation.js.html#line44">line 44</a>
         </li>
       </ul>
     </dd>
