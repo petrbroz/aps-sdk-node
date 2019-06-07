@@ -18,7 +18,7 @@ class DesignAutomationID {
      * @returns {DesignAutomationID|null} Parsed ID or null if the format was not correct.
      */
     static parse(str) {
-        const match = str.match(/^([a-zA-Z0-9_]+)\.([a-zA-Z0-9_]+)\+([a-zA-Z0-9_]+)$/);
+        const match = str.match(/^([a-zA-Z0-9_]+)\.([a-zA-Z0-9_]+)\+([\$a-zA-Z0-9_]+)$/);
         if (match) {
             return new DesignAutomationID(match[1], match[2], match[3]);
         } else {

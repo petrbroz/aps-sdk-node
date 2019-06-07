@@ -63,6 +63,13 @@ describe('DataManagementClient', function() {
             const objects = await this.client.listObjects(this.bucket);
             assert(objects.length > 0);
         });
+        it('should only list objects with given prefix', async function() {
+            const prefix = 'p';
+            const objects = await this.client.listObjects(this.bucket, prefix);
+            for (const obj of objects) {
+                assert(obj.objectKey.startsWith(prefix));
+            }
+        });
     });
 
     describe('iterateObjects()', function() {
@@ -70,6 +77,14 @@ describe('DataManagementClient', function() {
             for await (const objects of this.client.iterateObjects(this.bucket)) {
                 assert(objects.length > 0);
                 break;
+            }
+        });
+        it('should only iterate over objects with given prefix', async function() {
+            const prefix = 'p';
+            for await (const objects of this.client.iterateObjects(this.bucket, 16, prefix)) {
+                for (const obj of objects) {
+                    assert(obj.objectKey.startsWith(prefix));
+                }
             }
         });
     });
