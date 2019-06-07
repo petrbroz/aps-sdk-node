@@ -67,13 +67,13 @@ class DataManagementClient {
 
     // Iterates (asynchronously) over pages of paginated results
     async *_pager(endpoint, limit) {
-        let response = await this._get(`${endpoint}?limit=${limit}`);
+        let response = await this._get(`${endpoint}${endpoint.indexOf('?') === -1 ? '?' : '&'}limit=${limit}`);
         yield response.items;
 
         while (response.next) {
             const next = new URL(response.next);
             const startAt = querystring.escape(next.searchParams.get('startAt'));
-            response = await this._get(`${endpoint}?startAt=${startAt}&limit=${limit}`);
+            response = await this._get(`${endpoint}${endpoint.indexOf('?') === -1 ? '?' : '&'}startAt=${startAt}&limit=${limit}`);
             yield response.items;
         }
     }
@@ -86,7 +86,7 @@ class DataManagementClient {
         while (response.next) {
             const next = new URL(response.next);
             const startAt = querystring.escape(next.searchParams.get('startAt'));
-            response = await this._get(`${endpoint}?startAt=${startAt}`);
+            response = await this._get(`${endpoint}${endpoint.indexOf('?') === -1 ? '?' : '&'}startAt=${startAt}`);
             results = results.concat(response.items);
         }
         return results;
@@ -99,7 +99,7 @@ class DataManagementClient {
      * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/buckets-GET|docs}).
      * @async
      * @generator
-     * @param {number} [limit=16] Max number of buckets to receive in one batch.
+     * @param {number} [limit=16] Max number of buckets to receive in one batch (allowed values: 1-100).
      * @yields {Promise<object[]>} List of bucket object containing 'bucketKey', 'createdDate', and 'policyKey'.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
@@ -158,12 +158,17 @@ class DataManagementClient {
      * @async
      * @generator
      * @param {string} bucket Bucket key.
-     * @param {number} [limit=16] Max number of objects to receive in one batch.
+     * @param {number} [limit=16] Max number of objects to receive in one batch (allowed values: 1-100).
+     * @param {string} [beginsWith] Optional filter to only return objects whose keys are prefixed with this value.
      * @yields {Promise<object[]>} List of object containing 'bucketKey', 'objectKey', 'objectId', 'sha1', 'size', and 'location'.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async *iterateObjects(bucket, limit = 16) {
-        for await (const objects of this._pager(`/buckets/${bucket}/objects`, limit)) {
+    async *iterateObjects(bucket, limit = 16, beginsWith) {
+        let url = `/buckets/${bucket}/objects`;
+        if (beginsWith) {
+            url += '?beginsWith=' + querystring.escape(beginsWith);
+        }
+        for await (const objects of this._pager(url, limit)) {
             yield objects;
         }
     }
@@ -173,11 +178,16 @@ class DataManagementClient {
      * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/buckets-:bucketKey-objects-GET|docs}).
      * @async
      * @param {string} bucket Bucket key.
+     * @param {string} [beginsWith] Optional filter to only return objects whose keys are prefixed with this value.
      * @returns {Promise<object[]>} List of object containing 'bucketKey', 'objectKey', 'objectId', 'sha1', 'size', and 'location'.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async listObjects(bucket) {
-        return this._collect(`/buckets/${bucket}/objects`);
+    async listObjects(bucket, beginsWith) {
+        let url = `/buckets/${bucket}/objects`;
+        if (beginsWith) {
+            url += '?beginsWith=' + querystring.escape(beginsWith);
+        }
+        return this._collect(url);
     }
 
     /**
