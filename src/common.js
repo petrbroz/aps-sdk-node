@@ -5,11 +5,17 @@ const DefaultHost = 'https://developer.api.autodesk.com';
 const RetryDelay = 5000; // Delay (in milliseconds) before retrying after a "202 Accepted" response
 
 class ForgeError extends Error {
-    constructor(url, status, data) {
-        super(JSON.stringify(data));
+    constructor(url, status, statusText, data) {
+        super();
         this.url = url;
         this.status = status;
+        this.statusText = statusText;
         this.data = data;
+        if (data) {
+            this.message = url + ': ' + (typeof data === 'string') ? data : JSON.stringify(data);
+        } else {
+            this.message = url + ': ' + statusText;
+        }
     }
 }
 
@@ -40,10 +46,10 @@ async function _fetch(url, options) {
         switch (contentType) {
             case 'application/json':
                 const data = await response.json();
-                throw new ForgeError(url, response.status, data);
+                throw new ForgeError(url, response.status, response.statusText, data);
             default:
                 const text = await response.text();
-                throw new Error(text);
+                throw new ForgeError(url, response.status, response.statusText, text);
         }
     }
 }
