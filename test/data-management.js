@@ -60,10 +60,12 @@ describe('DataManagementClient', function() {
 
     describe('listObjects()', function() {
         it('should return a list of objects', async function() {
+            this.timeout(10000);
             const objects = await this.client.listObjects(this.bucket);
             assert(objects.length > 0);
         });
         it('should only list objects with given prefix', async function() {
+            this.timeout(10000);
             const prefix = 'p';
             const objects = await this.client.listObjects(this.bucket, prefix);
             for (const obj of objects) {
@@ -74,12 +76,14 @@ describe('DataManagementClient', function() {
 
     describe('iterateObjects()', function() {
         it('should iterate over objects', async function() {
+            this.timeout(10000);
             for await (const objects of this.client.iterateObjects(this.bucket)) {
                 assert(objects.length > 0);
                 break;
             }
         });
         it('should only iterate over objects with given prefix', async function() {
+            this.timeout(10000);
             const prefix = 'p';
             for await (const objects of this.client.iterateObjects(this.bucket, 16, prefix)) {
                 for (const obj of objects) {
@@ -91,6 +95,7 @@ describe('DataManagementClient', function() {
 
     describe('uploadObject()', function() {
         it('should upload object content', async function() {
+            this.timeout(10000);
             const objectName = 'test-file';
             const buff = Buffer.from('This is a test string!', 'utf8');
             const result = await this.client.uploadObject(this.bucket, objectName, 'text/plain; charset=UTF-8', buff);
@@ -102,6 +107,7 @@ describe('DataManagementClient', function() {
 
     describe('downloadObject()', function() {
         it('should download object content', async function() {
+            this.timeout(10000);
             const objectName = 'test-file';
             const content = await this.client.downloadObject(this.bucket, objectName);
             assert(content.indexOf('This is a test string!') === 0);
@@ -127,6 +133,8 @@ describe('DataManagementClient', function() {
 
     describe('uploadObjectResumable()', function() {
         it('should upload multiple chunks in one session', async function() {
+            this.timeout(10000);
+
             const ObjectName = 'forge-nodejs-utils-test-file-' + new Date().toISOString();
             const SessionID = 'test-session';
             const arr = new Uint8Array(5 << 20);
@@ -134,8 +142,6 @@ describe('DataManagementClient', function() {
                 arr[i] = i % 255;
             }
             let ranges = null;
-
-            this.timeout(10000);
 
             await this.client.uploadObjectResumable(this.bucket, ObjectName, arr, 0, 10 << 20, SessionID, 'text/plain');
             ranges = await this.client.getResumableUploadStatus(this.bucket, ObjectName, SessionID);
