@@ -466,4 +466,380 @@ declare module 'forge-nodejs-utils' {
          */
         tip(project: string, item: string): Promise<IVersion>;
     }
+
+    interface IEngineDetail {
+        productVersion: string;
+        description: string;
+        version: number;
+        id: string;
+    }
+
+    interface IAppBundleDetail {
+        package: string;
+        id: string;
+        engine: string;
+        description: string;
+        version: number;
+    }
+
+    interface IAppBundleUploadParams {
+        uploadParameters: {
+            formData: any;
+            endpointURL: string;
+        };
+        // TODO
+    }
+
+    interface IAlias {
+        id: string;
+        version: number;
+    }
+
+    interface IActivityParam {
+        name: string;
+        verb?: string;
+        description?: string;
+        localName?: string;
+        required?: boolean;
+        zip?: boolean;
+        ondemand?: boolean;
+    }
+
+    interface IActivityDetail {
+        commandLine: string[];
+        parameters: { [paramId: string]: IActivityParam };
+        id: string;
+        engine: string;
+        appbundles: string[];
+        version: number;
+    }
+
+    interface IWorkItem {
+        // TODO
+    }
+
+    interface IWorkItemParam {
+        name: string;
+        url: string;
+        localName?: string;
+        optional?: boolean;
+        pathInZip?: string;
+        headers?: object;
+        verb?: string;
+    }
+
+    /**
+     * Client providing access to Autodesk Forge
+     * {@link https://forge.autodesk.com/en/docs/design-automation/v3|design automation APIs}.
+     */
+    class DesignAutomationClient {
+        /**
+         * Initializes new client with specific authentication method.
+         * @param {object} [auth={client_id: FORGE_CLIENT_ID, client_secret: FORGE_CLIENT_SECRET}] Authentication object,
+         * containing either `client_id` and `client_secret` properties (for 2-legged authentication),
+         * or a single `token` property (for 2-legged or 3-legged authentication with pre-generated access token).
+         * @param {string} [host="https://developer.api.autodesk.com"] Forge API host.
+         */
+        constructor(auth?: IAuthOptions, host?: string);
+
+        /**
+         * Iterates over all engines in pages of predefined size
+         * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/engines-GET|docs}).
+         * @async
+         * @generator
+         * @yields {Promise<string[]>} List of engines.
+         * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
+         */
+        iterateEngines(): AsyncIterable<string[]>;
+
+        /**
+         * Gets a list of all engines
+         * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/engines-GET|docs}).
+         * @async
+         * @returns {Promise<string[]>} List of engine IDs.
+         * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
+         */
+        listEngines(): Promise<string[]>;
+
+        /**
+         * Gets single engine details
+         * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/engines-id-GET|docs}).
+         * @async
+         * @param {string} engineId Fully qualified engine ID.
+         * @returns {Promise<IEngineDetail>} Engine details.
+         * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
+         */
+        getEngine(engineId: string): Promise<IEngineDetail>;
+
+        /**
+         * Iterates over all app bundles in pages of predefined size
+         * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-GET|docs}).
+         * @async
+         * @generator
+         * @yields {Promise<string[]>} List of appbundle objects.
+         * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
+         */
+        iterateAppBundles(): AsyncIterable<string[]>;
+
+        /**
+         * Gets a list of all appbundles
+         * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-GET|docs}).
+         * @async
+         * @returns {Promise<string[]>} List of appbundle IDs.
+         * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
+         */
+        listAppBundles(): Promise<string[]>;
+
+        /**
+         * Gets single appbundle details
+         * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-id-GET|docs}).
+         * @async
+         * @param {string} bundleId Fully qualified appbundle ID.
+         * @returns {Promise<IAppBundleDetail>} Appbundle details.
+         * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
+         */
+        getAppBundle(bundleId: string): Promise<IAppBundleDetail>;
+
+        /**
+         * Creates a new app bundle
+         * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-POST|docs}).
+         * @async
+         * @param {string} name Unique name of the bundle.
+         * @param {string} engine ID of one of the supported {@link engines}.
+         * @param {string} description Bundle description.     * 
+         * @returns {Promise<IAppBundleUploadParams>} Upload params for the created app bundle.
+         * @throws Error when the request fails, for example, due to insufficient rights.
+         */
+        createAppBundle(name: string, engine: string, description: string): Promise<IAppBundleUploadParams>;
+
+        /**
+         * Updates an existing app bundle, creating its new version
+         * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-id-versions-POST|docs}).
+         * @async
+         * @param {string} name Unique name of the bundle.
+         * @param {string} [engine] ID of one of the supported {@link engines}.
+         * @param {string} [description] Bundle description.
+         * @returns {Promise<IAppBundleUploadParams>} Upload params for the updated app bundle.
+         * @throws Error when the request fails, for example, due to insufficient rights.
+         */
+        updateAppBundle(name: string, engine?: string, description?: string): Promise<IAppBundleUploadParams>;
+
+        /**
+         * Iterates over all app bundle aliases in pages of predefined size
+         * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-id-aliases-GET|docs}).
+         * @async
+         * @generator
+         * @param {string} name Unique name of the bundle.
+         * @yields {Promise<IAlias[]>} List of appbundle alias objects.
+         * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
+         */
+        iterateAppBundleAliases(name: string): AsyncIterable<IAlias[]>;
+
+        /**
+         * Gets a list of all appbundle aliases
+         * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-id-aliases-GET|docs}).
+         * @async
+         * @param {string} name Unique name of the bundle.
+         * @returns {Promise<IAlias[]>} List of appbundle alias objects.
+         * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
+         */
+        listAppBundleAliases(name: string): Promise<IAlias[]>;
+
+        /**
+         * Iterates over all app bundle versions in pages of predefined size
+         * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-id-versions-GET|docs}).
+         * @async
+         * @generator
+         * @param {string} name Unique name of the bundle.
+         * @yields {Promise<number[]>} List of appbundle version numbers.
+         * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
+         */
+        iterateAppBundleVersions(name: string): AsyncIterable<number[]>;
+
+        /**
+         * Gets a list of all appbundle versions
+         * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-id-versions-GET|docs}).
+         * @async
+         * @param {string} name Unique name of the bundle.
+         * @returns {Promise<number[]>} List of appbundle version numbers.
+         * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
+         */
+        listAppBundleVersions(name: string): Promise<number[]>;
+
+        /**
+         * Creates new alias for an app bundle
+         * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-id-aliases-POST/|docs}).
+         * @async
+         * @param {string} name Name of the app bundle.
+         * @param {string} alias Alias name.
+         * @param {number} version Version of app bundle to link to this alias.
+         * @returns {Promise<IAlias>} Details of the created alias.
+         * @throws Error when the request fails, for example, due to insufficient rights.
+         */
+        createAppBundleAlias(name: string, alias: string, version: number): Promise<IAlias>;
+
+        /**
+         * Updates existing alias for an app bundle
+         * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-id-aliases-aliasId-PATCH/|docs}).
+         * @async
+         * @param {string} name Name of the app bundle.
+         * @param {string} alias Alias name.
+         * @param {number} version Version of app bundle to link to this alias.
+         * @returns {Promise<IAlias>} Details of the updated alias.
+         * @throws Error when the request fails, for example, due to insufficient rights.
+         */
+        updateAppBundleAlias(name: string, alias: string, version: number): Promise<IAlias>;
+
+        /**
+         * Iterates over all activities in pages of predefined size
+         * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/activities-GET|docs}).
+         * @async
+         * @generator
+         * @yields {Promise<string[]>} List of activity IDs.
+         * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
+         */
+        iterateActivities(): AsyncIterable<string[]>;
+
+        /**
+         * Gets a list of all activities
+         * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/activities-GET|docs}).
+         * @async
+         * @returns {Promise<string[]>} List of activity IDs.
+         * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
+         */
+        listActivities(): Promise<string[]>;
+
+        /**
+         * Gets single activity details
+         * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/activities-id-GET|docs}).
+         * @async
+         * @param {string} activityId Fully qualified activity ID.
+         * @returns {Promise<IActivityDetail>} Activity details.
+         * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
+         */
+        getActivity(activityId: string): Promise<IActivityDetail>;
+
+        /**
+         * Creates new activity
+         * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/activities-POST|docs}).
+         * @async
+         * @param {string} id New activity ID.
+         * @param {string} description Activity description.
+         * @param {string} bundleName App bundle name.
+         * @param {string} bundleAlias App bundle alias.
+         * @param {string} engine ID of one of the supported {@link engines}.
+         * @param {IActivityParam[]} inputs List of input descriptor objects, each containing required property `name`
+         * and optional properties `description`, `localName`, `required`, `zip`, `ondemand`, and `verb` ("get" by default).
+         * @param {IActivityParam[]} outputs List of output descriptor objects, each containing required property `name`
+         * and optional properties `description`, `localName`, `required`, `zip`, `ondemand`, and `verb` ("put" by default).
+         * @param {string} [script] Optional engine-specific script to pass to the activity.
+         * @returns {Promise<IActivityDetail>} Details of created activity.
+         */
+        createActivity(id: string, description: string, bundleName: string, bundleAlias: string, engine: string, inputs: IActivityParam[], outputs: IActivityParam[], script?: string): Promise<IActivityDetail>;
+
+        /**
+         * Updates existing activity
+         * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/activities-POST|docs}).
+         * @async
+         * @param {string} id New activity ID.
+         * @param {string} description Activity description.
+         * @param {string} bundleName App bundle name.
+         * @param {string} bundleAlias App bundle alias.
+         * @param {string} engine ID of one of the supported {@link engines}.
+         * @param {IActivityParam[]} inputs List of input descriptor objects, each containing required property `name`
+         * and optional properties `description`, `localName`, `required`, `zip`, `ondemand`, and `verb` ("get" by default).
+         * @param {IActivityParam[]} outputs List of output descriptor objects, each containing required property `name`
+         * and optional properties `description`, `localName`, `required`, `zip`, `ondemand`, and `verb` ("put" by default).
+         * @param {string} [script] Optional engine-specific script to pass to the activity.
+         * @returns {Promise<IActivityDetail>} Details of created activity.
+         */
+        updateActivity(id: string, description: string, bundleName: string, bundleAlias: string, engine: string, inputs: IActivityParam[], outputs: IActivityParam[], script?: string): Promise<IActivityDetail>;
+
+        /**
+         * Iterates over all activity aliases in pages of predefined size
+         * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/activities-id-aliases-GET|docs}).
+         * @async
+         * @generator
+         * @param {string} name Unique name of activity.
+         * @yields {Promise<IAlias[]>} List of activity alias objects.
+         * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
+         */
+        iterateActivityAliases(name: string): AsyncIterable<IAlias[]>;
+
+        /**
+         * Gets a list of all activity aliases
+         * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/activities-id-aliases-GET|docs}).
+         * @async
+         * @param {string} name Unique name of activity.
+         * @returns {Promise<IAlias[]>} List of activity alias objects.
+         * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
+         */
+        listActivityAliases(name: string): Promise<IAlias[]>;
+
+        /**
+         * Iterates over all activity versions in pages of predefined size
+         * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/activities-id-versions-GET|docs}).
+         * @async
+         * @generator
+         * @param {string} name Unique name of activity.
+         * @yields {Promise<number[]>} List of activity versions.
+         * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
+         */
+        iterateActivityVersions(name: string): AsyncIterable<number[]>;
+
+        /**
+         * Gets a list of all activity versions
+         * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/activities-id-versions-GET|docs}).
+         * @async
+         * @param {string} name Unique name of activity.
+         * @returns {Promise<number[]>} List of activity versions.
+         * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
+         */
+        listActivityVersions(name: string): Promise<number[]>;
+
+        /**
+         * Creates new alias for an activity
+         * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/activities-id-aliases-POST|docs}).
+         * @async
+         * @param {string} id Activity ID.
+         * @param {string} alias New alias name.
+         * @param {number} version Activity version to link to this alias.
+         * @returns {Promise<IAlias>} Details of created alias.
+         */
+        createActivityAlias(id: string, alias: string, version: number): Promise<IAlias>;
+
+        /**
+         * Updates existing alias for an activity
+         * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/activities-id-aliases-aliasId-PATCH|docs}).
+         * @async
+         * @param {string} id Activity ID.
+         * @param {string} alias Activity alias.
+         * @param {number} version Activity version to link to this alias.
+         * @returns {Promise<IAlias>} Details of updated alias.
+         */
+        updateActivityAlias(id: string, alias: string, version: string): Promise<IAlias>;
+
+        /**
+         * Gets details of a specific work item
+         * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/workitems-id-GET|docs}).
+         * @async
+         * @param {string} id Work item ID.
+         * @returns {Promise<IWorkItem>} Work item details.
+         * @throws Error when the request fails, for example, due to insufficient rights.
+         */
+        workItemDetails(id: string): Promise<IWorkItem>;
+
+        /**
+         * Creates new work item
+         * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/workitems-POST|docs}).
+         * @async
+         * @param {string} activityId Activity ID.
+         * @param {IWorkItemParam[]} inputs List of input descriptor objects, each containing required properties `name`, `url`,
+         * and optional properties `localName`, `optional`, `pathInZip`, `headers`, and `verb` ("get" by default).
+         * @param {IWorkItemParam[]} outputs List of output descriptor objects, each containing required properties `name`, `url`,
+         * and optional properties `localName`, `optional`, `pathInZip`, `headers`, and `verb` ("put" by default).
+         * @returns {Promise<IWorkItem>} Work item details.
+         */
+        createWorkItem(activityId: string, inputs: IWorkItemParam[], outputs: IWorkItemParam[]): Promise<IWorkItem>;
+    }
 }
