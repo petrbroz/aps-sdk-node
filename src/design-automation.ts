@@ -7,14 +7,14 @@ const ReadScopes = ['code:all'];
 const ActivityParameterProps = ['description', 'localName', 'required', 'zip', 'ondemand'];
 const WorkitemParameterProps = ['localName', 'optional', 'pathInZip', 'headers'];
 
-interface IEngineDetail {
+export interface IEngineDetail {
     productVersion: string;
     description: string;
     version: number;
     id: string;
 }
 
-interface IAppBundleDetail {
+export interface IAppBundleDetail {
     package: string;
     id: string;
     engine: string;
@@ -22,7 +22,7 @@ interface IAppBundleDetail {
     version: number;
 }
 
-interface IAppBundleUploadParams {
+export interface IAppBundleUploadParams {
     uploadParameters: {
         formData: any;
         endpointURL: string;
@@ -30,12 +30,12 @@ interface IAppBundleUploadParams {
     // TODO
 }
 
-interface IAlias {
+export interface IAlias {
     id: string;
     version: number;
 }
 
-interface IActivityParam {
+export interface IActivityParam {
     name: string;
     verb?: string;
     description?: string;
@@ -45,7 +45,7 @@ interface IActivityParam {
     ondemand?: boolean;
 }
 
-interface IActivityConfig {
+export interface IActivityConfig {
     id?: string;
     commandLine: string[] | string;
     description: string;
@@ -55,7 +55,7 @@ interface IActivityConfig {
     settings?: any;
 }
 
-interface IActivityDetail {
+export interface IActivityDetail {
     commandLine: string[];
     parameters: { [paramId: string]: IActivityParam };
     id: string;
@@ -64,16 +64,16 @@ interface IActivityDetail {
     version: number;
 }
 
-interface IWorkItemConfig {
+export interface IWorkItemConfig {
     activityId: string;
     arguments: { [name: string]: any };
 }
 
-interface IWorkItem {
+export interface IWorkItem {
     // TODO
 }
 
-interface IWorkItemParam {
+export interface IWorkItemParam {
     name: string;
     url: string;
     localName?: string;

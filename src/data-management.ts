@@ -7,29 +7,29 @@ const RootPath = '/oss/v2';
 const ReadTokenScopes = ['bucket:read', 'data:read'];
 const WriteTokenScopes = ['bucket:create', 'data:write'];
 
-interface IBucket {
+export interface IBucket {
     bucketKey: string;
     createdDate: number;
     policyKey: string;
 }
 
-interface IBucketPermission {
+export interface IBucketPermission {
     authId: string;
     access: string;
 }
 
-interface IBucketDetail extends IBucket {
+export interface IBucketDetail extends IBucket {
     bucketOwner: string;
     permissions: IBucketPermission[];
 }
 
-enum DataRetentionPolicy {
+export enum DataRetentionPolicy {
     Transient = 'transient',
     Temporary = 'temporary',
     Persistent = 'persistent'
 }
 
-interface IObject {
+export interface IObject {
     objectKey: string;
     bucketKey: string;
     objectId: string;
@@ -38,12 +38,12 @@ interface IObject {
     location: string;
 }
 
-interface IResumableUploadRange {
+export interface IResumableUploadRange {
     start: number;
     end: number;
 }
 
-interface ISignedUrl {
+export interface ISignedUrl {
     signedUrl: string;
     expiration: number;
     singleUse: boolean;
