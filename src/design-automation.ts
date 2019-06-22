@@ -219,10 +219,10 @@ export class DesignAutomationClient {
      * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/engines-GET|docs}).
      * @async
      * @generator
-     * @yields {AsyncIterable<IEngineDetail[]>} List of engines.
+     * @yields {AsyncIterable<string[]>} List of engine (full) IDs.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async *iterateEngines(): AsyncIterable<IEngineDetail[]> {
+    async *iterateEngines(): AsyncIterable<string[]> {
         for await (const engines of this._pager('/engines', ReadScopes)) {
             yield engines;
         }
@@ -232,10 +232,10 @@ export class DesignAutomationClient {
      * Gets a list of all engines
      * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/engines-GET|docs}).
      * @async
-     * @returns {Promise<IEngineDetail[]>} List of engines.
+     * @returns {Promise<string[]>} List of engine (full) IDs.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async listEngines(): Promise<IEngineDetail[]> {
+    async listEngines(): Promise<string[]> {
         return this._collect('/engines', ReadScopes);
     }
 
@@ -256,10 +256,10 @@ export class DesignAutomationClient {
      * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-GET|docs}).
      * @async
      * @generator
-     * @yields {AsyncIterable<IAppBundleDetail[]>} List of appbundle objects.
+     * @yields {AsyncIterable<string[]>} List of appbundle (full) IDs.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async *iterateAppBundles(): AsyncIterable<IAppBundleDetail[]> {
+    async *iterateAppBundles(): AsyncIterable<string[]> {
         for await (const bundles of this._pager('/appbundles', ReadScopes)) {
             yield bundles;
         }
@@ -269,10 +269,10 @@ export class DesignAutomationClient {
      * Gets a list of all appbundles
      * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-GET|docs}).
      * @async
-     * @returns {Promise<IAppBundleDetail[]>} List of appbundle objects.
+     * @returns {Promise<string[]>} List of appbundle (full) IDs.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async listAppBundles(): Promise<IAppBundleDetail[]> {
+    async listAppBundles(): Promise<string[]> {
         return this._collect('/appbundles', ReadScopes);
     }
 
@@ -412,10 +412,10 @@ export class DesignAutomationClient {
      * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/activities-GET|docs}).
      * @async
      * @generator
-     * @yields {AsyncIterable<IActivityDetail[]>} List of activities.
+     * @yields {AsyncIterable<string[]>} List of activity (full) IDs.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async *iterateActivities(): AsyncIterable<IActivityDetail[]> {
+    async *iterateActivities(): AsyncIterable<string[]> {
         for await (const activities of this._pager('/activities', ReadScopes)) {
             yield activities;
         }
@@ -425,10 +425,10 @@ export class DesignAutomationClient {
      * Gets a list of all activities
      * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/activities-GET|docs}).
      * @async
-     * @returns {Promise<IActivityDetail[]>} List of activities.
+     * @returns {Promise<string[]>} List of activity (full) IDs.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async listActivities(): Promise<IActivityDetail[]> {
+    async listActivities(): Promise<string[]> {
         return this._collect('/activities', ReadScopes);
     }
 
