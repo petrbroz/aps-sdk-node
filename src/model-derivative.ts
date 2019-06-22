@@ -5,23 +5,23 @@ const RootPath = '/modelderivative/v2';
 const ReadTokenScopes = ['data:read'];
 const WriteTokenScopes = ['data:read', 'data:write', 'data:create'];
 
-interface IDerivativeFormats {
+export interface IDerivativeFormats {
     [outputFormat: string]: string[];
 }
 
-interface IDerivativeOutputType {
+export interface IDerivativeOutputType {
     type: 'svf',
     views: string[];
 }
 
-interface IJob {
+export interface IJob {
     result: string;
     urn: string;
     //acceptedJobs?: any;
     //output?: any;
 }
 
-interface IDerivativeManifest {
+export interface IDerivativeManifest {
     type: string;
     hasThumbnail: string;
     status: string;
@@ -32,15 +32,15 @@ interface IDerivativeManifest {
     //derivatives: any[];
 }
 
-interface IDerivativeMetadata {
+export interface IDerivativeMetadata {
     // TODO
 }
 
-interface IDerivativeTree {
+export interface IDerivativeTree {
     // TODO
 }
 
-interface IDerivativeProps {
+export interface IDerivativeProps {
     // TODO
 }
 

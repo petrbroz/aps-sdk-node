@@ -7,14 +7,14 @@ const ReadScopes = ['code:all'];
 const ActivityParameterProps = ['description', 'localName', 'required', 'zip', 'ondemand'];
 const WorkitemParameterProps = ['localName', 'optional', 'pathInZip', 'headers'];
 
-interface IEngineDetail {
+export interface IEngineDetail {
     productVersion: string;
     description: string;
     version: number;
     id: string;
 }
 
-interface IAppBundleDetail {
+export interface IAppBundleDetail {
     package: string;
     id: string;
     engine: string;
@@ -22,7 +22,7 @@ interface IAppBundleDetail {
     version: number;
 }
 
-interface IAppBundleUploadParams {
+export interface IAppBundleUploadParams {
     uploadParameters: {
         formData: any;
         endpointURL: string;
@@ -30,12 +30,12 @@ interface IAppBundleUploadParams {
     // TODO
 }
 
-interface IAlias {
+export interface IAlias {
     id: string;
     version: number;
 }
 
-interface IActivityParam {
+export interface IActivityParam {
     name: string;
     verb?: string;
     description?: string;
@@ -45,7 +45,7 @@ interface IActivityParam {
     ondemand?: boolean;
 }
 
-interface IActivityConfig {
+export interface IActivityConfig {
     id?: string;
     commandLine: string[] | string;
     description: string;
@@ -55,7 +55,7 @@ interface IActivityConfig {
     settings?: any;
 }
 
-interface IActivityDetail {
+export interface IActivityDetail {
     commandLine: string[];
     parameters: { [paramId: string]: IActivityParam };
     id: string;
@@ -64,16 +64,16 @@ interface IActivityDetail {
     version: number;
 }
 
-interface IWorkItemConfig {
+export interface IWorkItemConfig {
     activityId: string;
     arguments: { [name: string]: any };
 }
 
-interface IWorkItem {
+export interface IWorkItem {
     // TODO
 }
 
-interface IWorkItemParam {
+export interface IWorkItemParam {
     name: string;
     url: string;
     localName?: string;
@@ -148,7 +148,7 @@ export class DesignAutomationClient {
     }
 
     // Helper method for GET requests
-    async _get(endpoint: string, headers: { [name: string]: string } = {}, scopes = ReadScopes) {
+    private async _get(endpoint: string, headers: { [name: string]: string } = {}, scopes = ReadScopes) {
         if (this.auth) {
             const authentication = await this.auth.authenticate(scopes);
             headers['Authorization'] = 'Bearer ' + authentication.access_token;
@@ -159,7 +159,7 @@ export class DesignAutomationClient {
     }
 
     // Helper method for POST requests
-    async _post(endpoint: string, data: any, headers: { [name: string]: string } = {}, scopes = ReadScopes) {
+    private async _post(endpoint: string, data: any, headers: { [name: string]: string } = {}, scopes = ReadScopes) {
         if (this.auth) {
             const authentication = await this.auth.authenticate(scopes);
             headers['Authorization'] = 'Bearer ' + authentication.access_token;
@@ -170,7 +170,7 @@ export class DesignAutomationClient {
     }
 
     // Helper method for PUT requests
-    async _put(endpoint: string, data: any, headers: { [name: string]: string } = {}, scopes = ReadScopes) {
+    private async _put(endpoint: string, data: any, headers: { [name: string]: string } = {}, scopes = ReadScopes) {
         if (this.auth) {
             const authentication = await this.auth.authenticate(scopes);
             headers['Authorization'] = 'Bearer ' + authentication.access_token;
@@ -181,7 +181,7 @@ export class DesignAutomationClient {
     }
 
     // Helper method for PATCH requests
-    async _patch(endpoint: string, data: any, headers: { [name: string]: string } = {}, scopes = ReadScopes) {
+    private async _patch(endpoint: string, data: any, headers: { [name: string]: string } = {}, scopes = ReadScopes) {
         if (this.auth) {
             const authentication = await this.auth.authenticate(scopes);
             headers['Authorization'] = 'Bearer ' + authentication.access_token;
@@ -192,7 +192,7 @@ export class DesignAutomationClient {
     }
 
     // Iterates (asynchronously) over pages of paginated results
-    async *_pager(endpoint: string, scopes: string[]) {
+    private async *_pager(endpoint: string, scopes: string[]) {
         let response = await this._get(endpoint, {}, scopes);
         yield response.data;
 
@@ -203,7 +203,7 @@ export class DesignAutomationClient {
     }
 
     // Collects all pages of paginated results
-    async _collect(endpoint: string, scopes: string[]) {
+    private async _collect(endpoint: string, scopes: string[]) {
         let response = await this._get(endpoint, {}, scopes);
         let results = response.data;
 
@@ -219,10 +219,10 @@ export class DesignAutomationClient {
      * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/engines-GET|docs}).
      * @async
      * @generator
-     * @yields {AsyncIterable<IEngineDetail[]>} List of engines.
+     * @yields {AsyncIterable<string[]>} List of engine (full) IDs.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async *iterateEngines(): AsyncIterable<IEngineDetail[]> {
+    async *iterateEngines(): AsyncIterable<string[]> {
         for await (const engines of this._pager('/engines', ReadScopes)) {
             yield engines;
         }
@@ -232,10 +232,10 @@ export class DesignAutomationClient {
      * Gets a list of all engines
      * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/engines-GET|docs}).
      * @async
-     * @returns {Promise<IEngineDetail[]>} List of engines.
+     * @returns {Promise<string[]>} List of engine (full) IDs.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async listEngines(): Promise<IEngineDetail[]> {
+    async listEngines(): Promise<string[]> {
         return this._collect('/engines', ReadScopes);
     }
 
@@ -256,10 +256,10 @@ export class DesignAutomationClient {
      * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-GET|docs}).
      * @async
      * @generator
-     * @yields {AsyncIterable<IAppBundleDetail[]>} List of appbundle objects.
+     * @yields {AsyncIterable<string[]>} List of appbundle (full) IDs.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async *iterateAppBundles(): AsyncIterable<IAppBundleDetail[]> {
+    async *iterateAppBundles(): AsyncIterable<string[]> {
         for await (const bundles of this._pager('/appbundles', ReadScopes)) {
             yield bundles;
         }
@@ -269,10 +269,10 @@ export class DesignAutomationClient {
      * Gets a list of all appbundles
      * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-GET|docs}).
      * @async
-     * @returns {Promise<IAppBundleDetail[]>} List of appbundle objects.
+     * @returns {Promise<string[]>} List of appbundle (full) IDs.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async listAppBundles(): Promise<IAppBundleDetail[]> {
+    async listAppBundles(): Promise<string[]> {
         return this._collect('/appbundles', ReadScopes);
     }
 
@@ -412,10 +412,10 @@ export class DesignAutomationClient {
      * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/activities-GET|docs}).
      * @async
      * @generator
-     * @yields {AsyncIterable<IActivityDetail[]>} List of activities.
+     * @yields {AsyncIterable<string[]>} List of activity (full) IDs.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async *iterateActivities(): AsyncIterable<IActivityDetail[]> {
+    async *iterateActivities(): AsyncIterable<string[]> {
         for await (const activities of this._pager('/activities', ReadScopes)) {
             yield activities;
         }
@@ -425,10 +425,10 @@ export class DesignAutomationClient {
      * Gets a list of all activities
      * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/activities-GET|docs}).
      * @async
-     * @returns {Promise<IActivityDetail[]>} List of activities.
+     * @returns {Promise<string[]>} List of activity (full) IDs.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async listActivities(): Promise<IActivityDetail[]> {
+    async listActivities(): Promise<string[]> {
         return this._collect('/activities', ReadScopes);
     }
 
@@ -444,7 +444,7 @@ export class DesignAutomationClient {
         return this._get(`/activities/${activityId}`);
     }
 
-    _inventorActivityConfig(activityId: string | null, description: string, ownerId: string, bundleName: string, bundleAlias: string, engine: string, inputs: IActivityParam[], outputs: IActivityParam[]): IActivityConfig {
+    private _inventorActivityConfig(activityId: string | null, description: string, ownerId: string, bundleName: string, bundleAlias: string, engine: string, inputs: IActivityParam[], outputs: IActivityParam[]): IActivityConfig {
         const config: IActivityConfig = {
             commandLine: [`$(engine.path)\\InventorCoreConsole.exe /al $(appbundles[${bundleName}].path)`],
             parameters: {},
@@ -478,7 +478,7 @@ export class DesignAutomationClient {
         return config;
     }
 
-    _revitActivityConfig(activityId: string | null, description: string, ownerId: string, bundleName: string, bundleAlias: string, engine: string, inputs: IActivityParam[], outputs: IActivityParam[]): IActivityConfig {
+    private _revitActivityConfig(activityId: string | null, description: string, ownerId: string, bundleName: string, bundleAlias: string, engine: string, inputs: IActivityParam[], outputs: IActivityParam[]): IActivityConfig {
         const config: IActivityConfig = {
             commandLine: [`$(engine.path)\\revitcoreconsole.exe /al $(appbundles[${bundleName}].path)`],
             parameters: {},
@@ -512,7 +512,7 @@ export class DesignAutomationClient {
         return config;
     }
 
-    _autocadActivityConfig(activityId: string | null, description: string, ownerId: string, bundleName: string, bundleAlias: string, engine: string, inputs: IActivityParam[], outputs: IActivityParam[], script?: string): IActivityConfig {
+    private _autocadActivityConfig(activityId: string | null, description: string, ownerId: string, bundleName: string, bundleAlias: string, engine: string, inputs: IActivityParam[], outputs: IActivityParam[], script?: string): IActivityConfig {
         const config: IActivityConfig = {
             commandLine: [`$(engine.path)\\accoreconsole.exe /al $(appbundles[${bundleName}].path)`],
             parameters: {},
@@ -552,7 +552,7 @@ export class DesignAutomationClient {
         return config;
     }
 
-    _3dsmaxActivityConfig(activityId: string | null, description: string, ownerId: string, bundleName: string, bundleAlias: string, engine: string, inputs: IActivityParam[], outputs: IActivityParam[], script?: string): IActivityConfig {
+    private _3dsmaxActivityConfig(activityId: string | null, description: string, ownerId: string, bundleName: string, bundleAlias: string, engine: string, inputs: IActivityParam[], outputs: IActivityParam[], script?: string): IActivityConfig {
         const config: IActivityConfig = {
             commandLine: `$(engine.path)\\3dsmaxbatch.exe`,
             parameters: {},
