@@ -148,7 +148,7 @@ export class DesignAutomationClient {
     }
 
     // Helper method for GET requests
-    async _get(endpoint: string, headers: { [name: string]: string } = {}, scopes = ReadScopes) {
+    private async _get(endpoint: string, headers: { [name: string]: string } = {}, scopes = ReadScopes) {
         if (this.auth) {
             const authentication = await this.auth.authenticate(scopes);
             headers['Authorization'] = 'Bearer ' + authentication.access_token;
@@ -159,7 +159,7 @@ export class DesignAutomationClient {
     }
 
     // Helper method for POST requests
-    async _post(endpoint: string, data: any, headers: { [name: string]: string } = {}, scopes = ReadScopes) {
+    private async _post(endpoint: string, data: any, headers: { [name: string]: string } = {}, scopes = ReadScopes) {
         if (this.auth) {
             const authentication = await this.auth.authenticate(scopes);
             headers['Authorization'] = 'Bearer ' + authentication.access_token;
@@ -170,7 +170,7 @@ export class DesignAutomationClient {
     }
 
     // Helper method for PUT requests
-    async _put(endpoint: string, data: any, headers: { [name: string]: string } = {}, scopes = ReadScopes) {
+    private async _put(endpoint: string, data: any, headers: { [name: string]: string } = {}, scopes = ReadScopes) {
         if (this.auth) {
             const authentication = await this.auth.authenticate(scopes);
             headers['Authorization'] = 'Bearer ' + authentication.access_token;
@@ -181,7 +181,7 @@ export class DesignAutomationClient {
     }
 
     // Helper method for PATCH requests
-    async _patch(endpoint: string, data: any, headers: { [name: string]: string } = {}, scopes = ReadScopes) {
+    private async _patch(endpoint: string, data: any, headers: { [name: string]: string } = {}, scopes = ReadScopes) {
         if (this.auth) {
             const authentication = await this.auth.authenticate(scopes);
             headers['Authorization'] = 'Bearer ' + authentication.access_token;
@@ -192,7 +192,7 @@ export class DesignAutomationClient {
     }
 
     // Iterates (asynchronously) over pages of paginated results
-    async *_pager(endpoint: string, scopes: string[]) {
+    private async *_pager(endpoint: string, scopes: string[]) {
         let response = await this._get(endpoint, {}, scopes);
         yield response.data;
 
@@ -203,7 +203,7 @@ export class DesignAutomationClient {
     }
 
     // Collects all pages of paginated results
-    async _collect(endpoint: string, scopes: string[]) {
+    private async _collect(endpoint: string, scopes: string[]) {
         let response = await this._get(endpoint, {}, scopes);
         let results = response.data;
 
@@ -444,7 +444,7 @@ export class DesignAutomationClient {
         return this._get(`/activities/${activityId}`);
     }
 
-    _inventorActivityConfig(activityId: string | null, description: string, ownerId: string, bundleName: string, bundleAlias: string, engine: string, inputs: IActivityParam[], outputs: IActivityParam[]): IActivityConfig {
+    private _inventorActivityConfig(activityId: string | null, description: string, ownerId: string, bundleName: string, bundleAlias: string, engine: string, inputs: IActivityParam[], outputs: IActivityParam[]): IActivityConfig {
         const config: IActivityConfig = {
             commandLine: [`$(engine.path)\\InventorCoreConsole.exe /al $(appbundles[${bundleName}].path)`],
             parameters: {},
@@ -478,7 +478,7 @@ export class DesignAutomationClient {
         return config;
     }
 
-    _revitActivityConfig(activityId: string | null, description: string, ownerId: string, bundleName: string, bundleAlias: string, engine: string, inputs: IActivityParam[], outputs: IActivityParam[]): IActivityConfig {
+    private _revitActivityConfig(activityId: string | null, description: string, ownerId: string, bundleName: string, bundleAlias: string, engine: string, inputs: IActivityParam[], outputs: IActivityParam[]): IActivityConfig {
         const config: IActivityConfig = {
             commandLine: [`$(engine.path)\\revitcoreconsole.exe /al $(appbundles[${bundleName}].path)`],
             parameters: {},
@@ -512,7 +512,7 @@ export class DesignAutomationClient {
         return config;
     }
 
-    _autocadActivityConfig(activityId: string | null, description: string, ownerId: string, bundleName: string, bundleAlias: string, engine: string, inputs: IActivityParam[], outputs: IActivityParam[], script?: string): IActivityConfig {
+    private _autocadActivityConfig(activityId: string | null, description: string, ownerId: string, bundleName: string, bundleAlias: string, engine: string, inputs: IActivityParam[], outputs: IActivityParam[], script?: string): IActivityConfig {
         const config: IActivityConfig = {
             commandLine: [`$(engine.path)\\accoreconsole.exe /al $(appbundles[${bundleName}].path)`],
             parameters: {},
@@ -552,7 +552,7 @@ export class DesignAutomationClient {
         return config;
     }
 
-    _3dsmaxActivityConfig(activityId: string | null, description: string, ownerId: string, bundleName: string, bundleAlias: string, engine: string, inputs: IActivityParam[], outputs: IActivityParam[], script?: string): IActivityConfig {
+    private _3dsmaxActivityConfig(activityId: string | null, description: string, ownerId: string, bundleName: string, bundleAlias: string, engine: string, inputs: IActivityParam[], outputs: IActivityParam[], script?: string): IActivityConfig {
         const config: IActivityConfig = {
             commandLine: `$(engine.path)\\3dsmaxbatch.exe`,
             parameters: {},
