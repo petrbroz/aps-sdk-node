@@ -8,7 +8,7 @@ describe('DesignAutomationClient', function() {
         assert(FORGE_CLIENT_ID);
         assert(FORGE_CLIENT_SECRET);
         this.client = new DesignAutomationClient({ client_id: FORGE_CLIENT_ID, client_secret: FORGE_CLIENT_SECRET });
-        this.timeout(5000); // Increase timeout to 5 seconds
+        this.timeout(10000); // Increase timeout to 10 seconds
     });
 
     describe('listEngines()', function() {

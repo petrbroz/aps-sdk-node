@@ -1,25 +1,46 @@
-const { post, DefaultHost } = require('./common');
+import { DefaultHost, post } from './common';
 
 const RootPath = `/authentication/v1`;
+
+interface ITokenCache {
+    promise: Promise<string>;
+    expires_at: number;
+}
+
+export interface ITwoLeggedToken {
+    access_token: string;
+    expires_in: number;
+}
+
+export interface IThreeLeggedToken {
+    access_token: string;
+    refresh_token: string;
+    expires_in: number;
+}
 
 /**
  * Client providing access to Autodesk Forge {@link https://forge.autodesk.com/en/docs/oauth/v2|authentication APIs}.
  * @tutorial authentication
  */
-class AuthenticationClient {
+export class AuthenticationClient {
+    private client_id: string;
+    private client_secret: string;
+    private host: string;
+    private _cached: { [key: string]: ITokenCache };
+
+    get clientId() { return this.client_id; }
+
     /**
      * Initializes new client with specific Forge app credentials.
-     * If the credentials are not provided, the client will attempt to obtain them
-     * from env. variables FORGE_CLIENT_ID and FORGE_CLIENT_SECRET.
-     * @param {string} [client_id] Forge application client ID. 
-     * @param {string} [client_secret] Forge application client secret.
+     * @param {string} client_id Forge application client ID. 
+     * @param {string} client_secret Forge application client secret.
      * @param {string} [host="https://developer.api.autodesk.com"] Forge API host.
      */
-    constructor(client_id, client_secret, host = DefaultHost) {
-        this.client_id = client_id || process.env.FORGE_CLIENT_ID;
-        this.client_secret = client_secret || process.env.FORGE_CLIENT_SECRET;
+    constructor(client_id: string, client_secret: string, host = DefaultHost) {
+        this.client_id = client_id;
+        this.client_secret = client_secret;
         this.host = host;
-        this._cached = {}; // Dictionary of { promise: Promise<string>, expires_at: Number } objects
+        this._cached = {};
     }
 
     /**
@@ -29,10 +50,10 @@ class AuthenticationClient {
      * based on their scopes and the 'expires_in' field in the response.
      * @param {string[]} scopes List of requested {@link https://forge.autodesk.com/en/docs/oauth/v2/developers_guide/scopes|scopes}.
      * @param {boolean} [force] Skip cache, if there is any, and retrieve a new token.
-     * @returns {Promise<object>} Promise of 2-legged authentication object containing two fields,
+     * @returns {Promise<ITwoLeggedToken>} Promise of 2-legged authentication object containing two fields,
      * 'access_token' with the actual token, and 'expires_in' with expiration time (in seconds).
      */
-    authenticate(scopes, force = false) {
+    authenticate(scopes: string[], force: boolean = false): Promise<ITwoLeggedToken> {
         // Check if there's a cached token, unexpired, and with the same scopes
         const key = 'two-legged/' + scopes.join('/');
         if (!force && key in this._cached) {
@@ -71,7 +92,7 @@ class AuthenticationClient {
      * @param {string} redirectUri Same redirect URI as defined by the Forge app.
      * @returns {string} Autodesk login URL.
      */
-    getAuthorizeRedirect(scopes, redirectUri) {
+    getAuthorizeRedirect(scopes: string[], redirectUri: string): string {
         return `${this.host}${RootPath}/authorize?response_type=code&client_id=${this.client_id}&redirect_uri=${redirectUri}&scope=${scopes.join(' ')}`;
     }
 
@@ -81,10 +102,10 @@ class AuthenticationClient {
      * @async
      * @param {string} code Authentication code returned from the Autodesk login process.
      * @param {string} redirectUri Same redirect URI as defined by the Forge app.
-     * @returns {Promise<object>} Promise of 3-legged authentication object containing
+     * @returns {Promise<IThreeLeggedToken>} Promise of 3-legged authentication object containing
      * 'access_token', 'refresh_token', and 'expires_in' with expiration time (in seconds).
      */
-    async getToken(code, redirectUri) {
+    async getToken(code: string, redirectUri: string): Promise<IThreeLeggedToken> {
         const params = {
             'client_id': this.client_id,
             'client_secret': this.client_secret,
@@ -96,7 +117,3 @@ class AuthenticationClient {
         return token;
     }
 }
-
-module.exports = {
-    AuthenticationClient
-};
