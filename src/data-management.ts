@@ -1,30 +1,74 @@
-const querystring = require('querystring');
+import * as querystring from 'querystring';
 
-const { get, post, put, DefaultHost, TwoLeggedAuth, ThreeLeggedAuth, rawFetch } = require('./common');
-const { AuthenticationClient } = require('./authentication');
+import { get, post, put, rawFetch, DefaultHost, IAuthOptions } from './common';
+import { AuthenticationClient } from './authentication';
 
 const RootPath = '/oss/v2';
 const ReadTokenScopes = ['bucket:read', 'data:read'];
 const WriteTokenScopes = ['bucket:create', 'data:write'];
 
-const { FORGE_CLIENT_ID, FORGE_CLIENT_SECRET } = process.env;
+interface IBucket {
+    bucketKey: string;
+    createdDate: number;
+    policyKey: string;
+}
+
+interface IBucketPermission {
+    authId: string;
+    access: string;
+}
+
+interface IBucketDetail extends IBucket {
+    bucketOwner: string;
+    permissions: IBucketPermission[];
+}
+
+enum DataRetentionPolicy {
+    Transient = 'transient',
+    Temporary = 'temporary',
+    Persistent = 'persistent'
+}
+
+interface IObject {
+    objectKey: string;
+    bucketKey: string;
+    objectId: string;
+    sha1: string;
+    size: number;
+    location: string;
+}
+
+interface IResumableUploadRange {
+    start: number;
+    end: number;
+}
+
+interface ISignedUrl {
+    signedUrl: string;
+    expiration: number;
+    singleUse: boolean;
+}
 
 /**
  * Client providing access to Autodesk Forge {@link https://forge.autodesk.com/en/docs/data/v2|data management APIs}.
  * @tutorial data-management
  */
-class DataManagementClient {
+export class DataManagementClient {
+    private auth?: AuthenticationClient;
+    private token?: string;
+    private host: string;
+
     /**
      * Initializes new client with specific authentication method.
-     * @param {object} [auth={client_id: FORGE_CLIENT_ID, client_secret: FORGE_CLIENT_SECRET}] Authentication object,
+     * @param {IAuthOptions} auth Authentication object,
      * containing either `client_id` and `client_secret` properties (for 2-legged authentication),
      * or a single `token` property (for 2-legged or 3-legged authentication with pre-generated access token).
      * @param {string} [host="https://developer.api.autodesk.com"] Forge API host.
      */
-    constructor(auth = { client_id: FORGE_CLIENT_ID, client_secret: FORGE_CLIENT_SECRET }, host = DefaultHost) {
-        if (auth.client_id && auth.client_secret) {
+    constructor(auth: IAuthOptions, host: string = DefaultHost) {
+        if ('client_id' in auth && 'client_secret' in auth) {
             this.auth = new AuthenticationClient(auth.client_id, auth.client_secret, host);
-        } else if (auth.token) {
+        } else if ('token' in auth) {
             this.token = auth.token;
         } else {
             throw new Error('Authentication parameters missing or incorrect.');
@@ -33,7 +77,7 @@ class DataManagementClient {
     }
 
     // Helper method for GET requests
-    async _get(endpoint, headers = {}, scopes = ReadTokenScopes) {
+    private async _get(endpoint: string, headers: { [name: string]: string } = {}, scopes = ReadTokenScopes) {
         if (this.auth) {
             const authentication = await this.auth.authenticate(scopes);
             headers['Authorization'] = 'Bearer ' + authentication.access_token;
@@ -44,7 +88,7 @@ class DataManagementClient {
     }
 
     // Helper method for POST requests
-    async _post(endpoint, data, headers = {}, scopes = WriteTokenScopes) {
+    private async _post(endpoint: string, data: any, headers: { [name: string]: string } = {}, scopes = WriteTokenScopes) {
         if (this.auth) {
             const authentication = await this.auth.authenticate(scopes);
             headers['Authorization'] = 'Bearer ' + authentication.access_token;
@@ -55,7 +99,7 @@ class DataManagementClient {
     }
 
     // Helper method for PUT requests
-    async _put(endpoint, data, headers = {}, scopes = WriteTokenScopes) {
+    private async _put(endpoint: string, data: any, headers: { [name: string]: string } = {}, scopes = WriteTokenScopes) {
         if (this.auth) {
             const authentication = await this.auth.authenticate(scopes);
             headers['Authorization'] = 'Bearer ' + authentication.access_token;
@@ -66,26 +110,26 @@ class DataManagementClient {
     }
 
     // Iterates (asynchronously) over pages of paginated results
-    async *_pager(endpoint, limit) {
+    private async *_pager(endpoint: string, limit: number) {
         let response = await this._get(`${endpoint}${endpoint.indexOf('?') === -1 ? '?' : '&'}limit=${limit}`);
         yield response.items;
 
         while (response.next) {
             const next = new URL(response.next);
-            const startAt = querystring.escape(next.searchParams.get('startAt'));
+            const startAt = querystring.escape(next.searchParams.get('startAt') || '');
             response = await this._get(`${endpoint}${endpoint.indexOf('?') === -1 ? '?' : '&'}startAt=${startAt}&limit=${limit}`);
             yield response.items;
         }
     }
 
     // Collects all pages of paginated results
-    async _collect(endpoint) {
+    private async _collect(endpoint: string) {
         let response = await this._get(endpoint);
         let results = response.items;
 
         while (response.next) {
             const next = new URL(response.next);
-            const startAt = querystring.escape(next.searchParams.get('startAt'));
+            const startAt = querystring.escape(next.searchParams.get('startAt') || '');
             response = await this._get(`${endpoint}${endpoint.indexOf('?') === -1 ? '?' : '&'}startAt=${startAt}`);
             results = results.concat(response.items);
         }
@@ -100,10 +144,10 @@ class DataManagementClient {
      * @async
      * @generator
      * @param {number} [limit=16] Max number of buckets to receive in one batch (allowed values: 1-100).
-     * @yields {Promise<object[]>} List of bucket object containing 'bucketKey', 'createdDate', and 'policyKey'.
+     * @yields {AsyncIterable<IBucket[]>} List of bucket object containing 'bucketKey', 'createdDate', and 'policyKey'.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async *iterateBuckets(limit = 16) {
+    async *iterateBuckets(limit: number = 16): AsyncIterable<IBucket[]> {
         for await (const buckets of this._pager('/buckets', limit)) {
             yield buckets;
         }
@@ -113,10 +157,10 @@ class DataManagementClient {
      * Lists all buckets
      * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/buckets-GET|docs}).
      * @async
-     * @returns {Promise<object[]>} List of bucket objects.
+     * @returns {Promise<IBucket[]>} List of bucket objects.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async listBuckets() {
+    async listBuckets(): Promise<IBucket[]> {
         return this._collect('/buckets');
     }
 
@@ -125,12 +169,12 @@ class DataManagementClient {
      * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/buckets-:bucketKey-details-GET|docs}).
      * @async
      * @param {string} bucket Bucket key.
-     * @returns {Promise<object>} Bucket details, with properties "bucketKey", "bucketOwner", "createdDate",
+     * @returns {Promise<IBucketDetail>} Bucket details, with properties "bucketKey", "bucketOwner", "createdDate",
      * "permissions", and "policyKey".
      * @throws Error when the request fails, for example, due to insufficient rights, or when a bucket
      * with this name does not exist.
      */
-    async getBucketDetails(bucket) {
+    async getBucketDetails(bucket: string): Promise<IBucketDetail> {
         return this._get(`/buckets/${bucket}/details`);
     }
 
@@ -139,13 +183,13 @@ class DataManagementClient {
      * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/buckets-POST|docs}).
      * @async
      * @param {string} bucket Bucket key.
-     * @param {string} dataRetention One of the following: transient, temporary, permanent.
-     * @returns {Promise<object>} Bucket details, with properties "bucketKey", "bucketOwner", "createdDate",
+     * @param {DataRetentionPolicy} dataRetention Data retention policy for objects uploaded to this bucket.
+     * @returns {Promise<IBucketDetail>} Bucket details, with properties "bucketKey", "bucketOwner", "createdDate",
      * "permissions", and "policyKey".
      * @throws Error when the request fails, for example, due to insufficient rights, incorrect scopes,
      * or when a bucket with this name already exists.
      */
-    async createBucket(bucket, dataRetention) {
+    async createBucket(bucket: string, dataRetention: DataRetentionPolicy): Promise<IBucketDetail> {
         const params = { bucketKey: bucket, policyKey: dataRetention };
         return this._post('/buckets', { json: params });
     }
@@ -160,10 +204,10 @@ class DataManagementClient {
      * @param {string} bucket Bucket key.
      * @param {number} [limit=16] Max number of objects to receive in one batch (allowed values: 1-100).
      * @param {string} [beginsWith] Optional filter to only return objects whose keys are prefixed with this value.
-     * @yields {Promise<object[]>} List of object containing 'bucketKey', 'objectKey', 'objectId', 'sha1', 'size', and 'location'.
+     * @yields {AsyncIterable<IObject[]>} List of object containing 'bucketKey', 'objectKey', 'objectId', 'sha1', 'size', and 'location'.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async *iterateObjects(bucket, limit = 16, beginsWith) {
+    async *iterateObjects(bucket: string, limit: number = 16, beginsWith?: string): AsyncIterable<IObject[]> {
         let url = `/buckets/${bucket}/objects`;
         if (beginsWith) {
             url += '?beginsWith=' + querystring.escape(beginsWith);
@@ -179,10 +223,10 @@ class DataManagementClient {
      * @async
      * @param {string} bucket Bucket key.
      * @param {string} [beginsWith] Optional filter to only return objects whose keys are prefixed with this value.
-     * @returns {Promise<object[]>} List of object containing 'bucketKey', 'objectKey', 'objectId', 'sha1', 'size', and 'location'.
+     * @returns {Promise<IObject[]>} List of object containing 'bucketKey', 'objectKey', 'objectId', 'sha1', 'size', and 'location'.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async listObjects(bucket, beginsWith) {
+    async listObjects(bucket: string, beginsWith?: string): Promise<IObject[]> {
         let url = `/buckets/${bucket}/objects`;
         if (beginsWith) {
             url += '?beginsWith=' + querystring.escape(beginsWith);
@@ -198,11 +242,11 @@ class DataManagementClient {
      * @param {string} name Name of uploaded object.
      * @param {string} contentType Type of content to be used in HTTP headers, for example, "application/json".
      * @param {Buffer} data Object content.
-     * @returns {Promise<object>} Object description containing 'bucketKey', 'objectKey', 'objectId',
+     * @returns {Promise<IObject>} Object description containing 'bucketKey', 'objectKey', 'objectId',
      * 'sha1', 'size', 'location', and 'contentType'.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async uploadObject(bucket, name, contentType, data) {
+    async uploadObject(bucket: string, name: string, contentType: string, data: Buffer): Promise<IObject> {
         // TODO: add support for large file uploads using "PUT buckets/:bucketKey/objects/:objectName/resumable"
         return this._put(`/buckets/${bucket}/objects/${name}`, { buffer: data }, { 'Content-Type': contentType });
     }
@@ -220,13 +264,14 @@ class DataManagementClient {
      * @param {string} [contentType='application/stream'] Type of content to be used in HTTP headers, for example, "application/json".
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async uploadObjectResumable(bucketKey, objectName, data, byteOffset, totalBytes, sessionId, contentType = 'application/stream') {
+    async uploadObjectResumable(bucketKey: string, objectName: string, data: Buffer, byteOffset: number, totalBytes: number, sessionId: string, contentType: string = 'application/stream') {
         // TODO: get rid of rawFetch; add support for disabling 202 retries in put/get methods
         const options = {
             method: 'PUT',
             headers: {
+                'Authorization': '',
                 'Content-Type': contentType,
-                'Content-Length': data.byteLength,
+                'Content-Length': data.byteLength.toString(),
                 'Content-Range': `bytes ${byteOffset}-${byteOffset + data.byteLength - 1}/${totalBytes}`,
                 'Session-Id': sessionId
             },
@@ -252,13 +297,13 @@ class DataManagementClient {
      * @param {string} bucketKey Bucket key.
      * @param {string} objectName Name of uploaded object.
      * @param {string} sessionId Resumable session ID.
-     * @returns {Promise<object[]>} List of range objects, with each object specifying 'start' and 'end' byte offsets
+     * @returns {Promise<IResumableUploadRange[]>} List of range objects, with each object specifying 'start' and 'end' byte offsets
      * of data that has already been uploaded.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async getResumableUploadStatus(bucketKey, objectName, sessionId) {
+    async getResumableUploadStatus(bucketKey: string, objectName: string, sessionId: string): Promise<IResumableUploadRange[]> {
         // TODO: get rid of rawFetch; add support for disabling 202 retries in put/get methods
-        const options = { method: 'GET', headers: {} };
+        const options = { method: 'GET', headers: { 'Authorization': '' } };
         if (this.auth) {
             const authentication = await this.auth.authenticate(ReadTokenScopes);
             options.headers['Authorization'] = 'Bearer ' + authentication.access_token;
@@ -267,7 +312,7 @@ class DataManagementClient {
         }
         const response = await rawFetch(this.host + RootPath + `/buckets/${bucketKey}/objects/${objectName}/status/${sessionId}`, options);
         if (response.ok) {
-            const ranges = response.headers.get('Range');
+            const ranges = response.headers.get('Range') || '';
             const match = ranges.match(/^bytes=(\d+-\d+(,\d+-\d+)*)$/);
             if (match) {
                 return match[1].split(',').map(str => {
@@ -292,10 +337,10 @@ class DataManagementClient {
      * @async
      * @param {string} bucket Bucket key.
      * @param {string} object Object name.
-     * @returns {Promise<object>} Object content.
+     * @returns {Promise<ArrayBuffer>} Object content.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async downloadObject(bucket, object) {
+    async downloadObject(bucket: string, object: string): Promise<ArrayBuffer>  {
         return this._get(`/buckets/${bucket}/objects/${object}`);
     }
 
@@ -305,12 +350,12 @@ class DataManagementClient {
      * @async
      * @param {string} bucket Bucket key.
      * @param {string} object Object name.
-     * @returns {Promise<object>} Object description containing 'bucketKey', 'objectKey', 'objectId',
+     * @returns {Promise<IObject>} Object description containing 'bucketKey', 'objectKey', 'objectId',
      * 'sha1', 'size', 'location', and 'contentType'.
      * @throws Error when the request fails, for example, due to insufficient rights, or when an object
      * with this name does not exist.
      */
-    async getObjectDetails(bucket, object) {
+    async getObjectDetails(bucket: string, object: string): Promise<IObject> {
         return this._get(`/buckets/${bucket}/objects/${object}/details`);
     }
 
@@ -321,14 +366,10 @@ class DataManagementClient {
      * @param {string} bucketId Bucket key.
      * @param {string} objectId Object key.
      * @param {string} [access="readwrite"] Signed URL access authorization.
-     * @returns {Promise<object>} Description of the new signed URL resource.
+     * @returns {Promise<ISignedUrl>} Description of the new signed URL resource.
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
-    async createSignedUrl(bucketId, objectId, access = 'readwrite') {
+    async createSignedUrl(bucketId: string, objectId: string, access = 'readwrite'): Promise<ISignedUrl> {
         return this._post(`/buckets/${bucketId}/objects/${objectId}/signed?access=${access}`, { json: {} });
     }
 }
-
-module.exports = {
-    DataManagementClient
-};

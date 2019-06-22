@@ -1,5 +1,5 @@
-const { get, post, patch, DefaultHost, DesignAutomationURI } = require('./common');
-const { AuthenticationClient } = require('./authentication');
+import { get, post, patch, put, DefaultHost, IAuthOptions } from './common';
+import { AuthenticationClient } from './authentication';
 
 const RootPath = '/da/us-east/v3';
 const ReadScopes = ['code:all'];
@@ -7,17 +7,93 @@ const ReadScopes = ['code:all'];
 const ActivityParameterProps = ['description', 'localName', 'required', 'zip', 'ondemand'];
 const WorkitemParameterProps = ['localName', 'optional', 'pathInZip', 'headers'];
 
+interface IEngineDetail {
+    productVersion: string;
+    description: string;
+    version: number;
+    id: string;
+}
+
+interface IAppBundleDetail {
+    package: string;
+    id: string;
+    engine: string;
+    description: string;
+    version: number;
+}
+
+interface IAppBundleUploadParams {
+    uploadParameters: {
+        formData: any;
+        endpointURL: string;
+    };
+    // TODO
+}
+
+interface IAlias {
+    id: string;
+    version: number;
+}
+
+interface IActivityParam {
+    name: string;
+    verb?: string;
+    description?: string;
+    localName?: string;
+    required?: boolean;
+    zip?: boolean;
+    ondemand?: boolean;
+}
+
+interface IActivityConfig {
+    id?: string;
+    commandLine: string[] | string;
+    description: string;
+    engine: string;
+    appbundles: string[];
+    parameters: { [name: string]: any };
+    settings?: any;
+}
+
+interface IActivityDetail {
+    commandLine: string[];
+    parameters: { [paramId: string]: IActivityParam };
+    id: string;
+    engine: string;
+    appbundles: string[];
+    version: number;
+}
+
+interface IWorkItemConfig {
+    activityId: string;
+    arguments: { [name: string]: any };
+}
+
+interface IWorkItem {
+    // TODO
+}
+
+interface IWorkItemParam {
+    name: string;
+    url: string;
+    localName?: string;
+    optional?: boolean;
+    pathInZip?: string;
+    headers?: object;
+    verb?: string;
+}
+
 /**
  * Helper class for working with Design Automation
  * {@link https://forge.autodesk.com/en/docs/design-automation/v3/developers_guide/aliases-and-ids|aliases and IDs}.
  */
-class DesignAutomationID {
+export class DesignAutomationID {
     /**
      * Parses fully qualified ID.
      * @param {string} str Fully qualified ID.
      * @returns {DesignAutomationID|null} Parsed ID or null if the format was not correct.
      */
-    static parse(str) {
+    static parse(str: string): DesignAutomationID | null {
         const match = str.match(/^([a-zA-Z0-9_]+)\.([a-zA-Z0-9_]+)\+([\$a-zA-Z0-9_]+)$/);
         if (match) {
             return new DesignAutomationID(match[1], match[2], match[3]);
@@ -32,10 +108,7 @@ class DesignAutomationID {
      * @param {string} id ID part of the fully qualified ID. Must consist of a-z, A-Z, 0-9 and _ characters only.
      * @param {string} alias Alias part of the fully qualified ID. Must consist of a-z, A-Z, 0-9 and _ characters only.
      */
-    constructor(owner, id, alias) {
-        this.owner = owner;
-        this.id = id;
-        this.alias = alias;
+    constructor(public owner: string, public id: string, public alias: string) {
     }
 
     /**
@@ -51,16 +124,20 @@ class DesignAutomationID {
  * {@link https://forge.autodesk.com/en/docs/design-automation/v3|design automation APIs}.
  * @tutorial design-automation
  */
-class DesignAutomationClient {
+export class DesignAutomationClient {
+    private auth?: AuthenticationClient;
+    private token?: string;
+    private host: string;
+
     /**
      * Initializes new client with specific authentication method.
-     * @param {object} [auth={client_id: FORGE_CLIENT_ID, client_secret: FORGE_CLIENT_SECRET}] Authentication object,
+     * @param {IAuthOptions} auth Authentication object,
      * containing either `client_id` and `client_secret` properties (for 2-legged authentication),
      * or a single `token` property (for 2-legged or 3-legged authentication with pre-generated access token).
      * @param {string} [host="https://developer.api.autodesk.com"] Forge API host.
      */
-    constructor(auth = { client_id: FORGE_CLIENT_ID, client_secret: FORGE_CLIENT_SECRET }, host = DefaultHost) {
-        if (auth.client_id && auth.client_secret) {
+    constructor(auth: IAuthOptions, host: string = DefaultHost) {
+        if ('client_id' in auth && 'client_secret' in auth) {
             this.auth = new AuthenticationClient(auth.client_id, auth.client_secret, host);
         } else if (auth.token) {
             this.token = auth.token;
@@ -71,7 +148,7 @@ class DesignAutomationClient {
     }
 
     // Helper method for GET requests
-    async _get(endpoint, headers = {}, scopes = ReadScopes) {
+    async _get(endpoint: string, headers: { [name: string]: string } = {}, scopes = ReadScopes) {
         if (this.auth) {
             const authentication = await this.auth.authenticate(scopes);
             headers['Authorization'] = 'Bearer ' + authentication.access_token;
@@ -82,7 +159,7 @@ class DesignAutomationClient {
     }
 
     // Helper method for POST requests
-    async _post(endpoint, data, headers = {}, scopes = ReadScopes) {
+    async _post(endpoint: string, data: any, headers: { [name: string]: string } = {}, scopes = ReadScopes) {
         if (this.auth) {
             const authentication = await this.auth.authenticate(scopes);
             headers['Authorization'] = 'Bearer ' + authentication.access_token;
@@ -93,7 +170,7 @@ class DesignAutomationClient {
     }
 
     // Helper method for PUT requests
-    async _put(endpoint, data, headers = {}, scopes = ReadScopes) {
+    async _put(endpoint: string, data: any, headers: { [name: string]: string } = {}, scopes = ReadScopes) {
         if (this.auth) {
             const authentication = await this.auth.authenticate(scopes);
             headers['Authorization'] = 'Bearer ' + authentication.access_token;
@@ -104,7 +181,7 @@ class DesignAutomationClient {
     }
 
     // Helper method for PATCH requests
-    async _patch(endpoint, data, headers = {}, scopes = ReadScopes) {
+    async _patch(endpoint: string, data: any, headers: { [name: string]: string } = {}, scopes = ReadScopes) {
         if (this.auth) {
             const authentication = await this.auth.authenticate(scopes);
             headers['Authorization'] = 'Bearer ' + authentication.access_token;
@@ -115,23 +192,23 @@ class DesignAutomationClient {
     }
 
     // Iterates (asynchronously) over pages of paginated results
-    async *_pager(endpoint, scopes) {
-        let response = await this._get(endpoint);
+    async *_pager(endpoint: string, scopes: string[]) {
+        let response = await this._get(endpoint, {}, scopes);
         yield response.data;
 
         while (response.paginationToken) {
-            response = await this._get(`${endpoint}?page=${response.paginationToken}`);
+            response = await this._get(`${endpoint}?page=${response.paginationToken}`, {}, scopes);
             yield response.data;
         }
     }
 
     // Collects all pages of paginated results
-    async _collect(endpoint, scopes) {
-        let response = await this._get(endpoint);
+    async _collect(endpoint: string, scopes: string[]) {
+        let response = await this._get(endpoint, {}, scopes);
         let results = response.data;
 
         while (response.paginationToken) {
-            response = await this._get(`${endpoint}?page=${response.paginationToken}`);
+            response = await this._get(`${endpoint}?page=${response.paginationToken}`, {}, scopes);
             results = results.concat(response.data);
         }
         return results;
@@ -142,10 +219,10 @@ class DesignAutomationClient {
      * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/engines-GET|docs}).
      * @async
      * @generator
-     * @yields {Promise<object[]>} List of engines.
+     * @yields {AsyncIterable<IEngineDetail[]>} List of engines.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async *iterateEngines() {
+    async *iterateEngines(): AsyncIterable<IEngineDetail[]> {
         for await (const engines of this._pager('/engines', ReadScopes)) {
             yield engines;
         }
@@ -155,10 +232,10 @@ class DesignAutomationClient {
      * Gets a list of all engines
      * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/engines-GET|docs}).
      * @async
-     * @returns {Promise<object[]>} List of engines.
+     * @returns {Promise<IEngineDetail[]>} List of engines.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async listEngines() {
+    async listEngines(): Promise<IEngineDetail[]> {
         return this._collect('/engines', ReadScopes);
     }
 
@@ -167,10 +244,10 @@ class DesignAutomationClient {
      * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/engines-id-GET|docs}).
      * @async
      * @param {string} engineId Fully qualified engine ID.
-     * @returns {Promise<object>} Engine details.
+     * @returns {Promise<IEngineDetail>} Engine details.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async getEngine(engineId) {
+    async getEngine(engineId: string): Promise<IEngineDetail> {
         return this._get(`/engines/${engineId}`);
     }
 
@@ -179,10 +256,10 @@ class DesignAutomationClient {
      * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-GET|docs}).
      * @async
      * @generator
-     * @yields {Promise<object[]>} List of appbundle objects.
+     * @yields {AsyncIterable<IAppBundleDetail[]>} List of appbundle objects.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async *iterateAppBundles() {
+    async *iterateAppBundles(): AsyncIterable<IAppBundleDetail[]> {
         for await (const bundles of this._pager('/appbundles', ReadScopes)) {
             yield bundles;
         }
@@ -192,10 +269,10 @@ class DesignAutomationClient {
      * Gets a list of all appbundles
      * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-GET|docs}).
      * @async
-     * @returns {Promise<object[]>} List of appbundle objects.
+     * @returns {Promise<IAppBundleDetail[]>} List of appbundle objects.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async listAppBundles() {
+    async listAppBundles(): Promise<IAppBundleDetail[]> {
         return this._collect('/appbundles', ReadScopes);
     }
 
@@ -204,10 +281,10 @@ class DesignAutomationClient {
      * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-id-GET|docs}).
      * @async
      * @param {string} bundleId Fully qualified appbundle ID.
-     * @returns {Promise<object>} Appbundle details.
+     * @returns {Promise<IAppBundleDetail>} Appbundle details.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async getAppBundle(bundleId) {
+    async getAppBundle(bundleId: string): Promise<IAppBundleDetail> {
         return this._get(`/appbundles/${bundleId}`);
     }
 
@@ -217,11 +294,11 @@ class DesignAutomationClient {
      * @async
      * @param {string} name Unique name of the bundle.
      * @param {string} engine ID of one of the supported {@link engines}.
-     * @param {string} description Bundle description.     * 
-     * @returns {Promise<object>} Details of created app bundle.
+     * @param {string} description Bundle description.
+     * @returns {Promise<IAppBundleDetail>} Details of created app bundle.
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
-    async createAppBundle(name, engine, description) {
+    async createAppBundle(name: string, engine: string, description: string): Promise<IAppBundleDetail> {
         const config = { id: name, description: description, engine: engine };
         return this._post('/appbundles', { json: config });
     }
@@ -233,12 +310,12 @@ class DesignAutomationClient {
      * @param {string} name Unique name of the bundle.
      * @param {string} [engine] ID of one of the supported {@link engines}.
      * @param {string} [description] Bundle description.
-     * @returns {Promise<object>} Details of updated app bundle.
+     * @returns {Promise<IAppBundleDetail>} Details of updated app bundle.
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
-    async updateAppBundle(name, engine = undefined, description = undefined) {
+    async updateAppBundle(name: string, engine?: string, description?: string): Promise<IAppBundleDetail> {
         // TODO: tests
-        const config = {};
+        const config: { engine?: string; description?: string; } = {};
         if (description) config.description = description;
         if (engine) config.engine = engine;
         return this._post(`/appbundles/${name}/versions`, { json: config });
@@ -250,10 +327,10 @@ class DesignAutomationClient {
      * @async
      * @generator
      * @param {string} name Unique name of the bundle.
-     * @yields {Promise<object[]>} List of appbundle alias objects.
+     * @yields {AsyncIterable<IAlias[]>} List of appbundle alias objects.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async *iterateAppBundleAliases(name) {
+    async *iterateAppBundleAliases(name: string): AsyncIterable<IAlias[]> {
         for await (const aliases of this._pager(`/appbundles/${name}/aliases`, ReadScopes)) {
             yield aliases;
         }
@@ -264,10 +341,10 @@ class DesignAutomationClient {
      * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-id-aliases-GET|docs}).
      * @async
      * @param {string} name Unique name of the bundle.
-     * @returns {Promise<object[]>} List of appbundle alias objects.
+     * @returns {Promise<IAlias[]>} List of appbundle alias objects.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async listAppBundleAliases(name) {
+    async listAppBundleAliases(name: string): Promise<IAlias[]> {
         return this._collect(`/appbundles/${name}/aliases`, ReadScopes);
     }
 
@@ -277,10 +354,10 @@ class DesignAutomationClient {
      * @async
      * @generator
      * @param {string} name Unique name of the bundle.
-     * @yields {Promise<number[]>} List of appbundle version numbers.
+     * @yields {AsyncIterable<number[]>} List of appbundle version numbers.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async *iterateAppBundleVersions(name) {
+    async *iterateAppBundleVersions(name: string): AsyncIterable<number[]> {
         for await (const versions of this._pager(`/appbundles/${name}/versions`, ReadScopes)) {
             yield versions;
         }
@@ -294,7 +371,7 @@ class DesignAutomationClient {
      * @returns {Promise<number[]>} List of appbundle version numbers.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async listAppBundleVersions(name) {
+    async listAppBundleVersions(name: string): Promise<number[]> {
         return this._collect(`/appbundles/${name}/versions`, ReadScopes);
     }
 
@@ -305,10 +382,10 @@ class DesignAutomationClient {
      * @param {string} name Name of the app bundle.
      * @param {string} alias Alias name.
      * @param {number} version Version of app bundle to link to this alias.
-     * @returns {Promise<object>} Details of the created alias.
+     * @returns {Promise<IAlias>} Details of the created alias.
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
-    async createAppBundleAlias(name, alias, version) {
+    async createAppBundleAlias(name: string, alias: string, version: number): Promise<IAlias> {
         // TODO: tests
         const config = { id: alias, version: version };
         return this._post(`/appbundles/${name}/aliases`, { json: config });
@@ -321,10 +398,10 @@ class DesignAutomationClient {
      * @param {string} name Name of the app bundle.
      * @param {string} alias Alias name.
      * @param {number} version Version of app bundle to link to this alias.
-     * @returns {Promise<object>} Details of the updated alias.
+     * @returns {Promise<IAlias>} Details of the updated alias.
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
-    async updateAppBundleAlias(name, alias, version) {
+    async updateAppBundleAlias(name: string, alias: string, version: number): Promise<IAlias> {
         // TODO: tests
         const config = { version: version };
         return this._patch(`/appbundles/${name}/aliases/${alias}`, { json: config });
@@ -335,10 +412,10 @@ class DesignAutomationClient {
      * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/activities-GET|docs}).
      * @async
      * @generator
-     * @yields {Promise<object[]>} List of activities.
+     * @yields {AsyncIterable<IActivityDetail[]>} List of activities.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async *iterateActivities() {
+    async *iterateActivities(): AsyncIterable<IActivityDetail[]> {
         for await (const activities of this._pager('/activities', ReadScopes)) {
             yield activities;
         }
@@ -348,10 +425,10 @@ class DesignAutomationClient {
      * Gets a list of all activities
      * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/activities-GET|docs}).
      * @async
-     * @returns {Promise<object[]>} List of activities.
+     * @returns {Promise<IActivityDetail[]>} List of activities.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async listActivities() {
+    async listActivities(): Promise<IActivityDetail[]> {
         return this._collect('/activities', ReadScopes);
     }
 
@@ -363,12 +440,12 @@ class DesignAutomationClient {
      * @returns {Promise<object>} Activity details.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async getActivity(activityId) {
+    async getActivity(activityId: string): Promise<IActivityDetail> {
         return this._get(`/activities/${activityId}`);
     }
 
-    _inventorActivityConfig(activityId, description, ownerId, bundleName, bundleAlias, engine, inputs, outputs) {
-        const config = {
+    _inventorActivityConfig(activityId: string | null, description: string, ownerId: string, bundleName: string, bundleAlias: string, engine: string, inputs: IActivityParam[], outputs: IActivityParam[]): IActivityConfig {
+        const config: IActivityConfig = {
             commandLine: [`$(engine.path)\\InventorCoreConsole.exe /al $(appbundles[${bundleName}].path)`],
             parameters: {},
             description: description,
@@ -378,91 +455,95 @@ class DesignAutomationClient {
         if (activityId) {
             config.id = activityId;
         }
-        if (inputs.length > 0) {
+        if (inputs.length > 0 && Array.isArray(config.commandLine)) {
             config.commandLine[0] += ' /i';
             for (const input of inputs) {
                 config.commandLine[0] += ` $(args[${input.name}].path)`;
-                const param = config.parameters[input.name] = { verb: input.verb || 'get' };
+                const param: any = config.parameters[input.name] = { verb: input.verb || 'get' };
                 for (const prop of ActivityParameterProps) {
                     if (input.hasOwnProperty(prop)) {
-                        param[prop] = input[prop];
+                        param[prop] = (<any>input)[prop];
                     }
                 }
             }
         }
         for (const output of outputs) {
-            const param = config.parameters[output.name] = { verb: output.verb || 'put' };
+            const param: any = config.parameters[output.name] = { verb: output.verb || 'put' };
             for (const prop of ActivityParameterProps) {
                 if (output.hasOwnProperty(prop)) {
-                    param[prop] = output[prop];
+                    param[prop] = (<any>output)[prop];
                 }
             }
         }
         return config;
     }
 
-    _revitActivityConfig(activityId, description, ownerId, bundleName, bundleAlias, engine, inputs, outputs) {
-        const config = {
-            id: activityId,
+    _revitActivityConfig(activityId: string | null, description: string, ownerId: string, bundleName: string, bundleAlias: string, engine: string, inputs: IActivityParam[], outputs: IActivityParam[]): IActivityConfig {
+        const config: IActivityConfig = {
             commandLine: [`$(engine.path)\\revitcoreconsole.exe /al $(appbundles[${bundleName}].path)`],
             parameters: {},
             description: description,
             engine: engine,
             appbundles: [`${ownerId}.${bundleName}+${bundleAlias}`]
         };
-        if (inputs.length > 0) {
+        if (activityId) {
+            config.id = activityId;
+        }
+        if (inputs.length > 0 && Array.isArray(config.commandLine)) {
             config.commandLine[0] += ' /i';
             for (const input of inputs) {
                 config.commandLine[0] += ` $(args[${input.name}].path)`;
-                const param = config.parameters[input.name] = { verb: input.verb || 'get' };
+                const param: any = config.parameters[input.name] = { verb: input.verb || 'get' };
                 for (const prop of ActivityParameterProps) {
                     if (input.hasOwnProperty(prop)) {
-                        param[prop] = input[prop];
+                        param[prop] = (<any>input)[prop];
                     }
                 }
             }
         }
         for (const output of outputs) {
-            const param = config.parameters[output.name] = { verb: output.verb || 'put' };
+            const param: any = config.parameters[output.name] = { verb: output.verb || 'put' };
             for (const prop of ActivityParameterProps) {
                 if (output.hasOwnProperty(prop)) {
-                    param[prop] = output[prop];
+                    param[prop] = (<any>output)[prop];
                 }
             }
         }
         return config;
     }
 
-    _autocadActivityConfig(activityId, description, ownerId, bundleName, bundleAlias, engine, inputs, outputs, script) {
-        const config = {
-            id: activityId,
+    _autocadActivityConfig(activityId: string | null, description: string, ownerId: string, bundleName: string, bundleAlias: string, engine: string, inputs: IActivityParam[], outputs: IActivityParam[], script?: string): IActivityConfig {
+        const config: IActivityConfig = {
             commandLine: [`$(engine.path)\\accoreconsole.exe /al $(appbundles[${bundleName}].path)`],
             parameters: {},
             description: description,
             engine: engine,
             appbundles: [`${ownerId}.${bundleName}+${bundleAlias}`]
         };
-        if (inputs.length > 0) {
+        if (activityId) {
+            config.id = activityId;
+        }
+        if (inputs.length > 0 && Array.isArray(config.commandLine)) {
             config.commandLine[0] += ' /i';
             for (const input of inputs) {
                 config.commandLine[0] += ` $(args[${input.name}].path)`;
-                const param = config.parameters[input.name] = { verb: input.verb || 'get' };
+                const param: any = config.parameters[input.name] = { verb: input.verb || 'get' };
                 for (const prop of ActivityParameterProps) {
                     if (input.hasOwnProperty(prop)) {
-                        param[prop] = input[prop];
+                        param[prop] = (<any>input)[prop];
                     }
                 }
             }
         }
         for (const output of outputs) {
-            const param = config.parameters[output.name] = { verb: output.verb || 'put' };
+            const param: any = config.parameters[output.name] = { verb: output.verb || 'put' };
             for (const prop of ActivityParameterProps) {
                 if (output.hasOwnProperty(prop)) {
-                    param[prop] = output[prop];
+                    param[prop] = (<any>output)[prop];
                 }
             }
         }
-        if (script) {
+        if (script && Array.isArray(config.commandLine)) {
             config.settings = {
                 script: script
             };
@@ -471,32 +552,34 @@ class DesignAutomationClient {
         return config;
     }
 
-    _3dsmaxActivityConfig(activityId, description, ownerId, bundleName, bundleAlias, engine, inputs, outputs, script) {
-        const config = {
-            id: activityId,
+    _3dsmaxActivityConfig(activityId: string | null, description: string, ownerId: string, bundleName: string, bundleAlias: string, engine: string, inputs: IActivityParam[], outputs: IActivityParam[], script?: string): IActivityConfig {
+        const config: IActivityConfig = {
             commandLine: `$(engine.path)\\3dsmaxbatch.exe`,
             parameters: {},
             description: description,
             engine: engine,
             appbundles: [`${ownerId}.${bundleName}+${bundleAlias}`]
         };
+        if (activityId) {
+            config.id = activityId;
+        }
         if (inputs.length > 1) {
             throw new Error('3dsMax engine only supports single input file.')
         } else if (inputs.length > 0) {
             const input = inputs[0];
             config.commandLine += ` -sceneFile \"$(args[${input.name}].path)\"`;
-            const param = config.parameters[input.name] = { verb: input.verb || 'get' };
+            const param: any = config.parameters[input.name] = { verb: input.verb || 'get' };
             for (const prop of ActivityParameterProps) {
                 if (input.hasOwnProperty(prop)) {
-                    param[prop] = input[prop];
+                    param[prop] = (<any>input)[prop];
                 }
             }
         }
         for (const output of outputs) {
-            const param = config.parameters[output.name] = { verb: output.verb || 'put' };
+            const param: any = config.parameters[output.name] = { verb: output.verb || 'put' };
             for (const prop of ActivityParameterProps) {
                 if (output.hasOwnProperty(prop)) {
-                    param[prop] = output[prop];
+                    param[prop] = (<any>output)[prop];
                 }
             }
         }
@@ -518,29 +601,35 @@ class DesignAutomationClient {
      * @param {string} bundleName App bundle name.
      * @param {string} bundleAlias App bundle alias.
      * @param {string} engine ID of one of the supported {@link engines}.
-     * @param {object[]} inputs List of input descriptor objects, each containing required property `name`
+     * @param {IActivityParam[]} inputs List of input descriptor objects, each containing required property `name`
      * and optional properties `description`, `localName`, `required`, `zip`, `ondemand`, and `verb` ("get" by default).
-     * @param {object[]} outputs List of output descriptor objects, each containing required property `name`
+     * @param {IActivityParam[]} outputs List of output descriptor objects, each containing required property `name`
      * and optional properties `description`, `localName`, `required`, `zip`, `ondemand`, and `verb` ("put" by default).
      * @param {string} [script] Optional engine-specific script to pass to the activity.
-     * @returns {Promise<object>} Details of created activity.
+     * @returns {Promise<IActivityDetail>} Details of created activity.
      */
-    async createActivity(id, description, bundleName, bundleAlias, engine, inputs, outputs, script) {
+    async createActivity(id: string, description: string, bundleName: string, bundleAlias: string, engine: string, inputs: IActivityParam[], outputs: IActivityParam[], script?: string): Promise<IActivityDetail> {
         // TODO: tests
         const engineId = DesignAutomationID.parse(engine);
+        if (!engineId) {
+            throw new Error('Could not parse engine ID.');
+        }
+        if (!this.auth) {
+            throw new Error('Cannot create activity without client ID.');
+        }
         let config;
         switch (engineId.id) {
             case 'AutoCAD':
-                config = this._autocadActivityConfig(id, description, this.auth.client_id, bundleName, bundleAlias, engine, inputs, outputs, script);
+                config = this._autocadActivityConfig(id, description, this.auth.clientId, bundleName, bundleAlias, engine, inputs, outputs, script);
                 break;
             case '3dsMax':
-                config = this._3dsmaxActivityConfig(id, description, this.auth.client_id, bundleName, bundleAlias, engine, inputs, outputs, script)
+                config = this._3dsmaxActivityConfig(id, description, this.auth.clientId, bundleName, bundleAlias, engine, inputs, outputs, script)
                 break;
             case 'Revit':
-                config = this._revitActivityConfig(id, description, this.auth.client_id, bundleName, bundleAlias, engine, inputs, outputs);
+                config = this._revitActivityConfig(id, description, this.auth.clientId, bundleName, bundleAlias, engine, inputs, outputs);
                 break;
             case 'Inventor':
-                config = this._inventorActivityConfig(id, description, this.auth.client_id, bundleName, bundleAlias, engine, inputs, outputs);
+                config = this._inventorActivityConfig(id, description, this.auth.clientId, bundleName, bundleAlias, engine, inputs, outputs);
                 break;
         }
         return this._post('/activities', { json: config });
@@ -562,22 +651,28 @@ class DesignAutomationClient {
      * @param {string} [script] Optional engine-specific script to pass to the activity.
      * @returns {Promise<object>} Details of created activity.
      */
-    async updateActivity(id, description, bundleName, bundleAlias, engine, inputs, outputs, script) {
+    async updateActivity(id: string, description: string, bundleName: string, bundleAlias: string, engine: string, inputs: IActivityParam[], outputs: IActivityParam[], script?: string): Promise<IActivityDetail> {
         // TODO: tests
         const engineId = DesignAutomationID.parse(engine);
+        if (!engineId) {
+            throw new Error('Could not parse engine ID.');
+        }
+        if (!this.auth) {
+            throw new Error('Cannot create activity without client ID.');
+        }
         let config;
         switch (engineId.id) {
             case 'AutoCAD':
-                config = this._autocadActivityConfig(null, description, this.auth.client_id, bundleName, bundleAlias, engine, inputs, outputs, script);
+                config = this._autocadActivityConfig(null, description, this.auth.clientId, bundleName, bundleAlias, engine, inputs, outputs, script);
                 break;
             case '3dsMax':
-                config = this._3dsmaxActivityConfig(null, description, this.auth.client_id, bundleName, bundleAlias, engine, inputs, outputs, script)
+                config = this._3dsmaxActivityConfig(null, description, this.auth.clientId, bundleName, bundleAlias, engine, inputs, outputs, script)
                 break;
             case 'Revit':
-                config = this._revitActivityConfig(null, description, this.auth.client_id, bundleName, bundleAlias, engine, inputs, outputs);
+                config = this._revitActivityConfig(null, description, this.auth.clientId, bundleName, bundleAlias, engine, inputs, outputs);
                 break;
             case 'Inventor':
-                config = this._inventorActivityConfig(null, description, this.auth.client_id, bundleName, bundleAlias, engine, inputs, outputs);
+                config = this._inventorActivityConfig(null, description, this.auth.clientId, bundleName, bundleAlias, engine, inputs, outputs);
                 break;
         }
         return this._post(`/activities/${id}/versions`, { json: config });
@@ -589,10 +684,10 @@ class DesignAutomationClient {
      * @async
      * @generator
      * @param {string} name Unique name of activity.
-     * @yields {Promise<object[]>} List of activity alias objects.
+     * @yields {AsyncIterable<IAlias[]>} List of activity alias objects.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async *iterateActivityAliases(name) {
+    async *iterateActivityAliases(name: string): AsyncIterable<IAlias[]> {
         for await (const aliases of this._pager(`/activities/${name}/aliases`, ReadScopes)) {
             yield aliases;
         }
@@ -603,10 +698,10 @@ class DesignAutomationClient {
      * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/activities-id-aliases-GET|docs}).
      * @async
      * @param {string} name Unique name of activity.
-     * @returns {Promise<object[]>} List of activity alias objects.
+     * @returns {Promise<IAlias[]>} List of activity alias objects.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async listActivityAliases(name) {
+    async listActivityAliases(name: string): Promise<IAlias[]> {
         return this._collect(`/activities/${name}/aliases`, ReadScopes);
     }
 
@@ -616,10 +711,10 @@ class DesignAutomationClient {
      * @async
      * @generator
      * @param {string} name Unique name of activity.
-     * @yields {Promise<object[]>} List of activity versions.
+     * @yields {AsyncIterable<number[]>} List of activity versions.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async *iterateActivityVersions(name) {
+    async *iterateActivityVersions(name: string): AsyncIterable<number[]> {
         for await (const versions of this._pager(`/activities/${name}/versions`, ReadScopes)) {
             yield versions;
         }
@@ -630,10 +725,10 @@ class DesignAutomationClient {
      * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/activities-id-versions-GET|docs}).
      * @async
      * @param {string} name Unique name of activity.
-     * @returns {Promise<object[]>} List of activity versions.
+     * @returns {Promise<number[]>} List of activity versions.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async listActivityVersions(name) {
+    async listActivityVersions(name: string): Promise<number[]> {
         return this._collect(`/activities/${name}/versions`, ReadScopes);
     }
 
@@ -644,9 +739,9 @@ class DesignAutomationClient {
      * @param {string} id Activity ID.
      * @param {string} alias New alias name.
      * @param {number} version Activity version to link to this alias.
-     * @returns {Promise<object>} Details of created alias.
+     * @returns {Promise<IAlias>} Details of created alias.
      */
-    async createActivityAlias(id, alias, version) {
+    async createActivityAlias(id: string, alias: string, version: number): Promise<IAlias> {
         // TODO: tests
         const config = { id: alias, version: version };
         return this._post(`/activities/${id}/aliases`, { json: config });
@@ -659,9 +754,9 @@ class DesignAutomationClient {
      * @param {string} id Activity ID.
      * @param {string} alias Activity alias.
      * @param {number} version Activity version to link to this alias.
-     * @returns {Promise<object>} Details of updated alias.
+     * @returns {Promise<IAlias>} Details of updated alias.
      */
-    async updateActivityAlias(id, alias, version) {
+    async updateActivityAlias(id: string, alias: string, version: number): Promise<IAlias> {
         // TODO: tests
         const config = { version: version };
         return this._patch(`/activities/${id}/aliases/${alias}`, { json: config });
@@ -675,7 +770,7 @@ class DesignAutomationClient {
      * @returns {Promise<object>} Work item details.
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
-    async workItemDetails(id) {
+    async workItemDetails(id: string) {
         return this._get(`/workitems/${id}`);
     }
 
@@ -684,38 +779,33 @@ class DesignAutomationClient {
      * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/workitems-POST|docs}).
      * @async
      * @param {string} activityId Activity ID.
-     * @param {object[]} inputs List of input descriptor objects, each containing required properties `name`, `url`,
+     * @param {IWorkItemParam[]} inputs List of input descriptor objects, each containing required properties `name`, `url`,
      * and optional properties `localName`, `optional`, `pathInZip`, `headers`, and `verb` ("get" by default).
-     * @param {object[]} outputs List of output descriptor objects, each containing required properties `name`, `url`,
+     * @param {IWorkItemParam[]} outputs List of output descriptor objects, each containing required properties `name`, `url`,
      * and optional properties `localName`, `optional`, `pathInZip`, `headers`, and `verb` ("put" by default).
      */
-    async createWorkItem(activityId, inputs, outputs) {
+    async createWorkItem(activityId: string, inputs: IWorkItemParam[], outputs: IWorkItemParam[]) {
         // TODO: tests
-        const config = {
+        const config: IWorkItemConfig = {
             activityId: activityId,
             arguments: {}
         };
         for (const input of inputs) {
-            const param = config.arguments[input.name] = { verb: input.verb || 'get', url: input.url };
+            const param: any = config.arguments[input.name] = { verb: input.verb || 'get', url: input.url };
             for (const prop of WorkitemParameterProps) {
                 if (input.hasOwnProperty(prop)) {
-                    param[prop] = input[prop];
+                    param[prop] = (<any>input)[prop];
                 }
             }
         }
         for (const output of outputs) {
-            const param = config.arguments[output.name] = { verb: output.verb || 'put', url: output.url };
+            const param: any = config.arguments[output.name] = { verb: output.verb || 'put', url: output.url };
             for (const prop of WorkitemParameterProps) {
                 if (output.hasOwnProperty(prop)) {
-                    param[prop] = output[prop];
+                    param[prop] = (<any>output)[prop];
                 }
             }
         }
         return this._post('/workitems', { json: config });
     }
 }
-
-module.exports = {
-    DesignAutomationClient,
-    DesignAutomationID
-};

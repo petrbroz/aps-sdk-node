@@ -1,27 +1,68 @@
-const { get, post, DefaultHost } = require('./common');
-const { AuthenticationClient } = require('./authentication');
+import { get, post, put, DefaultHost, IAuthOptions } from './common';
+import { AuthenticationClient } from './authentication';
 
 const RootPath = '/modelderivative/v2';
 const ReadTokenScopes = ['data:read'];
 const WriteTokenScopes = ['data:read', 'data:write', 'data:create'];
 
-const { FORGE_CLIENT_ID, FORGE_CLIENT_SECRET } = process.env;
+interface IDerivativeFormats {
+    [outputFormat: string]: string[];
+}
+
+interface IDerivativeOutputType {
+    type: 'svf',
+    views: string[];
+}
+
+interface IJob {
+    result: string;
+    urn: string;
+    //acceptedJobs?: any;
+    //output?: any;
+}
+
+interface IDerivativeManifest {
+    type: string;
+    hasThumbnail: string;
+    status: string;
+    progress: string;
+    region: string;
+    urn: string;
+    version: string;
+    //derivatives: any[];
+}
+
+interface IDerivativeMetadata {
+    // TODO
+}
+
+interface IDerivativeTree {
+    // TODO
+}
+
+interface IDerivativeProps {
+    // TODO
+}
 
 /**
  * Client providing access to Autodesk Forge
  * {@link https://forge.autodesk.com/en/docs/model-derivative/v2|model derivative APIs}.
  * @tutorial model-derivative
  */
-class ModelDerivativeClient {
+export class ModelDerivativeClient {
+    private auth?: AuthenticationClient;
+    private token?: string;
+    private host: string;
+
     /**
      * Initializes new client with specific authentication method.
-     * @param {object} [auth={client_id: FORGE_CLIENT_ID, client_secret: FORGE_CLIENT_SECRET}] Authentication object,
+     * @param {IAuthOptions} auth Authentication object,
      * containing either `client_id` and `client_secret` properties (for 2-legged authentication),
      * or a single `token` property (for 2-legged or 3-legged authentication with pre-generated access token).
      * @param {string} [host="https://developer.api.autodesk.com"] Forge API host.
      */
-    constructor(auth = { client_id: FORGE_CLIENT_ID, client_secret: FORGE_CLIENT_SECRET }, host = DefaultHost) {
-        if (auth.client_id && auth.client_secret) {
+    constructor(auth: IAuthOptions, host = DefaultHost) {
+        if ('client_id' in auth && 'client_secret' in auth) {
             this.auth = new AuthenticationClient(auth.client_id, auth.client_secret, host);
         } else if (auth.token) {
             this.token = auth.token;
@@ -32,7 +73,7 @@ class ModelDerivativeClient {
     }
 
     // Helper method for GET requests
-    async _get(endpoint, headers = {}, scopes = ReadTokenScopes) {
+    private async _get(endpoint: string, headers: { [name: string]: string } = {}, scopes = ReadTokenScopes) {
         if (this.auth) {
             const authentication = await this.auth.authenticate(scopes);
             headers['Authorization'] = 'Bearer ' + authentication.access_token;
@@ -43,7 +84,7 @@ class ModelDerivativeClient {
     }
 
     // Helper method for POST requests
-    async _post(endpoint, data, headers = {}, scopes = WriteTokenScopes) {
+    private async _post(endpoint: string, data: any, headers: { [name: string]: string } = {}, scopes = WriteTokenScopes) {
         if (this.auth) {
             const authentication = await this.auth.authenticate(scopes);
             headers['Authorization'] = 'Bearer ' + authentication.access_token;
@@ -54,7 +95,7 @@ class ModelDerivativeClient {
     }
 
     // Helper method for PUT requests
-    async _put(endpoint, data, headers = {}, scopes = WriteTokenScopes) {
+    private async _put(endpoint: string, data: any, headers: { [name: string]: string } = {}, scopes = WriteTokenScopes) {
         if (this.auth) {
             const authentication = await this.auth.authenticate(scopes);
             headers['Authorization'] = 'Bearer ' + authentication.access_token;
@@ -68,11 +109,11 @@ class ModelDerivativeClient {
      * Gets a list of supported translation formats.
      * ({@link https://forge.autodesk.com/en/docs/model-derivative/v2/reference/http/formats-GET|docs}).
      * @async
-     * @yields {Promise<object>} Dictionary of all supported output formats
+     * @yields {Promise<IDerivativeFormats>} Dictionary of all supported output formats
      * mapped to arrays of formats these outputs can be obtained from.
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
-    async formats() {
+    async formats(): Promise<IDerivativeFormats> {
         const response = await this._get('/designdata/formats');
         return response.formats;
     }
@@ -82,13 +123,13 @@ class ModelDerivativeClient {
      * ({@link https://forge.autodesk.com/en/docs/model-derivative/v2/reference/http/job-POST|docs}).
      * @async
      * @param {string} urn Document to be translated.
-     * @param {object[]} outputs List of requested output formats. Currently the one
+     * @param {IDerivativeOutputType[]} outputs List of requested output formats. Currently the one
      * supported format is `{ type: 'svf', views: ['2d', '3d'] }`.
-     * @returns {Promise<object>} Translation job details, with properties 'result',
+     * @returns {Promise<IJob>} Translation job details, with properties 'result',
      * 'urn', and 'acceptedJobs'.
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
-    async submitJob(urn, outputs) {
+    async submitJob(urn: string, outputs: IDerivativeOutputType[]): Promise<IJob> {
         const params = {
             input: {
                 urn: urn
@@ -105,10 +146,10 @@ class ModelDerivativeClient {
      * ({@link https://forge.autodesk.com/en/docs/model-derivative/v2/reference/http/urn-manifest-GET|docs}).
      * @async
      * @param {string} urn Document derivative URN.
-     * @returns {Promise<object>} Document derivative manifest.
+     * @returns {Promise<IDerivativeManifest>} Document derivative manifest.
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
-    async getManifest(urn) {
+    async getManifest(urn: string): Promise<IDerivativeManifest> {
         return this._get(`/designdata/${urn}/manifest`);
     }
 
@@ -117,10 +158,10 @@ class ModelDerivativeClient {
      * ({@link https://forge.autodesk.com/en/docs/model-derivative/v2/reference/http/urn-metadata-GET|docs}).
      * @async
      * @param {string} urn Document derivative URN.
-     * @returns {Promise<object>} Document derivative metadata.
+     * @returns {Promise<IDerivativeMetadata>} Document derivative metadata.
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
-    async getMetadata(urn) {
+    async getMetadata(urn: string): Promise<IDerivativeMetadata> {
         return this._get(`/designdata/${urn}/metadata`);
     }
 
@@ -130,10 +171,10 @@ class ModelDerivativeClient {
      * @async
      * @param {string} urn Document derivative URN.
      * @param {string} guid Viewable GUID.
-     * @returns {Promise<object>} Viewable object tree.
+     * @returns {Promise<IDerivativeTree>} Viewable object tree.
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
-    async getViewableTree(urn, guid) {
+    async getViewableTree(urn: string, guid: string): Promise<IDerivativeTree> {
         return this._get(`/designdata/${urn}/metadata/${guid}`);
     }
 
@@ -143,14 +184,10 @@ class ModelDerivativeClient {
      * @async
      * @param {string} urn Document derivative URN.
      * @param {string} guid Viewable GUID.
-     * @returns {Promise<object>} Viewable properties.
+     * @returns {Promise<IDerivativeProps>} Viewable properties.
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
-    async getViewableProperties(urn, guid) {
+    async getViewableProperties(urn: string, guid: string): Promise<IDerivativeProps> {
         return this._get(`/designdata/${urn}/metadata/${guid}/properties`);
     }
 }
-
-module.exports = {
-    ModelDerivativeClient
-};

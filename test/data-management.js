@@ -10,7 +10,7 @@ describe('DataManagementClient', function() {
         assert(FORGE_BUCKET);
         this.client = new DataManagementClient({ client_id: FORGE_CLIENT_ID, client_secret: FORGE_CLIENT_SECRET });
         this.bucket = FORGE_BUCKET;
-        this.timeout(5000); // Increase timeout to 5 seconds
+        this.timeout(10000); // Increase timeout to 10 seconds
     });
 
     describe('listBuckets()', function() {

@@ -1,11 +1,17 @@
-const querystring = require('querystring');
-const fetch = require('node-fetch');
+import * as querystring from 'querystring';
+import fetch, { RequestInit } from 'node-fetch';
 
-const DefaultHost = 'https://developer.api.autodesk.com';
+export const DefaultHost = 'https://developer.api.autodesk.com';
+
 const RetryDelay = 5000; // Delay (in milliseconds) before retrying after a "202 Accepted" response
 
 class ForgeError extends Error {
-    constructor(url, status, statusText, data) {
+    private url: string;
+    private status: number;
+    private statusText: string;
+    private data: any;
+
+    constructor(url: string, status: number, statusText: string, data: any) {
         super();
         this.url = url;
         this.status = status;
@@ -19,9 +25,9 @@ class ForgeError extends Error {
     }
 }
 
-function sleep(ms) { return new Promise(function(resolve) { setTimeout(resolve, ms); }); }
+function sleep(ms: number) { return new Promise(function(resolve) { setTimeout(resolve, ms); }); }
 
-async function _fetch(url, options) {
+async function _fetch(url: string, options: RequestInit) {
     let response = await fetch(url, options);
     while (response.status === 202) {
         sleep(RetryDelay);
@@ -54,11 +60,11 @@ async function _fetch(url, options) {
     }
 }
 
-async function rawFetch(url, options) {
+export async function rawFetch(url: string, options: RequestInit) {
     return fetch(url, options);
 }
 
-async function get(url, headers = {}) {
+export async function get(url: string, headers: { [name: string]: string } = {}) {
     const options = {
         method: 'GET',
         headers: headers
@@ -66,8 +72,8 @@ async function get(url, headers = {}) {
     return _fetch(url, options);
 }
 
-async function post(url, data, headers = {}) {
-    const options = {
+export async function post(url: string, data: any, headers: { [name: string]: string } = {}) {
+    const options: RequestInit = {
         method: 'POST',
         headers: headers
     };
@@ -83,12 +89,12 @@ async function post(url, data, headers = {}) {
     } else {
         throw new Error(`Content type not supported`);
     }
-    headers['Content-Length'] = Buffer.byteLength(options.body);
+    headers['Content-Length'] = Buffer.byteLength(<any>options.body).toString();
     return _fetch(url, options);
 }
 
-async function put(url, data, headers = {}) {
-    const options = {
+export async function put(url: string, data: any, headers: { [name: string]: string } = {}) {
+    const options: RequestInit = {
         method: 'PUT',
         headers: headers
     };
@@ -104,12 +110,12 @@ async function put(url, data, headers = {}) {
     } else {
         throw new Error(`Content type not supported`);
     }
-    headers['Content-Length'] = Buffer.byteLength(options.body);
+    headers['Content-Length'] = Buffer.byteLength(<any>options.body).toString();
     return _fetch(url, options);
 }
 
-async function patch(url, data, headers = {}) {
-    const options = {
+export async function patch(url: string, data: any, headers: { [name: string]: string } = {}) {
+    const options: RequestInit = {
         method: 'PATCH',
         headers: headers
     };
@@ -125,37 +131,8 @@ async function patch(url, data, headers = {}) {
     } else {
         throw new Error(`Content type not supported`);
     }
-    headers['Content-Length'] = Buffer.byteLength(options.body);
+    headers['Content-Length'] = Buffer.byteLength(<any>options.body).toString();
     return _fetch(url, options);
 }
 
-/** @deprecated Use {@link DesgnAutomationID} instead. */
-class DesignAutomationURI {
-    constructor(id) {
-        const d = id.indexOf('.');
-        const p = id.indexOf('+');
-        this.owner = id.substr(0, d);
-        if (p === -1) {
-            this.name = id.substr(d + 1);
-            this.alias = undefined;
-        } else {
-            this.name = id.substr(d + 1, p - d - 1);
-            this.alias = id.substr(p + 1);
-        }
-    }
-
-    toString() {
-        return this.owner + '.' + this.name + (this.alias ? '+' + this.alias : '');
-    }
-}
-
-module.exports = {
-    DesignAutomationURI,
-    DefaultHost,
-    get,
-    post,
-    put,
-    patch,
-    ForgeError,
-    rawFetch
-};
+export type IAuthOptions = { client_id: string; client_secret: string; } | { token: string; };

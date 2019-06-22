@@ -14,7 +14,7 @@ manually, you can use the `AuthenticationClient` class:
 
 ```js
 const { AuthenticationClient } = require('forge-nodejs-utils');
-const auth = new AuthenticationClient(); // If no params, gets credentials from env. vars FORGE_CLIENT_ID and FORGE_CLIENT_SECRET
+const auth = new AuthenticationClient(process.env.FORGE_CLIENT_ID, process.env.FORGE_CLIENT_SECRET);
 const authentication = await auth.authenticate(['bucket:read', 'data:read']);
 console.log('2-legged token', authentication.access_token);
 ```
@@ -33,7 +33,7 @@ const bim360 = new BIM360Client({ token: '...' });
 
 ```js
 const { DataManagementClient } = require('forge-nodejs-utils');
-const data = new DataManagementClient(); // If no params, gets credentials from env. vars FORGE_CLIENT_ID and FORGE_CLIENT_SECRET
+const data = new DataManagementClient({ client_id: process.env.FORGE_CLIENT_ID, client_secret: process.env.FORGE_CLIENT_SECRET });
 
 const buckets = await data.listBuckets();
 console.log('Buckets', buckets.map(bucket => bucket.bucketKey).join(','));
@@ -46,7 +46,7 @@ console.log('Objects', objects.map(object => object.objectId).join(','));
 
 ```js
 const { ModelDerivativeClient } = require('forge-nodejs-utils');
-const derivatives = new ModelDerivativeClient(); // If no params, gets credentials from env. vars FORGE_CLIENT_ID and FORGE_CLIENT_SECRET
+const derivatives = new ModelDerivativeClient({ client_id: process.env.FORGE_CLIENT_ID, client_secret: process.env.FORGE_CLIENT_SECRET });
 const job = await derivatives.submitJob('<your-document-urn>', [{ type: 'svf', views: ['2d', '3d'] }]);
 console.log('Job', job);
 ```
@@ -55,7 +55,7 @@ console.log('Job', job);
 
 ```js
 const { DesignAutomationClient, AuthenticationClient } = require('forge-nodejs-utils');
-const client = new DesignAutomationClient(); // If no params, gets credentials from env. vars FORGE_CLIENT_ID and FORGE_CLIENT_SECRET
+const client = new DesignAutomationClient({ client_id: process.env.FORGE_CLIENT_ID, client_secret: process.env.FORGE_CLIENT_SECRET });
 const bundles = await client.listAppBundles();
 console.log('App bundles', bundles);
 ```
