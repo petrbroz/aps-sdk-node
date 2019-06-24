@@ -2,8 +2,8 @@
 
 ```js
 const { ModelDerivativeClient } = require('forge-nodejs-utils');
-// Assuming FORGE_CLIENT_ID and FORGE_CLIENT_SECRET are available as env. vars
-const derivatives = new ModelDerivativeClient();
+const { FORGE_CLIENT_ID, FORGE_CLIENT_SECRET } = process.env;
+const derivatives = new ModelDerivativeClient({ client_id: FORGE_CLIENT_ID, client_secret: FORGE_CLIENT_SECRET });
 const job = await derivatives.submitJob('<your-document-urn>', [{ type: 'svf', views: ['2d', '3d'] }]);
 console.log('Job', job);
 ```

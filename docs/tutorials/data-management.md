@@ -1,10 +1,9 @@
 # Basic usage of Data Management APIs
 
 ```js
-// Assuming FORGE_CLIENT_ID and FORGE_CLIENT_SECRET are available as env. vars
-
 const { DataManagementClient } = require('forge-nodejs-utils');
-const data = new DataManagementClient();
+const { FORGE_CLIENT_ID, FORGE_CLIENT_SECRET } = process.env;
+const data = new DataManagementClient({ client_id: FORGE_CLIENT_ID, client_secret: FORGE_CLIENT_SECRET });
 
 const buckets = await data.listBuckets();
 console.log('Buckets', buckets.map(bucket => bucket.bucketKey).join(','));
