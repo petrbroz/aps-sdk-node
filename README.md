@@ -1,11 +1,30 @@
 # forge-nodejs-utils [![Build Status](https://travis-ci.org/petrbroz/forge-nodejs-utils.svg?branch=master)](https://travis-ci.org/petrbroz/forge-nodejs-utils) [![npm version](https://badge.fury.io/js/forge-nodejs-utils.svg)](https://badge.fury.io/js/forge-nodejs-utils)
 
 Unofficial tools for accessing [Autodesk Forge](https://developer.autodesk.com/) APIs
-from Node.js applications, using modern language features like
+from Node.js applications, built using [TypeScript](https://www.typescriptlang.org) and modern language features like
 [async/await](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function)
 or [generators](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*).
 
 ## Usage
+
+The TypeScript implementation is transpiled into JavaScript with type definition files,
+so you can use it both in Node.js projects (as a CommonJS module), and in TypeScript projects (as an ES6 module):
+
+```js
+// JavaScript
+const { DataManagementClient } = require('forge-nodejs-utils');
+```
+
+```ts
+// TypeScript
+import {
+	DataManagementClient,
+	IBucket,
+	IObject,
+	IResumableUploadRange,
+	DataRetentionPolicy
+} from 'forge-nodejs-utils';
+```
 
 ### Authentication
 
