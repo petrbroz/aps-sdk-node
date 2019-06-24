@@ -2,8 +2,8 @@
 
 ```js
 const { DesignAutomationClient } = require('forge-nodejs-utils');
-// Assuming FORGE_CLIENT_ID and FORGE_CLIENT_SECRET are available as env. vars
-const client = new DesignAutomationClient();
+const { FORGE_CLIENT_ID, FORGE_CLIENT_SECRET } = process.env;
+const client = new DesignAutomationClient({ client_id: FORGE_CLIENT_ID, client_secret: FORGE_CLIENT_SECRET });
 const bundles = await client.listAppBundles();
 console.log('App bundles', bundles);
 ```
@@ -12,7 +12,7 @@ console.log('App bundles', bundles);
 
 ```js
 const { DesignAutomationClient } = require('forge-nodejs-utils');
-// Assuming FORGE_CLIENT_ID and FORGE_CLIENT_SECRET are available as env. vars
-const client = new DesignAutomationClient();
+const { FORGE_CLIENT_ID, FORGE_CLIENT_SECRET } = process.env;
+const client = new DesignAutomationClient({ client_id: FORGE_CLIENT_ID, client_secret: FORGE_CLIENT_SECRET });
 await client.createAppBundle('<appbundle name>', '<appbundle description>', '<one of the engine IDs>');
 ```
