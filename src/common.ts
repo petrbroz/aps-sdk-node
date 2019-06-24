@@ -135,4 +135,12 @@ export async function patch(url: string, data: any, headers: { [name: string]: s
     return _fetch(url, options);
 }
 
+export async function del(url: string, headers: { [name: string]: string } = {}) {
+    const options: RequestInit = {
+        method: 'DELETE',
+        headers: headers
+    };
+    return _fetch(url, options);
+}
+
 export type IAuthOptions = { client_id: string; client_secret: string; } | { token: string; };

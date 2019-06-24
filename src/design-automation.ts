@@ -1,4 +1,4 @@
-import { get, post, patch, put, DefaultHost, IAuthOptions } from './common';
+import { get, post, patch, put, del, DefaultHost, IAuthOptions } from './common';
 import { AuthenticationClient } from './authentication';
 
 const RootPath = '/da/us-east/v3';
@@ -191,6 +191,17 @@ export class DesignAutomationClient {
         return patch(this.host + RootPath + endpoint, data, headers);
     }
 
+    // Helper method for DELETE requests
+    private async _delete(endpoint: string, headers: { [name: string]: string } = {}, scopes = ReadScopes) {
+        if (this.auth) {
+            const authentication = await this.auth.authenticate(scopes);
+            headers['Authorization'] = 'Bearer ' + authentication.access_token;
+        } else {
+            headers['Authorization'] = 'Bearer ' + this.token;
+        }
+        return del(this.host + RootPath + endpoint, headers);
+    }
+
     // Iterates (asynchronously) over pages of paginated results
     private async *_pager(endpoint: string, scopes: string[]) {
         let response = await this._get(endpoint, {}, scopes);
@@ -286,6 +297,19 @@ export class DesignAutomationClient {
      */
     async getAppBundle(bundleId: string): Promise<IAppBundleDetail> {
         return this._get(`/appbundles/${bundleId}`);
+    }
+
+    /**
+     * Gets single appbundle version details
+     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-id-versions-version-GET|docs}).
+     * @async
+     * @param {string} id Short (unqualified) app bundle ID.
+     * @param {number} version App bundle version.
+     * @returns {Promise<IAppBundleDetail>} Appbundle details.
+     * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
+     */
+    async getAppBundleVersion(id: string, version: number): Promise<IAppBundleDetail> {
+        return this._get(`/appbundles/${id}/versions/${version}`);
     }
 
     /**
@@ -408,6 +432,38 @@ export class DesignAutomationClient {
     }
 
     /**
+     * Deletes app bundle and all its versions and aliases
+     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-id-DELETE|docs}).
+     * @async
+     * @param {string} shortId Short (unqualified) app bundle ID.
+     */
+    async deleteAppBundle(shortId: string) {
+        return this._delete(`/appbundles/${shortId}`);
+    }
+
+    /**
+     * Deletes app bundle alias
+     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-id-aliases-aliasId-DELETE|docs}).
+     * @async
+     * @param {string} shortId Short (unqualified) app bundle ID.
+     * @param {string} alias App bundle alias.
+     */
+    async deleteAppBundleAlias(shortId: string, alias: string) {
+        return this._delete(`/appbundles/${shortId}/aliases/${alias}`);
+    }
+
+    /**
+     * Deletes app bundle version
+     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-id-versions-version-DELETE|docs}).
+     * @async
+     * @param {string} shortId Short (unqualified) app bundle ID.
+     * @param {number} version App bundle version.
+     */
+    async deleteAppBundleVersion(shortId: string, version: number) {
+        return this._delete(`/appbundles/${shortId}/versions/${version}`);
+    }
+
+    /**
      * Iterates over all activities in pages of predefined size
      * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/activities-GET|docs}).
      * @async
@@ -442,6 +498,19 @@ export class DesignAutomationClient {
      */
     async getActivity(activityId: string): Promise<IActivityDetail> {
         return this._get(`/activities/${activityId}`);
+    }
+
+    /**
+     * Gets single activity version details
+     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/activities-id-versions-version-GET|docs}).
+     * @async
+     * @param {string} id Short (unqualified) activity ID.
+     * @param {number} version Activity version.
+     * @returns {Promise<IActivityDetail>} Activity details.
+     * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
+     */
+    async getActivityVersion(id: string, version: number): Promise<IActivityDetail> {
+        return this._get(`/activities/${id}/versions/${version}`);
     }
 
     private _inventorActivityConfig(activityId: string | null, description: string, ownerId: string, bundleName: string, bundleAlias: string, engine: string, inputs: IActivityParam[], outputs: IActivityParam[]): IActivityConfig {
@@ -763,6 +832,38 @@ export class DesignAutomationClient {
     }
 
     /**
+     * Deletes activity and all its versions and aliases
+     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/activities-id-DELETE|docs}).
+     * @async
+     * @param {string} shortId Short (unqualified) activity ID.
+     */
+    async deleteActivity(shortId: string) {
+        return this._delete(`/activities/${shortId}`);
+    }
+
+    /**
+     * Deletes activity alias
+     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/activities-id-aliases-aliasId-DELETE|docs}).
+     * @async
+     * @param {string} shortId Short (unqualified) activity ID.
+     * @param {string} alias Activity alias.
+     */
+    async deleteActivityAlias(shortId: string, alias: string) {
+        return this._delete(`/activities/${shortId}/aliases/${alias}`);
+    }
+
+    /**
+     * Deletes activity version
+     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/activities-id-versions-version-DELETE|docs}).
+     * @async
+     * @param {string} shortId Short (unqualified) activity ID.
+     * @param {number} version Activity version.
+     */
+    async deleteActivityVersion(shortId: string, version: number) {
+        return this._delete(`/activities/${shortId}/versions/${version}`);
+    }
+
+    /**
      * Gets details of a specific work item
      * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/workitems-id-GET|docs}).
      * @async
@@ -807,5 +908,15 @@ export class DesignAutomationClient {
             }
         }
         return this._post('/workitems', { json: config });
+    }
+
+    /**
+     * Cancels work item, removing it from waiting queue or cancelling a running job
+     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/workitems-id-DELETE|docs}).
+     * @async
+     * @param {string} id Work item ID.
+     */
+    async deleteWorkItem(id: string) {
+        return this._delete(`/workitems/${id}`);
     }
 }
