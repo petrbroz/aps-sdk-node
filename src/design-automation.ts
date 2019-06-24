@@ -300,6 +300,19 @@ export class DesignAutomationClient {
     }
 
     /**
+     * Gets single appbundle version details
+     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-id-versions-version-GET|docs}).
+     * @async
+     * @param {string} id Short (unqualified) app bundle ID.
+     * @param {number} version App bundle version.
+     * @returns {Promise<IAppBundleDetail>} Appbundle details.
+     * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
+     */
+    async getAppBundleVersion(id: string, version: number): Promise<IAppBundleDetail> {
+        return this._get(`/appbundles/${id}/versions/${version}`);
+    }
+
+    /**
      * Creates a new app bundle
      * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-POST|docs}).
      * @async
@@ -485,6 +498,19 @@ export class DesignAutomationClient {
      */
     async getActivity(activityId: string): Promise<IActivityDetail> {
         return this._get(`/activities/${activityId}`);
+    }
+
+    /**
+     * Gets single activity version details
+     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/activities-id-versions-version-GET|docs}).
+     * @async
+     * @param {string} id Short (unqualified) activity ID.
+     * @param {number} version Activity version.
+     * @returns {Promise<IActivityDetail>} Activity details.
+     * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
+     */
+    async getActivityVersion(id: string, version: number): Promise<IActivityDetail> {
+        return this._get(`/activities/${id}/versions/${version}`);
     }
 
     private _inventorActivityConfig(activityId: string | null, description: string, ownerId: string, bundleName: string, bundleAlias: string, engine: string, inputs: IActivityParam[], outputs: IActivityParam[]): IActivityConfig {
