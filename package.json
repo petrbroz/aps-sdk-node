@@ -26,12 +26,12 @@
   },
   "homepage": "https://github.com/petrbroz/forge-nodejs-utils#readme",
   "devDependencies": {
-    "@types/node-fetch": "^2.3.7",
     "mocha": "^5.2.0",
     "typedoc": "^0.14.2",
     "typescript": "^3.5.2"
   },
   "dependencies": {
+    "@types/node-fetch": "^2.3.7",
     "node-fetch": "^2.5.0"
   }
 }
