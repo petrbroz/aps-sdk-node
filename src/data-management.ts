@@ -1,6 +1,6 @@
 import * as querystring from 'querystring';
 
-import { get, post, put, rawFetch, DefaultHost, IAuthOptions } from './common';
+import { get, post, put, rawFetch, DefaultHost, IAuthOptions, del } from './common';
 import { AuthenticationClient } from './authentication';
 
 const RootPath = '/oss/v2';
@@ -112,6 +112,17 @@ export class DataManagementClient {
             headers['Authorization'] = 'Bearer ' + this.token;
         }
         return put(this.host + RootPath + endpoint, data, headers);
+    }
+
+    // Helper method for DELETE requests
+    private async _delete(endpoint: string, headers: { [name: string]: string } = {}, scopes = WriteTokenScopes) {
+        if (this.auth) {
+            const authentication = await this.auth.authenticate(scopes);
+            headers['Authorization'] = 'Bearer ' + authentication.access_token;
+        } else {
+            headers['Authorization'] = 'Bearer ' + this.token;
+        }
+        return del(this.host + RootPath + endpoint, headers);
     }
 
     // Iterates (asynchronously) over pages of paginated results
@@ -379,5 +390,17 @@ export class DataManagementClient {
      */
     async createSignedUrl(bucketId: string, objectId: string, access = 'readwrite'): Promise<ISignedUrl> {
         return this._post(`/buckets/${bucketId}/objects/${objectId}/signed?access=${access}`, { json: {} });
+    }
+
+    /**
+     * Deletes object
+     * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/buckets-:bucketKey-objects-:objectName-DELETE|docs}).
+     * @async
+     * @param {string} bucketKey Bucket key.
+     * @param {string} objectName Name of object to delete.
+     * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
+     */
+    async deleteObject(bucketKey: string, objectName: string) {
+        return this._delete(`/buckets/${bucketKey}/objects/${objectName}`);
     }
 }
