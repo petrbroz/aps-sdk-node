@@ -1,4 +1,11 @@
-# forge-nodejs-utils [![Build Status](https://travis-ci.org/petrbroz/forge-nodejs-utils.svg?branch=master)](https://travis-ci.org/petrbroz/forge-nodejs-utils) [![npm version](https://badge.fury.io/js/forge-nodejs-utils.svg)](https://badge.fury.io/js/forge-nodejs-utils)
+# forge-nodejs-utils
+
+[![build status](https://travis-ci.org/petrbroz/forge-nodejs-utils.svg?branch=master)](https://travis-ci.org/petrbroz/forge-nodejs-utils)
+[![npm version](https://badge.fury.io/js/forge-nodejs-utils.svg)](https://badge.fury.io/js/forge-nodejs-utils)
+![node](https://img.shields.io/node/v/forge-nodejs-utils.svg)
+![npm downloads](https://img.shields.io/npm/dw/forge-nodejs-utils.svg)
+![platforms](https://img.shields.io/badge/platform-windows%20%7C%20osx%20%7C%20linux-lightgray.svg)
+[![license](https://img.shields.io/badge/license-MIT-blue.svg)](http://opensource.org/licenses/MIT)
 
 Unofficial tools for accessing [Autodesk Forge](https://developer.autodesk.com/) APIs
 from Node.js applications, built using [TypeScript](https://www.typescriptlang.org) and modern language features like
