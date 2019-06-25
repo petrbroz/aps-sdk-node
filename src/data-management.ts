@@ -1,11 +1,16 @@
 import * as querystring from 'querystring';
 
-import { get, post, put, rawFetch, DefaultHost, IAuthOptions } from './common';
+import { get, post, put, rawFetch, DefaultHost, IAuthOptions, del } from './common';
 import { AuthenticationClient } from './authentication';
 
 const RootPath = '/oss/v2';
 const ReadTokenScopes = ['bucket:read', 'data:read'];
 const WriteTokenScopes = ['bucket:create', 'data:write'];
+
+export enum Region {
+    US = 'US',
+    EMEA = 'EMEA'
+}
 
 export interface IBucket {
     bucketKey: string;
@@ -109,6 +114,17 @@ export class DataManagementClient {
         return put(this.host + RootPath + endpoint, data, headers);
     }
 
+    // Helper method for DELETE requests
+    private async _delete(endpoint: string, headers: { [name: string]: string } = {}, scopes = WriteTokenScopes) {
+        if (this.auth) {
+            const authentication = await this.auth.authenticate(scopes);
+            headers['Authorization'] = 'Bearer ' + authentication.access_token;
+        } else {
+            headers['Authorization'] = 'Bearer ' + this.token;
+        }
+        return del(this.host + RootPath + endpoint, headers);
+    }
+
     // Iterates (asynchronously) over pages of paginated results
     private async *_pager(endpoint: string, limit: number) {
         let response = await this._get(`${endpoint}${endpoint.indexOf('?') === -1 ? '?' : '&'}limit=${limit}`);
@@ -144,11 +160,12 @@ export class DataManagementClient {
      * @async
      * @generator
      * @param {number} [limit=16] Max number of buckets to receive in one batch (allowed values: 1-100).
+     * @param {Region} [region='US'] Region to list buckets from ('US' or 'EMEA').
      * @yields {AsyncIterable<IBucket[]>} List of bucket object containing 'bucketKey', 'createdDate', and 'policyKey'.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async *iterateBuckets(limit: number = 16): AsyncIterable<IBucket[]> {
-        for await (const buckets of this._pager('/buckets', limit)) {
+    async *iterateBuckets(limit: number = 16, region: Region = Region.US): AsyncIterable<IBucket[]> {
+        for await (const buckets of this._pager(`/buckets?region=${region}`, limit)) {
             yield buckets;
         }
     }
@@ -156,12 +173,13 @@ export class DataManagementClient {
     /**
      * Lists all buckets
      * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/buckets-GET|docs}).
+     * @param {string} [region='US'] Region to list buckets from ('US' or 'EMEA').
      * @async
      * @returns {Promise<IBucket[]>} List of bucket objects.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async listBuckets(): Promise<IBucket[]> {
-        return this._collect('/buckets');
+    async listBuckets(region: Region = Region.US): Promise<IBucket[]> {
+        return this._collect(`/buckets?region=${region}`);
     }
 
     /**
@@ -184,14 +202,15 @@ export class DataManagementClient {
      * @async
      * @param {string} bucket Bucket key.
      * @param {DataRetentionPolicy} dataRetention Data retention policy for objects uploaded to this bucket.
+     * @param {Region} [region='US'] Region where the bucket will reside ('US' or 'EMEA').
      * @returns {Promise<IBucketDetail>} Bucket details, with properties "bucketKey", "bucketOwner", "createdDate",
      * "permissions", and "policyKey".
      * @throws Error when the request fails, for example, due to insufficient rights, incorrect scopes,
      * or when a bucket with this name already exists.
      */
-    async createBucket(bucket: string, dataRetention: DataRetentionPolicy): Promise<IBucketDetail> {
+    async createBucket(bucket: string, dataRetention: DataRetentionPolicy, region: Region = Region.US): Promise<IBucketDetail> {
         const params = { bucketKey: bucket, policyKey: dataRetention };
-        return this._post('/buckets', { json: params });
+        return this._post('/buckets', { json: params }, { 'x-ads-region': region });
     }
 
     // Object APIs
@@ -371,5 +390,17 @@ export class DataManagementClient {
      */
     async createSignedUrl(bucketId: string, objectId: string, access = 'readwrite'): Promise<ISignedUrl> {
         return this._post(`/buckets/${bucketId}/objects/${objectId}/signed?access=${access}`, { json: {} });
+    }
+
+    /**
+     * Deletes object
+     * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/buckets-:bucketKey-objects-:objectName-DELETE|docs}).
+     * @async
+     * @param {string} bucketKey Bucket key.
+     * @param {string} objectName Name of object to delete.
+     * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
+     */
+    async deleteObject(bucketKey: string, objectName: string) {
+        return this._delete(`/buckets/${bucketKey}/objects/${objectName}`);
     }
 }

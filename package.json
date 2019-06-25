@@ -1,12 +1,12 @@
 {
   "name": "forge-nodejs-utils",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Tools for accessing Autodesk Forge APIs from Node.js apps.",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
     "test": "mocha",
-    "docs": "typedoc --out dist/docs src"
+    "docs": "jsdoc -c .jsdoc.json -R README.md"
   },
   "repository": {
     "type": "git",
@@ -26,8 +26,8 @@
   },
   "homepage": "https://github.com/petrbroz/forge-nodejs-utils#readme",
   "devDependencies": {
+    "jsdoc": "^3.6.2",
     "mocha": "^5.2.0",
-    "typedoc": "^0.14.2",
     "typescript": "^3.5.2"
   },
   "dependencies": {
