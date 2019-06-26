@@ -1,6 +1,6 @@
 {
   "name": "forge-nodejs-utils",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Tools for accessing Autodesk Forge APIs from Node.js apps.",
   "main": "dist/index.js",
   "scripts": {
