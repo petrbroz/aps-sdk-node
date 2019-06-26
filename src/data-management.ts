@@ -1,7 +1,7 @@
 import * as querystring from 'querystring';
 
-import { get, post, put, rawFetch, DefaultHost, IAuthOptions, del, Region } from './common';
-import { AuthenticationClient } from './authentication';
+import { rawFetch, Region } from './common';
+import { ForgeClient, IAuthOptions } from './forge-client';
 
 const RootPath = '/oss/v2';
 const ReadTokenScopes = ['bucket:read', 'data:read'];
@@ -53,12 +53,7 @@ export interface ISignedUrl {
  * Client providing access to Autodesk Forge {@link https://forge.autodesk.com/en/docs/data/v2|data management APIs}.
  * @tutorial data-management
  */
-export class DataManagementClient {
-    private auth?: AuthenticationClient;
-    private token?: string;
-    private host: string;
-    private region: Region;
-
+export class DataManagementClient extends ForgeClient {
     /**
      * Initializes new client with specific authentication method.
      * @param {IAuthOptions} auth Authentication object,
@@ -68,83 +63,31 @@ export class DataManagementClient {
      * @param {Region} [region="US"] Forge availability region ("US" or "EMEA").
      */
     constructor(auth: IAuthOptions, host?: string, region?: Region) {
-        if ('client_id' in auth && 'client_secret' in auth) {
-            this.auth = new AuthenticationClient(auth.client_id, auth.client_secret, host);
-        } else if ('token' in auth) {
-            this.token = auth.token;
-        } else {
-            throw new Error('Authentication parameters missing or incorrect.');
-        }
-        this.host = host || DefaultHost;
-        this.region = region || Region.US;
-    }
-
-    // Helper method for GET requests
-    private async _get(endpoint: string, headers: { [name: string]: string } = {}, scopes = ReadTokenScopes) {
-        if (this.auth) {
-            const authentication = await this.auth.authenticate(scopes);
-            headers['Authorization'] = 'Bearer ' + authentication.access_token;
-        } else {
-            headers['Authorization'] = 'Bearer ' + this.token;
-        }
-        return get(this.host + RootPath + endpoint, headers);
-    }
-
-    // Helper method for POST requests
-    private async _post(endpoint: string, data: any, headers: { [name: string]: string } = {}, scopes = WriteTokenScopes) {
-        if (this.auth) {
-            const authentication = await this.auth.authenticate(scopes);
-            headers['Authorization'] = 'Bearer ' + authentication.access_token;
-        } else {
-            headers['Authorization'] = 'Bearer ' + this.token;
-        }
-        return post(this.host + RootPath + endpoint, data, headers);
-    }
-
-    // Helper method for PUT requests
-    private async _put(endpoint: string, data: any, headers: { [name: string]: string } = {}, scopes = WriteTokenScopes) {
-        if (this.auth) {
-            const authentication = await this.auth.authenticate(scopes);
-            headers['Authorization'] = 'Bearer ' + authentication.access_token;
-        } else {
-            headers['Authorization'] = 'Bearer ' + this.token;
-        }
-        return put(this.host + RootPath + endpoint, data, headers);
-    }
-
-    // Helper method for DELETE requests
-    private async _delete(endpoint: string, headers: { [name: string]: string } = {}, scopes = WriteTokenScopes) {
-        if (this.auth) {
-            const authentication = await this.auth.authenticate(scopes);
-            headers['Authorization'] = 'Bearer ' + authentication.access_token;
-        } else {
-            headers['Authorization'] = 'Bearer ' + this.token;
-        }
-        return del(this.host + RootPath + endpoint, headers);
+        super(RootPath, auth, host, region);
     }
 
     // Iterates (asynchronously) over pages of paginated results
     private async *_pager(endpoint: string, limit: number) {
-        let response = await this._get(`${endpoint}${endpoint.indexOf('?') === -1 ? '?' : '&'}limit=${limit}`);
+        let response = await this.get(`${endpoint}${endpoint.indexOf('?') === -1 ? '?' : '&'}limit=${limit}`, {}, ReadTokenScopes);
         yield response.items;
 
         while (response.next) {
             const next = new URL(response.next);
             const startAt = querystring.escape(next.searchParams.get('startAt') || '');
-            response = await this._get(`${endpoint}${endpoint.indexOf('?') === -1 ? '?' : '&'}startAt=${startAt}&limit=${limit}`);
+            response = await this.get(`${endpoint}${endpoint.indexOf('?') === -1 ? '?' : '&'}startAt=${startAt}&limit=${limit}`, {}, ReadTokenScopes);
             yield response.items;
         }
     }
 
     // Collects all pages of paginated results
     private async _collect(endpoint: string) {
-        let response = await this._get(endpoint);
+        let response = await this.get(endpoint, {}, ReadTokenScopes);
         let results = response.items;
 
         while (response.next) {
             const next = new URL(response.next);
             const startAt = querystring.escape(next.searchParams.get('startAt') || '');
-            response = await this._get(`${endpoint}${endpoint.indexOf('?') === -1 ? '?' : '&'}startAt=${startAt}`);
+            response = await this.get(`${endpoint}${endpoint.indexOf('?') === -1 ? '?' : '&'}startAt=${startAt}`, {}, ReadTokenScopes);
             results = results.concat(response.items);
         }
         return results;
@@ -189,7 +132,7 @@ export class DataManagementClient {
      * with this name does not exist.
      */
     async getBucketDetails(bucket: string): Promise<IBucketDetail> {
-        return this._get(`/buckets/${bucket}/details`);
+        return this.get(`/buckets/${bucket}/details`, {}, ReadTokenScopes);
     }
 
     /**
@@ -205,7 +148,7 @@ export class DataManagementClient {
      */
     async createBucket(bucket: string, dataRetention: DataRetentionPolicy): Promise<IBucketDetail> {
         const params = { bucketKey: bucket, policyKey: dataRetention };
-        return this._post('/buckets', { json: params }, { 'x-ads-region': this.region });
+        return this.post('/buckets', { json: params }, { 'x-ads-region': this.region }, WriteTokenScopes);
     }
 
     // Object APIs
@@ -262,7 +205,7 @@ export class DataManagementClient {
      */
     async uploadObject(bucket: string, name: string, contentType: string, data: Buffer): Promise<IObject> {
         // TODO: add support for large file uploads using "PUT buckets/:bucketKey/objects/:objectName/resumable"
-        return this._put(`/buckets/${bucket}/objects/${name}`, { buffer: data }, { 'Content-Type': contentType });
+        return this.put(`/buckets/${bucket}/objects/${name}`, { buffer: data }, { 'Content-Type': contentType }, WriteTokenScopes);
     }
 
     /**
@@ -291,13 +234,9 @@ export class DataManagementClient {
             },
             body: data
         };
-        if (this.auth) {
-            const authentication = await this.auth.authenticate(WriteTokenScopes);
-            options.headers['Authorization'] = 'Bearer ' + authentication.access_token;
-        } else {
-            options.headers['Authorization'] = 'Bearer ' + this.token;
-        }
-        const response = await rawFetch(this.host + RootPath + `/buckets/${bucketKey}/objects/${objectName}/resumable`, options);
+
+        await this.setAuthorizationHeader(options.headers, WriteTokenScopes);
+        const response = await rawFetch(this.host + this.root + `/buckets/${bucketKey}/objects/${objectName}/resumable`, options);
         if (!response.ok) {
             const text = await response.text();
             throw new Error(text);
@@ -318,13 +257,9 @@ export class DataManagementClient {
     async getResumableUploadStatus(bucketKey: string, objectName: string, sessionId: string): Promise<IResumableUploadRange[]> {
         // TODO: get rid of rawFetch; add support for disabling 202 retries in put/get methods
         const options = { method: 'GET', headers: { 'Authorization': '' } };
-        if (this.auth) {
-            const authentication = await this.auth.authenticate(ReadTokenScopes);
-            options.headers['Authorization'] = 'Bearer ' + authentication.access_token;
-        } else {
-            options.headers['Authorization'] = 'Bearer ' + this.token;
-        }
-        const response = await rawFetch(this.host + RootPath + `/buckets/${bucketKey}/objects/${objectName}/status/${sessionId}`, options);
+
+        await this.setAuthorizationHeader(options.headers, ReadTokenScopes);
+        const response = await rawFetch(this.host + this.root + `/buckets/${bucketKey}/objects/${objectName}/status/${sessionId}`, options);
         if (response.ok) {
             const ranges = response.headers.get('Range') || '';
             const match = ranges.match(/^bytes=(\d+-\d+(,\d+-\d+)*)$/);
@@ -355,7 +290,7 @@ export class DataManagementClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async downloadObject(bucket: string, object: string): Promise<ArrayBuffer>  {
-        return this._get(`/buckets/${bucket}/objects/${object}`);
+        return this.get(`/buckets/${bucket}/objects/${object}`, {}, ReadTokenScopes);
     }
 
     /**
@@ -370,7 +305,7 @@ export class DataManagementClient {
      * with this name does not exist.
      */
     async getObjectDetails(bucket: string, object: string): Promise<IObject> {
-        return this._get(`/buckets/${bucket}/objects/${object}/details`);
+        return this.get(`/buckets/${bucket}/objects/${object}/details`, {}, ReadTokenScopes);
     }
 
     /**
@@ -384,7 +319,7 @@ export class DataManagementClient {
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
     async createSignedUrl(bucketId: string, objectId: string, access = 'readwrite'): Promise<ISignedUrl> {
-        return this._post(`/buckets/${bucketId}/objects/${objectId}/signed?access=${access}`, { json: {} });
+        return this.post(`/buckets/${bucketId}/objects/${objectId}/signed?access=${access}`, { json: {} }, {}, WriteTokenScopes);
     }
 
     /**
@@ -396,6 +331,6 @@ export class DataManagementClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async deleteObject(bucketKey: string, objectName: string) {
-        return this._delete(`/buckets/${bucketKey}/objects/${objectName}`);
+        return this.delete(`/buckets/${bucketKey}/objects/${objectName}`, {}, WriteTokenScopes);
     }
 }

@@ -1,4 +1,7 @@
-import { get, DefaultHost } from './common';
+import { Region } from './common';
+import { ForgeClient, IAuthOptions } from './forge-client';
+
+const ReadTokenScopes = ['data:read'];
 
 interface IHub {
     type: string;
@@ -44,24 +47,17 @@ interface IVersion {
  * Client providing access to Autodesk Forge
  * {@link https://forge.autodesk.com/en/docs/bim360/v1|BIM360 APIs}.
  */
-export class BIM360Client {
-    private token: string;
-    private host: string;
-
+export class BIM360Client extends ForgeClient {
     /**
      * Initializes new client with specific authentication method.
-     * @param {string} token Authentication token.
+     * @param {IAuthOptions} auth Authentication object,
+     * containing either `client_id` and `client_secret` properties (for 2-legged authentication),
+     * or a single `token` property (for 2-legged or 3-legged authentication with pre-generated access token).
      * @param {string} [host="https://developer.api.autodesk.com"] Forge API host.
+     * @param {Region} [region="US"] Forge availability region ("US" or "EMEA").
      */
-    constructor(token: string, host = DefaultHost) {
-        this.token = token;
-        this.host = host;
-    }
-
-    // Helper method for GET requests
-    private async _get(endpoint: string, headers: { [name: string]: string } = {}) {
-        headers['Authorization'] = 'Bearer ' + this.token;
-        return get(this.host + endpoint, headers);
+    constructor(auth: IAuthOptions, host?: string, region?: Region) {
+        super('', auth, host, region);
     }
 
     // Hub APIs
@@ -73,7 +69,7 @@ export class BIM360Client {
      * @returns {Promise<IHub[]>} List of hubs.
      */
     async hubs(): Promise<IHub[]> {
-        const response = await this._get(`/project/v1/hubs`);
+        const response = await this.get(`/project/v1/hubs`, {}, ReadTokenScopes);
         return response.data;
     }
 
@@ -84,7 +80,7 @@ export class BIM360Client {
      * @returns {Promise<IHub>} Hub or null if there isn't one.
      */
     async hub(id: string): Promise<IHub> {
-        const response = await this._get(`/project/v1/hubs/${id}`);
+        const response = await this.get(`/project/v1/hubs/${id}`, {}, ReadTokenScopes);
         return response.data;
     }
 
@@ -95,7 +91,7 @@ export class BIM360Client {
      * @returns {Promise<IProject[]>} List of projects.
      */
     async projects(hub: string): Promise<IProject[]> {
-        const response = await this._get(`/project/v1/hubs/${hub}/projects`);
+        const response = await this.get(`/project/v1/hubs/${hub}/projects`, {}, ReadTokenScopes);
         return response.data;
     }
 
@@ -107,7 +103,7 @@ export class BIM360Client {
      * @returns {Promise<IFolder[]>} List of folder records.
      */
     async folders(hub: string, project: string): Promise<IFolder[]> {
-        const response = await this._get(`/project/v1/hubs/${hub}/projects/${project}/topFolders`);
+        const response = await this.get(`/project/v1/hubs/${hub}/projects/${project}/topFolders`, {}, ReadTokenScopes);
         return response.data;
     }
 
@@ -119,7 +115,7 @@ export class BIM360Client {
      * @returns {Promise<IItem[]>} List of folder contents.
      */
     async contents(project: string, folder: string): Promise<IItem[]> {
-        const response = await this._get(`/data/v1/projects/${project}/folders/${folder}/contents`);
+        const response = await this.get(`/data/v1/projects/${project}/folders/${folder}/contents`, {}, ReadTokenScopes);
         return response.data;
     }
 
@@ -131,7 +127,7 @@ export class BIM360Client {
      * @returns {Promise<IVersion[]>} List of item versions.
      */
     async versions(project: string, item: string): Promise<IVersion[]> {
-        const response = await this._get(`/data/v1/projects/${project}/items/${item}/versions`);
+        const response = await this.get(`/data/v1/projects/${project}/items/${item}/versions`, {}, ReadTokenScopes);
         return response.data;
     }
 
@@ -143,7 +139,7 @@ export class BIM360Client {
      * @returns {Promise<IVersion>} Tip version of the item.
      */
     async tip(project: string, item: string): Promise<IVersion> {
-        const response = await this._get(`/data/v1/projects/${project}/items/${item}/tip`);
+        const response = await this.get(`/data/v1/projects/${project}/items/${item}/tip`, {}, ReadTokenScopes);
         return response.data;
     }
 }

@@ -1,5 +1,5 @@
-import { get, post, put, DefaultHost, IAuthOptions, Region } from './common';
-import { AuthenticationClient } from './authentication';
+import { Region } from './common';
+import { ForgeClient, IAuthOptions } from './forge-client';
 
 const RootPath = '/modelderivative/v2';
 const ReadTokenScopes = ['data:read'];
@@ -49,12 +49,7 @@ export interface IDerivativeProps {
  * {@link https://forge.autodesk.com/en/docs/model-derivative/v2|model derivative APIs}.
  * @tutorial model-derivative
  */
-export class ModelDerivativeClient {
-    private auth?: AuthenticationClient;
-    private token?: string;
-    private host: string;
-    private region: Region;
-
+export class ModelDerivativeClient extends ForgeClient {
     /**
      * Initializes new client with specific authentication method.
      * @param {IAuthOptions} auth Authentication object,
@@ -64,48 +59,7 @@ export class ModelDerivativeClient {
      * @param {Region} [region="US"] Forge availability region.
      */
     constructor(auth: IAuthOptions, host?: string, region?: Region) {
-        if ('client_id' in auth && 'client_secret' in auth) {
-            this.auth = new AuthenticationClient(auth.client_id, auth.client_secret, host);
-        } else if (auth.token) {
-            this.token = auth.token;
-        } else {
-            throw new Error('Authentication parameters missing or incorrect.');
-        }
-        this.host = host || DefaultHost;
-        this.region = region || Region.US;
-    }
-
-    // Helper method for GET requests
-    private async _get(endpoint: string, headers: { [name: string]: string } = {}, scopes = ReadTokenScopes) {
-        if (this.auth) {
-            const authentication = await this.auth.authenticate(scopes);
-            headers['Authorization'] = 'Bearer ' + authentication.access_token;
-        } else {
-            headers['Authorization'] = 'Bearer ' + this.token;
-        }
-        return get(this.host + RootPath + endpoint, headers);
-    }
-
-    // Helper method for POST requests
-    private async _post(endpoint: string, data: any, headers: { [name: string]: string } = {}, scopes = WriteTokenScopes) {
-        if (this.auth) {
-            const authentication = await this.auth.authenticate(scopes);
-            headers['Authorization'] = 'Bearer ' + authentication.access_token;
-        } else {
-            headers['Authorization'] = 'Bearer ' + this.token;
-        }
-        return post(this.host + RootPath + endpoint, data, headers);
-    }
-
-    // Helper method for PUT requests
-    private async _put(endpoint: string, data: any, headers: { [name: string]: string } = {}, scopes = WriteTokenScopes) {
-        if (this.auth) {
-            const authentication = await this.auth.authenticate(scopes);
-            headers['Authorization'] = 'Bearer ' + authentication.access_token;
-        } else {
-            headers['Authorization'] = 'Bearer ' + this.token;
-        }
-        return put(this.host + RootPath + endpoint, data, headers);
+        super(RootPath, auth, host, region);
     }
 
     /**
@@ -117,7 +71,7 @@ export class ModelDerivativeClient {
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
     async formats(): Promise<IDerivativeFormats> {
-        const response = await this._get('/designdata/formats');
+        const response = await this.get('/designdata/formats', {}, ReadTokenScopes);
         return response.formats;
     }
 
@@ -141,7 +95,7 @@ export class ModelDerivativeClient {
                 formats: outputs
             }
         };
-        return this._post('/designdata/job', { json: params });
+        return this.post('/designdata/job', { json: params }, {}, WriteTokenScopes);
     }
 
     /**
@@ -153,7 +107,7 @@ export class ModelDerivativeClient {
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
     async getManifest(urn: string): Promise<IDerivativeManifest> {
-        return this._get(this.region === Region.EMEA ? `/regions/eu/designdata/${urn}/manifest` : `/designdata/${urn}/manifest`);
+        return this.get(this.region === Region.EMEA ? `/regions/eu/designdata/${urn}/manifest` : `/designdata/${urn}/manifest`, {}, ReadTokenScopes);
     }
 
     /**
@@ -165,7 +119,7 @@ export class ModelDerivativeClient {
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
     async getMetadata(urn: string): Promise<IDerivativeMetadata> {
-        return this._get(this.region === Region.EMEA ? `/regions/eu/designdata/${urn}/metadata` : `/designdata/${urn}/metadata`);
+        return this.get(this.region === Region.EMEA ? `/regions/eu/designdata/${urn}/metadata` : `/designdata/${urn}/metadata`, {}, ReadTokenScopes);
     }
 
     /**
@@ -178,7 +132,7 @@ export class ModelDerivativeClient {
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
     async getViewableTree(urn: string, guid: string): Promise<IDerivativeTree> {
-        return this._get(this.region === Region.EMEA ? `/regions/eu/designdata/${urn}/metadata/${guid}` : `/designdata/${urn}/metadata/${guid}`);
+        return this.get(this.region === Region.EMEA ? `/regions/eu/designdata/${urn}/metadata/${guid}` : `/designdata/${urn}/metadata/${guid}`, {}, ReadTokenScopes);
     }
 
     /**
@@ -191,6 +145,6 @@ export class ModelDerivativeClient {
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
     async getViewableProperties(urn: string, guid: string): Promise<IDerivativeProps> {
-        return this._get(this.region === Region.EMEA ? `/regions/eu/designdata/${urn}/metadata/${guid}/properties` : `/designdata/${urn}/metadata/${guid}/properties`);
+        return this.get(this.region === Region.EMEA ? `/regions/eu/designdata/${urn}/metadata/${guid}/properties` : `/designdata/${urn}/metadata/${guid}/properties`, {}, ReadTokenScopes);
     }
 }
