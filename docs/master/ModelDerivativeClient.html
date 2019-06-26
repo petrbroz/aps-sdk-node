@@ -28,7 +28,7 @@
 
 <header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>ModelDerivativeClient<span class="signature">(auth, host<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h2>
+        <h2><span class="attribs"><span class="type-signature"></span></span>ModelDerivativeClient<span class="signature">(auth, host<span class="signature-attributes">opt</span>, region<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h2>
         
             <div class="class-description"><p>Client providing access to Autodesk Forge
 <a href="https://forge.autodesk.com/en/docs/model-derivative/v2">model derivative APIs</a>.</p></div>
@@ -46,7 +46,7 @@
     
 
     
-    <h4 class="name" id="ModelDerivativeClient"><span class="type-signature"></span>new ModelDerivativeClient<span class="signature">(auth, host<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="ModelDerivativeClient"><span class="type-signature"></span>new ModelDerivativeClient<span class="signature">(auth, host<span class="signature-attributes">opt</span>, region<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
     
 
     
@@ -164,6 +164,45 @@ or a single <code>token</code> property (for 2-legged or 3-legged authentication
             
 
             <td class="description last"><p>Forge API host.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>region</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Region</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    "US"
+                
+                </td>
+            
+
+            <td class="description last"><p>Forge availability region.</p></td>
         </tr>
 
     
@@ -320,7 +359,7 @@ or a single <code>token</code> property (for 2-legged or 3-legged authentication
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="model-derivative.js.html">model-derivative.js</a>, <a href="model-derivative.js.html#line74">line 74</a>
+        <a href="model-derivative.js.html">model-derivative.js</a>, <a href="model-derivative.js.html#line32">line 32</a>
     </li></ul></dd>
     
 
@@ -493,7 +532,7 @@ mapped to arrays of formats these outputs can be obtained from.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="model-derivative.js.html">model-derivative.js</a>, <a href="model-derivative.js.html#line108">line 108</a>
+        <a href="model-derivative.js.html">model-derivative.js</a>, <a href="model-derivative.js.html#line66">line 66</a>
     </li></ul></dd>
     
 
@@ -665,7 +704,7 @@ mapped to arrays of formats these outputs can be obtained from.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="model-derivative.js.html">model-derivative.js</a>, <a href="model-derivative.js.html#line119">line 119</a>
+        <a href="model-derivative.js.html">model-derivative.js</a>, <a href="model-derivative.js.html#line77">line 77</a>
     </li></ul></dd>
     
 
@@ -860,7 +899,7 @@ mapped to arrays of formats these outputs can be obtained from.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="model-derivative.js.html">model-derivative.js</a>, <a href="model-derivative.js.html#line143">line 143</a>
+        <a href="model-derivative.js.html">model-derivative.js</a>, <a href="model-derivative.js.html#line101">line 101</a>
     </li></ul></dd>
     
 
@@ -1055,7 +1094,7 @@ mapped to arrays of formats these outputs can be obtained from.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="model-derivative.js.html">model-derivative.js</a>, <a href="model-derivative.js.html#line131">line 131</a>
+        <a href="model-derivative.js.html">model-derivative.js</a>, <a href="model-derivative.js.html#line89">line 89</a>
     </li></ul></dd>
     
 
@@ -1251,7 +1290,7 @@ supported format is <code>{ type: 'svf', views: ['2d', '3d'] }</code>.</p></td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="model-derivative.js.html">model-derivative.js</a>, <a href="model-derivative.js.html#line89">line 89</a>
+        <a href="model-derivative.js.html">model-derivative.js</a>, <a href="model-derivative.js.html#line47">line 47</a>
     </li></ul></dd>
     
 
@@ -1332,13 +1371,13 @@ supported format is <code>{ type: 'svf', views: ['2d', '3d'] }</code>.</p></td>
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AuthenticationClient.html">AuthenticationClient</a></li><li><a href="BIM360Client.html">BIM360Client</a></li><li><a href="DataManagementClient.html">DataManagementClient</a></li><li><a href="DesignAutomationClient.html">DesignAutomationClient</a></li><li><a href="DesignAutomationID.html">DesignAutomationID</a></li><li><a href="ModelDerivativeClient.html">ModelDerivativeClient</a></li></ul><h3>Tutorials</h3><ul><li><a href="tutorial-authentication.html">Authentication API</a></li><li><a href="tutorial-data-management.html">Data Management API</a></li><li><a href="tutorial-design-automation.html">Design Automation API</a></li><li><a href="tutorial-model-derivative.html">Model Derivative API</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AuthenticationClient.html">AuthenticationClient</a></li><li><a href="BIM360Client.html">BIM360Client</a></li><li><a href="DataManagementClient.html">DataManagementClient</a></li><li><a href="DesignAutomationClient.html">DesignAutomationClient</a></li><li><a href="DesignAutomationID.html">DesignAutomationID</a></li><li><a href="ForgeClient.html">ForgeClient</a></li><li><a href="ModelDerivativeClient.html">ModelDerivativeClient</a></li></ul><h3>Tutorials</h3><ul><li><a href="tutorial-authentication.html">Authentication API</a></li><li><a href="tutorial-data-management.html">Data Management API</a></li><li><a href="tutorial-design-automation.html">Design Automation API</a></li><li><a href="tutorial-model-derivative.html">Model Derivative API</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.2</a> on Tue Jun 25 2019 19:34:14 GMT+0200 (Central European Summer Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.2</a> on Wed Jun 26 2019 22:58:26 GMT+0200 (Central European Summer Time)
 </footer>
 
 <script> prettyPrint(); </script>

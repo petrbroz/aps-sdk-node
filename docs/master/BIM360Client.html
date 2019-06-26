@@ -28,7 +28,7 @@
 
 <header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>BIM360Client<span class="signature">(token, host<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h2>
+        <h2><span class="attribs"><span class="type-signature"></span></span>BIM360Client<span class="signature">(auth, host<span class="signature-attributes">opt</span>, region<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h2>
         
             <div class="class-description"><p>Client providing access to Autodesk Forge
 <a href="https://forge.autodesk.com/en/docs/bim360/v1">BIM360 APIs</a>.</p></div>
@@ -46,7 +46,7 @@
     
 
     
-    <h4 class="name" id="BIM360Client"><span class="type-signature"></span>new BIM360Client<span class="signature">(token, host<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="BIM360Client"><span class="type-signature"></span>new BIM360Client<span class="signature">(auth, host<span class="signature-attributes">opt</span>, region<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
     
 
     
@@ -94,13 +94,13 @@
 
         <tr>
             
-                <td class="name"><code>token</code></td>
+                <td class="name"><code>auth</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">string</span>
+<span class="param-type">IAuthOptions</span>
 
 
             
@@ -122,7 +122,9 @@
                 </td>
             
 
-            <td class="description last"><p>Authentication token.</p></td>
+            <td class="description last"><p>Authentication object,
+containing either <code>client_id</code> and <code>client_secret</code> properties (for 2-legged authentication),
+or a single <code>token</code> property (for 2-legged or 3-legged authentication with pre-generated access token).</p></td>
         </tr>
 
     
@@ -165,6 +167,45 @@
         </tr>
 
     
+
+        <tr>
+            
+                <td class="name"><code>region</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Region</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    "US"
+                
+                </td>
+            
+
+            <td class="description last"><p>Forge availability region (&quot;US&quot; or &quot;EMEA&quot;).</p></td>
+        </tr>
+
+    
     </tbody>
 </table>
 
@@ -202,7 +243,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="bim360.js.html">bim360.js</a>, <a href="bim360.js.html#line14">line 14</a>
+        <a href="bim360.js.html">bim360.js</a>, <a href="bim360.js.html#line18">line 18</a>
     </li></ul></dd>
     
 
@@ -382,7 +423,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="bim360.js.html">bim360.js</a>, <a href="bim360.js.html#line72">line 72</a>
+        <a href="bim360.js.html">bim360.js</a>, <a href="bim360.js.html#line70">line 70</a>
     </li></ul></dd>
     
 
@@ -564,7 +605,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="bim360.js.html">bim360.js</a>, <a href="bim360.js.html#line61">line 61</a>
+        <a href="bim360.js.html">bim360.js</a>, <a href="bim360.js.html#line59">line 59</a>
     </li></ul></dd>
     
 
@@ -723,7 +764,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="bim360.js.html">bim360.js</a>, <a href="bim360.js.html#line40">line 40</a>
+        <a href="bim360.js.html">bim360.js</a>, <a href="bim360.js.html#line38">line 38</a>
     </li></ul></dd>
     
 
@@ -834,7 +875,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="bim360.js.html">bim360.js</a>, <a href="bim360.js.html#line30">line 30</a>
+        <a href="bim360.js.html">bim360.js</a>, <a href="bim360.js.html#line28">line 28</a>
     </li></ul></dd>
     
 
@@ -993,7 +1034,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="bim360.js.html">bim360.js</a>, <a href="bim360.js.html#line50">line 50</a>
+        <a href="bim360.js.html">bim360.js</a>, <a href="bim360.js.html#line48">line 48</a>
     </li></ul></dd>
     
 
@@ -1175,7 +1216,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="bim360.js.html">bim360.js</a>, <a href="bim360.js.html#line94">line 94</a>
+        <a href="bim360.js.html">bim360.js</a>, <a href="bim360.js.html#line92">line 92</a>
     </li></ul></dd>
     
 
@@ -1357,7 +1398,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="bim360.js.html">bim360.js</a>, <a href="bim360.js.html#line83">line 83</a>
+        <a href="bim360.js.html">bim360.js</a>, <a href="bim360.js.html#line81">line 81</a>
     </li></ul></dd>
     
 
@@ -1425,13 +1466,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AuthenticationClient.html">AuthenticationClient</a></li><li><a href="BIM360Client.html">BIM360Client</a></li><li><a href="DataManagementClient.html">DataManagementClient</a></li><li><a href="DesignAutomationClient.html">DesignAutomationClient</a></li><li><a href="DesignAutomationID.html">DesignAutomationID</a></li><li><a href="ModelDerivativeClient.html">ModelDerivativeClient</a></li></ul><h3>Tutorials</h3><ul><li><a href="tutorial-authentication.html">Authentication API</a></li><li><a href="tutorial-data-management.html">Data Management API</a></li><li><a href="tutorial-design-automation.html">Design Automation API</a></li><li><a href="tutorial-model-derivative.html">Model Derivative API</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AuthenticationClient.html">AuthenticationClient</a></li><li><a href="BIM360Client.html">BIM360Client</a></li><li><a href="DataManagementClient.html">DataManagementClient</a></li><li><a href="DesignAutomationClient.html">DesignAutomationClient</a></li><li><a href="DesignAutomationID.html">DesignAutomationID</a></li><li><a href="ForgeClient.html">ForgeClient</a></li><li><a href="ModelDerivativeClient.html">ModelDerivativeClient</a></li></ul><h3>Tutorials</h3><ul><li><a href="tutorial-authentication.html">Authentication API</a></li><li><a href="tutorial-data-management.html">Data Management API</a></li><li><a href="tutorial-design-automation.html">Design Automation API</a></li><li><a href="tutorial-model-derivative.html">Model Derivative API</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.2</a> on Tue Jun 25 2019 19:34:14 GMT+0200 (Central European Summer Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.2</a> on Wed Jun 26 2019 22:58:26 GMT+0200 (Central European Summer Time)
 </footer>
 
 <script> prettyPrint(); </script>

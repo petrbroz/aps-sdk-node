@@ -29,7 +29,6 @@
             <pre class="prettyprint source linenums"><code>"use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("./common");
-const authentication_1 = require("./authentication");
 const RootPath = '/modelderivative/v2';
 const ReadTokenScopes = ['data:read'];
 const WriteTokenScopes = ['data:read', 'data:write', 'data:create'];
@@ -38,58 +37,17 @@ const WriteTokenScopes = ['data:read', 'data:write', 'data:create'];
  * {@link https://forge.autodesk.com/en/docs/model-derivative/v2|model derivative APIs}.
  * @tutorial model-derivative
  */
-class ModelDerivativeClient {
+class ModelDerivativeClient extends common_1.ForgeClient {
     /**
      * Initializes new client with specific authentication method.
      * @param {IAuthOptions} auth Authentication object,
      * containing either `client_id` and `client_secret` properties (for 2-legged authentication),
      * or a single `token` property (for 2-legged or 3-legged authentication with pre-generated access token).
      * @param {string} [host="https://developer.api.autodesk.com"] Forge API host.
+     * @param {Region} [region="US"] Forge availability region.
      */
-    constructor(auth, host = common_1.DefaultHost) {
-        if ('client_id' in auth &amp;&amp; 'client_secret' in auth) {
-            this.auth = new authentication_1.AuthenticationClient(auth.client_id, auth.client_secret, host);
-        }
-        else if (auth.token) {
-            this.token = auth.token;
-        }
-        else {
-            throw new Error('Authentication parameters missing or incorrect.');
-        }
-        this.host = host;
-    }
-    // Helper method for GET requests
-    async _get(endpoint, headers = {}, scopes = ReadTokenScopes) {
-        if (this.auth) {
-            const authentication = await this.auth.authenticate(scopes);
-            headers['Authorization'] = 'Bearer ' + authentication.access_token;
-        }
-        else {
-            headers['Authorization'] = 'Bearer ' + this.token;
-        }
-        return common_1.get(this.host + RootPath + endpoint, headers);
-    }
-    // Helper method for POST requests
-    async _post(endpoint, data, headers = {}, scopes = WriteTokenScopes) {
-        if (this.auth) {
-            const authentication = await this.auth.authenticate(scopes);
-            headers['Authorization'] = 'Bearer ' + authentication.access_token;
-        }
-        else {
-            headers['Authorization'] = 'Bearer ' + this.token;
-        }
-        return common_1.post(this.host + RootPath + endpoint, data, headers);
-    }
-    // Helper method for PUT requests
-    async _put(endpoint, data, headers = {}, scopes = WriteTokenScopes) {
-        if (this.auth) {
-            const authentication = await this.auth.authenticate(scopes);
-            headers['Authorization'] = 'Bearer ' + authentication.access_token;
-        }
-        else {
-            headers['Authorization'] = 'Bearer ' + this.token;
-        }
-        return common_1.put(this.host + RootPath + endpoint, data, headers);
+    constructor(auth, host, region) {
+        super(RootPath, auth, host, region);
     }
     /**
      * Gets a list of supported translation formats.
@@ -100,7 +58,7 @@ class ModelDerivativeClient {
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
     async formats() {
-        const response = await this._get('/designdata/formats');
+        const response = await this.get('/designdata/formats', {}, ReadTokenScopes);
         return response.formats;
     }
     /**
@@ -123,7 +81,7 @@ class ModelDerivativeClient {
                 formats: outputs
             }
         };
-        return this._post('/designdata/job', { json: params });
+        return this.post('/designdata/job', { json: params }, {}, WriteTokenScopes);
     }
     /**
      * Retrieves manifest of a derivative.
@@ -134,7 +92,7 @@ class ModelDerivativeClient {
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
     async getManifest(urn) {
-        return this._get(`/designdata/${urn}/manifest`);
+        return this.get(this.region === common_1.Region.EMEA ? `/regions/eu/designdata/${urn}/manifest` : `/designdata/${urn}/manifest`, {}, ReadTokenScopes, true);
     }
     /**
      * Retrieves metadata of a derivative.
@@ -145,7 +103,7 @@ class ModelDerivativeClient {
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
     async getMetadata(urn) {
-        return this._get(`/designdata/${urn}/metadata`);
+        return this.get(this.region === common_1.Region.EMEA ? `/regions/eu/designdata/${urn}/metadata` : `/designdata/${urn}/metadata`, {}, ReadTokenScopes, true);
     }
     /**
      * Retrieves object tree of a specific viewable.
@@ -157,7 +115,7 @@ class ModelDerivativeClient {
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
     async getViewableTree(urn, guid) {
-        return this._get(`/designdata/${urn}/metadata/${guid}`);
+        return this.get(this.region === common_1.Region.EMEA ? `/regions/eu/designdata/${urn}/metadata/${guid}` : `/designdata/${urn}/metadata/${guid}`, {}, ReadTokenScopes, true);
     }
     /**
      * Retrieves properties of a specific viewable.
@@ -169,7 +127,7 @@ class ModelDerivativeClient {
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
     async getViewableProperties(urn, guid) {
-        return this._get(`/designdata/${urn}/metadata/${guid}/properties`);
+        return this.get(this.region === common_1.Region.EMEA ? `/regions/eu/designdata/${urn}/metadata/${guid}/properties` : `/designdata/${urn}/metadata/${guid}/properties`, {}, ReadTokenScopes, true);
     }
 }
 exports.ModelDerivativeClient = ModelDerivativeClient;
@@ -183,13 +141,13 @@ exports.ModelDerivativeClient = ModelDerivativeClient;
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AuthenticationClient.html">AuthenticationClient</a></li><li><a href="BIM360Client.html">BIM360Client</a></li><li><a href="DataManagementClient.html">DataManagementClient</a></li><li><a href="DesignAutomationClient.html">DesignAutomationClient</a></li><li><a href="DesignAutomationID.html">DesignAutomationID</a></li><li><a href="ModelDerivativeClient.html">ModelDerivativeClient</a></li></ul><h3>Tutorials</h3><ul><li><a href="tutorial-authentication.html">Authentication API</a></li><li><a href="tutorial-data-management.html">Data Management API</a></li><li><a href="tutorial-design-automation.html">Design Automation API</a></li><li><a href="tutorial-model-derivative.html">Model Derivative API</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AuthenticationClient.html">AuthenticationClient</a></li><li><a href="BIM360Client.html">BIM360Client</a></li><li><a href="DataManagementClient.html">DataManagementClient</a></li><li><a href="DesignAutomationClient.html">DesignAutomationClient</a></li><li><a href="DesignAutomationID.html">DesignAutomationID</a></li><li><a href="ForgeClient.html">ForgeClient</a></li><li><a href="ModelDerivativeClient.html">ModelDerivativeClient</a></li></ul><h3>Tutorials</h3><ul><li><a href="tutorial-authentication.html">Authentication API</a></li><li><a href="tutorial-data-management.html">Data Management API</a></li><li><a href="tutorial-design-automation.html">Design Automation API</a></li><li><a href="tutorial-model-derivative.html">Model Derivative API</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.2</a> on Tue Jun 25 2019 19:34:14 GMT+0200 (Central European Summer Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.2</a> on Wed Jun 26 2019 22:58:26 GMT+0200 (Central European Summer Time)
 </footer>
 
 <script> prettyPrint(); </script>
