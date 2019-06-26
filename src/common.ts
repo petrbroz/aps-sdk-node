@@ -15,6 +15,8 @@ export enum Region {
 
 export type IAuthOptions = { client_id: string; client_secret: string; } | { token: string; };
 
+export type IRequestData = { urlencoded: any; } | { json: any; } | { buffer: any; };
+
 export abstract class ForgeClient {
     protected auth?: AuthenticationClient;
     protected token?: string;
@@ -115,7 +117,7 @@ export abstract class ForgeClient {
     }
 
     // Helper method for POST requests
-    protected async post(endpoint: string, data: any, headers: { [name: string]: string } = {}, scopes: string[]) {
+    protected async post(endpoint: string, data: IRequestData, headers: { [name: string]: string } = {}, scopes: string[]) {
         const options: RequestInit = { method: 'POST', headers };
         this.setPayload(options, data);
         await this.setAuthorization(options, scopes);
@@ -124,7 +126,7 @@ export abstract class ForgeClient {
     }
 
     // Helper method for PUT requests
-    protected async put(endpoint: string, data: any, headers: { [name: string]: string } = {}, scopes: string[]) {
+    protected async put(endpoint: string, data: IRequestData, headers: { [name: string]: string } = {}, scopes: string[]) {
         const options: RequestInit = { method: 'PUT', headers };
         this.setPayload(options, data);
         await this.setAuthorization(options, scopes);
@@ -133,7 +135,7 @@ export abstract class ForgeClient {
     }
 
     // Helper method for PATCH requests
-    protected async patch(endpoint: string, data: any, headers: { [name: string]: string } = {}, scopes: string[]) {
+    protected async patch(endpoint: string, data: IRequestData, headers: { [name: string]: string } = {}, scopes: string[]) {
         const options: RequestInit = { method: 'PATCH', headers };
         this.setPayload(options, data);
         await this.setAuthorization(options, scopes);
