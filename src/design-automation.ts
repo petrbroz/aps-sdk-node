@@ -1,5 +1,4 @@
-import { Region } from './common';
-import { ForgeClient, IAuthOptions } from './forge-client';
+import { ForgeClient, IAuthOptions, Region } from './common';
 
 const RootPath = '/da/us-east/v3';
 const CodeScopes = ['code:all'];

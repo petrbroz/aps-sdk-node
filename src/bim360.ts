@@ -1,5 +1,5 @@
 import { Region } from './common';
-import { ForgeClient, IAuthOptions } from './forge-client';
+import { ForgeClient, IAuthOptions } from './common';
 
 const ReadTokenScopes = ['data:read'];
 

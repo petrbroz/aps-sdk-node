@@ -1,5 +1,4 @@
-import { Region } from './common';
-import { ForgeClient, IAuthOptions } from './forge-client';
+import { ForgeClient, IAuthOptions, Region } from './common';
 
 const RootPath = '/modelderivative/v2';
 const ReadTokenScopes = ['data:read'];
@@ -107,7 +106,7 @@ export class ModelDerivativeClient extends ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
     async getManifest(urn: string): Promise<IDerivativeManifest> {
-        return this.get(this.region === Region.EMEA ? `/regions/eu/designdata/${urn}/manifest` : `/designdata/${urn}/manifest`, {}, ReadTokenScopes);
+        return this.get(this.region === Region.EMEA ? `/regions/eu/designdata/${urn}/manifest` : `/designdata/${urn}/manifest`, {}, ReadTokenScopes, true);
     }
 
     /**
@@ -119,7 +118,7 @@ export class ModelDerivativeClient extends ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
     async getMetadata(urn: string): Promise<IDerivativeMetadata> {
-        return this.get(this.region === Region.EMEA ? `/regions/eu/designdata/${urn}/metadata` : `/designdata/${urn}/metadata`, {}, ReadTokenScopes);
+        return this.get(this.region === Region.EMEA ? `/regions/eu/designdata/${urn}/metadata` : `/designdata/${urn}/metadata`, {}, ReadTokenScopes, true);
     }
 
     /**
@@ -132,7 +131,7 @@ export class ModelDerivativeClient extends ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
     async getViewableTree(urn: string, guid: string): Promise<IDerivativeTree> {
-        return this.get(this.region === Region.EMEA ? `/regions/eu/designdata/${urn}/metadata/${guid}` : `/designdata/${urn}/metadata/${guid}`, {}, ReadTokenScopes);
+        return this.get(this.region === Region.EMEA ? `/regions/eu/designdata/${urn}/metadata/${guid}` : `/designdata/${urn}/metadata/${guid}`, {}, ReadTokenScopes, true);
     }
 
     /**
@@ -145,6 +144,6 @@ export class ModelDerivativeClient extends ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
     async getViewableProperties(urn: string, guid: string): Promise<IDerivativeProps> {
-        return this.get(this.region === Region.EMEA ? `/regions/eu/designdata/${urn}/metadata/${guid}/properties` : `/designdata/${urn}/metadata/${guid}/properties`, {}, ReadTokenScopes);
+        return this.get(this.region === Region.EMEA ? `/regions/eu/designdata/${urn}/metadata/${guid}/properties` : `/designdata/${urn}/metadata/${guid}/properties`, {}, ReadTokenScopes, true);
     }
 }

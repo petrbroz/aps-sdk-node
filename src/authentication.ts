@@ -1,4 +1,5 @@
-import { DefaultHost, post } from './common';
+import * as querystring from 'querystring';
+import fetch from 'node-fetch';
 
 const RootPath = `/authentication/v1`;
 
@@ -12,10 +13,8 @@ export interface ITwoLeggedToken {
     expires_in: number;
 }
 
-export interface IThreeLeggedToken {
-    access_token: string;
+export interface IThreeLeggedToken extends ITwoLeggedToken {
     refresh_token: string;
-    expires_in: number;
 }
 
 /**
@@ -36,11 +35,29 @@ export class AuthenticationClient {
      * @param {string} client_secret Forge application client secret.
      * @param {string} [host="https://developer.api.autodesk.com"] Forge API host.
      */
-    constructor(client_id: string, client_secret: string, host = DefaultHost) {
+    constructor(client_id: string, client_secret: string, host: string = 'https://developer.api.autodesk.com') {
         this.client_id = client_id;
         this.client_secret = client_secret;
         this.host = host;
         this._cached = {};
+    }
+
+    // Helper method for POST requests with urlencoded params
+    protected async post(endpoint: string, params: any, headers: { [name: string]: string } = {}) {
+        const options = {
+            method: 'POST',
+            headers: headers,
+            body: querystring.stringify(params)
+        };
+        options.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+        const response = await fetch(this.host + RootPath + endpoint, options);
+        if (response.ok) {
+            const json = await response.json();
+            return json;
+        } else {
+            const msg = await response.text();
+            throw new Error(msg);
+        }
     }
 
     /**
@@ -75,7 +92,7 @@ export class AuthenticationClient {
         };
         const cache = this._cached[key] = {
             expires_at: Number.MAX_VALUE,
-            promise: post(`${this.host}${RootPath}/authenticate`, { urlencoded: params }).then((resp) => {
+            promise: this.post('/authenticate', params).then((resp) => {
                 this._cached[key].expires_at = Date.now() + resp.expires_in * 1000;
                 return resp.access_token;
             })
@@ -113,7 +130,7 @@ export class AuthenticationClient {
             'code': code,
             'redirect_uri': redirectUri
         };
-        const token = await post(`${this.host}${RootPath}/gettoken`, { urlencoded: params });
+        const token = await this.post(`/gettoken`, params);
         return token;
     }
 }

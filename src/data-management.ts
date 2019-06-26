@@ -1,7 +1,6 @@
 import * as querystring from 'querystring';
 
-import { rawFetch, Region } from './common';
-import { ForgeClient, IAuthOptions } from './forge-client';
+import { ForgeClient, IAuthOptions, Region } from './common';
 
 const RootPath = '/oss/v2';
 const ReadTokenScopes = ['bucket:read', 'data:read'];
@@ -222,25 +221,14 @@ export class DataManagementClient extends ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async uploadObjectResumable(bucketKey: string, objectName: string, data: Buffer, byteOffset: number, totalBytes: number, sessionId: string, contentType: string = 'application/stream') {
-        // TODO: get rid of rawFetch; add support for disabling 202 retries in put/get methods
-        const options = {
-            method: 'PUT',
-            headers: {
-                'Authorization': '',
-                'Content-Type': contentType,
-                'Content-Length': data.byteLength.toString(),
-                'Content-Range': `bytes ${byteOffset}-${byteOffset + data.byteLength - 1}/${totalBytes}`,
-                'Session-Id': sessionId
-            },
-            body: data
-        };
-
-        await this.setAuthorizationHeader(options.headers, WriteTokenScopes);
-        const response = await rawFetch(this.host + this.root + `/buckets/${bucketKey}/objects/${objectName}/resumable`, options);
-        if (!response.ok) {
-            const text = await response.text();
-            throw new Error(text);
+        const headers = {
+            'Authorization': '',
+            'Content-Type': contentType,
+            'Content-Length': data.byteLength.toString(),
+            'Content-Range': `bytes ${byteOffset}-${byteOffset + data.byteLength - 1}/${totalBytes}`,
+            'Session-Id': sessionId
         }
+        return this.put(`/buckets/${bucketKey}/objects/${objectName}/resumable`, data, headers, WriteTokenScopes);
     }
 
     /**
@@ -255,11 +243,9 @@ export class DataManagementClient extends ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async getResumableUploadStatus(bucketKey: string, objectName: string, sessionId: string): Promise<IResumableUploadRange[]> {
-        // TODO: get rid of rawFetch; add support for disabling 202 retries in put/get methods
         const options = { method: 'GET', headers: { 'Authorization': '' } };
-
-        await this.setAuthorizationHeader(options.headers, ReadTokenScopes);
-        const response = await rawFetch(this.host + this.root + `/buckets/${bucketKey}/objects/${objectName}/status/${sessionId}`, options);
+        await this.setAuthorization(options, ReadTokenScopes);
+        const response = await this.fetch(`/buckets/${bucketKey}/objects/${objectName}/status/${sessionId}`, options);
         if (response.ok) {
             const ranges = response.headers.get('Range') || '';
             const match = ranges.match(/^bytes=(\d+-\d+(,\d+-\d+)*)$/);
