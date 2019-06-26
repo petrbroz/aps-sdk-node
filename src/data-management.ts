@@ -1,16 +1,11 @@
 import * as querystring from 'querystring';
 
-import { get, post, put, rawFetch, DefaultHost, IAuthOptions, del } from './common';
+import { get, post, put, rawFetch, DefaultHost, IAuthOptions, del, Region } from './common';
 import { AuthenticationClient } from './authentication';
 
 const RootPath = '/oss/v2';
 const ReadTokenScopes = ['bucket:read', 'data:read'];
 const WriteTokenScopes = ['bucket:create', 'data:write'];
-
-export enum Region {
-    US = 'US',
-    EMEA = 'EMEA'
-}
 
 export interface IBucket {
     bucketKey: string;
@@ -62,6 +57,7 @@ export class DataManagementClient {
     private auth?: AuthenticationClient;
     private token?: string;
     private host: string;
+    private region: Region;
 
     /**
      * Initializes new client with specific authentication method.
@@ -69,8 +65,9 @@ export class DataManagementClient {
      * containing either `client_id` and `client_secret` properties (for 2-legged authentication),
      * or a single `token` property (for 2-legged or 3-legged authentication with pre-generated access token).
      * @param {string} [host="https://developer.api.autodesk.com"] Forge API host.
+     * @param {Region} [region="US"] Forge availability region ("US" or "EMEA").
      */
-    constructor(auth: IAuthOptions, host: string = DefaultHost) {
+    constructor(auth: IAuthOptions, host?: string, region?: Region) {
         if ('client_id' in auth && 'client_secret' in auth) {
             this.auth = new AuthenticationClient(auth.client_id, auth.client_secret, host);
         } else if ('token' in auth) {
@@ -78,7 +75,8 @@ export class DataManagementClient {
         } else {
             throw new Error('Authentication parameters missing or incorrect.');
         }
-        this.host = host;
+        this.host = host || DefaultHost;
+        this.region = region || Region.US;
     }
 
     // Helper method for GET requests
@@ -160,12 +158,11 @@ export class DataManagementClient {
      * @async
      * @generator
      * @param {number} [limit=16] Max number of buckets to receive in one batch (allowed values: 1-100).
-     * @param {Region} [region='US'] Region to list buckets from ('US' or 'EMEA').
      * @yields {AsyncIterable<IBucket[]>} List of bucket object containing 'bucketKey', 'createdDate', and 'policyKey'.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async *iterateBuckets(limit: number = 16, region: Region = Region.US): AsyncIterable<IBucket[]> {
-        for await (const buckets of this._pager(`/buckets?region=${region}`, limit)) {
+    async *iterateBuckets(limit: number = 16): AsyncIterable<IBucket[]> {
+        for await (const buckets of this._pager(`/buckets?region=${this.region}`, limit)) {
             yield buckets;
         }
     }
@@ -173,13 +170,12 @@ export class DataManagementClient {
     /**
      * Lists all buckets
      * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/buckets-GET|docs}).
-     * @param {string} [region='US'] Region to list buckets from ('US' or 'EMEA').
      * @async
      * @returns {Promise<IBucket[]>} List of bucket objects.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async listBuckets(region: Region = Region.US): Promise<IBucket[]> {
-        return this._collect(`/buckets?region=${region}`);
+    async listBuckets(): Promise<IBucket[]> {
+        return this._collect(`/buckets?region=${this.region}`);
     }
 
     /**
@@ -202,15 +198,14 @@ export class DataManagementClient {
      * @async
      * @param {string} bucket Bucket key.
      * @param {DataRetentionPolicy} dataRetention Data retention policy for objects uploaded to this bucket.
-     * @param {Region} [region='US'] Region where the bucket will reside ('US' or 'EMEA').
      * @returns {Promise<IBucketDetail>} Bucket details, with properties "bucketKey", "bucketOwner", "createdDate",
      * "permissions", and "policyKey".
      * @throws Error when the request fails, for example, due to insufficient rights, incorrect scopes,
      * or when a bucket with this name already exists.
      */
-    async createBucket(bucket: string, dataRetention: DataRetentionPolicy, region: Region = Region.US): Promise<IBucketDetail> {
+    async createBucket(bucket: string, dataRetention: DataRetentionPolicy): Promise<IBucketDetail> {
         const params = { bucketKey: bucket, policyKey: dataRetention };
-        return this._post('/buckets', { json: params }, { 'x-ads-region': region });
+        return this._post('/buckets', { json: params }, { 'x-ads-region': this.region });
     }
 
     // Object APIs

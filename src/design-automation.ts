@@ -1,4 +1,4 @@
-import { get, post, patch, put, del, DefaultHost, IAuthOptions } from './common';
+import { get, post, patch, put, del, DefaultHost, IAuthOptions, Region } from './common';
 import { AuthenticationClient } from './authentication';
 
 const RootPath = '/da/us-east/v3';
@@ -128,6 +128,7 @@ export class DesignAutomationClient {
     private auth?: AuthenticationClient;
     private token?: string;
     private host: string;
+    private region: Region;
 
     /**
      * Initializes new client with specific authentication method.
@@ -135,8 +136,9 @@ export class DesignAutomationClient {
      * containing either `client_id` and `client_secret` properties (for 2-legged authentication),
      * or a single `token` property (for 2-legged or 3-legged authentication with pre-generated access token).
      * @param {string} [host="https://developer.api.autodesk.com"] Forge API host.
+     * @param {Region} [region="US"] Forge availability region.
      */
-    constructor(auth: IAuthOptions, host: string = DefaultHost) {
+    constructor(auth: IAuthOptions, host?: string, region?: Region) {
         if ('client_id' in auth && 'client_secret' in auth) {
             this.auth = new AuthenticationClient(auth.client_id, auth.client_secret, host);
         } else if (auth.token) {
@@ -144,7 +146,8 @@ export class DesignAutomationClient {
         } else {
             throw new Error('Authentication parameters missing or incorrect.');
         }
-        this.host = host;
+        this.host = host || DefaultHost;
+        this.region = region || Region.US;
     }
 
     // Helper method for GET requests

@@ -1,4 +1,4 @@
-import { get, post, put, DefaultHost, IAuthOptions } from './common';
+import { get, post, put, DefaultHost, IAuthOptions, Region } from './common';
 import { AuthenticationClient } from './authentication';
 
 const RootPath = '/modelderivative/v2';
@@ -53,6 +53,7 @@ export class ModelDerivativeClient {
     private auth?: AuthenticationClient;
     private token?: string;
     private host: string;
+    private region: Region;
 
     /**
      * Initializes new client with specific authentication method.
@@ -60,8 +61,9 @@ export class ModelDerivativeClient {
      * containing either `client_id` and `client_secret` properties (for 2-legged authentication),
      * or a single `token` property (for 2-legged or 3-legged authentication with pre-generated access token).
      * @param {string} [host="https://developer.api.autodesk.com"] Forge API host.
+     * @param {Region} [region="US"] Forge availability region.
      */
-    constructor(auth: IAuthOptions, host = DefaultHost) {
+    constructor(auth: IAuthOptions, host?: string, region?: Region) {
         if ('client_id' in auth && 'client_secret' in auth) {
             this.auth = new AuthenticationClient(auth.client_id, auth.client_secret, host);
         } else if (auth.token) {
@@ -69,7 +71,8 @@ export class ModelDerivativeClient {
         } else {
             throw new Error('Authentication parameters missing or incorrect.');
         }
-        this.host = host;
+        this.host = host || DefaultHost;
+        this.region = region || Region.US;
     }
 
     // Helper method for GET requests
@@ -150,7 +153,7 @@ export class ModelDerivativeClient {
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
     async getManifest(urn: string): Promise<IDerivativeManifest> {
-        return this._get(`/designdata/${urn}/manifest`);
+        return this._get(this.region === Region.EMEA ? `/regions/eu/designdata/${urn}/manifest` : `/designdata/${urn}/manifest`);
     }
 
     /**
@@ -162,7 +165,7 @@ export class ModelDerivativeClient {
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
     async getMetadata(urn: string): Promise<IDerivativeMetadata> {
-        return this._get(`/designdata/${urn}/metadata`);
+        return this._get(this.region === Region.EMEA ? `/regions/eu/designdata/${urn}/metadata` : `/designdata/${urn}/metadata`);
     }
 
     /**
@@ -175,7 +178,7 @@ export class ModelDerivativeClient {
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
     async getViewableTree(urn: string, guid: string): Promise<IDerivativeTree> {
-        return this._get(`/designdata/${urn}/metadata/${guid}`);
+        return this._get(this.region === Region.EMEA ? `/regions/eu/designdata/${urn}/metadata/${guid}` : `/designdata/${urn}/metadata/${guid}`);
     }
 
     /**
@@ -188,6 +191,6 @@ export class ModelDerivativeClient {
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
     async getViewableProperties(urn: string, guid: string): Promise<IDerivativeProps> {
-        return this._get(`/designdata/${urn}/metadata/${guid}/properties`);
+        return this._get(this.region === Region.EMEA ? `/regions/eu/designdata/${urn}/metadata/${guid}/properties` : `/designdata/${urn}/metadata/${guid}/properties`);
     }
 }

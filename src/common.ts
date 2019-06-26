@@ -5,6 +5,11 @@ export const DefaultHost = 'https://developer.api.autodesk.com';
 
 const RetryDelay = 5000; // Delay (in milliseconds) before retrying after a "202 Accepted" response
 
+export enum Region {
+    US = 'US',
+    EMEA = 'EMEA'
+}
+
 class ForgeError extends Error {
     private url: string;
     private status: number;
