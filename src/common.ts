@@ -46,6 +46,32 @@ export abstract class ForgeClient {
         this.region = region || Region.US;
     }
 
+    /**
+     * Resets client to specific authentication method, Forge host, and availability region.
+     * @param {IAuthOptions} [auth] Authentication object,
+     * containing either `client_id` and `client_secret` properties (for 2-legged authentication),
+     * or a single `token` property (for 2-legged or 3-legged authentication with pre-generated access token).
+     * @param {string} [host="https://developer.api.autodesk.com"] Forge API host.
+     * @param {Region} [region="US"] Forge availability region ("US" or "EMEA").
+     */
+    public reset(auth?: IAuthOptions, host?: string, region?: Region) {
+        if (typeof auth !== 'undefined') {
+            if ('client_id' in auth && 'client_secret' in auth) {
+                this.auth = new AuthenticationClient(auth.client_id, auth.client_secret, host);
+            } else if ('token' in auth) {
+                this.token = auth.token;
+            } else {
+                throw new Error('Authentication parameters missing or incorrect.');
+            }
+        }
+        if (typeof host !== 'undefined') {
+            this.host = host || DefaultHost;
+        }
+        if (typeof region !== 'undefined') {
+            this.region = region || Region.US;
+        }
+    }
+
     protected async setAuthorization(options: any, scopes: string[]) {
         options.headers = options.headers || {};
         if (this.auth) {
