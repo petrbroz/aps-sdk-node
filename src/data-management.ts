@@ -228,7 +228,7 @@ export class DataManagementClient extends ForgeClient {
             'Content-Range': `bytes ${byteOffset}-${byteOffset + data.byteLength - 1}/${totalBytes}`,
             'Session-Id': sessionId
         }
-        return this.put(`/buckets/${bucketKey}/objects/${objectName}/resumable`, data, headers, WriteTokenScopes);
+        return this.put(`/buckets/${bucketKey}/objects/${objectName}/resumable`, { buffer: data }, headers, WriteTokenScopes);
     }
 
     /**
