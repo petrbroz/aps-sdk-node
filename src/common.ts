@@ -104,6 +104,7 @@ export abstract class ForgeClient {
         if (response.ok) {
             switch (contentType) {
                 case 'application/json':
+                case 'application/vnd.api+json':
                     const json = await response.json();
                     return json;
                 case 'application/xml':
