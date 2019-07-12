@@ -92,7 +92,10 @@ export class ModelDerivativeClient extends ForgeClient {
                 urn: urn
             },
             output: {
-                formats: outputs
+                formats: outputs,
+                destination: {
+                    region: this.region
+                }
             }
         };
         if (pathInArchive) {
