@@ -81,19 +81,27 @@ export class ModelDerivativeClient extends ForgeClient {
      * @param {string} urn Document to be translated.
      * @param {IDerivativeOutputType[]} outputs List of requested output formats. Currently the one
      * supported format is `{ type: 'svf', views: ['2d', '3d'] }`.
+     * @param {string} [pathInArchive] Optional relative path to root design if the translated file is an archive.
      * @returns {Promise<IJob>} Translation job details, with properties 'result',
      * 'urn', and 'acceptedJobs'.
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
-    async submitJob(urn: string, outputs: IDerivativeOutputType[]): Promise<IJob> {
-        const params = {
+    async submitJob(urn: string, outputs: IDerivativeOutputType[], pathInArchive?: string): Promise<IJob> {
+        const params: any = {
             input: {
                 urn: urn
             },
             output: {
-                formats: outputs
+                formats: outputs,
+                destination: {
+                    region: this.region
+                }
             }
         };
+        if (pathInArchive) {
+            params.input.compressedUrn = true;
+            params.input.rootFilename = pathInArchive;
+        }
         return this.post('/designdata/job', { json: params }, {}, WriteTokenScopes);
     }
 
