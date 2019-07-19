@@ -140,11 +140,12 @@ export class ModelDerivativeClient extends ForgeClient {
      * @async
      * @param {string} urn Document derivative URN.
      * @param {string} guid Viewable GUID.
+     * @param {boolean} [force] Force query even when exceeding the size limit (20MB).
      * @returns {Promise<IDerivativeTree>} Viewable object tree.
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
-    async getViewableTree(urn: string, guid: string): Promise<IDerivativeTree> {
-        return this.get(this.region === Region.EMEA ? `/regions/eu/designdata/${urn}/metadata/${guid}` : `/designdata/${urn}/metadata/${guid}`, {}, ReadTokenScopes, true);
+    async getViewableTree(urn: string, guid: string, force?: boolean): Promise<IDerivativeTree> {
+        return this.get(this.region === Region.EMEA ? `/regions/eu/designdata/${urn}/metadata/${guid}` : `/designdata/${urn}/metadata/${guid}${force ? '?forceget=true' : ''}`, {}, ReadTokenScopes, true);
     }
 
     /**
@@ -153,10 +154,11 @@ export class ModelDerivativeClient extends ForgeClient {
      * @async
      * @param {string} urn Document derivative URN.
      * @param {string} guid Viewable GUID.
+     * @param {boolean} [force] Force query even when exceeding the size limit (20MB).
      * @returns {Promise<IDerivativeProps>} Viewable properties.
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
-    async getViewableProperties(urn: string, guid: string): Promise<IDerivativeProps> {
-        return this.get(this.region === Region.EMEA ? `/regions/eu/designdata/${urn}/metadata/${guid}/properties` : `/designdata/${urn}/metadata/${guid}/properties`, {}, ReadTokenScopes, true);
+    async getViewableProperties(urn: string, guid: string, force?: boolean): Promise<IDerivativeProps> {
+        return this.get(this.region === Region.EMEA ? `/regions/eu/designdata/${urn}/metadata/${guid}/properties${force ? '?forceget=true' : ''}` : `/designdata/${urn}/metadata/${guid}/properties${force ? '?forceget=true' : ''}`, {}, ReadTokenScopes, true);
     }
 }
