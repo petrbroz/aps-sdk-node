@@ -145,7 +145,7 @@ export class ModelDerivativeClient extends ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
     async getViewableTree(urn: string, guid: string, force?: boolean): Promise<IDerivativeTree> {
-        return this.get(this.region === Region.EMEA ? `/regions/eu/designdata/${urn}/metadata/${guid}` : `/designdata/${urn}/metadata/${guid}${force ? '?forceget=true' : ''}`, {}, ReadTokenScopes, true);
+        return this.get(this.region === Region.EMEA ? `/regions/eu/designdata/${urn}/metadata/${guid}${force ? '?forceget=true' : ''}` : `/designdata/${urn}/metadata/${guid}${force ? '?forceget=true' : ''}`, {}, ReadTokenScopes, true);
     }
 
     /**
