@@ -123,6 +123,19 @@ export class ModelDerivativeClient extends ForgeClient {
     }
 
     /**
+     * Downloads content of a specific model derivative
+     * ({@link https://forge.autodesk.com/en/docs/model-derivative/v2/reference/http/urn-manifest-derivativeurn-GET/|docs}).
+     * @async
+     * @param {string} modelUrn Model URN.
+     * @param {string} derivativeUrn Derivative URN.
+     * @returns {Promise<ArrayBuffer>} Derivative content.
+     * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
+     */
+    async getDerivative(modelUrn: string, derivativeUrn: string): Promise<ArrayBuffer> {
+        return this.get(this.region === Region.EMEA ? `/regions/eu/designdata/${modelUrn}/manifest/${derivativeUrn}` : `/designdata/${modelUrn}/manifest/${derivativeUrn}`, {}, ReadTokenScopes);
+    }
+
+    /**
      * Retrieves metadata of a derivative.
      * ({@link https://forge.autodesk.com/en/docs/model-derivative/v2/reference/http/urn-metadata-GET|docs}).
      * @async
