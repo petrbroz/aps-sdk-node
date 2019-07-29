@@ -1,7 +1,7 @@
 import * as querystring from 'querystring';
-import fetch from 'node-fetch';
+import axios, { AxiosRequestConfig } from 'axios';
 
-const RootPath = `/authentication/v1`;
+const RootPath = `authentication/v1`;
 
 interface ITokenCache {
     promise: Promise<string>;
@@ -43,21 +43,8 @@ export class AuthenticationClient {
     }
 
     // Helper method for POST requests with urlencoded params
-    protected async post(endpoint: string, params: any, headers: { [name: string]: string } = {}) {
-        const options = {
-            method: 'POST',
-            headers: headers,
-            body: querystring.stringify(params)
-        };
-        options.headers['Content-Type'] = 'application/x-www-form-urlencoded';
-        const response = await fetch(this.host + RootPath + endpoint, options);
-        if (response.ok) {
-            const json = await response.json();
-            return json;
-        } else {
-            const msg = await response.text();
-            throw new Error(msg);
-        }
+    protected async post(endpoint: string, params: any) {
+        return axios.post(this.host + '/' + RootPath + '/' + endpoint, querystring.stringify(params));
     }
 
     /**
@@ -92,9 +79,10 @@ export class AuthenticationClient {
         };
         const cache = this._cached[key] = {
             expires_at: Number.MAX_VALUE,
-            promise: this.post('/authenticate', params).then((resp) => {
-                this._cached[key].expires_at = Date.now() + resp.expires_in * 1000;
-                return resp.access_token;
+            promise: this.post('authenticate', params).then((resp) => {
+                const { data } = resp;
+                this._cached[key].expires_at = Date.now() + data.expires_in * 1000;
+                return data.access_token;
             })
         };
         return cache.promise.then((token) => ({
@@ -130,7 +118,7 @@ export class AuthenticationClient {
             'code': code,
             'redirect_uri': redirectUri
         };
-        const token = await this.post(`/gettoken`, params);
-        return token;
+        const resp = await this.post(`gettoken`, params);
+        return resp.data;
     }
 }

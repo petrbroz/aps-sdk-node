@@ -1,5 +1,5 @@
 import * as querystring from 'querystring';
-import fetch, { RequestInit, Response } from 'node-fetch';
+import axios, { AxiosRequestConfig, AxiosInstance } from 'axios';
 
 import { AuthenticationClient } from './authentication';
 
@@ -23,14 +23,15 @@ export abstract class ForgeClient {
     protected root: string;
     protected host: string;
     protected region: Region;
+    private _axios: AxiosInstance;
 
     /**
      * Initializes new client with specific authentication method.
-     * @param {string} root Root path for all endpoints.
+     * @param {string} root Root path for all endpoints (must not contain any slashes at the beginning nor end).
      * @param {IAuthOptions} auth Authentication object,
      * containing either `client_id` and `client_secret` properties (for 2-legged authentication),
      * or a single `token` property (for 2-legged or 3-legged authentication with pre-generated access token).
-     * @param {string} [host="https://developer.api.autodesk.com"] Forge API host.
+     * @param {string} [host="https://developer.api.autodesk.com"] Forge API host (must not contain slash at the end).
      * @param {Region} [region="US"] Forge availability region ("US" or "EMEA").
      */
     constructor(root: string, auth: IAuthOptions, host?: string, region?: Region) {
@@ -44,6 +45,7 @@ export abstract class ForgeClient {
         this.root = root;
         this.host = host || DefaultHost;
         this.region = region || Region.US;
+        this._axios = axios.create({ baseURL: this.host + '/' + this.root + '/' });
     }
 
     /**
@@ -70,6 +72,7 @@ export abstract class ForgeClient {
         if (typeof region !== 'undefined') {
             this.region = region || Region.US;
         }
+        this._axios = axios.create({ baseURL: this.host + '/' + this.root + '/' });
     }
 
     protected async setAuthorization(options: any, scopes: string[]) {
@@ -82,119 +85,57 @@ export abstract class ForgeClient {
         }        
     }
 
-    protected setPayload(options: any, payload: any) {
-        if (payload.urlencoded) {
-            options.body = querystring.stringify(payload.urlencoded);
-            options.headers['Content-Type'] = 'application/x-www-form-urlencoded';
-        } else if (payload.json) {
-            options.body = JSON.stringify(payload.json);
-            options.headers['Content-Type'] = 'application/json';
-        } else if (payload.buffer) {
-            options.body = payload.buffer;
-            options.headers['Content-Type'] = options.headers['Content-Type'] || 'application/octet-stream';
-        } else {
-            throw new Error(`Content type not supported`);
-        }
-        options.headers['Content-Length'] = Buffer.byteLength(<any>options.body).toString();
+    // Makes a general request and returns the entire response (not just its parsed body)
+    protected async fetch(config: AxiosRequestConfig) {
+        return this._axios.request(config);
     }
 
-    protected async parseResponse(response: Response) {
-        const contentTypeHeader = response.headers.get('Content-Type') || '';
-        const contentType = contentTypeHeader.split(';')[0];
-        if (response.ok) {
-            switch (contentType) {
-                case 'application/json':
-                case 'application/vnd.api+json':
-                    const json = await response.json();
-                    return json;
-                case 'application/xml':
-                case 'text/plain':
-                    const text = await response.text();
-                    return text;
-                default:
-                    const buff = await response.arrayBuffer();
-                    return buff;
-            }
-        } else {
-            switch (contentType) {
-                case 'application/json':
-                    const data = await response.json();
-                    throw new ForgeError(response.url, response.status, response.statusText, data);
-                default:
-                    const text = await response.text();
-                    throw new ForgeError(response.url, response.status, response.statusText, text);
-            }
-        }
-    }
-
-    protected async fetch(endpoint: string, options: RequestInit) {
-        return fetch(this.host + this.root + endpoint, options);
-    }
-
-    // Helper method for GET requests
-    protected async get(endpoint: string, headers: { [name: string]: string } = {}, scopes: string[], repeatOn202: boolean = false) {
-        const options: RequestInit = { method: 'GET', headers };
-        await this.setAuthorization(options, scopes);
-        let resp = await this.fetch(endpoint, options);
+    // Helper method for GET requests,
+    // returning parsed response body of throwing an excetion in case of an issue
+    protected async get(endpoint: string, headers: { [name: string]: string } = {}, scopes: string[], repeatOn202: boolean = false): Promise<any> {
+        const config: AxiosRequestConfig = { headers };
+        await this.setAuthorization(config, scopes);
+        let resp = await this._axios.get(endpoint, config);
         while (resp.status === 202 && repeatOn202) {
             sleep(RetryDelay);
-            resp = await this.fetch(endpoint, options);
+            resp = await this._axios.get(endpoint, config);
         }
-        return this.parseResponse(resp);
+        return resp.data;
     }
 
-    // Helper method for POST requests
-    protected async post(endpoint: string, data: IRequestData, headers: { [name: string]: string } = {}, scopes: string[]) {
-        const options: RequestInit = { method: 'POST', headers };
-        this.setPayload(options, data);
-        await this.setAuthorization(options, scopes);
-        const resp = await this.fetch(endpoint, options);
-        return this.parseResponse(resp);
+    // Helper method for POST requests,
+    // returning parsed response body of throwing an excetion in case of an issue
+    protected async post(endpoint: string, data: any, headers: { [name: string]: string } = {}, scopes: string[]): Promise<any> {
+        const config: AxiosRequestConfig = { headers };
+        await this.setAuthorization(config, scopes);
+        const resp = await this._axios.post(endpoint, data, config);
+        return resp.data;
     }
 
-    // Helper method for PUT requests
-    protected async put(endpoint: string, data: IRequestData, headers: { [name: string]: string } = {}, scopes: string[]) {
-        const options: RequestInit = { method: 'PUT', headers };
-        this.setPayload(options, data);
-        await this.setAuthorization(options, scopes);
-        const resp = await this.fetch(endpoint, options);
-        return this.parseResponse(resp);
+    // Helper method for PUT requests,
+    // returning parsed response body of throwing an excetion in case of an issue
+    protected async put(endpoint: string, data: any, headers: { [name: string]: string } = {}, scopes: string[]): Promise<any> {
+        const config: AxiosRequestConfig = { headers };
+        await this.setAuthorization(config, scopes);
+        const resp = await this._axios.put(endpoint, data, config);
+        return resp.data;
     }
 
-    // Helper method for PATCH requests
-    protected async patch(endpoint: string, data: IRequestData, headers: { [name: string]: string } = {}, scopes: string[]) {
-        const options: RequestInit = { method: 'PATCH', headers };
-        this.setPayload(options, data);
-        await this.setAuthorization(options, scopes);
-        const resp = await this.fetch(endpoint, options);
-        return this.parseResponse(resp);
+    // Helper method for PATCH requests,
+    // returning parsed response body of throwing an excetion in case of an issue
+    protected async patch(endpoint: string, data: any, headers: { [name: string]: string } = {}, scopes: string[]): Promise<any> {
+        const config: AxiosRequestConfig = { headers };
+        await this.setAuthorization(config, scopes);
+        const resp = await this._axios.patch(endpoint, data, config);
+        return resp.data;
     }
 
-    // Helper method for DELETE requests
-    protected async delete(endpoint: string, headers: { [name: string]: string } = {}, scopes: string[]) {
-        const options: RequestInit = { method: 'DELETE', headers };
-        await this.setAuthorization(options, scopes);
-        const resp = await this.fetch(endpoint, options);
-        return this.parseResponse(resp);
-    }
-}
-
-class ForgeError extends Error {
-    private url: string;
-    private status: number;
-    private statusText: string;
-    private data: any;
-
-    constructor(url: string, status: number, statusText: string, data: any) {
-        super();
-        this.url = url;
-        this.status = status;
-        this.statusText = statusText;
-        this.data = data;
-        if (data) {
-            this.message = url + ': ' + (typeof data === 'string') ? data : JSON.stringify(data);
-        } else {
-            this.message = url + ': ' + statusText;
-        }
+    // Helper method for DELETE requests,
+    // returning parsed response body of throwing an excetion in case of an issue
+    protected async delete(endpoint: string, headers: { [name: string]: string } = {}, scopes: string[]): Promise<any> {
+        const config: AxiosRequestConfig = { headers };
+        await this.setAuthorization(config, scopes);
+        const resp = await this._axios.delete(endpoint, config);
+        return resp.data;
     }
 }
