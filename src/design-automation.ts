@@ -1,6 +1,6 @@
 import { ForgeClient, IAuthOptions, Region } from './common';
 
-const RootPath = '/da/us-east/v3';
+const RootPath = 'da/us-east/v3';
 const CodeScopes = ['code:all'];
 
 const ActivityParameterProps = ['description', 'localName', 'required', 'zip', 'ondemand'];
@@ -168,7 +168,7 @@ export class DesignAutomationClient extends ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async *iterateEngines(): AsyncIterable<string[]> {
-        for await (const engines of this._pager('/engines', CodeScopes)) {
+        for await (const engines of this._pager('engines', CodeScopes)) {
             yield engines;
         }
     }
@@ -181,7 +181,7 @@ export class DesignAutomationClient extends ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async listEngines(): Promise<string[]> {
-        return this._collect('/engines', CodeScopes);
+        return this._collect('engines', CodeScopes);
     }
 
     /**
@@ -193,7 +193,7 @@ export class DesignAutomationClient extends ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async getEngine(engineId: string): Promise<IEngineDetail> {
-        return this.get(`/engines/${engineId}`, {}, CodeScopes);
+        return this.get(`engines/${engineId}`, {}, CodeScopes);
     }
 
     /**
@@ -205,7 +205,7 @@ export class DesignAutomationClient extends ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async *iterateAppBundles(): AsyncIterable<string[]> {
-        for await (const bundles of this._pager('/appbundles', CodeScopes)) {
+        for await (const bundles of this._pager('appbundles', CodeScopes)) {
             yield bundles;
         }
     }
@@ -218,7 +218,7 @@ export class DesignAutomationClient extends ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async listAppBundles(): Promise<string[]> {
-        return this._collect('/appbundles', CodeScopes);
+        return this._collect('appbundles', CodeScopes);
     }
 
     /**
@@ -230,7 +230,7 @@ export class DesignAutomationClient extends ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async getAppBundle(bundleId: string): Promise<IAppBundleDetail> {
-        return this.get(`/appbundles/${bundleId}`, {}, CodeScopes);
+        return this.get(`appbundles/${bundleId}`, {}, CodeScopes);
     }
 
     /**
@@ -243,7 +243,7 @@ export class DesignAutomationClient extends ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async getAppBundleVersion(id: string, version: number): Promise<IAppBundleDetail> {
-        return this.get(`/appbundles/${id}/versions/${version}`, {}, CodeScopes);
+        return this.get(`appbundles/${id}/versions/${version}`, {}, CodeScopes);
     }
 
     /**
@@ -258,7 +258,7 @@ export class DesignAutomationClient extends ForgeClient {
      */
     async createAppBundle(name: string, engine: string, description: string): Promise<IAppBundleDetail> {
         const config = { id: name, description: description, engine: engine };
-        return this.post('/appbundles', { json: config }, {}, CodeScopes);
+        return this.post('appbundles', config, {}, CodeScopes);
     }
 
     /**
@@ -276,7 +276,7 @@ export class DesignAutomationClient extends ForgeClient {
         const config: { engine?: string; description?: string; } = {};
         if (description) config.description = description;
         if (engine) config.engine = engine;
-        return this.post(`/appbundles/${name}/versions`, { json: config }, {}, CodeScopes);
+        return this.post(`appbundles/${name}/versions`, config, {}, CodeScopes);
     }
 
     /**
@@ -289,7 +289,7 @@ export class DesignAutomationClient extends ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async *iterateAppBundleAliases(name: string): AsyncIterable<IAlias[]> {
-        for await (const aliases of this._pager(`/appbundles/${name}/aliases`, CodeScopes)) {
+        for await (const aliases of this._pager(`appbundles/${name}/aliases`, CodeScopes)) {
             yield aliases;
         }
     }
@@ -303,7 +303,7 @@ export class DesignAutomationClient extends ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async listAppBundleAliases(name: string): Promise<IAlias[]> {
-        return this._collect(`/appbundles/${name}/aliases`, CodeScopes);
+        return this._collect(`appbundles/${name}/aliases`, CodeScopes);
     }
 
     /**
@@ -316,7 +316,7 @@ export class DesignAutomationClient extends ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async *iterateAppBundleVersions(name: string): AsyncIterable<number[]> {
-        for await (const versions of this._pager(`/appbundles/${name}/versions`, CodeScopes)) {
+        for await (const versions of this._pager(`appbundles/${name}/versions`, CodeScopes)) {
             yield versions;
         }
     }
@@ -330,7 +330,7 @@ export class DesignAutomationClient extends ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async listAppBundleVersions(name: string): Promise<number[]> {
-        return this._collect(`/appbundles/${name}/versions`, CodeScopes);
+        return this._collect(`appbundles/${name}/versions`, CodeScopes);
     }
 
     /**
@@ -346,7 +346,7 @@ export class DesignAutomationClient extends ForgeClient {
     async createAppBundleAlias(name: string, alias: string, version: number): Promise<IAlias> {
         // TODO: tests
         const config = { id: alias, version: version };
-        return this.post(`/appbundles/${name}/aliases`, { json: config }, {}, CodeScopes);
+        return this.post(`appbundles/${name}/aliases`, config, {}, CodeScopes);
     }
 
     /**
@@ -362,7 +362,7 @@ export class DesignAutomationClient extends ForgeClient {
     async updateAppBundleAlias(name: string, alias: string, version: number): Promise<IAlias> {
         // TODO: tests
         const config = { version: version };
-        return this.patch(`/appbundles/${name}/aliases/${alias}`, { json: config }, {}, CodeScopes);
+        return this.patch(`appbundles/${name}/aliases/${alias}`, config, {}, CodeScopes);
     }
 
     /**
@@ -372,7 +372,7 @@ export class DesignAutomationClient extends ForgeClient {
      * @param {string} shortId Short (unqualified) app bundle ID.
      */
     async deleteAppBundle(shortId: string) {
-        return this.delete(`/appbundles/${shortId}`, {}, CodeScopes);
+        return this.delete(`appbundles/${shortId}`, {}, CodeScopes);
     }
 
     /**
@@ -383,7 +383,7 @@ export class DesignAutomationClient extends ForgeClient {
      * @param {string} alias App bundle alias.
      */
     async deleteAppBundleAlias(shortId: string, alias: string) {
-        return this.delete(`/appbundles/${shortId}/aliases/${alias}`, {}, CodeScopes);
+        return this.delete(`appbundles/${shortId}/aliases/${alias}`, {}, CodeScopes);
     }
 
     /**
@@ -394,7 +394,7 @@ export class DesignAutomationClient extends ForgeClient {
      * @param {number} version App bundle version.
      */
     async deleteAppBundleVersion(shortId: string, version: number) {
-        return this.delete(`/appbundles/${shortId}/versions/${version}`, {}, CodeScopes);
+        return this.delete(`appbundles/${shortId}/versions/${version}`, {}, CodeScopes);
     }
 
     /**
@@ -406,7 +406,7 @@ export class DesignAutomationClient extends ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async *iterateActivities(): AsyncIterable<string[]> {
-        for await (const activities of this._pager('/activities', CodeScopes)) {
+        for await (const activities of this._pager('activities', CodeScopes)) {
             yield activities;
         }
     }
@@ -419,7 +419,7 @@ export class DesignAutomationClient extends ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async listActivities(): Promise<string[]> {
-        return this._collect('/activities', CodeScopes);
+        return this._collect('activities', CodeScopes);
     }
 
     /**
@@ -431,7 +431,7 @@ export class DesignAutomationClient extends ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async getActivity(activityId: string): Promise<IActivityDetail> {
-        return this.get(`/activities/${activityId}`, {}, CodeScopes);
+        return this.get(`activities/${activityId}`, {}, CodeScopes);
     }
 
     /**
@@ -444,7 +444,7 @@ export class DesignAutomationClient extends ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async getActivityVersion(id: string, version: number): Promise<IActivityDetail> {
-        return this.get(`/activities/${id}/versions/${version}`, {}, CodeScopes);
+        return this.get(`activities/${id}/versions/${version}`, {}, CodeScopes);
     }
 
     private _inventorActivityConfig(activityId: string | null, description: string, ownerId: string, bundleName: string, bundleAlias: string, engine: string, inputs: IActivityParam[], outputs: IActivityParam[]): IActivityConfig {
@@ -635,7 +635,7 @@ export class DesignAutomationClient extends ForgeClient {
                 config = this._inventorActivityConfig(id, description, this.auth.clientId, bundleName, bundleAlias, engine, inputs, outputs);
                 break;
         }
-        return this.post('/activities', { json: config }, {}, CodeScopes);
+        return this.post('activities', config, {}, CodeScopes);
     }
 
     /**
@@ -678,7 +678,7 @@ export class DesignAutomationClient extends ForgeClient {
                 config = this._inventorActivityConfig(null, description, this.auth.clientId, bundleName, bundleAlias, engine, inputs, outputs);
                 break;
         }
-        return this.post(`/activities/${id}/versions`, { json: config }, {}, CodeScopes);
+        return this.post(`activities/${id}/versions`, config, {}, CodeScopes);
     }
 
     /**
@@ -691,7 +691,7 @@ export class DesignAutomationClient extends ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async *iterateActivityAliases(name: string): AsyncIterable<IAlias[]> {
-        for await (const aliases of this._pager(`/activities/${name}/aliases`, CodeScopes)) {
+        for await (const aliases of this._pager(`activities/${name}/aliases`, CodeScopes)) {
             yield aliases;
         }
     }
@@ -705,7 +705,7 @@ export class DesignAutomationClient extends ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async listActivityAliases(name: string): Promise<IAlias[]> {
-        return this._collect(`/activities/${name}/aliases`, CodeScopes);
+        return this._collect(`activities/${name}/aliases`, CodeScopes);
     }
 
     /**
@@ -718,7 +718,7 @@ export class DesignAutomationClient extends ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async *iterateActivityVersions(name: string): AsyncIterable<number[]> {
-        for await (const versions of this._pager(`/activities/${name}/versions`, CodeScopes)) {
+        for await (const versions of this._pager(`activities/${name}/versions`, CodeScopes)) {
             yield versions;
         }
     }
@@ -732,7 +732,7 @@ export class DesignAutomationClient extends ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async listActivityVersions(name: string): Promise<number[]> {
-        return this._collect(`/activities/${name}/versions`, CodeScopes);
+        return this._collect(`activities/${name}/versions`, CodeScopes);
     }
 
     /**
@@ -747,7 +747,7 @@ export class DesignAutomationClient extends ForgeClient {
     async createActivityAlias(id: string, alias: string, version: number): Promise<IAlias> {
         // TODO: tests
         const config = { id: alias, version: version };
-        return this.post(`/activities/${id}/aliases`, { json: config }, {}, CodeScopes);
+        return this.post(`activities/${id}/aliases`, config, {}, CodeScopes);
     }
 
     /**
@@ -762,7 +762,7 @@ export class DesignAutomationClient extends ForgeClient {
     async updateActivityAlias(id: string, alias: string, version: number): Promise<IAlias> {
         // TODO: tests
         const config = { version: version };
-        return this.patch(`/activities/${id}/aliases/${alias}`, { json: config }, {}, CodeScopes);
+        return this.patch(`activities/${id}/aliases/${alias}`, config, {}, CodeScopes);
     }
 
     /**
@@ -772,7 +772,7 @@ export class DesignAutomationClient extends ForgeClient {
      * @param {string} shortId Short (unqualified) activity ID.
      */
     async deleteActivity(shortId: string) {
-        return this.delete(`/activities/${shortId}`, {}, CodeScopes);
+        return this.delete(`activities/${shortId}`, {}, CodeScopes);
     }
 
     /**
@@ -783,7 +783,7 @@ export class DesignAutomationClient extends ForgeClient {
      * @param {string} alias Activity alias.
      */
     async deleteActivityAlias(shortId: string, alias: string) {
-        return this.delete(`/activities/${shortId}/aliases/${alias}`, {}, CodeScopes);
+        return this.delete(`activities/${shortId}/aliases/${alias}`, {}, CodeScopes);
     }
 
     /**
@@ -794,7 +794,7 @@ export class DesignAutomationClient extends ForgeClient {
      * @param {number} version Activity version.
      */
     async deleteActivityVersion(shortId: string, version: number) {
-        return this.delete(`/activities/${shortId}/versions/${version}`, {}, CodeScopes);
+        return this.delete(`activities/${shortId}/versions/${version}`, {}, CodeScopes);
     }
 
     /**
@@ -806,7 +806,7 @@ export class DesignAutomationClient extends ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
     async workItemDetails(id: string) {
-        return this.get(`/workitems/${id}`, {}, CodeScopes);
+        return this.get(`workitems/${id}`, {}, CodeScopes);
     }
 
     /**
@@ -841,7 +841,7 @@ export class DesignAutomationClient extends ForgeClient {
                 }
             }
         }
-        return this.post('/workitems', { json: config }, {}, CodeScopes);
+        return this.post('workitems', config, {}, CodeScopes);
     }
 
     /**
@@ -851,6 +851,6 @@ export class DesignAutomationClient extends ForgeClient {
      * @param {string} id Work item ID.
      */
     async deleteWorkItem(id: string) {
-        return this.delete(`/workitems/${id}`, {}, CodeScopes);
+        return this.delete(`workitems/${id}`, {}, CodeScopes);
     }
 }

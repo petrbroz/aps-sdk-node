@@ -1,6 +1,6 @@
 import { ForgeClient, IAuthOptions, Region } from './common';
 
-const RootPath = '/modelderivative/v2';
+const RootPath = 'modelderivative/v2';
 const ReadTokenScopes = ['data:read'];
 const WriteTokenScopes = ['data:read', 'data:write', 'data:create'];
 
@@ -70,7 +70,7 @@ export class ModelDerivativeClient extends ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
     async formats(): Promise<IDerivativeFormats> {
-        const response = await this.get('/designdata/formats', {}, ReadTokenScopes);
+        const response = await this.get('designdata/formats', {}, ReadTokenScopes);
         return response.formats;
     }
 
@@ -107,7 +107,7 @@ export class ModelDerivativeClient extends ForgeClient {
         if (force) {
             headers['x-ads-force'] = 'true';
         }
-        return this.post('/designdata/job', { json: params }, headers, WriteTokenScopes);
+        return this.post('designdata/job', params, headers, WriteTokenScopes);
     }
 
     /**
@@ -119,7 +119,7 @@ export class ModelDerivativeClient extends ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
     async getManifest(urn: string): Promise<IDerivativeManifest> {
-        return this.get(this.region === Region.EMEA ? `/regions/eu/designdata/${urn}/manifest` : `/designdata/${urn}/manifest`, {}, ReadTokenScopes, true);
+        return this.get(this.region === Region.EMEA ? `regions/eu/designdata/${urn}/manifest` : `designdata/${urn}/manifest`, {}, ReadTokenScopes, true);
     }
 
     /**
@@ -132,7 +132,7 @@ export class ModelDerivativeClient extends ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async getDerivative(modelUrn: string, derivativeUrn: string): Promise<ArrayBuffer> {
-        return this.get(this.region === Region.EMEA ? `/regions/eu/designdata/${modelUrn}/manifest/${derivativeUrn}` : `/designdata/${modelUrn}/manifest/${derivativeUrn}`, {}, ReadTokenScopes);
+        return this.get(this.region === Region.EMEA ? `regions/eu/designdata/${modelUrn}/manifest/${derivativeUrn}` : `designdata/${modelUrn}/manifest/${derivativeUrn}`, {}, ReadTokenScopes);
     }
 
     /**
@@ -144,7 +144,7 @@ export class ModelDerivativeClient extends ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
     async getMetadata(urn: string): Promise<IDerivativeMetadata> {
-        return this.get(this.region === Region.EMEA ? `/regions/eu/designdata/${urn}/metadata` : `/designdata/${urn}/metadata`, {}, ReadTokenScopes, true);
+        return this.get(this.region === Region.EMEA ? `regions/eu/designdata/${urn}/metadata` : `designdata/${urn}/metadata`, {}, ReadTokenScopes, true);
     }
 
     /**
@@ -158,7 +158,7 @@ export class ModelDerivativeClient extends ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
     async getViewableTree(urn: string, guid: string, force?: boolean): Promise<IDerivativeTree> {
-        return this.get(this.region === Region.EMEA ? `/regions/eu/designdata/${urn}/metadata/${guid}${force ? '?forceget=true' : ''}` : `/designdata/${urn}/metadata/${guid}${force ? '?forceget=true' : ''}`, {}, ReadTokenScopes, true);
+        return this.get(this.region === Region.EMEA ? `regions/eu/designdata/${urn}/metadata/${guid}${force ? '?forceget=true' : ''}` : `designdata/${urn}/metadata/${guid}${force ? '?forceget=true' : ''}`, {}, ReadTokenScopes, true);
     }
 
     /**
@@ -172,6 +172,6 @@ export class ModelDerivativeClient extends ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
     async getViewableProperties(urn: string, guid: string, force?: boolean): Promise<IDerivativeProps> {
-        return this.get(this.region === Region.EMEA ? `/regions/eu/designdata/${urn}/metadata/${guid}/properties${force ? '?forceget=true' : ''}` : `/designdata/${urn}/metadata/${guid}/properties${force ? '?forceget=true' : ''}`, {}, ReadTokenScopes, true);
+        return this.get(this.region === Region.EMEA ? `regions/eu/designdata/${urn}/metadata/${guid}/properties${force ? '?forceget=true' : ''}` : `designdata/${urn}/metadata/${guid}/properties${force ? '?forceget=true' : ''}`, {}, ReadTokenScopes, true);
     }
 }

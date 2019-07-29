@@ -69,7 +69,7 @@ export class BIM360Client extends ForgeClient {
      * @returns {Promise<IHub[]>} List of hubs.
      */
     async hubs(): Promise<IHub[]> {
-        const response = await this.get(`/project/v1/hubs`, {}, ReadTokenScopes);
+        const response = await this.get(`project/v1/hubs`, {}, ReadTokenScopes);
         return response.data;
     }
 
@@ -80,7 +80,7 @@ export class BIM360Client extends ForgeClient {
      * @returns {Promise<IHub>} Hub or null if there isn't one.
      */
     async hub(id: string): Promise<IHub> {
-        const response = await this.get(`/project/v1/hubs/${id}`, {}, ReadTokenScopes);
+        const response = await this.get(`project/v1/hubs/${id}`, {}, ReadTokenScopes);
         return response.data;
     }
 
@@ -91,7 +91,7 @@ export class BIM360Client extends ForgeClient {
      * @returns {Promise<IProject[]>} List of projects.
      */
     async projects(hub: string): Promise<IProject[]> {
-        const response = await this.get(`/project/v1/hubs/${hub}/projects`, {}, ReadTokenScopes);
+        const response = await this.get(`project/v1/hubs/${hub}/projects`, {}, ReadTokenScopes);
         return response.data;
     }
 
@@ -103,7 +103,7 @@ export class BIM360Client extends ForgeClient {
      * @returns {Promise<IFolder[]>} List of folder records.
      */
     async folders(hub: string, project: string): Promise<IFolder[]> {
-        const response = await this.get(`/project/v1/hubs/${hub}/projects/${project}/topFolders`, {}, ReadTokenScopes);
+        const response = await this.get(`project/v1/hubs/${hub}/projects/${project}/topFolders`, {}, ReadTokenScopes);
         return response.data;
     }
 
@@ -115,7 +115,7 @@ export class BIM360Client extends ForgeClient {
      * @returns {Promise<IItem[]>} List of folder contents.
      */
     async contents(project: string, folder: string): Promise<IItem[]> {
-        const response = await this.get(`/data/v1/projects/${project}/folders/${folder}/contents`, {}, ReadTokenScopes);
+        const response = await this.get(`data/v1/projects/${project}/folders/${folder}/contents`, {}, ReadTokenScopes);
         return response.data;
     }
 
@@ -127,7 +127,7 @@ export class BIM360Client extends ForgeClient {
      * @returns {Promise<IVersion[]>} List of item versions.
      */
     async versions(project: string, item: string): Promise<IVersion[]> {
-        const response = await this.get(`/data/v1/projects/${project}/items/${item}/versions`, {}, ReadTokenScopes);
+        const response = await this.get(`data/v1/projects/${project}/items/${item}/versions`, {}, ReadTokenScopes);
         return response.data;
     }
 
@@ -139,7 +139,7 @@ export class BIM360Client extends ForgeClient {
      * @returns {Promise<IVersion>} Tip version of the item.
      */
     async tip(project: string, item: string): Promise<IVersion> {
-        const response = await this.get(`/data/v1/projects/${project}/items/${item}/tip`, {}, ReadTokenScopes);
+        const response = await this.get(`data/v1/projects/${project}/items/${item}/tip`, {}, ReadTokenScopes);
         return response.data;
     }
 }

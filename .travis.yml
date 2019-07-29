@@ -3,9 +3,9 @@ node_js:
 - '10'
 
 script:
-- npm run build
-- npm run test
-- npm run docs
+- yarn run build
+- yarn run test
+- yarn run docs
 
 deploy:
   provider: npm
