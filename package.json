@@ -5,6 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
+    "build:web": "webpack",
     "test": "mocha",
     "docs": "jsdoc -c .jsdoc.json -R README.md"
   },
@@ -29,7 +30,9 @@
     "@types/node": "^12.6.8",
     "jsdoc": "^3.6.2",
     "mocha": "^5.2.0",
-    "typescript": "^3.5.3"
+    "typescript": "^3.5.3",
+    "webpack": "^4.38.0",
+    "webpack-cli": "^3.3.6"
   },
   "dependencies": {
     "axios": "^0.19.0"
