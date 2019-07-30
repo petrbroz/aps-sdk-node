@@ -1,4 +1,3 @@
-import * as querystring from 'querystring';
 import axios, { AxiosRequestConfig, AxiosInstance } from 'axios';
 
 import { AuthenticationClient } from './authentication';
