@@ -126,6 +126,6 @@ export FORGE_CLIENT_ID=<your-client-id>
 export FORGE_CLIENT_SECRET=<your-client-secret>
 export FORGE_BUCKET=<your-test-bucket>
 export FORGE_MODEL_URN=<testing-model-urn>
-yarn run build # First transpile TypeScript code is into JavaScript
+yarn run build # Transpile TypeScript into JavaScript
 yarn test
 ```
