@@ -14,6 +14,8 @@ or [generators](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Referenc
 
 ## Usage
 
+### Server Side
+
 The TypeScript implementation is transpiled into JavaScript with type definition files,
 so you can use it both in Node.js projects (as a CommonJS module), and in TypeScript projects (as an ES6 module):
 
@@ -33,7 +35,7 @@ import {
 } from 'forge-server-utils';
 ```
 
-### Authentication
+#### Authentication
 
 If you need to generate [2-legged tokens](https://forge.autodesk.com/en/docs/oauth/v2/tutorials/get-2-legged-token)
 manually, you can use the `AuthenticationClient` class:
@@ -56,7 +58,7 @@ const dm = new DataManagementClient({ client_id: '...', client_secret: '...' });
 const bim360 = new BIM360Client({ token: '...' });
 ```
 
-### Data Management
+#### Data Management
 
 ```js
 const { DataManagementClient } = require('forge-server-utils');
@@ -70,7 +72,7 @@ const objects = await data.listObjects('foo-bucket');
 console.log('Objects', objects.map(object => object.objectId).join(','));
 ```
 
-### Model Derivatives
+#### Model Derivatives
 
 ```js
 const { ModelDerivativeClient } = require('forge-server-utils');
@@ -80,7 +82,7 @@ const job = await derivatives.submitJob('<your-document-urn>', [{ type: 'svf', v
 console.log('Job', job);
 ```
 
-### Design Automation
+#### Design Automation
 
 ```js
 const { DesignAutomationClient } = require('forge-server-utils');
@@ -89,6 +91,33 @@ const client = new DesignAutomationClient({ client_id: FORGE_CLIENT_ID, client_s
 const bundles = await client.listAppBundles();
 console.log('App bundles', bundles);
 ```
+
+### Client Side
+
+The transpiled output from TypeScript is also bundled using [webpack](https://webpack.js.org),
+so you can use the same functionality in a browser.
+
+> There is a caveat: at the moment it is unfortunately not possible to request Forge access tokens
+from the browser due to [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) limitations,
+so when creating instances of the different clients, instead of providing client ID and secret
+you will have to provide the token directly.
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/forge-server-utils/dist/browser/forge-server-utils.js"></script>
+<script>
+	const data = new forge.DataManagementClient({ token: '<your access token>' });
+	const deriv = new ModelDerivativeClient({ token: '<your access token>' });
+	data.listBuckets()
+		.then(buckets => { console.log('Buckets', buckets); })
+		.catch(err => { console.error('Could not list buckets', err); });
+	deriv.submitJob('<your document urn>', [{ type: 'svf', views: ['2d', '3d'] }])
+		.then(job => { console.log('Translation job', job); })
+		.catch(err => { console.error('Could not start translation', err); });
+</script>
+```
+
+Note that you can also request a specific version of the library from CDN by appending `@<version>`
+to the npm package name, for example, `https://cdn.jsdelivr.net/npm/forge-server-utils@4.0.0/dist/browser/forge-server-utils.js`.
 
 ## Testing
 
