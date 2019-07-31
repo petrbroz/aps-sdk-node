@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Simple example of using the browser bundle
+
 ## [4.1.0] - 2019-07-31
 
 ### Added
