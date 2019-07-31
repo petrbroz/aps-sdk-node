@@ -1,9 +1,9 @@
-# forge-nodejs-utils
+# forge-server-utils
 
-[![build status](https://travis-ci.org/petrbroz/forge-nodejs-utils.svg?branch=master)](https://travis-ci.org/petrbroz/forge-nodejs-utils)
-[![npm version](https://badge.fury.io/js/forge-nodejs-utils.svg)](https://badge.fury.io/js/forge-nodejs-utils)
-![node](https://img.shields.io/node/v/forge-nodejs-utils.svg)
-![npm downloads](https://img.shields.io/npm/dw/forge-nodejs-utils.svg)
+[![build status](https://travis-ci.org/petrbroz/forge-server-utils.svg?branch=master)](https://travis-ci.org/petrbroz/forge-server-utils)
+[![npm version](https://badge.fury.io/js/forge-server-utils.svg)](https://badge.fury.io/js/forge-server-utils)
+![node](https://img.shields.io/node/v/forge-server-utils.svg)
+![npm downloads](https://img.shields.io/npm/dw/forge-server-utils.svg)
 ![platforms](https://img.shields.io/badge/platform-windows%20%7C%20osx%20%7C%20linux-lightgray.svg)
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](http://opensource.org/licenses/MIT)
 
@@ -19,7 +19,7 @@ so you can use it both in Node.js projects (as a CommonJS module), and in TypeSc
 
 ```js
 // JavaScript
-const { DataManagementClient } = require('forge-nodejs-utils');
+const { DataManagementClient } = require('forge-server-utils');
 ```
 
 ```ts
@@ -30,7 +30,7 @@ import {
 	IObject,
 	IResumableUploadRange,
 	DataRetentionPolicy
-} from 'forge-nodejs-utils';
+} from 'forge-server-utils';
 ```
 
 ### Authentication
@@ -39,7 +39,7 @@ If you need to generate [2-legged tokens](https://forge.autodesk.com/en/docs/oau
 manually, you can use the `AuthenticationClient` class:
 
 ```js
-const { AuthenticationClient } = require('forge-nodejs-utils');
+const { AuthenticationClient } = require('forge-server-utils');
 const { FORGE_CLIENT_ID, FORGE_CLIENT_SECRET } = process.env;
 const auth = new AuthenticationClient(FORGE_CLIENT_ID, FORGE_CLIENT_SECRET);
 const authentication = await auth.authenticate(['bucket:read', 'data:read']);
@@ -51,7 +51,7 @@ containing either `client_id` and `client_secret` properties (for 2-legged authe
 or a single `token` property (for authentication using a pre-generated access token):
 
 ```js
-const { DataManagementClient, BIM360Client } = require('forge-nodejs-utils');
+const { DataManagementClient, BIM360Client } = require('forge-server-utils');
 const dm = new DataManagementClient({ client_id: '...', client_secret: '...' });
 const bim360 = new BIM360Client({ token: '...' });
 ```
@@ -59,7 +59,7 @@ const bim360 = new BIM360Client({ token: '...' });
 ### Data Management
 
 ```js
-const { DataManagementClient } = require('forge-nodejs-utils');
+const { DataManagementClient } = require('forge-server-utils');
 const { FORGE_CLIENT_ID, FORGE_CLIENT_SECRET } = process.env;
 const data = new DataManagementClient({ client_id: FORGE_CLIENT_ID, client_secret: FORGE_CLIENT_SECRET });
 
@@ -73,7 +73,7 @@ console.log('Objects', objects.map(object => object.objectId).join(','));
 ### Model Derivatives
 
 ```js
-const { ModelDerivativeClient } = require('forge-nodejs-utils');
+const { ModelDerivativeClient } = require('forge-server-utils');
 const { FORGE_CLIENT_ID, FORGE_CLIENT_SECRET } = process.env;
 const derivatives = new ModelDerivativeClient({ client_id: FORGE_CLIENT_ID, client_secret: FORGE_CLIENT_SECRET });
 const job = await derivatives.submitJob('<your-document-urn>', [{ type: 'svf', views: ['2d', '3d'] }]);
@@ -83,7 +83,7 @@ console.log('Job', job);
 ### Design Automation
 
 ```js
-const { DesignAutomationClient } = require('forge-nodejs-utils');
+const { DesignAutomationClient } = require('forge-server-utils');
 const { FORGE_CLIENT_ID, FORGE_CLIENT_SECRET } = process.env;
 const client = new DesignAutomationClient({ client_id: FORGE_CLIENT_ID, client_secret: FORGE_CLIENT_SECRET });
 const bundles = await client.listAppBundles();
