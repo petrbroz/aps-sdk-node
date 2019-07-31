@@ -1,5 +1,3 @@
-import * as querystring from 'querystring';
-
 import { ForgeClient, IAuthOptions, Region } from './common';
 import { AxiosRequestConfig } from 'axios';
 
@@ -73,7 +71,7 @@ export class DataManagementClient extends ForgeClient {
 
         while (response.next) {
             const next = new URL(response.next);
-            const startAt = querystring.escape(next.searchParams.get('startAt') || '');
+            const startAt = next.searchParams.get('startAt') || '';
             response = await this.get(`${endpoint}${endpoint.indexOf('?') === -1 ? '?' : '&'}startAt=${startAt}&limit=${limit}`, {}, ReadTokenScopes);
             yield response.items;
         }
@@ -86,7 +84,7 @@ export class DataManagementClient extends ForgeClient {
 
         while (response.next) {
             const next = new URL(response.next);
-            const startAt = querystring.escape(next.searchParams.get('startAt') || '');
+            const startAt = next.searchParams.get('startAt') || '';
             response = await this.get(`${endpoint}${endpoint.indexOf('?') === -1 ? '?' : '&'}startAt=${startAt}`, {}, ReadTokenScopes);
             results = results.concat(response.items);
         }
@@ -167,7 +165,7 @@ export class DataManagementClient extends ForgeClient {
     async *iterateObjects(bucket: string, limit: number = 16, beginsWith?: string): AsyncIterable<IObject[]> {
         let url = `buckets/${bucket}/objects`;
         if (beginsWith) {
-            url += '?beginsWith=' + querystring.escape(beginsWith);
+            url += '?beginsWith=' + beginsWith;
         }
         for await (const objects of this._pager(url, limit)) {
             yield objects;
@@ -186,7 +184,7 @@ export class DataManagementClient extends ForgeClient {
     async listObjects(bucket: string, beginsWith?: string): Promise<IObject[]> {
         let url = `buckets/${bucket}/objects`;
         if (beginsWith) {
-            url += '?beginsWith=' + querystring.escape(beginsWith);
+            url += '?beginsWith=' + beginsWith;
         }
         return this._collect(url);
     }
