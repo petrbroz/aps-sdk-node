@@ -27,17 +27,9 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>"use strict";
-var __importStar = (this &amp;&amp; this.__importStar) || function (mod) {
-    if (mod &amp;&amp; mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const querystring = __importStar(require("querystring"));
 const common_1 = require("./common");
-const RootPath = '/oss/v2';
+const RootPath = 'oss/v2';
 const ReadTokenScopes = ['bucket:read', 'data:read'];
 const WriteTokenScopes = ['bucket:create', 'data:write'];
 var DataRetentionPolicy;
@@ -68,7 +60,7 @@ class DataManagementClient extends common_1.ForgeClient {
         yield response.items;
         while (response.next) {
             const next = new URL(response.next);
-            const startAt = querystring.escape(next.searchParams.get('startAt') || '');
+            const startAt = next.searchParams.get('startAt') || '';
             response = await this.get(`${endpoint}${endpoint.indexOf('?') === -1 ? '?' : '&amp;'}startAt=${startAt}&amp;limit=${limit}`, {}, ReadTokenScopes);
             yield response.items;
         }
@@ -79,7 +71,7 @@ class DataManagementClient extends common_1.ForgeClient {
         let results = response.items;
         while (response.next) {
             const next = new URL(response.next);
-            const startAt = querystring.escape(next.searchParams.get('startAt') || '');
+            const startAt = next.searchParams.get('startAt') || '';
             response = await this.get(`${endpoint}${endpoint.indexOf('?') === -1 ? '?' : '&amp;'}startAt=${startAt}`, {}, ReadTokenScopes);
             results = results.concat(response.items);
         }
@@ -96,7 +88,7 @@ class DataManagementClient extends common_1.ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async *iterateBuckets(limit = 16) {
-        for await (const buckets of this._pager(`/buckets?region=${this.region}`, limit)) {
+        for await (const buckets of this._pager(`buckets?region=${this.region}`, limit)) {
             yield buckets;
         }
     }
@@ -108,7 +100,7 @@ class DataManagementClient extends common_1.ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async listBuckets() {
-        return this._collect(`/buckets?region=${this.region}`);
+        return this._collect(`buckets?region=${this.region}`);
     }
     /**
      * Gets details of a specific bucket
@@ -121,7 +113,7 @@ class DataManagementClient extends common_1.ForgeClient {
      * with this name does not exist.
      */
     async getBucketDetails(bucket) {
-        return this.get(`/buckets/${bucket}/details`, {}, ReadTokenScopes);
+        return this.get(`buckets/${bucket}/details`, {}, ReadTokenScopes);
     }
     /**
      * Creates a new bucket
@@ -136,7 +128,7 @@ class DataManagementClient extends common_1.ForgeClient {
      */
     async createBucket(bucket, dataRetention) {
         const params = { bucketKey: bucket, policyKey: dataRetention };
-        return this.post('/buckets', { json: params }, { 'x-ads-region': this.region }, WriteTokenScopes);
+        return this.post('buckets', { json: params }, { 'x-ads-region': this.region }, WriteTokenScopes);
     }
     // Object APIs
     /**
@@ -151,9 +143,9 @@ class DataManagementClient extends common_1.ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async *iterateObjects(bucket, limit = 16, beginsWith) {
-        let url = `/buckets/${bucket}/objects`;
+        let url = `buckets/${bucket}/objects`;
         if (beginsWith) {
-            url += '?beginsWith=' + querystring.escape(beginsWith);
+            url += '?beginsWith=' + beginsWith;
         }
         for await (const objects of this._pager(url, limit)) {
             yield objects;
@@ -169,9 +161,9 @@ class DataManagementClient extends common_1.ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async listObjects(bucket, beginsWith) {
-        let url = `/buckets/${bucket}/objects`;
+        let url = `buckets/${bucket}/objects`;
         if (beginsWith) {
-            url += '?beginsWith=' + querystring.escape(beginsWith);
+            url += '?beginsWith=' + beginsWith;
         }
         return this._collect(url);
     }
@@ -188,8 +180,7 @@ class DataManagementClient extends common_1.ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async uploadObject(bucket, name, contentType, data) {
-        // TODO: add support for large file uploads using "PUT buckets/:bucketKey/objects/:objectName/resumable"
-        return this.put(`/buckets/${bucket}/objects/${name}`, { buffer: data }, { 'Content-Type': contentType }, WriteTokenScopes);
+        return this.put(`buckets/${bucket}/objects/${name}`, data, { 'Content-Type': contentType }, WriteTokenScopes);
     }
     /**
      * Uploads content to a specific bucket object using the resumable capabilities
@@ -212,7 +203,7 @@ class DataManagementClient extends common_1.ForgeClient {
             'Content-Range': `bytes ${byteOffset}-${byteOffset + data.byteLength - 1}/${totalBytes}`,
             'Session-Id': sessionId
         };
-        return this.put(`/buckets/${bucketKey}/objects/${objectName}/resumable`, data, headers, WriteTokenScopes);
+        return this.put(`buckets/${bucketKey}/objects/${objectName}/resumable`, data, headers, WriteTokenScopes);
     }
     /**
      * Gets status of a resumable upload session
@@ -226,28 +217,26 @@ class DataManagementClient extends common_1.ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async getResumableUploadStatus(bucketKey, objectName, sessionId) {
-        const options = { method: 'GET', headers: { 'Authorization': '' } };
-        await this.setAuthorization(options, ReadTokenScopes);
-        const response = await this.fetch(`/buckets/${bucketKey}/objects/${objectName}/status/${sessionId}`, options);
-        if (response.ok) {
-            const ranges = response.headers.get('Range') || '';
-            const match = ranges.match(/^bytes=(\d+-\d+(,\d+-\d+)*)$/);
-            if (match) {
-                return match[1].split(',').map(str => {
-                    const tokens = str.split('-');
-                    return {
-                        start: parseInt(tokens[0]),
-                        end: parseInt(tokens[1])
-                    };
-                });
-            }
-            else {
-                throw new Error('Unexpected range format: ' + ranges);
-            }
+        const config = {
+            method: 'GET',
+            url: `buckets/${bucketKey}/objects/${objectName}/status/${sessionId}`,
+            headers: { 'Authorization': '' }
+        };
+        await this.setAuthorization(config, ReadTokenScopes);
+        const response = await this.fetch(config);
+        const ranges = response.headers['range'] || '';
+        const match = ranges.match(/^bytes=(\d+-\d+(,\d+-\d+)*)$/);
+        if (match) {
+            return match[1].split(',').map((str) => {
+                const tokens = str.split('-');
+                return {
+                    start: parseInt(tokens[0]),
+                    end: parseInt(tokens[1])
+                };
+            });
         }
         else {
-            const text = await response.text();
-            throw new Error(text);
+            throw new Error('Unexpected range format: ' + ranges);
         }
     }
     /**
@@ -260,7 +249,7 @@ class DataManagementClient extends common_1.ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async downloadObject(bucket, object) {
-        return this.get(`/buckets/${bucket}/objects/${object}`, {}, ReadTokenScopes);
+        return this.get(`buckets/${bucket}/objects/${object}`, {}, ReadTokenScopes);
     }
     /**
      * Gets details of a specific bucket object
@@ -274,7 +263,7 @@ class DataManagementClient extends common_1.ForgeClient {
      * with this name does not exist.
      */
     async getObjectDetails(bucket, object) {
-        return this.get(`/buckets/${bucket}/objects/${object}/details`, {}, ReadTokenScopes);
+        return this.get(`buckets/${bucket}/objects/${object}/details`, {}, ReadTokenScopes);
     }
     /**
      * Creates signed URL for specific object
@@ -287,7 +276,7 @@ class DataManagementClient extends common_1.ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
     async createSignedUrl(bucketId, objectId, access = 'readwrite') {
-        return this.post(`/buckets/${bucketId}/objects/${objectId}/signed?access=${access}`, { json: {} }, {}, WriteTokenScopes);
+        return this.post(`buckets/${bucketId}/objects/${objectId}/signed?access=${access}`, {}, {}, WriteTokenScopes);
     }
     /**
      * Deletes object
@@ -298,7 +287,7 @@ class DataManagementClient extends common_1.ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async deleteObject(bucketKey, objectName) {
-        return this.delete(`/buckets/${bucketKey}/objects/${objectName}`, {}, WriteTokenScopes);
+        return this.delete(`buckets/${bucketKey}/objects/${objectName}`, {}, WriteTokenScopes);
     }
 }
 exports.DataManagementClient = DataManagementClient;
@@ -318,7 +307,7 @@ exports.DataManagementClient = DataManagementClient;
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.2</a> on Wed Jun 26 2019 22:58:26 GMT+0200 (Central European Summer Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Wed Jul 31 2019 15:08:08 GMT+0200 (Central European Summer Time)
 </footer>
 
 <script> prettyPrint(); </script>

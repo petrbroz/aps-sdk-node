@@ -430,6 +430,201 @@ mapped to arrays of formats these outputs can be obtained from.
     
 
     
+    <h4 class="name" id="getDerivative"><span class="type-signature">(async) </span>getDerivative<span class="signature">(modelUrn, derivativeUrn)</span><span class="type-signature"> &rarr; {Promise.&lt;ArrayBuffer>}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Downloads content of a specific model derivative
+(<a href="https://forge.autodesk.com/en/docs/model-derivative/v2/reference/http/urn-manifest-derivativeurn-GET/">docs</a>).</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>modelUrn</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Model URN.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>derivativeUrn</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Derivative URN.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="model-derivative.js.html">model-derivative.js</a>, <a href="model-derivative.js.html#line91">line 91</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Throws:</h5>
+
+        
+
+    <div class="param-desc">
+    
+        <p>Error when the request fails, for example, due to insufficient rights, or incorrect scopes.</p>
+    
+    </div>
+
+
+    
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>Derivative content.</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise.&lt;ArrayBuffer></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
     <h4 class="name" id="getManifest"><span class="type-signature">(async) </span>getManifest<span class="signature">(urn)</span><span class="type-signature"> &rarr; {Promise.&lt;IDerivativeManifest>}</span></h4>
     
 
@@ -532,7 +727,7 @@ mapped to arrays of formats these outputs can be obtained from.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="model-derivative.js.html">model-derivative.js</a>, <a href="model-derivative.js.html#line66">line 66</a>
+        <a href="model-derivative.js.html">model-derivative.js</a>, <a href="model-derivative.js.html#line79">line 79</a>
     </li></ul></dd>
     
 
@@ -704,7 +899,7 @@ mapped to arrays of formats these outputs can be obtained from.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="model-derivative.js.html">model-derivative.js</a>, <a href="model-derivative.js.html#line77">line 77</a>
+        <a href="model-derivative.js.html">model-derivative.js</a>, <a href="model-derivative.js.html#line102">line 102</a>
     </li></ul></dd>
     
 
@@ -774,7 +969,7 @@ mapped to arrays of formats these outputs can be obtained from.
     
 
     
-    <h4 class="name" id="getViewableProperties"><span class="type-signature">(async) </span>getViewableProperties<span class="signature">(urn, guid)</span><span class="type-signature"> &rarr; {Promise.&lt;IDerivativeProps>}</span></h4>
+    <h4 class="name" id="getViewableProperties"><span class="type-signature">(async) </span>getViewableProperties<span class="signature">(urn, guid, force<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise.&lt;IDerivativeProps>}</span></h4>
     
 
     
@@ -807,6 +1002,8 @@ mapped to arrays of formats these outputs can be obtained from.
         <th>Type</th>
 
         
+        <th>Attributes</th>
+        
 
         
 
@@ -832,6 +1029,14 @@ mapped to arrays of formats these outputs can be obtained from.
             </td>
 
             
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
 
             
 
@@ -855,10 +1060,51 @@ mapped to arrays of formats these outputs can be obtained from.
             </td>
 
             
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
 
             
 
             <td class="description last"><p>Viewable GUID.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>force</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>Force query even when exceeding the size limit (20MB).</p></td>
         </tr>
 
     
@@ -899,7 +1145,7 @@ mapped to arrays of formats these outputs can be obtained from.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="model-derivative.js.html">model-derivative.js</a>, <a href="model-derivative.js.html#line101">line 101</a>
+        <a href="model-derivative.js.html">model-derivative.js</a>, <a href="model-derivative.js.html#line128">line 128</a>
     </li></ul></dd>
     
 
@@ -969,7 +1215,7 @@ mapped to arrays of formats these outputs can be obtained from.
     
 
     
-    <h4 class="name" id="getViewableTree"><span class="type-signature">(async) </span>getViewableTree<span class="signature">(urn, guid)</span><span class="type-signature"> &rarr; {Promise.&lt;IDerivativeTree>}</span></h4>
+    <h4 class="name" id="getViewableTree"><span class="type-signature">(async) </span>getViewableTree<span class="signature">(urn, guid, force<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise.&lt;IDerivativeTree>}</span></h4>
     
 
     
@@ -1002,6 +1248,8 @@ mapped to arrays of formats these outputs can be obtained from.
         <th>Type</th>
 
         
+        <th>Attributes</th>
+        
 
         
 
@@ -1027,6 +1275,14 @@ mapped to arrays of formats these outputs can be obtained from.
             </td>
 
             
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
 
             
 
@@ -1050,10 +1306,51 @@ mapped to arrays of formats these outputs can be obtained from.
             </td>
 
             
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
 
             
 
             <td class="description last"><p>Viewable GUID.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>force</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>Force query even when exceeding the size limit (20MB).</p></td>
         </tr>
 
     
@@ -1094,7 +1391,7 @@ mapped to arrays of formats these outputs can be obtained from.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="model-derivative.js.html">model-derivative.js</a>, <a href="model-derivative.js.html#line89">line 89</a>
+        <a href="model-derivative.js.html">model-derivative.js</a>, <a href="model-derivative.js.html#line115">line 115</a>
     </li></ul></dd>
     
 
@@ -1164,7 +1461,7 @@ mapped to arrays of formats these outputs can be obtained from.
     
 
     
-    <h4 class="name" id="submitJob"><span class="type-signature">(async) </span>submitJob<span class="signature">(urn, outputs)</span><span class="type-signature"> &rarr; {Promise.&lt;IJob>}</span></h4>
+    <h4 class="name" id="submitJob"><span class="type-signature">(async) </span>submitJob<span class="signature">(urn, outputs, pathInArchive<span class="signature-attributes">opt</span>, force<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise.&lt;IJob>}</span></h4>
     
 
     
@@ -1197,6 +1494,8 @@ mapped to arrays of formats these outputs can be obtained from.
         <th>Type</th>
 
         
+        <th>Attributes</th>
+        
 
         
 
@@ -1222,6 +1521,14 @@ mapped to arrays of formats these outputs can be obtained from.
             </td>
 
             
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
 
             
 
@@ -1245,11 +1552,85 @@ mapped to arrays of formats these outputs can be obtained from.
             </td>
 
             
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
 
             
 
             <td class="description last"><p>List of requested output formats. Currently the one
 supported format is <code>{ type: 'svf', views: ['2d', '3d'] }</code>.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>pathInArchive</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>Optional relative path to root design if the translated file is an archive.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>force</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>Force translation even if a derivative already exists.</p></td>
         </tr>
 
     
@@ -1290,7 +1671,7 @@ supported format is <code>{ type: 'svf', views: ['2d', '3d'] }</code>.</p></td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="model-derivative.js.html">model-derivative.js</a>, <a href="model-derivative.js.html#line47">line 47</a>
+        <a href="model-derivative.js.html">model-derivative.js</a>, <a href="model-derivative.js.html#line49">line 49</a>
     </li></ul></dd>
     
 
@@ -1377,7 +1758,7 @@ supported format is <code>{ type: 'svf', views: ['2d', '3d'] }</code>.</p></td>
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.2</a> on Wed Jun 26 2019 22:58:26 GMT+0200 (Central European Summer Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Wed Jul 31 2019 15:08:08 GMT+0200 (Central European Summer Time)
 </footer>
 
 <script> prettyPrint(); </script>

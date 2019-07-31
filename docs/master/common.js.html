@@ -27,19 +27,11 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>"use strict";
-var __importStar = (this &amp;&amp; this.__importStar) || function (mod) {
-    if (mod &amp;&amp; mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
 var __importDefault = (this &amp;&amp; this.__importDefault) || function (mod) {
     return (mod &amp;&amp; mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const querystring = __importStar(require("querystring"));
-const node_fetch_1 = __importDefault(require("node-fetch"));
+const axios_1 = __importDefault(require("axios"));
 const authentication_1 = require("./authentication");
 const RetryDelay = 5000; // Delay (in milliseconds) before retrying after a "202 Accepted" response
 function sleep(ms) { return new Promise(function (resolve) { setTimeout(resolve, ms); }); }
@@ -52,11 +44,11 @@ var Region;
 class ForgeClient {
     /**
      * Initializes new client with specific authentication method.
-     * @param {string} root Root path for all endpoints.
+     * @param {string} root Root path for all endpoints (must not contain any slashes at the beginning nor end).
      * @param {IAuthOptions} auth Authentication object,
      * containing either `client_id` and `client_secret` properties (for 2-legged authentication),
      * or a single `token` property (for 2-legged or 3-legged authentication with pre-generated access token).
-     * @param {string} [host="https://developer.api.autodesk.com"] Forge API host.
+     * @param {string} [host="https://developer.api.autodesk.com"] Forge API host (must not contain slash at the end).
      * @param {Region} [region="US"] Forge availability region ("US" or "EMEA").
      */
     constructor(root, auth, host, region) {
@@ -72,6 +64,35 @@ class ForgeClient {
         this.root = root;
         this.host = host || exports.DefaultHost;
         this.region = region || Region.US;
+        this._axios = axios_1.default.create({ baseURL: this.host + '/' + this.root + '/' });
+    }
+    /**
+     * Resets client to specific authentication method, Forge host, and availability region.
+     * @param {IAuthOptions} [auth] Authentication object,
+     * containing either `client_id` and `client_secret` properties (for 2-legged authentication),
+     * or a single `token` property (for 2-legged or 3-legged authentication with pre-generated access token).
+     * @param {string} [host="https://developer.api.autodesk.com"] Forge API host.
+     * @param {Region} [region="US"] Forge availability region ("US" or "EMEA").
+     */
+    reset(auth, host, region) {
+        if (typeof auth !== 'undefined') {
+            if ('client_id' in auth &amp;&amp; 'client_secret' in auth) {
+                this.auth = new authentication_1.AuthenticationClient(auth.client_id, auth.client_secret, host);
+            }
+            else if ('token' in auth) {
+                this.token = auth.token;
+            }
+            else {
+                throw new Error('Authentication parameters missing or incorrect.');
+            }
+        }
+        if (typeof host !== 'undefined') {
+            this.host = host || exports.DefaultHost;
+        }
+        if (typeof region !== 'undefined') {
+            this.region = region || Region.US;
+        }
+        this._axios = axios_1.default.create({ baseURL: this.host + '/' + this.root + '/' });
     }
     async setAuthorization(options, scopes) {
         options.headers = options.headers || {};
@@ -83,114 +104,56 @@ class ForgeClient {
             options.headers['Authorization'] = 'Bearer ' + this.token;
         }
     }
-    setPayload(options, payload) {
-        if (payload.urlencoded) {
-            options.body = querystring.stringify(payload.urlencoded);
-            options.headers['Content-Type'] = 'application/x-www-form-urlencoded';
-        }
-        else if (payload.json) {
-            options.body = JSON.stringify(payload.json);
-            options.headers['Content-Type'] = 'application/json';
-        }
-        else if (payload.buffer) {
-            options.body = payload.buffer;
-            options.headers['Content-Type'] = options.headers['Content-Type'] || 'application/octet-stream';
-        }
-        else {
-            throw new Error(`Content type not supported`);
-        }
-        options.headers['Content-Length'] = Buffer.byteLength(options.body).toString();
+    // Makes a general request and returns the entire response (not just its parsed body)
+    async fetch(config) {
+        return this._axios.request(config);
     }
-    async parseResponse(response) {
-        const contentTypeHeader = response.headers.get('Content-Type') || '';
-        const contentType = contentTypeHeader.split(';')[0];
-        if (response.ok) {
-            switch (contentType) {
-                case 'application/json':
-                    const json = await response.json();
-                    return json;
-                case 'application/xml':
-                case 'text/plain':
-                    const text = await response.text();
-                    return text;
-                default:
-                    const buff = await response.arrayBuffer();
-                    return buff;
-            }
-        }
-        else {
-            switch (contentType) {
-                case 'application/json':
-                    const data = await response.json();
-                    throw new ForgeError(response.url, response.status, response.statusText, data);
-                default:
-                    const text = await response.text();
-                    throw new ForgeError(response.url, response.status, response.statusText, text);
-            }
-        }
-    }
-    async fetch(endpoint, options) {
-        return node_fetch_1.default(this.host + this.root + endpoint, options);
-    }
-    // Helper method for GET requests
+    // Helper method for GET requests,
+    // returning parsed response body of throwing an excetion in case of an issue
     async get(endpoint, headers = {}, scopes, repeatOn202 = false) {
-        const options = { method: 'GET', headers };
-        await this.setAuthorization(options, scopes);
-        let resp = await this.fetch(endpoint, options);
+        const config = { headers };
+        await this.setAuthorization(config, scopes);
+        let resp = await this._axios.get(endpoint, config);
         while (resp.status === 202 &amp;&amp; repeatOn202) {
             sleep(RetryDelay);
-            resp = await this.fetch(endpoint, options);
+            resp = await this._axios.get(endpoint, config);
         }
-        return this.parseResponse(resp);
+        return resp.data;
     }
-    // Helper method for POST requests
+    // Helper method for POST requests,
+    // returning parsed response body of throwing an excetion in case of an issue
     async post(endpoint, data, headers = {}, scopes) {
-        const options = { method: 'POST', headers };
-        this.setPayload(options, data);
-        await this.setAuthorization(options, scopes);
-        const resp = await this.fetch(endpoint, options);
-        return this.parseResponse(resp);
+        const config = { headers };
+        await this.setAuthorization(config, scopes);
+        const resp = await this._axios.post(endpoint, data, config);
+        return resp.data;
     }
-    // Helper method for PUT requests
+    // Helper method for PUT requests,
+    // returning parsed response body of throwing an excetion in case of an issue
     async put(endpoint, data, headers = {}, scopes) {
-        const options = { method: 'PUT', headers };
-        this.setPayload(options, data);
-        await this.setAuthorization(options, scopes);
-        const resp = await this.fetch(endpoint, options);
-        return this.parseResponse(resp);
+        const config = { headers };
+        await this.setAuthorization(config, scopes);
+        const resp = await this._axios.put(endpoint, data, config);
+        return resp.data;
     }
-    // Helper method for PATCH requests
+    // Helper method for PATCH requests,
+    // returning parsed response body of throwing an excetion in case of an issue
     async patch(endpoint, data, headers = {}, scopes) {
-        const options = { method: 'PATCH', headers };
-        this.setPayload(options, data);
-        await this.setAuthorization(options, scopes);
-        const resp = await this.fetch(endpoint, options);
-        return this.parseResponse(resp);
+        const config = { headers };
+        await this.setAuthorization(config, scopes);
+        const resp = await this._axios.patch(endpoint, data, config);
+        return resp.data;
     }
-    // Helper method for DELETE requests
+    // Helper method for DELETE requests,
+    // returning parsed response body of throwing an excetion in case of an issue
     async delete(endpoint, headers = {}, scopes) {
-        const options = { method: 'DELETE', headers };
-        await this.setAuthorization(options, scopes);
-        const resp = await this.fetch(endpoint, options);
-        return this.parseResponse(resp);
+        const config = { headers };
+        await this.setAuthorization(config, scopes);
+        const resp = await this._axios.delete(endpoint, config);
+        return resp.data;
     }
 }
 exports.ForgeClient = ForgeClient;
-class ForgeError extends Error {
-    constructor(url, status, statusText, data) {
-        super();
-        this.url = url;
-        this.status = status;
-        this.statusText = statusText;
-        this.data = data;
-        if (data) {
-            this.message = url + ': ' + (typeof data === 'string') ? data : JSON.stringify(data);
-        }
-        else {
-            this.message = url + ': ' + statusText;
-        }
-    }
-}
 </code></pre>
         </article>
     </section>
@@ -207,7 +170,7 @@ class ForgeError extends Error {
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.2</a> on Wed Jun 26 2019 22:58:26 GMT+0200 (Central European Summer Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Wed Jul 31 2019 15:08:08 GMT+0200 (Central European Summer Time)
 </footer>
 
 <script> prettyPrint(); </script>
