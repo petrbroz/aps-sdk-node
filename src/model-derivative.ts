@@ -4,6 +4,18 @@ const RootPath = 'modelderivative/v2';
 const ReadTokenScopes = ['data:read'];
 const WriteTokenScopes = ['data:read', 'data:write', 'data:create'];
 
+/**
+ * Converts ID of an object to base64-encoded URN expected by {@link ModelDerivativeClient}.
+ * @param {string} id Object ID.
+ * @returns {string} base64-encoded object URN.
+ * @example
+ * urnify('urn:adsk.objects:os.object:my-bucket/my-file.dwg');
+ * // Returns 'dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6bXktYnVja2V0L215LWZpbGUuZHdn'
+ */
+export function urnify(id: string): string {
+    return Buffer.from(id).toString('base64').replace(/=/g, '');
+}
+
 export interface IDerivativeFormats {
     [outputFormat: string]: string[];
 }
