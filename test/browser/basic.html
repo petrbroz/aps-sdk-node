@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>forge-server-utils: basic test</title>
+</head>
+<body>
+    <div>
+        <label for="access-token">Access Token</label>
+        <input id="access-token" type="text" name="access-token">
+    </div>
+    <div>
+        <button id="list-buckets">List Buckets</button>
+        <select name="buckets" id="buckets"></select>
+        <i id="buckets-status"></i>
+    </div>
+    <div>
+        <button id="list-objects">List Objects</button>
+        <select name="objects" id="objects"></select>
+        <i id="objects-status"></i>
+    </div>
+    <script src="../../dist/browser/forge-server-utils.js"></script>
+    <script>
+        document.getElementById('list-buckets').addEventListener('click', async function() {
+            const token = document.getElementById('access-token').value;
+            const data = new forge.DataManagementClient({ token });
+            const select = document.getElementById('buckets');
+            while (select.lastChild) {
+                select.removeChild(select.lastChild);
+            }
+            document.getElementById('buckets-status').innerText = 'Loading...';
+            try {
+                const buckets = await data.listBuckets();
+                for (const bucket of buckets) {
+                    const option = document.createElement('option');
+                    option.setAttribute('value', bucket.bucketKey);
+                    option.innerText = bucket.bucketKey;
+                    select.appendChild(option);
+                }
+                document.getElementById('buckets-status').innerText = '';
+            } catch(err) {
+                document.getElementById('buckets-status').innerText = err;
+            }
+        });
+
+        document.getElementById('list-objects').addEventListener('click', async function() {
+            const token = document.getElementById('access-token').value;
+            const bucket = document.getElementById('buckets').value;
+            const data = new forge.DataManagementClient({ token });
+            const select = document.getElementById('objects');
+            while (select.lastChild) {
+                select.removeChild(select.lastChild);
+            }
+            document.getElementById('objects-status').innerText = 'Loading...';
+            try {
+                const objects = await data.listObjects(bucket);
+                for (const obj of objects) {
+                    const option = document.createElement('option');
+                    option.setAttribute('value', obj.objectId);
+                    option.innerText = obj.objectKey;
+                    select.appendChild(option);
+                }
+                document.getElementById('objects-status').innerText = '';
+            } catch(err) {
+                document.getElementById('objects-status').innerText = err;
+            }
+        });
+    </script>
+</body>
+</html>
