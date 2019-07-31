@@ -1,5 +1,5 @@
 import * as querystring from 'querystring';
-import axios, { AxiosRequestConfig } from 'axios';
+import axios from 'axios';
 
 const RootPath = `authentication/v1`;
 

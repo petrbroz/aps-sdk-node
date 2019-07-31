@@ -1,7 +1,7 @@
 # Basic usage of Data Management APIs
 
 ```js
-const { DataManagementClient } = require('forge-nodejs-utils');
+const { DataManagementClient } = require('forge-server-utils');
 const { FORGE_CLIENT_ID, FORGE_CLIENT_SECRET } = process.env;
 const data = new DataManagementClient({ client_id: FORGE_CLIENT_ID, client_secret: FORGE_CLIENT_SECRET });
 

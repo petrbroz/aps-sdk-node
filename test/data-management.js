@@ -135,7 +135,7 @@ describe('DataManagementClient', function() {
         it('should upload multiple chunks in one session', async function() {
             this.timeout(30000);
 
-            const ObjectName = 'forge-nodejs-utils-test-file-' + new Date().toISOString();
+            const ObjectName = 'forge-serve-utils-test-file-' + new Date().toISOString();
             const SessionID = 'test-session';
             const arr = new Uint8Array(5 << 20);
             for (let i = 0; i < arr.length; i++) {

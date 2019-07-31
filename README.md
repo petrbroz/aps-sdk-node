@@ -1,9 +1,9 @@
-# forge-nodejs-utils
+# forge-server-utils
 
-[![build status](https://travis-ci.org/petrbroz/forge-nodejs-utils.svg?branch=master)](https://travis-ci.org/petrbroz/forge-nodejs-utils)
-[![npm version](https://badge.fury.io/js/forge-nodejs-utils.svg)](https://badge.fury.io/js/forge-nodejs-utils)
-![node](https://img.shields.io/node/v/forge-nodejs-utils.svg)
-![npm downloads](https://img.shields.io/npm/dw/forge-nodejs-utils.svg)
+[![build status](https://travis-ci.org/petrbroz/forge-server-utils.svg?branch=master)](https://travis-ci.org/petrbroz/forge-server-utils)
+[![npm version](https://badge.fury.io/js/forge-server-utils.svg)](https://badge.fury.io/js/forge-server-utils)
+![node](https://img.shields.io/node/v/forge-server-utils.svg)
+![npm downloads](https://img.shields.io/npm/dw/forge-server-utils.svg)
 ![platforms](https://img.shields.io/badge/platform-windows%20%7C%20osx%20%7C%20linux-lightgray.svg)
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](http://opensource.org/licenses/MIT)
 
@@ -14,12 +14,14 @@ or [generators](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Referenc
 
 ## Usage
 
+### Server Side
+
 The TypeScript implementation is transpiled into JavaScript with type definition files,
 so you can use it both in Node.js projects (as a CommonJS module), and in TypeScript projects (as an ES6 module):
 
 ```js
 // JavaScript
-const { DataManagementClient } = require('forge-nodejs-utils');
+const { DataManagementClient } = require('forge-server-utils');
 ```
 
 ```ts
@@ -30,16 +32,16 @@ import {
 	IObject,
 	IResumableUploadRange,
 	DataRetentionPolicy
-} from 'forge-nodejs-utils';
+} from 'forge-server-utils';
 ```
 
-### Authentication
+#### Authentication
 
 If you need to generate [2-legged tokens](https://forge.autodesk.com/en/docs/oauth/v2/tutorials/get-2-legged-token)
 manually, you can use the `AuthenticationClient` class:
 
 ```js
-const { AuthenticationClient } = require('forge-nodejs-utils');
+const { AuthenticationClient } = require('forge-server-utils');
 const { FORGE_CLIENT_ID, FORGE_CLIENT_SECRET } = process.env;
 const auth = new AuthenticationClient(FORGE_CLIENT_ID, FORGE_CLIENT_SECRET);
 const authentication = await auth.authenticate(['bucket:read', 'data:read']);
@@ -51,15 +53,15 @@ containing either `client_id` and `client_secret` properties (for 2-legged authe
 or a single `token` property (for authentication using a pre-generated access token):
 
 ```js
-const { DataManagementClient, BIM360Client } = require('forge-nodejs-utils');
+const { DataManagementClient, BIM360Client } = require('forge-server-utils');
 const dm = new DataManagementClient({ client_id: '...', client_secret: '...' });
 const bim360 = new BIM360Client({ token: '...' });
 ```
 
-### Data Management
+#### Data Management
 
 ```js
-const { DataManagementClient } = require('forge-nodejs-utils');
+const { DataManagementClient } = require('forge-server-utils');
 const { FORGE_CLIENT_ID, FORGE_CLIENT_SECRET } = process.env;
 const data = new DataManagementClient({ client_id: FORGE_CLIENT_ID, client_secret: FORGE_CLIENT_SECRET });
 
@@ -70,25 +72,52 @@ const objects = await data.listObjects('foo-bucket');
 console.log('Objects', objects.map(object => object.objectId).join(','));
 ```
 
-### Model Derivatives
+#### Model Derivatives
 
 ```js
-const { ModelDerivativeClient } = require('forge-nodejs-utils');
+const { ModelDerivativeClient } = require('forge-server-utils');
 const { FORGE_CLIENT_ID, FORGE_CLIENT_SECRET } = process.env;
 const derivatives = new ModelDerivativeClient({ client_id: FORGE_CLIENT_ID, client_secret: FORGE_CLIENT_SECRET });
 const job = await derivatives.submitJob('<your-document-urn>', [{ type: 'svf', views: ['2d', '3d'] }]);
 console.log('Job', job);
 ```
 
-### Design Automation
+#### Design Automation
 
 ```js
-const { DesignAutomationClient } = require('forge-nodejs-utils');
+const { DesignAutomationClient } = require('forge-server-utils');
 const { FORGE_CLIENT_ID, FORGE_CLIENT_SECRET } = process.env;
 const client = new DesignAutomationClient({ client_id: FORGE_CLIENT_ID, client_secret: FORGE_CLIENT_SECRET });
 const bundles = await client.listAppBundles();
 console.log('App bundles', bundles);
 ```
+
+### Client Side
+
+The transpiled output from TypeScript is also bundled using [webpack](https://webpack.js.org),
+so you can use the same functionality in a browser.
+
+> There is a caveat: at the moment it is unfortunately not possible to request Forge access tokens
+from the browser due to [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) limitations,
+so when creating instances of the different clients, instead of providing client ID and secret
+you will have to provide the token directly.
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/forge-server-utils/dist/browser/forge-server-utils.js"></script>
+<script>
+	const data = new forge.DataManagementClient({ token: '<your access token>' });
+	const deriv = new ModelDerivativeClient({ token: '<your access token>' });
+	data.listBuckets()
+		.then(buckets => { console.log('Buckets', buckets); })
+		.catch(err => { console.error('Could not list buckets', err); });
+	deriv.submitJob('<your document urn>', [{ type: 'svf', views: ['2d', '3d'] }])
+		.then(job => { console.log('Translation job', job); })
+		.catch(err => { console.error('Could not start translation', err); });
+</script>
+```
+
+Note that you can also request a specific version of the library from CDN by appending `@<version>`
+to the npm package name, for example, `https://cdn.jsdelivr.net/npm/forge-server-utils@4.0.0/dist/browser/forge-server-utils.js`.
 
 ## Testing
 
@@ -97,6 +126,6 @@ export FORGE_CLIENT_ID=<your-client-id>
 export FORGE_CLIENT_SECRET=<your-client-secret>
 export FORGE_BUCKET=<your-test-bucket>
 export FORGE_MODEL_URN=<testing-model-urn>
-npm run build # First transpile TypeScript code is into JavaScript
-npm test
+yarn run build # Transpile TypeScript into JavaScript
+yarn test
 ```

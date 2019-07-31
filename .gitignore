@@ -1,7 +1,7 @@
 dist/
 node_modules/
 .vscode/
-docs/forge-nodejs-utils/
+docs/forge-server-utils/
 *.log
 .DS_Store
 Thumbs.db
