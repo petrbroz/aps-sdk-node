@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.1.2] - 2019-07-31
+
+### Added
+- Simple example of using the browser bundle
+- Utility function for converting IDs to URNs
+- Generating code docs using [typedoc](https://github.com/TypeStrong/typedoc)
+
 ## [4.1.0] - 2019-07-31
 
 ### Added
