@@ -92,13 +92,12 @@ const bundles = await client.listAppBundles();
 console.log('App bundles', bundles);
 ```
 
-### Client Side
+### Client Side (experimental feature)
 
 The transpiled output from TypeScript is also bundled using [webpack](https://webpack.js.org),
-so you can use the same functionality in a browser.
-
-> There is a caveat: at the moment it is unfortunately not possible to request Forge access tokens
-from the browser due to [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) limitations,
+so you can use the same functionality in a browser. There is a caveat, however: at the moment
+it is unfortunately not possible to request Forge access tokens from the browser
+due to [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) limitations,
 so when creating instances of the different clients, instead of providing client ID and secret
 you will have to provide the token directly.
 
@@ -106,7 +105,7 @@ you will have to provide the token directly.
 <script src="https://cdn.jsdelivr.net/npm/forge-server-utils/dist/browser/forge-server-utils.js"></script>
 <script>
 	const data = new forge.DataManagementClient({ token: '<your access token>' });
-	const deriv = new ModelDerivativeClient({ token: '<your access token>' });
+	const deriv = new forge.ModelDerivativeClient({ token: '<your access token>' });
 	data.listBuckets()
 		.then(buckets => { console.log('Buckets', buckets); })
 		.catch(err => { console.error('Could not list buckets', err); });
