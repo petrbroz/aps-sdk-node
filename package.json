@@ -4,7 +4,8 @@
   "description": "Tools for accessing Autodesk Forge APIs from Node.js apps and from browser.",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc",
+    "build": "npm run build:node && npm run build:web",
+    "build:node": "tsc",
     "build:web": "webpack",
     "test": "mocha",
     "docs": "jsdoc -c .jsdoc.json -R README.md"
