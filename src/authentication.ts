@@ -17,6 +17,22 @@ export interface IThreeLeggedToken extends ITwoLeggedToken {
     refresh_token: string;
 }
 
+export interface IUserProfile {
+    userId: string;
+    userName: string;
+    emailId: string;
+    firstName: string;
+    lastName: string;
+    emailVerified: boolean;
+    '2FaEnabled': boolean;
+    countryCode: string;
+    language: string;
+    optin: boolean;
+    lastModified: string;
+    websiteUrl: string;
+    profileImages: { [key: string]: string };
+}
+
 /**
  * Client providing access to Autodesk Forge {@link https://forge.autodesk.com/en/docs/oauth/v2|authentication APIs}.
  * @tutorial authentication
@@ -120,5 +136,21 @@ export class AuthenticationClient {
         };
         const resp = await this.post(`gettoken`, params);
         return resp.data;
+    }
+
+    /**
+     * Gets profile information for a user based on their 3-legged auth token
+     * ({@link https://forge.autodesk.com/en/docs/oauth/v2/reference/http/users-@me-GET|docs}).
+     * @async
+     * @param {string} token 3-legged authentication token.
+     * @returns {Promise<IUserProfile>} User profile information.
+     */
+    async getUserProfile(token: string): Promise<IUserProfile> {
+        const config = {
+            headers: {
+                'Authorization': 'Bearer ' + token
+            }
+        };
+        return axios.get<any, IUserProfile>(this.host + '/userprofile/v1/users/@me', config);
     }
 }
