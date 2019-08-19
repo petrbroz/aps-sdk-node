@@ -146,7 +146,7 @@ export class DataManagementClient extends ForgeClient {
      */
     async createBucket(bucket: string, dataRetention: DataRetentionPolicy): Promise<IBucketDetail> {
         const params = { bucketKey: bucket, policyKey: dataRetention };
-        return this.post('buckets', { json: params }, { 'x-ads-region': this.region }, WriteTokenScopes);
+        return this.post('buckets', params, { 'x-ads-region': this.region }, WriteTokenScopes);
     }
 
     // Object APIs
