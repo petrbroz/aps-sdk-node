@@ -161,7 +161,7 @@ export class ModelDerivativeClient extends ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async getDerivative(modelUrn: string, derivativeUrn: string): Promise<ArrayBuffer> {
-        return this.get(this.region === Region.EMEA ? `regions/eu/designdata/${modelUrn}/manifest/${derivativeUrn}` : `designdata/${modelUrn}/manifest/${derivativeUrn}`, {}, ReadTokenScopes);
+        return this.getBuffer(this.region === Region.EMEA ? `regions/eu/designdata/${modelUrn}/manifest/${derivativeUrn}` : `designdata/${modelUrn}/manifest/${derivativeUrn}`, {}, ReadTokenScopes);
     }
 
     /**
