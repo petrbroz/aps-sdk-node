@@ -132,6 +132,19 @@ export class BIM360Client extends ForgeClient {
     }
 
     /**
+     * Gets specific version of a folder item.
+     * @param {string} project Project ID.
+     * @param {string} item Item ID.
+     * @param {string} id Version ID.
+     * @async
+     * @returns {Promise<IVersion>} Specific version of folder item.
+     */
+    async version(project: string, item: string, id: string): Promise<IVersion> {
+        const response = await this.get(`data/v1/projects/${project}/items/${item}/versions/${id}`, {}, ReadTokenScopes);
+        return response.data;
+    }
+
+    /**
      * Gets "tip" version of a folder item.
      * @param {string} project Project ID.
      * @param {string} item Item ID.
