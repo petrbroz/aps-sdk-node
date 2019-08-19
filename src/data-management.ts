@@ -273,7 +273,7 @@ export class DataManagementClient extends ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async downloadObject(bucket: string, object: string): Promise<ArrayBuffer>  {
-        return this.get(`buckets/${bucket}/objects/${object}`, {}, ReadTokenScopes);
+        return this.getBuffer(`buckets/${bucket}/objects/${object}`, {}, ReadTokenScopes);
     }
 
     /**

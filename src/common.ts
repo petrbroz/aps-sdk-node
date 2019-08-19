@@ -90,9 +90,35 @@ export abstract class ForgeClient {
     }
 
     // Helper method for GET requests,
-    // returning parsed response body of throwing an excetion in case of an issue
+    // returning parsed response body or throwing an excetion in case of an issue
     protected async get(endpoint: string, headers: { [name: string]: string } = {}, scopes: string[], repeatOn202: boolean = false): Promise<any> {
         const config: AxiosRequestConfig = { headers };
+        await this.setAuthorization(config, scopes);
+        let resp = await this._axios.get(endpoint, config);
+        while (resp.status === 202 && repeatOn202) {
+            sleep(RetryDelay);
+            resp = await this._axios.get(endpoint, config);
+        }
+        return resp.data;
+    }
+
+    // Helper method for GET requests returning binary data,
+    // throwing an excetion in case of an issue
+    protected async getBuffer(endpoint: string, headers: { [name: string]: string } = {}, scopes: string[], repeatOn202: boolean = false): Promise<any> {
+        const config: AxiosRequestConfig = { headers, responseType: 'arraybuffer' };
+        await this.setAuthorization(config, scopes);
+        let resp = await this._axios.get(endpoint, config);
+        while (resp.status === 202 && repeatOn202) {
+            sleep(RetryDelay);
+            resp = await this._axios.get(endpoint, config);
+        }
+        return resp.data;
+    }
+
+    // Helper method for GET requests returning stream data,
+    // throwing an excetion in case of an issue
+    protected async getStream(endpoint: string, headers: { [name: string]: string } = {}, scopes: string[], repeatOn202: boolean = false): Promise<any> {
+        const config: AxiosRequestConfig = { headers, responseType: 'stream' };
         await this.setAuthorization(config, scopes);
         let resp = await this._axios.get(endpoint, config);
         while (resp.status === 202 && repeatOn202) {

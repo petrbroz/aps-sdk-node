@@ -55,6 +55,12 @@ export interface IDerivativeProps {
     // TODO
 }
 
+export enum ThumbnailSize {
+    Small = 100,
+    Medium = 200,
+    Large = 400
+}
+
 /**
  * Client providing access to Autodesk Forge
  * {@link https://forge.autodesk.com/en/docs/model-derivative/v2|model derivative APIs}.
@@ -74,7 +80,7 @@ export class ModelDerivativeClient extends ForgeClient {
     }
 
     /**
-     * Gets a list of supported translation formats.
+     * Gets a list of supported translation formats
      * ({@link https://forge.autodesk.com/en/docs/model-derivative/v2/reference/http/formats-GET|docs}).
      * @async
      * @yields {Promise<IDerivativeFormats>} Dictionary of all supported output formats
@@ -123,7 +129,7 @@ export class ModelDerivativeClient extends ForgeClient {
     }
 
     /**
-     * Retrieves manifest of a derivative.
+     * Retrieves manifest of a derivative
      * ({@link https://forge.autodesk.com/en/docs/model-derivative/v2/reference/http/urn-manifest-GET|docs}).
      * @async
      * @param {string} urn Document derivative URN.
@@ -132,6 +138,17 @@ export class ModelDerivativeClient extends ForgeClient {
      */
     async getManifest(urn: string): Promise<IDerivativeManifest> {
         return this.get(this.region === Region.EMEA ? `regions/eu/designdata/${urn}/manifest` : `designdata/${urn}/manifest`, {}, ReadTokenScopes, true);
+    }
+
+    /**
+     * Deletes manifest
+     * ({@link https://forge.autodesk.com/en/docs/model-derivative/v2/reference/http/urn-manifest-DELETE|docs}).
+     * @async
+     * @param {string} urn Document derivative URN.
+     * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
+     */
+    async deleteManifest(urn: string) {
+        return this.delete(this.region === Region.EMEA ? `regions/eu/designdata/${urn}/manifest` : `designdata/${urn}/manifest`, {}, WriteTokenScopes);
     }
 
     /**
@@ -144,11 +161,11 @@ export class ModelDerivativeClient extends ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async getDerivative(modelUrn: string, derivativeUrn: string): Promise<ArrayBuffer> {
-        return this.get(this.region === Region.EMEA ? `regions/eu/designdata/${modelUrn}/manifest/${derivativeUrn}` : `designdata/${modelUrn}/manifest/${derivativeUrn}`, {}, ReadTokenScopes);
+        return this.getBuffer(this.region === Region.EMEA ? `regions/eu/designdata/${modelUrn}/manifest/${derivativeUrn}` : `designdata/${modelUrn}/manifest/${derivativeUrn}`, {}, ReadTokenScopes);
     }
 
     /**
-     * Retrieves metadata of a derivative.
+     * Retrieves metadata of a derivative
      * ({@link https://forge.autodesk.com/en/docs/model-derivative/v2/reference/http/urn-metadata-GET|docs}).
      * @async
      * @param {string} urn Document derivative URN.
@@ -160,7 +177,7 @@ export class ModelDerivativeClient extends ForgeClient {
     }
 
     /**
-     * Retrieves object tree of a specific viewable.
+     * Retrieves object tree of a specific viewable
      * ({@link https://forge.autodesk.com/en/docs/model-derivative/v2/reference/http/urn-metadata-guid-GET|docs}).
      * @async
      * @param {string} urn Document derivative URN.
@@ -174,7 +191,7 @@ export class ModelDerivativeClient extends ForgeClient {
     }
 
     /**
-     * Retrieves properties of a specific viewable.
+     * Retrieves properties of a specific viewable
      * ({@link https://forge.autodesk.com/en/docs/model-derivative/v2/reference/http/urn-metadata-guid-properties-GET|docs}).
      * @async
      * @param {string} urn Document derivative URN.
@@ -185,5 +202,19 @@ export class ModelDerivativeClient extends ForgeClient {
      */
     async getViewableProperties(urn: string, guid: string, force?: boolean): Promise<IDerivativeProps> {
         return this.get(this.region === Region.EMEA ? `regions/eu/designdata/${urn}/metadata/${guid}/properties${force ? '?forceget=true' : ''}` : `designdata/${urn}/metadata/${guid}/properties${force ? '?forceget=true' : ''}`, {}, ReadTokenScopes, true);
+    }
+
+    /**
+     * Retrieves derivative thumbnail
+     * ({@link https://forge.autodesk.com/en/docs/model-derivative/v2/reference/http/urn-thumbnail-GET|docs}).
+     * @async
+     * @param {string} urn Document derivative URN.
+     * @param {ThumbnailSize} [size=ThumbnailSize.Medium] Thumbnail size (small: 100x100 px, medium: 200x200 px, or large: 400x400 px).
+     * @returns {Promise<ArrayBuffer>} Thumbnail data.
+     * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
+     */
+    async getThumbnail(urn: string, size: ThumbnailSize = ThumbnailSize.Medium): Promise<ArrayBuffer> {
+        const endpoint = this.region === Region.EMEA ? `regions/eu/designdata/${urn}/thumbnail` : `designdata/${urn}/thumbnail`;
+        return this.getBuffer(endpoint + '?width=' + size, {}, ReadTokenScopes);
     }
 }
