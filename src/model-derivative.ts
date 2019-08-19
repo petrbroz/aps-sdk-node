@@ -80,7 +80,7 @@ export class ModelDerivativeClient extends ForgeClient {
     }
 
     /**
-     * Gets a list of supported translation formats.
+     * Gets a list of supported translation formats
      * ({@link https://forge.autodesk.com/en/docs/model-derivative/v2/reference/http/formats-GET|docs}).
      * @async
      * @yields {Promise<IDerivativeFormats>} Dictionary of all supported output formats
@@ -129,7 +129,7 @@ export class ModelDerivativeClient extends ForgeClient {
     }
 
     /**
-     * Retrieves manifest of a derivative.
+     * Retrieves manifest of a derivative
      * ({@link https://forge.autodesk.com/en/docs/model-derivative/v2/reference/http/urn-manifest-GET|docs}).
      * @async
      * @param {string} urn Document derivative URN.
@@ -165,7 +165,7 @@ export class ModelDerivativeClient extends ForgeClient {
     }
 
     /**
-     * Retrieves metadata of a derivative.
+     * Retrieves metadata of a derivative
      * ({@link https://forge.autodesk.com/en/docs/model-derivative/v2/reference/http/urn-metadata-GET|docs}).
      * @async
      * @param {string} urn Document derivative URN.
@@ -177,7 +177,7 @@ export class ModelDerivativeClient extends ForgeClient {
     }
 
     /**
-     * Retrieves object tree of a specific viewable.
+     * Retrieves object tree of a specific viewable
      * ({@link https://forge.autodesk.com/en/docs/model-derivative/v2/reference/http/urn-metadata-guid-GET|docs}).
      * @async
      * @param {string} urn Document derivative URN.
@@ -191,7 +191,7 @@ export class ModelDerivativeClient extends ForgeClient {
     }
 
     /**
-     * Retrieves properties of a specific viewable.
+     * Retrieves properties of a specific viewable
      * ({@link https://forge.autodesk.com/en/docs/model-derivative/v2/reference/http/urn-metadata-guid-properties-GET|docs}).
      * @async
      * @param {string} urn Document derivative URN.
