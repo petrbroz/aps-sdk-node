@@ -55,6 +55,12 @@ export interface IDerivativeProps {
     // TODO
 }
 
+export enum ThumbnailSize {
+    Small = 100,
+    Medium = 200,
+    Large = 400
+}
+
 /**
  * Client providing access to Autodesk Forge
  * {@link https://forge.autodesk.com/en/docs/model-derivative/v2|model derivative APIs}.
@@ -135,6 +141,17 @@ export class ModelDerivativeClient extends ForgeClient {
     }
 
     /**
+     * Deletes manifest
+     * ({@link https://forge.autodesk.com/en/docs/model-derivative/v2/reference/http/urn-manifest-DELETE|docs}).
+     * @async
+     * @param {string} urn Document derivative URN.
+     * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
+     */
+    async deleteManifest(urn: string) {
+        return this.delete(this.region === Region.EMEA ? `regions/eu/designdata/${urn}/manifest` : `designdata/${urn}/manifest`, {}, WriteTokenScopes);
+    }
+
+    /**
      * Downloads content of a specific model derivative
      * ({@link https://forge.autodesk.com/en/docs/model-derivative/v2/reference/http/urn-manifest-derivativeurn-GET/|docs}).
      * @async
@@ -185,5 +202,19 @@ export class ModelDerivativeClient extends ForgeClient {
      */
     async getViewableProperties(urn: string, guid: string, force?: boolean): Promise<IDerivativeProps> {
         return this.get(this.region === Region.EMEA ? `regions/eu/designdata/${urn}/metadata/${guid}/properties${force ? '?forceget=true' : ''}` : `designdata/${urn}/metadata/${guid}/properties${force ? '?forceget=true' : ''}`, {}, ReadTokenScopes, true);
+    }
+
+    /**
+     * Retrieves derivative thumbnail
+     * ({@link https://forge.autodesk.com/en/docs/model-derivative/v2/reference/http/urn-thumbnail-GET|docs}).
+     * @async
+     * @param {string} urn Document derivative URN.
+     * @param {ThumbnailSize} [size=ThumbnailSize.Medium] Thumbnail size (small: 100x100 px, medium: 200x200 px, or large: 400x400 px).
+     * @returns {Promise<ArrayBuffer>} Thumbnail data.
+     * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
+     */
+    async getThumbnail(urn: string, size: ThumbnailSize = ThumbnailSize.Medium): Promise<ArrayBuffer> {
+        const endpoint = this.region === Region.EMEA ? `regions/eu/designdata/${urn}/thumbnail` : `designdata/${urn}/thumbnail`;
+        return this.getBuffer(endpoint + '?width=' + size, {}, ReadTokenScopes);
     }
 }
