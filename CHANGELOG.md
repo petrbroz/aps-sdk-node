@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.4.0] - 2019-08-30
+
+### Added
+- Helper method for uploading app bundle archives (`DesignAutomationClient.uploadAppBundleArchive`)
+
+### Fixed
+- Creating/updating app bundles now returns the right type (with upload params)
+
 ## [4.1.2] - 2019-07-31
 
 ### Added
