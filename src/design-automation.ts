@@ -1,3 +1,5 @@
+import * as fs from 'fs';
+import FormData from 'form-data';
 import { ForgeClient, IAuthOptions, Region } from './common';
 
 const RootPath = 'da/us-east/v3';
@@ -280,6 +282,44 @@ export class DesignAutomationClient extends ForgeClient {
         if (description) config.description = description;
         if (engine) config.engine = engine;
         return this.post(`appbundles/${name}/versions`, config, {}, CodeScopes);
+    }
+
+    /**
+     * Uploads zip file with contents of a specific app bundle.
+     * @async
+     * @param {IAppBundleUploadParams} appBundleUploadParams App bundle upload parameters
+     * (returned by {@link createAppBundle} and {@link updateAppBundle}).
+     * @param {fs.ReadStream} appBundleStream Stream to read the app bundle zip from.
+     * @returns {Promise<any>} Response from the file submission.
+     * @example
+     * const appBundle = await designAutomationClient.createAppBundle('MyAppBundle', 'Autodesk.Inventor+23', 'My App Bundle Description');
+     * const appBundleStream = fs.createReadStream('./MyAppBundle.zip');
+     * await designAutomationClient.uploadAppBundleArchive(appBundle, appBundleStream);
+     */
+    uploadAppBundleArchive(appBundleUploadParams: IAppBundleUploadParams, appBundleStream: fs.ReadStream): Promise<any> {
+        const uploadParameters = appBundleUploadParams.uploadParameters.formData;
+        const form = new FormData();
+        form.append('key', uploadParameters['key']);
+        form.append('policy', uploadParameters['policy']);
+        form.append('content-type', uploadParameters['content-type']);
+        form.append('success_action_status', uploadParameters['success_action_status']);
+        form.append('success_action_redirect', uploadParameters['success_action_redirect']);
+        form.append('x-amz-signature', uploadParameters['x-amz-signature']);
+        form.append('x-amz-credential', uploadParameters['x-amz-credential']);
+        form.append('x-amz-algorithm', uploadParameters['x-amz-algorithm']);
+        form.append('x-amz-date', uploadParameters['x-amz-date']);
+        form.append('x-amz-server-side-encryption', uploadParameters['x-amz-server-side-encryption']);
+        form.append('x-amz-security-token', uploadParameters['x-amz-security-token']);
+        form.append('file', appBundleStream);
+        return new Promise(function(resolve, reject) {
+            form.submit(appBundleUploadParams.uploadParameters.endpointURL, function(err, res) {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve();
+                }
+            });
+        });
     }
 
     /**
