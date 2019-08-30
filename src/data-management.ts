@@ -271,6 +271,9 @@ export class DataManagementClient extends ForgeClient {
      * @param {string} object Object name.
      * @returns {Promise<ArrayBuffer>} Object content.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
+     * @example
+     * const buff = await dataManagementClient.downloadObject(bucketKey, objectKey);
+     * fs.writeFileSync(filepath, Buffer.from(buff), { encoding: 'binary' });
      */
     async downloadObject(bucket: string, object: string): Promise<ArrayBuffer>  {
         return this.getBuffer(`buckets/${bucket}/objects/${object}`, {}, ReadTokenScopes);
