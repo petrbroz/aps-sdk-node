@@ -22,11 +22,14 @@ export interface IAppBundleDetail {
 }
 
 export interface IAppBundleUploadParams {
+    id: string;
+    engine: string;
+    description: string;
+    version: number;
     uploadParameters: {
-        formData: any;
+        formData: { [key: string]: string };
         endpointURL: string;
     };
-    // TODO
 }
 
 export interface IAlias {
@@ -253,10 +256,10 @@ export class DesignAutomationClient extends ForgeClient {
      * @param {string} name Unique name of the bundle.
      * @param {string} engine ID of one of the supported {@link engines}.
      * @param {string} description Bundle description.
-     * @returns {Promise<IAppBundleDetail>} Details of created app bundle.
+     * @returns {Promise<IAppBundleUploadParams>} Details of created app bundle.
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
-    async createAppBundle(name: string, engine: string, description: string): Promise<IAppBundleDetail> {
+    async createAppBundle(name: string, engine: string, description: string): Promise<IAppBundleUploadParams> {
         const config = { id: name, description: description, engine: engine };
         return this.post('appbundles', config, {}, CodeScopes);
     }
@@ -268,10 +271,10 @@ export class DesignAutomationClient extends ForgeClient {
      * @param {string} name Unique name of the bundle.
      * @param {string} [engine] ID of one of the supported {@link engines}.
      * @param {string} [description] Bundle description.
-     * @returns {Promise<IAppBundleDetail>} Details of updated app bundle.
+     * @returns {Promise<IAppBundleUploadParams>} Details of updated app bundle.
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
-    async updateAppBundle(name: string, engine?: string, description?: string): Promise<IAppBundleDetail> {
+    async updateAppBundle(name: string, engine?: string, description?: string): Promise<IAppBundleUploadParams> {
         // TODO: tests
         const config: { engine?: string; description?: string; } = {};
         if (description) config.description = description;
