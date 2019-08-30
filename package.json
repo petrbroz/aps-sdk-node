@@ -28,11 +28,11 @@
   },
   "homepage": "https://github.com/petrbroz/forge-server-utils#readme",
   "devDependencies": {
-    "@types/node": "^12.6.8",
+    "@types/node": "^12.7.0",
     "mocha": "^5.2.0",
     "typedoc": "^0.15.0",
-    "typescript": "^3.5.3",
-    "webpack": "^4.38.0",
+    "typescript": "^3.6.0",
+    "webpack": "^4.39.0",
     "webpack-cli": "^3.3.6"
   },
   "dependencies": {
