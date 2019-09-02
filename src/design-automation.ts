@@ -61,10 +61,11 @@ export interface IActivityConfig {
 
 export interface IActivityDetail {
     commandLine: string[];
-    parameters: { [paramId: string]: IActivityParam };
+    description?: string;
+    parameters?: { [paramId: string]: IActivityParam };
     id: string;
     engine: string;
-    appbundles: string[];
+    appbundles?: string[];
     version: number;
 }
 
