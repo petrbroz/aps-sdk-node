@@ -75,7 +75,11 @@ export interface IWorkItemConfig {
 }
 
 export interface IWorkItem {
-    // TODO
+    id: string;
+    status: string;
+    progress: string;
+    reportUrl: string;
+    stats: any;
 }
 
 export interface IWorkItemParam {
@@ -846,10 +850,10 @@ export class DesignAutomationClient extends ForgeClient {
      * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/workitems-id-GET|docs}).
      * @async
      * @param {string} id Work item ID.
-     * @returns {Promise<object>} Work item details.
+     * @returns {Promise<IWorkItem>} Work item details.
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
-    async workItemDetails(id: string) {
+    async workItemDetails(id: string): Promise<IWorkItem> {
         return this.get(`workitems/${id}`, {}, CodeScopes);
     }
 
