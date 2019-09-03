@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [5.0.0] - 2019-09-03
+
+### Changed
+- Methods and interfaces for creating/updating Design Automation objects
+  - Activities can now define multiple command lines and multiple app bundles
+  - Interfaces now better reflect the expected structure of DA inputs/outputs
+
 ## [4.4.0] - 2019-08-30
 
 ### Added
