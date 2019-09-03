@@ -5,8 +5,6 @@ import { ForgeClient, IAuthOptions, Region } from './common';
 const RootPath = 'da/us-east/v3';
 const CodeScopes = ['code:all'];
 
-const WorkitemParameterProps = ['localName', 'optional', 'pathInZip', 'headers'];
-
 export interface IEngineDetail {
     productVersion: string;
     description: string;
@@ -14,18 +12,27 @@ export interface IEngineDetail {
     id: string;
 }
 
-export interface IAppBundleDetail {
-    package: string;
-    id: string;
+export interface  IAppBundleCommon {
     engine: string;
-    description: string;
-    version: number;
+    settings?: { [key: string]: any };
+    description?: string;
 }
 
-export interface IAppBundleUploadParams {
+export interface ICreateAppBundleConfig extends IAppBundleCommon {
     id: string;
-    engine: string;
-    description: string;
+}
+
+export interface IUpdateAppBundleConfig extends IAppBundleCommon {
+}
+
+export interface IAppBundleDetail extends IAppBundleCommon {
+    id: string;
+    version: number;
+    package: string;
+}
+
+export interface IAppBundleUploadParams extends IAppBundleCommon {
+    id: string;
     version: number;
     uploadParameters: {
         formData: { [key: string]: string };
@@ -259,15 +266,22 @@ export class DesignAutomationClient extends ForgeClient {
      * Creates a new app bundle
      * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-POST|docs}).
      * @async
-     * @param {string} name Unique name of the bundle.
+     * @param {string} id Unique name of the bundle.
      * @param {string} engine ID of one of the supported {@link engines}.
-     * @param {string} description Bundle description.
      * @param {object} [settings] Additional app bundle settings.
-     * @returns {Promise<IAppBundleUploadParams>} Details of created app bundle.
+     * @param {string} [description] App bundle description.
+     * @returns {Promise<IAppBundleUploadParams>} Details of the created app bundle,
+     * incl. parameters for uploading the actual zip file with app bundle binaries.
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
-    async createAppBundle(name: string, engine: string, description: string, settings?: { [key: string]: any }): Promise<IAppBundleUploadParams> {
-        const config = { id: name, description: description, engine: engine, settings };
+    async createAppBundle(id: string, engine: string, settings?: { [key: string]: any }, description?: string): Promise<IAppBundleUploadParams> {
+        const config: ICreateAppBundleConfig = { id, engine };
+        if (settings) {
+            config.settings = settings;
+        }
+        if (description) {
+            config.description = description;
+        }
         return this.post('appbundles', config, {}, CodeScopes);
     }
 
@@ -275,20 +289,24 @@ export class DesignAutomationClient extends ForgeClient {
      * Updates an existing app bundle, creating its new version
      * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-id-versions-POST|docs}).
      * @async
-     * @param {string} name Unique name of the bundle.
+     * @param {string} id ID of the app bundle.
      * @param {string} [engine] ID of one of the supported {@link engines}.
-     * @param {string} [description] Bundle description.
      * @param {object} [settings] Additional app bundle settings.
-     * @returns {Promise<IAppBundleUploadParams>} Details of updated app bundle.
+     * @param {string} [description] App bundle description.
+     * @returns {Promise<IAppBundleUploadParams>} Details of the created app bundle,
+     * incl. parameters for uploading the actual zip file with app bundle binaries.
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
-    async updateAppBundle(name: string, engine?: string, description?: string, settings?: { [key: string]: any }): Promise<IAppBundleUploadParams> {
+    async updateAppBundle(id: string, engine: string, settings?: { [key: string]: any }, description?: string): Promise<IAppBundleUploadParams> {
         // TODO: tests
-        const config: { engine?: string; description?: string; settings?: { [key: string]: any } } = {};
-        if (description) config.description = description;
-        if (engine) config.engine = engine;
-        if (settings) config.settings = settings;
-        return this.post(`appbundles/${name}/versions`, config, {}, CodeScopes);
+        const config: IUpdateAppBundleConfig = { engine };
+        if (settings) {
+            config.settings = settings;
+        }
+        if (description) {
+            config.description = description;
+        }
+        return this.post(`appbundles/${id}/versions`, config, {}, CodeScopes);
     }
 
     /**
