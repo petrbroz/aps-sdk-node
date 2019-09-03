@@ -71,10 +71,10 @@ export interface IActivityDetail extends IActivityCommon {
 
 export interface IWorkItemConfig {
     activityId: string;
-    arguments: { [name: string]: any };
+    arguments?: { [name: string]: IWorkItemParam };
 }
 
-export interface IWorkItem {
+export interface IWorkItemDetail {
     id: string;
     status: string;
     progress: string;
@@ -83,7 +83,6 @@ export interface IWorkItem {
 }
 
 export interface IWorkItemParam {
-    name: string;
     url: string;
     localName?: string;
     optional?: boolean;
@@ -696,10 +695,10 @@ export class DesignAutomationClient extends ForgeClient {
      * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/workitems-id-GET|docs}).
      * @async
      * @param {string} id Work item ID.
-     * @returns {Promise<IWorkItem>} Work item details.
+     * @returns {Promise<IWorkItemDetail>} Work item details.
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
-    async workItemDetails(id: string): Promise<IWorkItem> {
+    async getWorkItem(id: string): Promise<IWorkItemDetail> {
         return this.get(`workitems/${id}`, {}, CodeScopes);
     }
 
@@ -708,32 +707,15 @@ export class DesignAutomationClient extends ForgeClient {
      * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/workitems-POST|docs}).
      * @async
      * @param {string} activityId Activity ID.
-     * @param {IWorkItemParam[]} inputs List of input descriptor objects, each containing required properties `name`, `url`,
-     * and optional properties `localName`, `optional`, `pathInZip`, `headers`, and `verb` ("get" by default).
-     * @param {IWorkItemParam[]} outputs List of output descriptor objects, each containing required properties `name`, `url`,
-     * and optional properties `localName`, `optional`, `pathInZip`, `headers`, and `verb` ("put" by default).
+     * @param {{ [name: string]: IWorkItemParam }} [args] Arguments to pass in as activity parameters.
      */
-    async createWorkItem(activityId: string, inputs: IWorkItemParam[], outputs: IWorkItemParam[]) {
+    async createWorkItem(activityId: string, args?: { [name: string]: IWorkItemParam }) {
         // TODO: tests
         const config: IWorkItemConfig = {
-            activityId: activityId,
-            arguments: {}
+            activityId: activityId
         };
-        for (const input of inputs) {
-            const param: any = config.arguments[input.name] = { verb: input.verb || 'get', url: input.url };
-            for (const prop of WorkitemParameterProps) {
-                if (input.hasOwnProperty(prop)) {
-                    param[prop] = (<any>input)[prop];
-                }
-            }
-        }
-        for (const output of outputs) {
-            const param: any = config.arguments[output.name] = { verb: output.verb || 'put', url: output.url };
-            for (const prop of WorkitemParameterProps) {
-                if (output.hasOwnProperty(prop)) {
-                    param[prop] = (<any>output)[prop];
-                }
-            }
+        if (args) {
+            config.arguments = args;
         }
         return this.post('workitems', config, {}, CodeScopes);
     }
