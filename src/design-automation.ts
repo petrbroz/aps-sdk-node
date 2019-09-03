@@ -5,9 +5,6 @@ import { ForgeClient, IAuthOptions, Region } from './common';
 const RootPath = 'da/us-east/v3';
 const CodeScopes = ['code:all'];
 
-const ActivityParameterProps = ['description', 'localName', 'required', 'zip', 'ondemand'];
-const WorkitemParameterProps = ['localName', 'optional', 'pathInZip', 'headers'];
-
 export interface IEngineDetail {
     productVersion: string;
     description: string;
@@ -15,18 +12,27 @@ export interface IEngineDetail {
     id: string;
 }
 
-export interface IAppBundleDetail {
-    package: string;
-    id: string;
+export interface  IAppBundleCommon {
     engine: string;
-    description: string;
-    version: number;
+    settings?: { [key: string]: any };
+    description?: string;
 }
 
-export interface IAppBundleUploadParams {
+export interface ICreateAppBundleConfig extends IAppBundleCommon {
     id: string;
-    engine: string;
-    description: string;
+}
+
+export interface IUpdateAppBundleConfig extends IAppBundleCommon {
+}
+
+export interface IAppBundleDetail extends IAppBundleCommon {
+    id: string;
+    version: number;
+    package: string;
+}
+
+export interface IAppBundleUploadParams extends IAppBundleCommon {
+    id: string;
     version: number;
     uploadParameters: {
         formData: { [key: string]: string };
@@ -49,36 +55,41 @@ export interface IActivityParam {
     ondemand?: boolean;
 }
 
-export interface IActivityConfig {
-    id?: string;
-    commandLine: string[] | string;
-    description: string;
+export interface IActivityCommon {
     engine: string;
-    appbundles: string[];
-    parameters: { [name: string]: any };
+    commandLine: string[];
+    description?: string;
+    appbundles?: string[];
+    parameters?: { [name: string]: IActivityParam };
     settings?: any;
 }
 
-export interface IActivityDetail {
-    commandLine: string[];
-    parameters: { [paramId: string]: IActivityParam };
+export interface ICreateActivityConfig extends IActivityCommon {
     id: string;
-    engine: string;
-    appbundles: string[];
+}
+
+export interface IUpdateActivityConfig extends IActivityCommon {
+}
+
+export interface IActivityDetail extends IActivityCommon {
+    id: string;
     version: number;
 }
 
 export interface IWorkItemConfig {
     activityId: string;
-    arguments: { [name: string]: any };
+    arguments?: { [name: string]: IWorkItemParam };
 }
 
-export interface IWorkItem {
-    // TODO
+export interface IWorkItemDetail {
+    id: string;
+    status: string;
+    progress: string;
+    reportUrl: string;
+    stats: any;
 }
 
 export interface IWorkItemParam {
-    name: string;
     url: string;
     localName?: string;
     optional?: boolean;
@@ -255,14 +266,22 @@ export class DesignAutomationClient extends ForgeClient {
      * Creates a new app bundle
      * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-POST|docs}).
      * @async
-     * @param {string} name Unique name of the bundle.
+     * @param {string} id Unique name of the bundle.
      * @param {string} engine ID of one of the supported {@link engines}.
-     * @param {string} description Bundle description.
-     * @returns {Promise<IAppBundleUploadParams>} Details of created app bundle.
+     * @param {object} [settings] Additional app bundle settings.
+     * @param {string} [description] App bundle description.
+     * @returns {Promise<IAppBundleUploadParams>} Details of the created app bundle,
+     * incl. parameters for uploading the actual zip file with app bundle binaries.
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
-    async createAppBundle(name: string, engine: string, description: string): Promise<IAppBundleUploadParams> {
-        const config = { id: name, description: description, engine: engine };
+    async createAppBundle(id: string, engine: string, settings?: { [key: string]: any }, description?: string): Promise<IAppBundleUploadParams> {
+        const config: ICreateAppBundleConfig = { id, engine };
+        if (settings) {
+            config.settings = settings;
+        }
+        if (description) {
+            config.description = description;
+        }
         return this.post('appbundles', config, {}, CodeScopes);
     }
 
@@ -270,18 +289,24 @@ export class DesignAutomationClient extends ForgeClient {
      * Updates an existing app bundle, creating its new version
      * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-id-versions-POST|docs}).
      * @async
-     * @param {string} name Unique name of the bundle.
+     * @param {string} id ID of the app bundle.
      * @param {string} [engine] ID of one of the supported {@link engines}.
-     * @param {string} [description] Bundle description.
-     * @returns {Promise<IAppBundleUploadParams>} Details of updated app bundle.
+     * @param {object} [settings] Additional app bundle settings.
+     * @param {string} [description] App bundle description.
+     * @returns {Promise<IAppBundleUploadParams>} Details of the created app bundle,
+     * incl. parameters for uploading the actual zip file with app bundle binaries.
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
-    async updateAppBundle(name: string, engine?: string, description?: string): Promise<IAppBundleUploadParams> {
+    async updateAppBundle(id: string, engine: string, settings?: { [key: string]: any }, description?: string): Promise<IAppBundleUploadParams> {
         // TODO: tests
-        const config: { engine?: string; description?: string; } = {};
-        if (description) config.description = description;
-        if (engine) config.engine = engine;
-        return this.post(`appbundles/${name}/versions`, config, {}, CodeScopes);
+        const config: IUpdateAppBundleConfig = { engine };
+        if (settings) {
+            config.settings = settings;
+        }
+        if (description) {
+            config.description = description;
+        }
+        return this.post(`appbundles/${id}/versions`, config, {}, CodeScopes);
     }
 
     /**
@@ -490,193 +515,41 @@ export class DesignAutomationClient extends ForgeClient {
         return this.get(`activities/${id}/versions/${version}`, {}, CodeScopes);
     }
 
-    private _inventorActivityConfig(activityId: string | null, description: string, ownerId: string, bundleName: string, bundleAlias: string, engine: string, inputs: IActivityParam[], outputs: IActivityParam[]): IActivityConfig {
-        const config: IActivityConfig = {
-            commandLine: [`$(engine.path)\\InventorCoreConsole.exe /al $(appbundles[${bundleName}].path)`],
-            parameters: {},
-            description: description,
-            engine: engine,
-            appbundles: [`${ownerId}.${bundleName}+${bundleAlias}`]
-        };
-        if (activityId) {
-            config.id = activityId;
-        }
-        if (inputs.length > 0 && Array.isArray(config.commandLine)) {
-            config.commandLine[0] += ' /i';
-            for (const input of inputs) {
-                config.commandLine[0] += ` $(args[${input.name}].path)`;
-                const param: any = config.parameters[input.name] = { verb: input.verb || 'get' };
-                for (const prop of ActivityParameterProps) {
-                    if (input.hasOwnProperty(prop)) {
-                        param[prop] = (<any>input)[prop];
-                    }
-                }
-            }
-        }
-        for (const output of outputs) {
-            const param: any = config.parameters[output.name] = { verb: output.verb || 'put' };
-            for (const prop of ActivityParameterProps) {
-                if (output.hasOwnProperty(prop)) {
-                    param[prop] = (<any>output)[prop];
-                }
-            }
-        }
-        return config;
-    }
-
-    private _revitActivityConfig(activityId: string | null, description: string, ownerId: string, bundleName: string, bundleAlias: string, engine: string, inputs: IActivityParam[], outputs: IActivityParam[]): IActivityConfig {
-        const config: IActivityConfig = {
-            commandLine: [`$(engine.path)\\revitcoreconsole.exe /al $(appbundles[${bundleName}].path)`],
-            parameters: {},
-            description: description,
-            engine: engine,
-            appbundles: [`${ownerId}.${bundleName}+${bundleAlias}`]
-        };
-        if (activityId) {
-            config.id = activityId;
-        }
-        if (inputs.length > 0 && Array.isArray(config.commandLine)) {
-            config.commandLine[0] += ' /i';
-            for (const input of inputs) {
-                config.commandLine[0] += ` $(args[${input.name}].path)`;
-                const param: any = config.parameters[input.name] = { verb: input.verb || 'get' };
-                for (const prop of ActivityParameterProps) {
-                    if (input.hasOwnProperty(prop)) {
-                        param[prop] = (<any>input)[prop];
-                    }
-                }
-            }
-        }
-        for (const output of outputs) {
-            const param: any = config.parameters[output.name] = { verb: output.verb || 'put' };
-            for (const prop of ActivityParameterProps) {
-                if (output.hasOwnProperty(prop)) {
-                    param[prop] = (<any>output)[prop];
-                }
-            }
-        }
-        return config;
-    }
-
-    private _autocadActivityConfig(activityId: string | null, description: string, ownerId: string, bundleName: string, bundleAlias: string, engine: string, inputs: IActivityParam[], outputs: IActivityParam[], script?: string): IActivityConfig {
-        const config: IActivityConfig = {
-            commandLine: [`$(engine.path)\\accoreconsole.exe /al $(appbundles[${bundleName}].path)`],
-            parameters: {},
-            description: description,
-            engine: engine,
-            appbundles: [`${ownerId}.${bundleName}+${bundleAlias}`]
-        };
-        if (activityId) {
-            config.id = activityId;
-        }
-        if (inputs.length > 0 && Array.isArray(config.commandLine)) {
-            config.commandLine[0] += ' /i';
-            for (const input of inputs) {
-                config.commandLine[0] += ` $(args[${input.name}].path)`;
-                const param: any = config.parameters[input.name] = { verb: input.verb || 'get' };
-                for (const prop of ActivityParameterProps) {
-                    if (input.hasOwnProperty(prop)) {
-                        param[prop] = (<any>input)[prop];
-                    }
-                }
-            }
-        }
-        for (const output of outputs) {
-            const param: any = config.parameters[output.name] = { verb: output.verb || 'put' };
-            for (const prop of ActivityParameterProps) {
-                if (output.hasOwnProperty(prop)) {
-                    param[prop] = (<any>output)[prop];
-                }
-            }
-        }
-        if (script && Array.isArray(config.commandLine)) {
-            config.settings = {
-                script: script
-            };
-            config.commandLine[0] += ' /s $(settings[script].path)';
-        }
-        return config;
-    }
-
-    private _3dsmaxActivityConfig(activityId: string | null, description: string, ownerId: string, bundleName: string, bundleAlias: string, engine: string, inputs: IActivityParam[], outputs: IActivityParam[], script?: string): IActivityConfig {
-        const config: IActivityConfig = {
-            commandLine: `$(engine.path)\\3dsmaxbatch.exe`,
-            parameters: {},
-            description: description,
-            engine: engine,
-            appbundles: [`${ownerId}.${bundleName}+${bundleAlias}`]
-        };
-        if (activityId) {
-            config.id = activityId;
-        }
-        if (inputs.length > 1) {
-            throw new Error('3dsMax engine only supports single input file.')
-        } else if (inputs.length > 0) {
-            const input = inputs[0];
-            config.commandLine += ` -sceneFile \"$(args[${input.name}].path)\"`;
-            const param: any = config.parameters[input.name] = { verb: input.verb || 'get' };
-            for (const prop of ActivityParameterProps) {
-                if (input.hasOwnProperty(prop)) {
-                    param[prop] = (<any>input)[prop];
-                }
-            }
-        }
-        for (const output of outputs) {
-            const param: any = config.parameters[output.name] = { verb: output.verb || 'put' };
-            for (const prop of ActivityParameterProps) {
-                if (output.hasOwnProperty(prop)) {
-                    param[prop] = (<any>output)[prop];
-                }
-            }
-        }
-        if (script) {
-            config.settings = {
-                script: script
-            };
-            config.commandLine += ' \"$(settings[script].path)\"';
-        }
-        return config;
-    }
-
     /**
      * Creates new activity
      * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/activities-POST|docs}).
      * @async
      * @param {string} id New activity ID.
-     * @param {string} description Activity description.
-     * @param {string} bundleName App bundle name.
-     * @param {string} bundleAlias App bundle alias.
      * @param {string} engine ID of one of the supported {@link engines}.
-     * @param {IActivityParam[]} inputs List of input descriptor objects, each containing required property `name`
-     * and optional properties `description`, `localName`, `required`, `zip`, `ondemand`, and `verb` ("get" by default).
-     * @param {IActivityParam[]} outputs List of output descriptor objects, each containing required property `name`
-     * and optional properties `description`, `localName`, `required`, `zip`, `ondemand`, and `verb` ("put" by default).
-     * @param {string} [script] Optional engine-specific script to pass to the activity.
+     * @param {string | string[]} commands One or more CLI commands to be executed within the activity.
+     * @param {string | string[]} [appBundleIDs] Fully qualified IDs of zero or more app bundles used by the activity.
+     * @param {{ [name: string]: IActivityParam }} [parameters] Input/output parameter descriptors.
+     * @param {{ [key: string]: any }} [settings] Additional activity settings.
+     * @param {string} [description] Activity description.
      * @returns {Promise<IActivityDetail>} Details of created activity.
      */
-    async createActivity(id: string, description: string, bundleName: string, bundleAlias: string, engine: string, inputs: IActivityParam[], outputs: IActivityParam[], script?: string): Promise<IActivityDetail> {
+    async createActivity(id: string, engine: string, commands: string | string[], appBundleIDs?: string | string[],
+            parameters?: { [key: string]: IActivityParam }, settings?: { [key: string]: any }, description?: string): Promise<IActivityDetail> {
         // TODO: tests
-        const engineId = DesignAutomationID.parse(engine);
-        if (!engineId) {
-            throw new Error('Could not parse engine ID.');
-        }
         if (!this.auth) {
             throw new Error('Cannot create activity without client ID.');
         }
-        let config;
-        switch (engineId.id) {
-            case 'AutoCAD':
-                config = this._autocadActivityConfig(id, description, this.auth.clientId, bundleName, bundleAlias, engine, inputs, outputs, script);
-                break;
-            case '3dsMax':
-                config = this._3dsmaxActivityConfig(id, description, this.auth.clientId, bundleName, bundleAlias, engine, inputs, outputs, script)
-                break;
-            case 'Revit':
-                config = this._revitActivityConfig(id, description, this.auth.clientId, bundleName, bundleAlias, engine, inputs, outputs);
-                break;
-            case 'Inventor':
-                config = this._inventorActivityConfig(id, description, this.auth.clientId, bundleName, bundleAlias, engine, inputs, outputs);
-                break;
+        const config: ICreateActivityConfig = {
+            id,
+            engine,
+            commandLine: Array.isArray(commands) ? commands : [commands]
+        };
+        if (appBundleIDs) {
+            config.appbundles = Array.isArray(appBundleIDs) ? appBundleIDs : [appBundleIDs];
+        }
+        if (parameters) {
+            config.parameters = parameters;
+        }
+        if (settings) {
+            config.settings = settings;
+        }
+        if (description) {
+            config.description = description;
         }
         return this.post('activities', config, {}, CodeScopes);
     }
@@ -685,41 +558,36 @@ export class DesignAutomationClient extends ForgeClient {
      * Updates existing activity, creating its new version
      * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/activities-id-versions-POST|docs}).
      * @async
-     * @param {string} id ID of updated activity.
-     * @param {string} description Activity description.
-     * @param {string} bundleName App bundle name.
-     * @param {string} bundleAlias App bundle alias.
+     * @param {string} id New activity ID.
      * @param {string} engine ID of one of the supported {@link engines}.
-     * @param {object[]} inputs List of input descriptor objects, each containing required property `name`
-     * and optional properties `description`, `localName`, `required`, `zip`, `ondemand`, and `verb` ("get" by default).
-     * @param {object[]} outputs List of output descriptor objects, each containing required property `name`
-     * and optional properties `description`, `localName`, `required`, `zip`, `ondemand`, and `verb` ("put" by default).
-     * @param {string} [script] Optional engine-specific script to pass to the activity.
+     * @param {string | string[]} commands One or more CLI commands to be executed within the activity.
+     * @param {string | string[]} [appBundleIDs] Fully qualified IDs of zero or more app bundles used by the activity.
+     * @param {{ [name: string]: IActivityParam }} [parameters] Input/output parameter descriptors.
+     * @param {{ [key: string]: any }} [settings] Additional activity settings.
+     * @param {string} [description] Activity description.
      * @returns {Promise<object>} Details of created activity.
      */
-    async updateActivity(id: string, description: string, bundleName: string, bundleAlias: string, engine: string, inputs: IActivityParam[], outputs: IActivityParam[], script?: string): Promise<IActivityDetail> {
+    async updateActivity(id: string, engine: string, commands: string | string[], appBundleIDs?: string | string[],
+        parameters?: { [key: string]: IActivityParam }, settings?: { [key: string]: any }, description?: string): Promise<IActivityDetail> {
         // TODO: tests
-        const engineId = DesignAutomationID.parse(engine);
-        if (!engineId) {
-            throw new Error('Could not parse engine ID.');
-        }
         if (!this.auth) {
             throw new Error('Cannot create activity without client ID.');
         }
-        let config;
-        switch (engineId.id) {
-            case 'AutoCAD':
-                config = this._autocadActivityConfig(null, description, this.auth.clientId, bundleName, bundleAlias, engine, inputs, outputs, script);
-                break;
-            case '3dsMax':
-                config = this._3dsmaxActivityConfig(null, description, this.auth.clientId, bundleName, bundleAlias, engine, inputs, outputs, script)
-                break;
-            case 'Revit':
-                config = this._revitActivityConfig(null, description, this.auth.clientId, bundleName, bundleAlias, engine, inputs, outputs);
-                break;
-            case 'Inventor':
-                config = this._inventorActivityConfig(null, description, this.auth.clientId, bundleName, bundleAlias, engine, inputs, outputs);
-                break;
+        const config: IUpdateActivityConfig = {
+            engine,
+            commandLine: Array.isArray(commands) ? commands : [commands]
+        };
+        if (appBundleIDs) {
+            config.appbundles = Array.isArray(appBundleIDs) ? appBundleIDs : [appBundleIDs];
+        }
+        if (parameters) {
+            config.parameters = parameters;
+        }
+        if (settings) {
+            config.settings = settings;
+        }
+        if (description) {
+            config.description = description;
         }
         return this.post(`activities/${id}/versions`, config, {}, CodeScopes);
     }
@@ -845,10 +713,10 @@ export class DesignAutomationClient extends ForgeClient {
      * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/workitems-id-GET|docs}).
      * @async
      * @param {string} id Work item ID.
-     * @returns {Promise<object>} Work item details.
+     * @returns {Promise<IWorkItemDetail>} Work item details.
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
-    async workItemDetails(id: string) {
+    async getWorkItem(id: string): Promise<IWorkItemDetail> {
         return this.get(`workitems/${id}`, {}, CodeScopes);
     }
 
@@ -857,32 +725,15 @@ export class DesignAutomationClient extends ForgeClient {
      * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/workitems-POST|docs}).
      * @async
      * @param {string} activityId Activity ID.
-     * @param {IWorkItemParam[]} inputs List of input descriptor objects, each containing required properties `name`, `url`,
-     * and optional properties `localName`, `optional`, `pathInZip`, `headers`, and `verb` ("get" by default).
-     * @param {IWorkItemParam[]} outputs List of output descriptor objects, each containing required properties `name`, `url`,
-     * and optional properties `localName`, `optional`, `pathInZip`, `headers`, and `verb` ("put" by default).
+     * @param {{ [name: string]: IWorkItemParam }} [args] Arguments to pass in as activity parameters.
      */
-    async createWorkItem(activityId: string, inputs: IWorkItemParam[], outputs: IWorkItemParam[]) {
+    async createWorkItem(activityId: string, args?: { [name: string]: IWorkItemParam }) {
         // TODO: tests
         const config: IWorkItemConfig = {
-            activityId: activityId,
-            arguments: {}
+            activityId: activityId
         };
-        for (const input of inputs) {
-            const param: any = config.arguments[input.name] = { verb: input.verb || 'get', url: input.url };
-            for (const prop of WorkitemParameterProps) {
-                if (input.hasOwnProperty(prop)) {
-                    param[prop] = (<any>input)[prop];
-                }
-            }
-        }
-        for (const output of outputs) {
-            const param: any = config.arguments[output.name] = { verb: output.verb || 'put', url: output.url };
-            for (const prop of WorkitemParameterProps) {
-                if (output.hasOwnProperty(prop)) {
-                    param[prop] = (<any>output)[prop];
-                }
-            }
+        if (args) {
+            config.arguments = args;
         }
         return this.post('workitems', config, {}, CodeScopes);
     }

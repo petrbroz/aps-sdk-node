@@ -14,5 +14,5 @@ console.log('App bundles', bundles);
 const { DesignAutomationClient } = require('forge-server-utils');
 const { FORGE_CLIENT_ID, FORGE_CLIENT_SECRET } = process.env;
 const client = new DesignAutomationClient({ client_id: FORGE_CLIENT_ID, client_secret: FORGE_CLIENT_SECRET });
-await client.createAppBundle('<appbundle name>', '<appbundle description>', '<one of the engine IDs>');
+await client.createAppBundle('<new appbundle name>', '<one of the engine IDs>');
 ```
