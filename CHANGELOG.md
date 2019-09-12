@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [5.1.0] - 2019-09-12
+
+### Added
+- Support for copying objects within OSS bucket
+
 ## [5.0.0] - 2019-09-03
 
 ### Changed
