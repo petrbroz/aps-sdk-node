@@ -275,8 +275,22 @@ export class DataManagementClient extends ForgeClient {
      * const buff = await dataManagementClient.downloadObject(bucketKey, objectKey);
      * fs.writeFileSync(filepath, Buffer.from(buff), { encoding: 'binary' });
      */
-    async downloadObject(bucket: string, object: string): Promise<ArrayBuffer>  {
+    async downloadObject(bucket: string, object: string): Promise<ArrayBuffer> {
         return this.getBuffer(`buckets/${bucket}/objects/${object}`, {}, ReadTokenScopes);
+    }
+
+    /**
+     * Makes a copy of object under another name within the same bucket
+     * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/buckets-:bucketKey-objects-:objectName-copyto-:newObjectName-PUT|docs}).
+     * @async
+     * @param {string} bucket Bucket key.
+     * @param {string} oldObjectKey Original object key.
+     * @param {string} newObjectKey New object key.
+     * @returns {Promise<IObject>} Details of the new object copy.
+     * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
+     */
+    async copyObject(bucket: string, oldObjectKey: string, newObjectKey: string): Promise<IObject> {
+        return this.put(`buckets/${bucket}/objects/${oldObjectKey}/copyto/${newObjectKey}`, null, {}, WriteTokenScopes);
     }
 
     /**

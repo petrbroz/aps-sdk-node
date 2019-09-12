@@ -151,4 +151,11 @@ describe('DataManagementClient', function() {
             assert(ranges && ranges.length === 2);
         });
     });
+
+    describe('copyObject()', function() {
+        it('should copy object to another object with new name', async function() {
+            const obj = await this.client.copyObject(this.bucket, 'test-file', 'test-file-copy');
+            assert(obj.objectKey === 'test-file-copy');
+        });
+    });
 });
