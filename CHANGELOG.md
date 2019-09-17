@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Support for streamed upload and download
+
 ## [5.1.0] - 2019-09-12
 
 ### Added
