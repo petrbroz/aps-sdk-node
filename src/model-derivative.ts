@@ -165,6 +165,19 @@ export class ModelDerivativeClient extends ForgeClient {
     }
 
     /**
+     * Downloads content of a specific model derivative
+     * ({@link https://forge.autodesk.com/en/docs/model-derivative/v2/reference/http/urn-manifest-derivativeurn-GET/|docs}).
+     * @async
+     * @param {string} modelUrn Model URN.
+     * @param {string} derivativeUrn Derivative URN.
+     * @returns {Promise<ReadableStream>} Derivative content stream.
+     * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
+     */
+    async getDerivativeStream(modelUrn: string, derivativeUrn: string): Promise<ReadableStream> {
+        return this.getStream(this.region === Region.EMEA ? `regions/eu/designdata/${modelUrn}/manifest/${derivativeUrn}` : `designdata/${modelUrn}/manifest/${derivativeUrn}`, {}, ReadTokenScopes);
+    }
+
+    /**
      * Retrieves metadata of a derivative
      * ({@link https://forge.autodesk.com/en/docs/model-derivative/v2/reference/http/urn-metadata-GET|docs}).
      * @async
@@ -216,5 +229,19 @@ export class ModelDerivativeClient extends ForgeClient {
     async getThumbnail(urn: string, size: ThumbnailSize = ThumbnailSize.Medium): Promise<ArrayBuffer> {
         const endpoint = this.region === Region.EMEA ? `regions/eu/designdata/${urn}/thumbnail` : `designdata/${urn}/thumbnail`;
         return this.getBuffer(endpoint + '?width=' + size, {}, ReadTokenScopes);
+    }
+
+    /**
+     * Retrieves derivative thumbnail stream
+     * ({@link https://forge.autodesk.com/en/docs/model-derivative/v2/reference/http/urn-thumbnail-GET|docs}).
+     * @async
+     * @param {string} urn Document derivative URN.
+     * @param {ThumbnailSize} [size=ThumbnailSize.Medium] Thumbnail size (small: 100x100 px, medium: 200x200 px, or large: 400x400 px).
+     * @returns {Promise<ReadableStream>} Thumbnail data stream.
+     * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
+     */
+    async getThumbnailStream(urn: string, size: ThumbnailSize = ThumbnailSize.Medium): Promise<ReadableStream> {
+        const endpoint = this.region === Region.EMEA ? `regions/eu/designdata/${urn}/thumbnail` : `designdata/${urn}/thumbnail`;
+        return this.getStream(endpoint + '?width=' + size, {}, ReadTokenScopes);
     }
 }

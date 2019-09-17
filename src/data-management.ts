@@ -202,7 +202,25 @@ export class DataManagementClient extends ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async uploadObject(bucket: string, name: string, contentType: string, data: Buffer): Promise<IObject> {
-        return this.put(`buckets/${bucket}/objects/${name}`, data, { 'Content-Type': contentType }, WriteTokenScopes);
+        const headers = { 'Content-Type': contentType };
+        return this.put(`buckets/${bucket}/objects/${name}`, data, headers, WriteTokenScopes);
+    }
+
+    /**
+     * Uploads content stream to a specific bucket object
+     * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/buckets-:bucketKey-objects-:objectName-PUT|docs}).
+     * @async
+     * @param {string} bucket Bucket key.
+     * @param {string} name Name of uploaded object.
+     * @param {string} contentType Type of content to be used in HTTP headers, for example, "application/json".
+     * @param {ReadableStream} stream Object content stream.
+     * @returns {Promise<IObject>} Object description containing 'bucketKey', 'objectKey', 'objectId',
+     * 'sha1', 'size', 'location', and 'contentType'.
+     * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
+     */
+    async uploadObjectStream(bucket: string, name: string, contentType: string, stream: ReadableStream): Promise<IObject> {
+        const headers = { 'Content-Type': contentType };
+        return this.put(`buckets/${bucket}/objects/${name}`, stream, headers, WriteTokenScopes);
     }
 
     /**
@@ -227,6 +245,31 @@ export class DataManagementClient extends ForgeClient {
             'Session-Id': sessionId
         }
         return this.put(`buckets/${bucketKey}/objects/${objectName}/resumable`, data, headers, WriteTokenScopes);
+    }
+
+    /**
+     * Uploads content stream to a specific bucket object using the resumable capabilities
+     * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/buckets-:bucketKey-objects-:objectName-resumable-PUT|docs}).
+     * @async
+     * @param {string} bucketKey Bucket key.
+     * @param {string} objectName Name of uploaded object.
+     * @param {ReadableStream} stream Object content stream.
+     * @param {number} chunkBytes Byte size of the stream to be uploaded.
+     * @param {number} byteOffset Byte offset of the uploaded blob in the target object.
+     * @param {number} totalBytes Total byte size of the target object.
+     * @param {string} sessionId Resumable session ID.
+     * @param {string} [contentType='application/stream'] Type of content to be used in HTTP headers, for example, "application/json".
+     * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
+     */
+    async uploadObjectStreamResumable(bucketKey: string, objectName: string, stream: ReadableStream, chunkBytes: number, byteOffset: number, totalBytes: number, sessionId: string, contentType: string = 'application/stream') {
+        const headers = {
+            'Authorization': '',
+            'Content-Type': contentType,
+            'Content-Length': chunkBytes.toString(),
+            'Content-Range': `bytes ${byteOffset}-${byteOffset + chunkBytes - 1}/${totalBytes}`,
+            'Session-Id': sessionId
+        }
+        return this.put(`buckets/${bucketKey}/objects/${objectName}/resumable`, stream, headers, WriteTokenScopes);
     }
 
     /**
@@ -277,6 +320,22 @@ export class DataManagementClient extends ForgeClient {
      */
     async downloadObject(bucket: string, object: string): Promise<ArrayBuffer> {
         return this.getBuffer(`buckets/${bucket}/objects/${object}`, {}, ReadTokenScopes);
+    }
+
+    /**
+     * Downloads content stream of a specific bucket object
+     * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/buckets-:bucketKey-objects-:objectName-GET|docs}).
+     * @async
+     * @param {string} bucket Bucket key.
+     * @param {string} object Object name.
+     * @returns {Promise<ReadableStream>} Object content stream.
+     * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
+     * @example
+     * const stream = await dataManagementClient.downloadObjectStream(bucketKey, objectKey);
+     * stream.pipe(fs.createWriteStream(filepath));
+     */
+    async downloadObjectStream(bucket: string, object: string): Promise<ReadableStream> {
+        return this.getStream(`buckets/${bucket}/objects/${object}`, {}, ReadTokenScopes);
     }
 
     /**
