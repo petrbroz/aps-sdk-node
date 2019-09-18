@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>ISignedUrl | forge-server-utils</title>
+	<title>IDerivativeChild | forge-server-utils</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,13 +56,13 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_data_management_.html">&quot;data-management&quot;</a>
+					<a href="../modules/_model_derivative_.html">&quot;model-derivative&quot;</a>
 				</li>
 				<li>
-					<a href="_data_management_.isignedurl.html">ISignedUrl</a>
+					<a href="_model_derivative_.iderivativechild.html">IDerivativeChild</a>
 				</li>
 			</ul>
-			<h1>Interface ISignedUrl</h1>
+			<h1>Interface IDerivativeChild</h1>
 		</div>
 	</div>
 </header>
@@ -73,7 +73,18 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">ISignedUrl</span>
+						<span class="target">IDerivativeChild</span>
+						<ul class="tsd-hierarchy">
+							<li>
+								<a href="_model_derivative_.iderivativeresourcechild.html" class="tsd-signature-type">IDerivativeResourceChild</a>
+							</li>
+							<li>
+								<a href="_model_derivative_.iderivativegeometrychild.html" class="tsd-signature-type">IDerivativeGeometryChild</a>
+							</li>
+							<li>
+								<a href="_model_derivative_.iderivativeviewchild.html" class="tsd-signature-type">IDerivativeViewChild</a>
+							</li>
+						</ul>
 					</li>
 				</ul>
 			</section>
@@ -84,9 +95,12 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_data_management_.isignedurl.html#expiration" class="tsd-kind-icon">expiration</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_data_management_.isignedurl.html#signedurl" class="tsd-kind-icon">signed<wbr>Url</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_data_management_.isignedurl.html#singleuse" class="tsd-kind-icon">single<wbr>Use</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_model_derivative_.iderivativechild.html#children" class="tsd-kind-icon">children</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_model_derivative_.iderivativechild.html#guid" class="tsd-kind-icon">guid</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_model_derivative_.iderivativechild.html#progress" class="tsd-kind-icon">progress</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_model_derivative_.iderivativechild.html#role" class="tsd-kind-icon">role</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_model_derivative_.iderivativechild.html#status" class="tsd-kind-icon">status</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_model_derivative_.iderivativechild.html#type" class="tsd-kind-icon">type</a></li>
 							</ul>
 						</section>
 					</div>
@@ -95,32 +109,62 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="expiration" class="tsd-anchor"></a>
-					<h3>expiration</h3>
-					<div class="tsd-signature tsd-kind-icon">expiration<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<a name="children" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> children</h3>
+					<div class="tsd-signature tsd-kind-icon">children<span class="tsd-signature-symbol">:</span> <a href="../modules/_model_derivative_.html#derivativechild" class="tsd-signature-type">DerivativeChild</a><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/4e23bab/src/data-management.ts#L46">data-management.ts:46</a></li>
+							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/4e23bab/src/model-derivative.ts#L64">model-derivative.ts:64</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="signedurl" class="tsd-anchor"></a>
-					<h3>signed<wbr>Url</h3>
-					<div class="tsd-signature tsd-kind-icon">signed<wbr>Url<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="guid" class="tsd-anchor"></a>
+					<h3>guid</h3>
+					<div class="tsd-signature tsd-kind-icon">guid<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/4e23bab/src/data-management.ts#L45">data-management.ts:45</a></li>
+							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/4e23bab/src/model-derivative.ts#L59">model-derivative.ts:59</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="singleuse" class="tsd-anchor"></a>
-					<h3>single<wbr>Use</h3>
-					<div class="tsd-signature tsd-kind-icon">single<wbr>Use<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+					<a name="progress" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> progress</h3>
+					<div class="tsd-signature tsd-kind-icon">progress<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/4e23bab/src/data-management.ts#L47">data-management.ts:47</a></li>
+							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/4e23bab/src/model-derivative.ts#L63">model-derivative.ts:63</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="role" class="tsd-anchor"></a>
+					<h3>role</h3>
+					<div class="tsd-signature tsd-kind-icon">role<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/4e23bab/src/model-derivative.ts#L61">model-derivative.ts:61</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="status" class="tsd-anchor"></a>
+					<h3>status</h3>
+					<div class="tsd-signature tsd-kind-icon">status<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/4e23bab/src/model-derivative.ts#L62">model-derivative.ts:62</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="type" class="tsd-anchor"></a>
+					<h3>type</h3>
+					<div class="tsd-signature tsd-kind-icon">type<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/4e23bab/src/model-derivative.ts#L60">model-derivative.ts:60</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -141,7 +185,7 @@
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_common_.html">"common"</a>
 					</li>
-					<li class="current tsd-kind-external-module">
+					<li class=" tsd-kind-external-module">
 						<a href="../modules/_data_management_.html">"data-<wbr>management"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
@@ -150,7 +194,7 @@
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_index_.html">"index"</a>
 					</li>
-					<li class=" tsd-kind-external-module">
+					<li class="current tsd-kind-external-module">
 						<a href="../modules/_model_derivative_.html">"model-<wbr>derivative"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
@@ -161,52 +205,88 @@
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
 					<li class=" tsd-kind-enum tsd-parent-kind-external-module">
-						<a href="../enums/_data_management_.dataretentionpolicy.html" class="tsd-kind-icon">Data<wbr>Retention<wbr>Policy</a>
+						<a href="../enums/_model_derivative_.thumbnailsize.html" class="tsd-kind-icon">Thumbnail<wbr>Size</a>
 					</li>
 					<li class=" tsd-kind-class tsd-parent-kind-external-module">
-						<a href="../classes/_data_management_.datamanagementclient.html" class="tsd-kind-icon">Data<wbr>Management<wbr>Client</a>
+						<a href="../classes/_model_derivative_.manifesthelper.html" class="tsd-kind-icon">Manifest<wbr>Helper</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-external-module">
+						<a href="../classes/_model_derivative_.modelderivativeclient.html" class="tsd-kind-icon">Model<wbr>Derivative<wbr>Client</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_data_management_.ibucket.html" class="tsd-kind-icon">IBucket</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_data_management_.ibucketdetail.html" class="tsd-kind-icon">IBucket<wbr>Detail</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_data_management_.ibucketpermission.html" class="tsd-kind-icon">IBucket<wbr>Permission</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_data_management_.iobject.html" class="tsd-kind-icon">IObject</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_data_management_.iresumableuploadrange.html" class="tsd-kind-icon">IResumable<wbr>Upload<wbr>Range</a>
+						<a href="_model_derivative_.iderivative.html" class="tsd-kind-icon">IDerivative</a>
 					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_data_management_.isignedurl.html" class="tsd-kind-icon">ISigned<wbr>Url</a>
+						<a href="_model_derivative_.iderivativechild.html" class="tsd-kind-icon">IDerivative<wbr>Child</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_data_management_.isignedurl.html#expiration" class="tsd-kind-icon">expiration</a>
+								<a href="_model_derivative_.iderivativechild.html#children" class="tsd-kind-icon">children</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_data_management_.isignedurl.html#signedurl" class="tsd-kind-icon">signed<wbr>Url</a>
+								<a href="_model_derivative_.iderivativechild.html#guid" class="tsd-kind-icon">guid</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_data_management_.isignedurl.html#singleuse" class="tsd-kind-icon">single<wbr>Use</a>
+								<a href="_model_derivative_.iderivativechild.html#progress" class="tsd-kind-icon">progress</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_model_derivative_.iderivativechild.html#role" class="tsd-kind-icon">role</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_model_derivative_.iderivativechild.html#status" class="tsd-kind-icon">status</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_model_derivative_.iderivativechild.html#type" class="tsd-kind-icon">type</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/_data_management_.html#readtokenscopes" class="tsd-kind-icon">Read<wbr>Token<wbr>Scopes</a>
+					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
+						<a href="_model_derivative_.iderivativeformats.html" class="tsd-kind-icon">IDerivative<wbr>Formats</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
+						<a href="_model_derivative_.iderivativegeometrychild.html" class="tsd-kind-icon">IDerivative<wbr>Geometry<wbr>Child</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
+						<a href="_model_derivative_.iderivativemanifest.html" class="tsd-kind-icon">IDerivative<wbr>Manifest</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
+						<a href="_model_derivative_.iderivativemetadata.html" class="tsd-kind-icon">IDerivative<wbr>Metadata</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
+						<a href="_model_derivative_.iderivativeoutputtype.html" class="tsd-kind-icon">IDerivative<wbr>Output<wbr>Type</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
+						<a href="_model_derivative_.iderivativeprops.html" class="tsd-kind-icon">IDerivative<wbr>Props</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
+						<a href="_model_derivative_.iderivativeresourcechild.html" class="tsd-kind-icon">IDerivative<wbr>Resource<wbr>Child</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
+						<a href="_model_derivative_.iderivativetree.html" class="tsd-kind-icon">IDerivative<wbr>Tree</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
+						<a href="_model_derivative_.iderivativeviewchild.html" class="tsd-kind-icon">IDerivative<wbr>View<wbr>Child</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
+						<a href="_model_derivative_.ijob.html" class="tsd-kind-icon">IJob</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="../modules/_model_derivative_.html#derivativechild" class="tsd-kind-icon">Derivative<wbr>Child</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/_data_management_.html#rootpath" class="tsd-kind-icon">Root<wbr>Path</a>
+						<a href="../modules/_model_derivative_.html#readtokenscopes" class="tsd-kind-icon">Read<wbr>Token<wbr>Scopes</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/_data_management_.html#writetokenscopes" class="tsd-kind-icon">Write<wbr>Token<wbr>Scopes</a>
+						<a href="../modules/_model_derivative_.html#rootpath" class="tsd-kind-icon">Root<wbr>Path</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="../modules/_model_derivative_.html#writetokenscopes" class="tsd-kind-icon">Write<wbr>Token<wbr>Scopes</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="../modules/_model_derivative_.html#urnify" class="tsd-kind-icon">urnify</a>
 					</li>
 				</ul>
 			</nav>
