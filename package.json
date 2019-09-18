@@ -1,6 +1,6 @@
 {
   "name": "forge-server-utils",
-  "version": "5.1.0",
+  "version": "5.2.0",
   "description": "Tools for accessing Autodesk Forge APIs from Node.js apps and from browser.",
   "main": "dist/index.js",
   "scripts": {
@@ -36,6 +36,8 @@
     "webpack-cli": "^3.3.6"
   },
   "dependencies": {
+    "@types/adm-zip": "^0.4.32",
+    "adm-zip": "^0.4.13",
     "axios": "^0.19.0",
     "form-data": "^2.5.1"
   }

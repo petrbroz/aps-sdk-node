@@ -1,4 +1,5 @@
 const assert = require('assert');
+const { Readable, Writable } = require('stream');
 
 const { DataManagementClient } = require('..');
 
@@ -103,6 +104,20 @@ describe('DataManagementClient', function() {
             assert(result.location);
             assert(result.location.indexOf(objectName) !== -1);
         });
+        it('should upload object stream', async function() {
+            this.timeout(30000);
+            const objectName = 'test-file-stream';
+            const stream = new Readable({
+                read() {
+                    this.push(Buffer.from('This is a test string!', 'utf8'));
+                    this.push(null);
+                }
+            });
+            const result = await this.client.uploadObjectStream(this.bucket, objectName, 'text/plain; charset=UTF-8', stream);
+            assert(result);
+            assert(result.location);
+            assert(result.location.indexOf(objectName) !== -1);
+        });
     });
 
     describe('downloadObject()', function() {
@@ -111,6 +126,24 @@ describe('DataManagementClient', function() {
             const objectName = 'test-file';
             const content = await this.client.downloadObject(this.bucket, objectName);
             assert(content.indexOf('This is a test string!') === 0);
+        });
+        it('should download object stream', async function() {
+            this.timeout(30000);
+            const objectName = 'test-file-stream';
+            const output = new Writable({
+                write(chunk) {
+                    if (!this.buff) {
+                        this.buff = chunk;
+                    } else {
+                        this.buff = Buffer.concat(this.buff, chunk);
+                    }
+                }
+            });
+            const stream = await this.client.downloadObjectStream(this.bucket, objectName);
+            stream.pipe(output);
+            stream.on('end', () => {
+                assert(output.buff.indexOf('This is a test string!') === 0);
+            });
         });
     });
 
