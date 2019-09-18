@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Support for streamed upload and download
 - New helper class for searching through Model Derivative manifests
 - Improved typings for Model Derivative manifests and derivatives, so better intellisense!
+- Initial support for parsing SVF files (see src/svf/README.md for details)
 
 ## [5.1.0] - 2019-09-12
 
