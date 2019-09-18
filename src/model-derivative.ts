@@ -1,4 +1,5 @@
 import { ForgeClient, IAuthOptions, Region } from './common';
+import { isNullOrUndefined } from 'util';
 
 const RootPath = 'modelderivative/v2';
 const ReadTokenScopes = ['data:read'];
@@ -40,7 +41,49 @@ export interface IDerivativeManifest {
     region: string;
     urn: string;
     version: string;
-    //derivatives: any[];
+    derivatives: IDerivative[];
+}
+
+export interface IDerivative {
+    status: string;
+    progress?: string;
+    name?: string;
+    hasThumbnail?: string;
+    outputType?: string;
+    children?: DerivativeChild[];
+}
+
+type DerivativeChild = IDerivativeResourceChild | IDerivativeGeometryChild | IDerivativeViewChild;
+
+export interface IDerivativeChild {
+    guid: string;
+    type: string;
+    role: string;
+    status: string;
+    progress?: string;
+    children?: DerivativeChild[];
+}
+
+export interface IDerivativeResourceChild extends IDerivativeChild {
+    type: 'resource';
+    urn: string;
+    mime: string;
+}
+
+export interface IDerivativeGeometryChild extends IDerivativeChild {
+    type: 'geometry';
+    name?: string;
+    viewableID?: string;
+    phaseNames?: string;
+    hasThumbnail?: string;
+    properties?: any;
+}
+
+export interface IDerivativeViewChild extends IDerivativeChild {
+    type: 'view';
+    name?: string;
+    camera?: number[];
+    viewbox?: number[];
 }
 
 export interface IDerivativeMetadata {
@@ -59,6 +102,54 @@ export enum ThumbnailSize {
     Small = 100,
     Medium = 200,
     Large = 400
+}
+
+/**
+ * Utility class for querying {@see IDerivativeManifest}.
+ */
+export class ManifestHelper {
+    constructor(protected manifest: IDerivativeManifest) {}
+
+    /**
+     * Finds manifest derivatives with matching 'guid', 'type', or 'role' properties.
+     * @param {object} query Dictionary of the requested properties and values.
+     * @returns {DerivativeChild[]} Matching derivatives.
+     */
+    search(query: { guid?: string; type?: string; role?: string; }): DerivativeChild[] {
+        let matches: DerivativeChild[] = [];
+        this.traverse((child: DerivativeChild) => {
+            if ((isNullOrUndefined(query.guid) || child.guid === query.guid)
+                && (isNullOrUndefined(query.type) || child.type === query.type)
+                && (isNullOrUndefined(query.role) || child.role === query.role)) {
+                matches.push(child);
+            }
+            return true;
+        });
+        return matches;
+    }
+
+    /**
+     * Traverses all derivatives, executing the input callback for each one.
+     * @param {(child: DerivativeChild) => boolean} callback Function to be called for each derivative,
+     * returning a bool indicating whether the traversal should recurse deeper in the manifest hierarchy.
+     */
+    traverse(callback: (child: DerivativeChild) => boolean) {
+        function process(node: DerivativeChild, callback: (child: DerivativeChild) => boolean) {
+            const proceed = callback(node);
+            if (proceed && node.children) {
+                for (const child of node.children) {
+                    process(child, callback);
+                }
+            }
+        }
+        for (const derivative of this.manifest.derivatives) {
+            if (derivative.children) {
+                for (const child of derivative.children) {
+                    process(child, callback);
+                }
+            }
+        }
+    }
 }
 
 /**
