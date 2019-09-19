@@ -9,7 +9,7 @@ in [Autodesk Forge](https://forge.autodesk.com).
 ## Usage
 
 ```js
-const { parse } = require('forge-server-utils/svf');
+const { parseManifest } = require('forge-server-utils/svf');
 
 const modelDerivativeClient = new ModelDerivativeClient({ client_id: '<your client id>', client_secret: '<your client secret>' });
 
@@ -21,9 +21,12 @@ async function run(urn) {
     for (const derivative of derivatives.filter(deriv => deriv.mime === 'application/autodesk-svf')) {
         // Fetch each SVF derivative and parse its contents
         const svf = await modelDerivativeClient.getDerivative(urn, derivative.urn);
-        const { manifest, metadata } = parse(svf);
-        console.log(manifest);
-        console.log(metadata);
+        const { manifest, metadata } = parseManifest(svf);
+        console.log('Manifest', manifest);
+        console.log('Metadata', metadata);
+        for (const asset of manifest.assets) {
+            console.log('Asset', asset);
+        }
     }
 }
 
