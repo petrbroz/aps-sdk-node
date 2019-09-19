@@ -19,6 +19,7 @@ export enum AssetType {
 /**
  * Top-level manifest containing URIs and types of all assets
  * referenced by or embedded in a specific SVF file.
+ * The URIs are typically relative to the SVF file itself.
  */
 export interface ISvfManifest {
     name: string;
