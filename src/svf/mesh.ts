@@ -45,12 +45,15 @@ export function *parseMeshes(buffer: Buffer): Iterable<IMesh | null> {
         switch (entry._type) {
             case 'Autodesk.CloudPlatform.OpenCTM':
                 yield parseMeshOCTM(pfr);
+                break;
             case 'Autodesk.CloudPlatform.Lines': // TODO
                 console.warn('Unsupported mesh type', entry._type);
                 yield null;
+                break;
             case 'Autodesk.CloudPlatform.Points': // TODO
                 console.warn('Unsupported mesh type', entry._type);
                 yield null;
+                break;
         }
     }
 }
