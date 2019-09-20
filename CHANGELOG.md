@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.0.0] - 2019-09-20
+
+### Added
+- Support for downloading SVFs to local folder
+
+### Fixed
+- Removed unnecessary `async` from SVF utils (note that this is a breaking change)
+
 ## [5.3.0] - 2019-09-19
 
 ### Added
