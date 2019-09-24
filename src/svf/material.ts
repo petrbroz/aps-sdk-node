@@ -13,9 +13,11 @@ export function *parseMaterials(buffer: Buffer): Iterable<IMaterial> {
     if (buffer[0] === 31 && buffer[1] === 139) {
         buffer = zlib.gunzipSync(buffer);
     }
-    const json = JSON.parse(buffer.toString());
-    for (const key of Object.keys(json.materials)) {
-        const group = json.materials[key];
-        yield group.materials[group.userassets[0]];
+    if (buffer.byteLength > 0) {
+        const json = JSON.parse(buffer.toString());
+        for (const key of Object.keys(json.materials)) {
+            const group = json.materials[key];
+            yield group.materials[group.userassets[0]];
+        }
     }
 }
