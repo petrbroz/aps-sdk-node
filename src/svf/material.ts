@@ -116,6 +116,14 @@ function parseSimplePhongMaterial(group: SvfInternal.IMaterialGroup): IMaterial 
         if (alpha) {
             result.maps.alpha = alpha;
         }
+        const bump = parseTextureProperty(material, group, 'generic_bump');
+        if (bump) {
+            if (parseBooleanProperty(material, 'generic_bump_is_normal', false)) {
+                result.maps.normal = bump;
+            } else {
+                result.maps.bump = bump;
+            }
+        }
     }
 
     return result;
