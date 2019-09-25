@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.1.0] - 2019-09-25
+
 ### Added
 - Typings for parsed SVF materials
   - Note: breaking change of the `parseMaterials` function signature
