@@ -71,19 +71,17 @@
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section ">
-							<h3>Interfaces</h3>
+							<h3>Classes</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-interface tsd-parent-kind-external-module"><a href="../interfaces/_svf_index_.isvfmanifest.html" class="tsd-kind-icon">ISvf<wbr>Manifest</a></li>
-								<li class="tsd-kind-interface tsd-parent-kind-external-module"><a href="../interfaces/_svf_index_.isvfmanifestasset.html" class="tsd-kind-icon">ISvf<wbr>Manifest<wbr>Asset</a></li>
-								<li class="tsd-kind-interface tsd-parent-kind-external-module"><a href="../interfaces/_svf_index_.isvfmanifesttype.html" class="tsd-kind-icon">ISvf<wbr>Manifest<wbr>Type</a></li>
-								<li class="tsd-kind-interface tsd-parent-kind-external-module"><a href="../interfaces/_svf_index_.isvfmanifesttypeset.html" class="tsd-kind-icon">ISvf<wbr>Manifest<wbr>Type<wbr>Set</a></li>
-								<li class="tsd-kind-interface tsd-parent-kind-external-module"><a href="../interfaces/_svf_index_.isvfmetadata.html" class="tsd-kind-icon">ISvf<wbr>Metadata</a></li>
+								<li class="tsd-kind-class tsd-parent-kind-external-module"><a href="../classes/_svf_index_.parser.html" class="tsd-kind-icon">Parser</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Functions</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_svf_index_.html#parse" class="tsd-kind-icon">parse</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_svf_index_.html#downloadviewable" class="tsd-kind-icon">download<wbr>Viewable</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported"><a href="_svf_index_.html#downloadviewableasset" class="tsd-kind-icon">download<wbr>Viewable<wbr>Asset</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_svf_index_.html#downloadviewables" class="tsd-kind-icon">download<wbr>Viewables</a></li>
 							</ul>
 						</section>
 					</div>
@@ -92,33 +90,134 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Functions</h2>
 				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
-					<a name="parse" class="tsd-anchor"></a>
-					<h3>parse</h3>
+					<a name="downloadviewable" class="tsd-anchor"></a>
+					<h3>download<wbr>Viewable</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
-						<li class="tsd-signature tsd-kind-icon">parse<span class="tsd-signature-symbol">(</span>svf<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Buffer</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span></li>
+						<li class="tsd-signature tsd-kind-icon">download<wbr>Viewable<span class="tsd-signature-symbol">(</span>urn<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, guid<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, outputDir<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, client<span class="tsd-signature-symbol">: </span><a href="../classes/_model_derivative_.modelderivativeclient.html" class="tsd-signature-type">ModelDerivativeClient</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/4e23bab/src/svf/index.ts#L36">svf/index.ts:36</a></li>
+									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/721594c/src/svf/index.ts#L278">svf/index.ts:278</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Downloads specific SVF viewable of Forge model to local folder.</p>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>async</dt>
+									<dd></dd>
+								</dl>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>urn: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Forge model URN.</p>
+									</div>
+								</li>
+								<li>
+									<h5>guid: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>SVF viewable GUID.</p>
+									</div>
+								</li>
+								<li>
+									<h5>outputDir: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Output folder. The method will create subfolders for the URN and the viewable GUID.</p>
+									</div>
+								</li>
+								<li>
+									<h5>client: <a href="../classes/_model_derivative_.modelderivativeclient.html" class="tsd-signature-type">ModelDerivativeClient</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Client for accessing model derivatives.</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+					<a name="downloadviewableasset" class="tsd-anchor"></a>
+					<h3>download<wbr>Viewable<wbr>Asset</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+						<li class="tsd-signature tsd-kind-icon">download<wbr>Viewable<wbr>Asset<span class="tsd-signature-symbol">(</span>urn<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, assetUri<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, assetPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, client<span class="tsd-signature-symbol">: </span><a href="../classes/_model_derivative_.modelderivativeclient.html" class="tsd-signature-type">ModelDerivativeClient</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/721594c/src/svf/index.ts#L305">svf/index.ts:305</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>svf: <span class="tsd-signature-type">Buffer</span></h5>
+									<h5>urn: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5>assetUri: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5>assetPath: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5>client: <a href="../classes/_model_derivative_.modelderivativeclient.html" class="tsd-signature-type">ModelDerivativeClient</a></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">object</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
+					<a name="downloadviewables" class="tsd-anchor"></a>
+					<h3>download<wbr>Viewables</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
+						<li class="tsd-signature tsd-kind-icon">download<wbr>Viewables<span class="tsd-signature-symbol">(</span>urn<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, outputDir<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, client<span class="tsd-signature-symbol">: </span><a href="../classes/_model_derivative_.modelderivativeclient.html" class="tsd-signature-type">ModelDerivativeClient</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/721594c/src/svf/index.ts#L260">svf/index.ts:260</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Downloads all SVF viewables of Forge model to local folder.</p>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>async</dt>
+									<dd></dd>
+								</dl>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
-								<li class="tsd-parameter">
-									<h5>manifest<span class="tsd-signature-symbol">: </span><a href="../interfaces/_svf_index_.isvfmanifest.html" class="tsd-signature-type">ISvfManifest</a></h5>
+								<li>
+									<h5>urn: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Forge model URN.</p>
+									</div>
 								</li>
-								<li class="tsd-parameter">
-									<h5>metadata<span class="tsd-signature-symbol">: </span><a href="../interfaces/_svf_index_.isvfmetadata.html" class="tsd-signature-type">ISvfMetadata</a></h5>
+								<li>
+									<h5>outputDir: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Output folder. The method will create subfolders for the URN and all viewable GUIDs.</p>
+									</div>
+								</li>
+								<li>
+									<h5>client: <a href="../classes/_model_derivative_.modelderivativeclient.html" class="tsd-signature-type">ModelDerivativeClient</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Client for accessing model derivatives.</p>
+									</div>
 								</li>
 							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -151,30 +250,45 @@
 					<li class=" tsd-kind-external-module">
 						<a href="_model_derivative_.html">"model-<wbr>derivative"</a>
 					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="_svf_fragment_.html">"svf/fragment"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="_svf_geometry_.html">"svf/geometry"</a>
+					</li>
 					<li class="current tsd-kind-external-module">
 						<a href="_svf_index_.html">"svf/index"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="_svf_input_stream_.html">"svf/input-<wbr>stream"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="_svf_manifest_.html">"svf/manifest"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="_svf_material_.html">"svf/material"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="_svf_mesh_.html">"svf/mesh"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="_svf_packfile_reader_.html">"svf/packfile-<wbr>reader"</a>
 					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="../interfaces/_svf_index_.isvfmanifest.html" class="tsd-kind-icon">ISvf<wbr>Manifest</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="../interfaces/_svf_index_.isvfmanifestasset.html" class="tsd-kind-icon">ISvf<wbr>Manifest<wbr>Asset</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="../interfaces/_svf_index_.isvfmanifesttype.html" class="tsd-kind-icon">ISvf<wbr>Manifest<wbr>Type</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="../interfaces/_svf_index_.isvfmanifesttypeset.html" class="tsd-kind-icon">ISvf<wbr>Manifest<wbr>Type<wbr>Set</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="../interfaces/_svf_index_.isvfmetadata.html" class="tsd-kind-icon">ISvf<wbr>Metadata</a>
+					<li class=" tsd-kind-class tsd-parent-kind-external-module">
+						<a href="../classes/_svf_index_.parser.html" class="tsd-kind-icon">Parser</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module">
-						<a href="_svf_index_.html#parse" class="tsd-kind-icon">parse</a>
+						<a href="_svf_index_.html#downloadviewable" class="tsd-kind-icon">download<wbr>Viewable</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="_svf_index_.html#downloadviewableasset" class="tsd-kind-icon">download<wbr>Viewable<wbr>Asset</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="_svf_index_.html#downloadviewables" class="tsd-kind-icon">download<wbr>Viewables</a>
 					</li>
 				</ul>
 			</nav>
