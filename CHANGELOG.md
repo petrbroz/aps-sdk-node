@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Higher-level utility class for parsing SVF both from local file system,
+and from Model Derivative service
+- Support for extracting additional assets embedded in the root SVF file
+
 ## [6.1.0] - 2019-09-25
 
 ### Added
