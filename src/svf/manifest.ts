@@ -70,13 +70,26 @@ export interface ISvfMetadata {
 }
 
 /**
- * Parses SVF manifest and metadata from a binary buffer.
- * @param {Buffer} buffer Binary buffer to parse.
- * @returns {{ manifest: ISvfManifest, metadata: ISvfMetadata }} Parsed manifest and metadata.
+ * Parsed content of an actual *.svf file.
  */
-export function parseManifest(buffer: Buffer): { manifest: ISvfManifest, metadata: ISvfMetadata } {
+export interface ISvfRoot {
+    manifest: ISvfManifest;
+    metadata: ISvfMetadata;
+    embedded: { [key: string]: Buffer };
+}
+
+/**
+ * Parses SVF manifest, metadata (and potentially other embedded files) from an *.svf file.
+ * @param {Buffer} buffer Binary buffer to parse.
+ * @returns {ISvfRoot} Parsed manifest, metadata, and embedded files.
+ */
+export function parseManifest(buffer: Buffer): ISvfRoot {
     const zip = new Zip(buffer);
     const manifest = JSON.parse(zip.getEntry('manifest.json').getData().toString()) as ISvfManifest;
     const metadata = JSON.parse(zip.getEntry('metadata.json').getData().toString()) as ISvfMetadata;
-    return { manifest, metadata };
+    const embedded: { [key: string]: Buffer } = {};
+    zip.getEntries().filter(entry => entry.name !== 'manifest.json' && entry.name !== 'metadata.json').forEach((entry) => {
+        embedded[entry.name] = entry.getData();
+    });
+    return { manifest, metadata, embedded };
 }

@@ -8,7 +8,7 @@ import * as path from 'path';
 import * as fse from 'fs-extra';
 import { ManifestHelper } from '..';
 import { ModelDerivativeClient, IDerivativeResourceChild } from '../model-derivative';
-import { parseManifest, ISvfManifest, ISvfMetadata, AssetType, ISvfManifestAsset } from './manifest';
+import { parseManifest, ISvfMetadata, AssetType, ISvfManifestAsset, ISvfRoot } from './manifest';
 import { IAuthOptions } from '../common';
 import { isNullOrUndefined } from 'util';
 import { IFragment, parseFragments } from './fragment';
@@ -77,17 +77,14 @@ export class Parser {
         return new Parser(svf, resolve);
     }
 
-    protected manifest: ISvfManifest;
-    protected metadata: ISvfMetadata;
+    protected svf: ISvfRoot;
 
-    protected constructor(svf: Buffer, protected resolve: (uri: string) => Promise<Buffer>) {
-        const { manifest, metadata } = parseManifest(svf); // TODO: bring in other embedded assets
-        this.manifest = manifest;
-        this.metadata = metadata;
+    protected constructor(svfBuff: Buffer, protected resolve: (uri: string) => Promise<Buffer>) {
+        this.svf = parseManifest(svfBuff);
     }
 
     protected findAsset(query: { type?: AssetType, uri?: string }): ISvfManifestAsset | undefined {
-        return this.manifest.assets.find(asset => {
+        return this.svf.manifest.assets.find(asset => {
             return (isNullOrUndefined(query.type) || asset.type === query.type)
                 && (isNullOrUndefined(query.uri) || asset.URI === query.uri);
         });
@@ -109,7 +106,7 @@ export class Parser {
      * @returns {Promise<ISvfMetadata>} SVF metadata.
      */
     async getMetadata(): Promise<ISvfMetadata> {
-        return this.metadata;
+        return this.svf.metadata;
     }
 
     /**
@@ -179,7 +176,7 @@ export class Parser {
      */
     getMeshPackCount(): number {
         let count = 0;
-        this.manifest.assets.forEach(asset => {
+        this.svf.manifest.assets.forEach(asset => {
             if (asset.type === AssetType.PackFile && asset.URI.match(/^\d+\.pf$/)) {
                 count++;
             }
