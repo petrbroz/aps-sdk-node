@@ -19,6 +19,30 @@ export interface IMesh {
 }
 
 /**
+ * Line segment data.
+ */
+export interface ILines {
+    isLines: true;
+    vcount: number; // Number of vertices
+    lcount: number; // Number of line segments
+    vertices: Float32Array; // Vertex buffer (of length vcount*3)
+    indices: Uint16Array; // Index buffer (of length lcount*2)
+    colors?: Float32Array; // Optional color buffer (of length vcount*3)
+    lineWidth: number;
+}
+
+/**
+ * Point cloud data.
+ */
+export interface IPoints {
+    isPoints: true;
+    vcount: number; // Number of vertices/points
+    vertices: Float32Array; // Vertex buffer (of length vcount*3)
+    colors?: Float32Array; // Optional color buffer (of length vcount*3)
+    pointSize: number;
+}
+
+/**
  * Single UV channel. {@link IMesh} can have more of these.
  */
 export interface IUVMap {
@@ -32,10 +56,10 @@ export interface IUVMap {
  * referenced in the SVF manifest as an asset of type 'Autodesk.CloudPlatform.PackFile'.
  * @generator
  * @param {Buffer} buffer Binary buffer to parse.
- * @returns {Iterable<IMesh | null>} Instances of parsed meshes, or null values
+ * @returns {Iterable<IMesh | ILines | IPoints | null>} Instances of parsed meshes, or null values
  * if the mesh cannot be parsed (and to maintain the indices used in {@link IGeometry}).
  */
-export function *parseMeshes(buffer: Buffer): Iterable<IMesh | null> {
+export function *parseMeshes(buffer: Buffer): Iterable<IMesh | ILines | IPoints | null> {
     const pfr = new PackFileReader(buffer);
     for (let i = 0, len = pfr.numEntries(); i < len; i++) {
         const entry = pfr.seekEntry(i);
@@ -46,13 +70,11 @@ export function *parseMeshes(buffer: Buffer): Iterable<IMesh | null> {
             case 'Autodesk.CloudPlatform.OpenCTM':
                 yield parseMeshOCTM(pfr);
                 break;
-            case 'Autodesk.CloudPlatform.Lines': // TODO
-                console.warn('Unsupported mesh type', entry._type);
-                yield null;
+            case 'Autodesk.CloudPlatform.Lines':
+                yield parseLines(pfr, entry.version);
                 break;
-            case 'Autodesk.CloudPlatform.Points': // TODO
-                console.warn('Unsupported mesh type', entry._type);
-                yield null;
+            case 'Autodesk.CloudPlatform.Points':
+                yield parsePoints(pfr, entry.version);
                 break;
         }
     }
@@ -160,4 +182,74 @@ function parseMeshRAW(pfr: PackFileReader): IMesh {
         mesh.normals = normals;
     }
     return mesh;
+}
+
+function parseLines(pfr: PackFileReader, entryVersion: number): ILines {
+    console.assert(entryVersion >= 2);
+
+    const vertexCount = pfr.getUint16();
+    const indexCount = pfr.getUint16();
+    const boundsCount = pfr.getUint16(); // Ignoring for now
+    const lineWidth = (entryVersion > 2) ? pfr.getFloat32() : 1.0;
+    const hasColors = pfr.getUint8() !== 0;
+    const lines: ILines = {
+        isLines: true,
+        vcount: vertexCount,
+        lcount: indexCount / 2,
+        vertices: new Float32Array(vertexCount * 3),
+        indices: new Uint16Array(indexCount),
+        lineWidth
+    };
+
+    // Parse vertices
+    for (let i = 0, len = vertexCount * 3; i < len; i++) {
+        lines.vertices[i] = pfr.getFloat32();
+    }
+
+    // Parse colors
+    if (hasColors) {
+        lines.colors = new Float32Array(vertexCount * 3);
+        for (let i = 0, len = vertexCount * 3; i < len; i++) {
+            lines.colors[i] = pfr.getFloat32();
+        }
+    }
+
+    // Parse indices
+    for (let i = 0, len = indexCount; i < len; i++) {
+        lines.indices[i] = pfr.getUint16();
+    }
+
+    // TODO: Parse polyline bounds
+
+    return lines;
+}
+
+function parsePoints(pfr: PackFileReader, entryVersion: number): IPoints {
+    console.assert(entryVersion >= 2);
+
+    const vertexCount = pfr.getUint16();
+    const indexCount = pfr.getUint16();
+    const pointSize = pfr.getFloat32();
+    const hasColors = pfr.getUint8() !== 0;
+    const points: IPoints = {
+        isPoints: true,
+        vcount: vertexCount,
+        vertices: new Float32Array(vertexCount * 3),
+        pointSize
+    };
+
+    // Parse vertices
+    for (let i = 0, len = vertexCount * 3; i < len; i++) {
+        points.vertices[i] = pfr.getFloat32();
+    }
+
+    // Parse colors
+    if (hasColors) {
+        points.colors = new Float32Array(vertexCount * 3);
+        for (let i = 0, len = vertexCount * 3; i < len; i++) {
+            points.colors[i] = pfr.getFloat32();
+        }
+    }
+
+    return points;
 }

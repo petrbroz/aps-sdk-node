@@ -13,7 +13,7 @@ import { IAuthOptions } from '../common';
 import { isNullOrUndefined } from 'util';
 import { IFragment, parseFragments } from './fragment';
 import { IGeometryMetadata, parseGeometries } from './geometry';
-import { IMesh, parseMeshes } from './mesh';
+import { IMesh, parseMeshes, IPoints, ILines } from './mesh';
 import { IMaterial, parseMaterials } from './material';
 
 /**
@@ -185,12 +185,13 @@ export class Parser {
     }
 
     /**
-     * Retrieves, parses, and collects all meshes in a specific SVF meshpack.
+     * Retrieves, parses, and collects all meshes, lines, or points in a specific SVF meshpack.
      * @async
      * @param {number} packNumber Index of mesh pack file.
-     * @returns {Promise<(IMesh | null)[]>} List of parsed meshes (or null values for unsupported mesh types).
+     * @returns {Promise<(IMesh | ILines | IPoints | null)[]>} List of parsed meshes,
+     * lines, or points (or null values for unsupported mesh types).
      */
-    async listMeshPack(packNumber: number): Promise<(IMesh | null)[]> {
+    async listMeshPack(packNumber: number): Promise<(IMesh | ILines | IPoints | null)[]> {
         const meshPackAsset = this.findAsset({ type: AssetType.PackFile, uri: `${packNumber}.pf` });
         if (!meshPackAsset) {
             throw new Error(`Mesh packfile ${packNumber}.pf not found.`);
@@ -200,13 +201,13 @@ export class Parser {
     }
 
     /**
-     * Retrieves, parses, and iterates over all meshes in a specific SVF meshpack.
+     * Retrieves, parses, and iterates over all meshes, lines, or points in a specific SVF meshpack.
      * @async
      * @generator
-     * @returns {AsyncIterable<IMesh | null>} Async iterator over parsed meshes
-     * (or null values for unsupported mesh types).
+     * @returns {AsyncIterable<IMesh | ILines | IPoints | null>} Async iterator over parsed meshes,
+     * lines, or points (or null values for unsupported mesh types).
      */
-    async *enumerateMeshPack(packNumber: number): AsyncIterable<IMesh | null> {
+    async *enumerateMeshPack(packNumber: number): AsyncIterable<IMesh | ILines | IPoints | null> {
         const meshPackAsset = this.findAsset({ type: AssetType.PackFile, uri: `${packNumber}.pf` });
         if (!meshPackAsset) {
             throw new Error(`Mesh packfile ${packNumber}.pf not found.`);
