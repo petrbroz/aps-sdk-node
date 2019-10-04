@@ -2,6 +2,33 @@
 # yarn lockfile v1
 
 
+"@gerrit0/typedoc-default-themes@^0.6.1":
+  version "0.6.2"
+  resolved "https://registry.yarnpkg.com/@gerrit0/typedoc-default-themes/-/typedoc-default-themes-0.6.2.tgz#225e8bc585e7b9fd0c59231fc7059ff128bf879f"
+  integrity sha512-d1nGmlecgjB4wcQKJif+BZl5V8Ea4xNHPbwVzYU1vaXt+YFE2gVU0/HO+jITo8exVO5DCqL0hVPDeN3DRnpslQ==
+  dependencies:
+    backbone "^1.4.0"
+    jquery "^3.4.1"
+    lunr "^2.3.6"
+    underscore "^1.9.1"
+
+"@gerrit0/typedoc@^0.15.0":
+  version "0.15.6"
+  resolved "https://registry.yarnpkg.com/@gerrit0/typedoc/-/typedoc-0.15.6.tgz#075ccb8ccae067bd328af393155752fcd6a2da07"
+  integrity sha512-Q0XQyRAM9ASyHxzqf/r/jTJNAdeU9o9v3EGaBDk6ncGSi3XCkKAWM+z7g2oDqatGT7Q8XZfRZc9XUJeuwSR83Q==
+  dependencies:
+    "@gerrit0/typedoc-default-themes" "^0.6.1"
+    "@types/minimatch" "3.0.3"
+    fs-extra "^8.1.0"
+    handlebars "^4.1.2"
+    highlight.js "^9.15.8"
+    lodash "^4.17.15"
+    marked "^0.7.0"
+    minimatch "^3.0.0"
+    progress "^2.0.3"
+    shelljs "^0.8.3"
+    typescript "3.6.x"
+
 "@types/adm-zip@^0.4.32":
   version "0.4.32"
   resolved "https://registry.yarnpkg.com/@types/adm-zip/-/adm-zip-0.4.32.tgz#6de01309af60677065d2e52b417a023303220931"
@@ -2947,6 +2974,13 @@ typedoc-default-themes@^0.6.0:
     lunr "^2.3.6"
     underscore "^1.9.1"
 
+typedoc-neo-theme@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/typedoc-neo-theme/-/typedoc-neo-theme-1.0.2.tgz#6db34f232545c4d42b9a987aea6b9151b1546889"
+  integrity sha512-Jlcr9AMxifOF7LQabD+I8auOVp0uinqgEfhYfoflIuDfzmn17FIu9kUmrIf9Ihf7Sq6tENouqe0kqTBbefCXnA==
+  dependencies:
+    "@gerrit0/typedoc" "^0.15.0"
+
 typedoc@^0.15.0:
   version "0.15.0"
   resolved "https://registry.yarnpkg.com/typedoc/-/typedoc-0.15.0.tgz#21eaf4db41cf2797bad027a74f2a75cd08ae0c2d"
@@ -2968,6 +3002,11 @@ typescript@3.5.x:
   version "3.5.3"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.5.3.tgz#c830f657f93f1ea846819e929092f5fe5983e977"
   integrity sha512-ACzBtm/PhXBDId6a6sDJfroT2pOWt/oOnk4/dElG5G33ZL776N3Y6/6bKZJBFpd+b05F3Ct9qDjMeJmRWtE2/g==
+
+typescript@3.6.x:
+  version "3.6.3"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.6.3.tgz#fea942fabb20f7e1ca7164ff626f1a9f3f70b4da"
+  integrity sha512-N7bceJL1CtRQ2RiG0AQME13ksR7DiuQh/QehubYcghzv20tnh+MQnQIuJddTmsbqYj+dztchykemz0zFzlvdQw==
 
 typescript@^3.6.0:
   version "3.6.2"
