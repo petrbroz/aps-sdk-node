@@ -7,6 +7,10 @@ This subfolder provides additional utilities for parsing _SVF_
 (the proprietary file format used by the Forge Viewer), either from Model Derivative
 service, or from local folder.
 
+## Usage
+
+### In Node.js
+
 ```js
 const { ModelDerivativeClient, ManifestHelper } = require('forge-server-utils');
 const { Parser } = require('forge-server-utils/dist/svf');

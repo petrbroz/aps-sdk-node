@@ -135,10 +135,10 @@ export class Parser {
             tasks.push((async (uri: string) => {
                 try {
                     // Sometimes, Model Derivative service URIs must be left unmodified...
-                    output.images[uri] = await this.getAsset(uri);
+                    output.images[uri.toLowerCase()] = await this.getAsset(uri);
                 } catch(err) {
                     // ... and sometimes they must be lower-cased :/
-                    output.images[uri] = await this.getAsset(uri.toLowerCase());
+                    output.images[uri.toLowerCase()] = await this.getAsset(uri.toLowerCase());
                 }
             })(img));
         }

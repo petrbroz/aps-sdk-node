@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.6.0] - 2019-10-04
+
+### Added
+- Basic support for serializing SVF content into glTF (2.0)
+
 ## [6.5.0] - 2019-10-04
 
 ### Added
