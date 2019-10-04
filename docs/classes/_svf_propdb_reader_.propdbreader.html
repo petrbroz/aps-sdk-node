@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>DesignAutomationID | forge-server-utils</title>
+	<title>PropdbReader | forge-server-utils</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,13 +56,13 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_design_automation_.html">&quot;design-automation&quot;</a>
+					<a href="../modules/_svf_propdb_reader_.html">&quot;svf/propdb-reader&quot;</a>
 				</li>
 				<li>
-					<a href="_design_automation_.designautomationid.html">DesignAutomationID</a>
+					<a href="_svf_propdb_reader_.propdbreader.html">PropdbReader</a>
 				</li>
 			</ul>
-			<h1>Class DesignAutomationID</h1>
+			<h1>Class PropdbReader</h1>
 		</div>
 	</div>
 </header>
@@ -72,8 +72,8 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>Helper class for working with Design Automation
-						<a href="https://forge.autodesk.com/en/docs/design-automation/v3/developers_guide/aliases-and-ids" class="external">aliases and IDs</a>.</p>
+						<p>Helper class for parsing and querying property database
+						stored in various &#39;objects_*.json.gz&#39; assets in an SVF.</p>
 					</div>
 				</div>
 			</section>
@@ -81,7 +81,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">DesignAutomationID</span>
+						<span class="target">PropdbReader</span>
 					</li>
 				</ul>
 			</section>
@@ -92,22 +92,23 @@
 						<section class="tsd-index-section ">
 							<h3>Constructors</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="_design_automation_.designautomationid.html#constructor" class="tsd-kind-icon">constructor</a></li>
+								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="_svf_propdb_reader_.propdbreader.html#constructor" class="tsd-kind-icon">constructor</a></li>
 							</ul>
 						</section>
-						<section class="tsd-index-section ">
+						<section class="tsd-index-section tsd-is-private-protected">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_design_automation_.designautomationid.html#alias" class="tsd-kind-icon">alias</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_design_automation_.designautomationid.html#id" class="tsd-kind-icon">id</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_design_automation_.designautomationid.html#owner" class="tsd-kind-icon">owner</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><a href="_svf_propdb_reader_.propdbreader.html#_attrs" class="tsd-kind-icon">_attrs</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><a href="_svf_propdb_reader_.propdbreader.html#_avs" class="tsd-kind-icon">_avs</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><a href="_svf_propdb_reader_.propdbreader.html#_ids" class="tsd-kind-icon">_ids</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><a href="_svf_propdb_reader_.propdbreader.html#_offsets" class="tsd-kind-icon">_offsets</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><a href="_svf_propdb_reader_.propdbreader.html#_vals" class="tsd-kind-icon">_vals</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_design_automation_.designautomationid.html#tostring" class="tsd-kind-icon">to<wbr>String</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="_design_automation_.designautomationid.html#parse" class="tsd-kind-icon">parse</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_svf_propdb_reader_.propdbreader.html#findproperties" class="tsd-kind-icon">find<wbr>Properties</a></li>
 							</ul>
 						</section>
 					</div>
@@ -119,156 +120,157 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Design<wbr>AutomationID<span class="tsd-signature-symbol">(</span>owner<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, alias<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_design_automation_.designautomationid.html" class="tsd-signature-type">DesignAutomationID</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Propdb<wbr>Reader<span class="tsd-signature-symbol">(</span>ids<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Buffer</span>, offsets<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Buffer</span>, avs<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Buffer</span>, attrs<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Buffer</span>, vals<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Buffer</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_svf_propdb_reader_.propdbreader.html" class="tsd-signature-type">PropdbReader</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/76583b2/src/design-automation.ts#L118">design-automation.ts:118</a></li>
+									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/76583b2/src/svf/propdb-reader.ts#L12">svf/propdb-reader.ts:12</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Creates new fully qualified ID.</p>
+									<p>Initializes the property database reader.</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>owner: <span class="tsd-signature-type">string</span></h5>
+									<h5>ids: <span class="tsd-signature-type">Buffer</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<div class="lead">
-											<p>Owner part of the fully qualified ID. Must consist of a-z, A-Z, 0-9 and _ characters only.</p>
+											<p>Content of objects_ids.json.gz file.</p>
 										</div>
 									</div>
 								</li>
 								<li>
-									<h5>id: <span class="tsd-signature-type">string</span></h5>
+									<h5>offsets: <span class="tsd-signature-type">Buffer</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<div class="lead">
-											<p>ID part of the fully qualified ID. Must consist of a-z, A-Z, 0-9 and _ characters only.</p>
+											<p>Content of objects_offs.json.gz file.</p>
 										</div>
 									</div>
 								</li>
 								<li>
-									<h5>alias: <span class="tsd-signature-type">string</span></h5>
+									<h5>avs: <span class="tsd-signature-type">Buffer</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<div class="lead">
-											<p>Alias part of the fully qualified ID. Must consist of a-z, A-Z, 0-9 and _ characters only.</p>
+											<p>Content of objects_avs.json.gz file.</p>
+										</div>
+									</div>
+								</li>
+								<li>
+									<h5>attrs: <span class="tsd-signature-type">Buffer</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<div class="lead">
+											<p>Content of objects_attrs.json.gz file.</p>
+										</div>
+									</div>
+								</li>
+								<li>
+									<h5>vals: <span class="tsd-signature-type">Buffer</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<div class="lead">
+											<p>Content of objects_vals.json.gz file.</p>
 										</div>
 									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="_design_automation_.designautomationid.html" class="tsd-signature-type">DesignAutomationID</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="_svf_propdb_reader_.propdbreader.html" class="tsd-signature-type">PropdbReader</a></h4>
 						</li>
 					</ul>
 				</section>
 			</section>
-			<section class="tsd-panel-group tsd-member-group ">
+			<section class="tsd-panel-group tsd-member-group tsd-is-private-protected">
 				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="alias" class="tsd-anchor"></a>
-					<h3>alias</h3>
-					<div class="tsd-signature tsd-kind-icon">alias<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected">
+					<a name="_attrs" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagProtected">Protected</span> _attrs</h3>
+					<div class="tsd-signature tsd-kind-icon">_attrs<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/76583b2/src/design-automation.ts#L126">design-automation.ts:126</a></li>
+							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/76583b2/src/svf/propdb-reader.ts#L11">svf/propdb-reader.ts:11</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Alias part of the fully qualified ID. Must consist of a-z, A-Z, 0-9 and _ characters only.</p>
-						</div>
-					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="id" class="tsd-anchor"></a>
-					<h3>id</h3>
-					<div class="tsd-signature tsd-kind-icon">id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected">
+					<a name="_avs" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagProtected">Protected</span> _avs</h3>
+					<div class="tsd-signature tsd-kind-icon">_avs<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/76583b2/src/design-automation.ts#L126">design-automation.ts:126</a></li>
+							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/76583b2/src/svf/propdb-reader.ts#L10">svf/propdb-reader.ts:10</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>ID part of the fully qualified ID. Must consist of a-z, A-Z, 0-9 and _ characters only.</p>
-						</div>
-					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="owner" class="tsd-anchor"></a>
-					<h3>owner</h3>
-					<div class="tsd-signature tsd-kind-icon">owner<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected">
+					<a name="_ids" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagProtected">Protected</span> _ids</h3>
+					<div class="tsd-signature tsd-kind-icon">_ids<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/76583b2/src/design-automation.ts#L126">design-automation.ts:126</a></li>
+							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/76583b2/src/svf/propdb-reader.ts#L8">svf/propdb-reader.ts:8</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Owner part of the fully qualified ID. Must consist of a-z, A-Z, 0-9 and _ characters only.</p>
-						</div>
-					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected">
+					<a name="_offsets" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagProtected">Protected</span> _offsets</h3>
+					<div class="tsd-signature tsd-kind-icon">_offsets<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/76583b2/src/svf/propdb-reader.ts#L9">svf/propdb-reader.ts:9</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected">
+					<a name="_vals" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagProtected">Protected</span> _vals</h3>
+					<div class="tsd-signature tsd-kind-icon">_vals<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/76583b2/src/svf/propdb-reader.ts#L12">svf/propdb-reader.ts:12</a></li>
+						</ul>
+					</aside>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="tostring" class="tsd-anchor"></a>
-					<h3>to<wbr>String</h3>
+					<a name="findproperties" class="tsd-anchor"></a>
+					<h3>find<wbr>Properties</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">to<wbr>String<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+						<li class="tsd-signature tsd-kind-icon">find<wbr>Properties<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/76583b2/src/design-automation.ts#L132">design-automation.ts:132</a></li>
+									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/76583b2/src/svf/propdb-reader.ts#L35">svf/propdb-reader.ts:35</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Outputs the fully qualified ID in a form expected by Design Automation endpoints.</p>
-								</div>
-							</div>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
-					<a name="parse" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> parse</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">parse<span class="tsd-signature-symbol">(</span>str<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_design_automation_.designautomationid.html" class="tsd-signature-type">DesignAutomationID</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/76583b2/src/design-automation.ts#L111">design-automation.ts:111</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Parses fully qualified ID.</p>
+									<p>Finds properties of given object.</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>str: <span class="tsd-signature-type">string</span></h5>
+									<h5>id: <span class="tsd-signature-type">number</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>Fully qualified ID.</p>
+										<p>Object ID.</p>
 									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="_design_automation_.designautomationid.html" class="tsd-signature-type">DesignAutomationID</a>
-								<span class="tsd-signature-symbol"> | </span>
-								<span class="tsd-signature-type">null</span>
-							</h4>
-							<p>Parsed ID or null if the format was not correct.</p>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">object</span></h4>
+							<p>Dictionary of property names and values.</p>
+							<ul class="tsd-parameters">
+								<li class="tsd-parameter-index-signature">
+									<h5><span class="tsd-signature-symbol">[</span>name: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]: </span><span class="tsd-signature-type">any</span></h5>
+								</li>
+							</ul>
 						</li>
 					</ul>
 				</section>
@@ -292,7 +294,7 @@
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_data_management_.html">"data-<wbr>management"</a>
 					</li>
-					<li class="current tsd-kind-external-module">
+					<li class=" tsd-kind-external-module">
 						<a href="../modules/_design_automation_.html">"design-<wbr>automation"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
@@ -325,94 +327,43 @@
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_svf_packfile_reader_.html">"svf/packfile-<wbr>reader"</a>
 					</li>
-					<li class=" tsd-kind-external-module">
+					<li class="current tsd-kind-external-module">
 						<a href="../modules/_svf_propdb_reader_.html">"svf/propdb-<wbr>reader"</a>
 					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-class tsd-parent-kind-external-module">
-						<a href="_design_automation_.designautomationclient.html" class="tsd-kind-icon">Design<wbr>Automation<wbr>Client</a>
-					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class tsd-parent-kind-external-module">
-						<a href="_design_automation_.designautomationid.html" class="tsd-kind-icon">Design<wbr>AutomationID</a>
+						<a href="_svf_propdb_reader_.propdbreader.html" class="tsd-kind-icon">Propdb<wbr>Reader</a>
 						<ul>
 							<li class=" tsd-kind-constructor tsd-parent-kind-class">
-								<a href="_design_automation_.designautomationid.html#constructor" class="tsd-kind-icon">constructor</a>
+								<a href="_svf_propdb_reader_.propdbreader.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_design_automation_.designautomationid.html#alias" class="tsd-kind-icon">alias</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-protected">
+								<a href="_svf_propdb_reader_.propdbreader.html#_attrs" class="tsd-kind-icon">_attrs</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_design_automation_.designautomationid.html#id" class="tsd-kind-icon">id</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-protected">
+								<a href="_svf_propdb_reader_.propdbreader.html#_avs" class="tsd-kind-icon">_avs</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_design_automation_.designautomationid.html#owner" class="tsd-kind-icon">owner</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-protected">
+								<a href="_svf_propdb_reader_.propdbreader.html#_ids" class="tsd-kind-icon">_ids</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-protected">
+								<a href="_svf_propdb_reader_.propdbreader.html#_offsets" class="tsd-kind-icon">_offsets</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-protected">
+								<a href="_svf_propdb_reader_.propdbreader.html#_vals" class="tsd-kind-icon">_vals</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_design_automation_.designautomationid.html#tostring" class="tsd-kind-icon">to<wbr>String</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
-								<a href="_design_automation_.designautomationid.html#parse" class="tsd-kind-icon">parse</a>
+								<a href="_svf_propdb_reader_.propdbreader.html#findproperties" class="tsd-kind-icon">find<wbr>Properties</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="../interfaces/_design_automation_.iactivitycommon.html" class="tsd-kind-icon">IActivity<wbr>Common</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="../interfaces/_design_automation_.iactivitydetail.html" class="tsd-kind-icon">IActivity<wbr>Detail</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="../interfaces/_design_automation_.iactivityparam.html" class="tsd-kind-icon">IActivity<wbr>Param</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="../interfaces/_design_automation_.ialias.html" class="tsd-kind-icon">IAlias</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="../interfaces/_design_automation_.iappbundlecommon.html" class="tsd-kind-icon">IApp<wbr>Bundle<wbr>Common</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="../interfaces/_design_automation_.iappbundledetail.html" class="tsd-kind-icon">IApp<wbr>Bundle<wbr>Detail</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="../interfaces/_design_automation_.iappbundleuploadparams.html" class="tsd-kind-icon">IApp<wbr>Bundle<wbr>Upload<wbr>Params</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="../interfaces/_design_automation_.icreateactivityconfig.html" class="tsd-kind-icon">ICreate<wbr>Activity<wbr>Config</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="../interfaces/_design_automation_.icreateappbundleconfig.html" class="tsd-kind-icon">ICreate<wbr>App<wbr>Bundle<wbr>Config</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="../interfaces/_design_automation_.ienginedetail.html" class="tsd-kind-icon">IEngine<wbr>Detail</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="../interfaces/_design_automation_.iupdateactivityconfig.html" class="tsd-kind-icon">IUpdate<wbr>Activity<wbr>Config</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="../interfaces/_design_automation_.iupdateappbundleconfig.html" class="tsd-kind-icon">IUpdate<wbr>App<wbr>Bundle<wbr>Config</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="../interfaces/_design_automation_.iworkitemconfig.html" class="tsd-kind-icon">IWork<wbr>Item<wbr>Config</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="../interfaces/_design_automation_.iworkitemdetail.html" class="tsd-kind-icon">IWork<wbr>Item<wbr>Detail</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="../interfaces/_design_automation_.iworkitemparam.html" class="tsd-kind-icon">IWork<wbr>Item<wbr>Param</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/_design_automation_.html#codescopes" class="tsd-kind-icon">Code<wbr>Scopes</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/_design_automation_.html#rootpath" class="tsd-kind-icon">Root<wbr>Path</a>
-					</li>
 				</ul>
 			</nav>
 		</div>

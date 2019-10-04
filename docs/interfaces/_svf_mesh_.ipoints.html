@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>ISvfManifestAsset | forge-server-utils</title>
+	<title>IPoints | forge-server-utils</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,24 +56,31 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_svf_index_.html">&quot;svf/index&quot;</a>
+					<a href="../modules/_svf_mesh_.html">&quot;svf/mesh&quot;</a>
 				</li>
 				<li>
-					<a href="_svf_index_.isvfmanifestasset.html">ISvfManifestAsset</a>
+					<a href="_svf_mesh_.ipoints.html">IPoints</a>
 				</li>
 			</ul>
-			<h1>Interface ISvfManifestAsset</h1>
+			<h1>Interface IPoints</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>Point cloud data.</p>
+					</div>
+				</div>
+			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">ISvfManifestAsset</span>
+						<span class="target">IPoints</span>
 					</li>
 				</ul>
 			</section>
@@ -84,12 +91,11 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_svf_index_.isvfmanifestasset.html#uri" class="tsd-kind-icon">URI</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_svf_index_.isvfmanifestasset.html#id" class="tsd-kind-icon">id</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_svf_index_.isvfmanifestasset.html#size" class="tsd-kind-icon">size</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_svf_index_.isvfmanifestasset.html#type" class="tsd-kind-icon">type</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_svf_index_.isvfmanifestasset.html#typeset" class="tsd-kind-icon">typeset</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_svf_index_.isvfmanifestasset.html#usize" class="tsd-kind-icon">usize</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_svf_mesh_.ipoints.html#colors" class="tsd-kind-icon">colors</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_svf_mesh_.ipoints.html#ispoints" class="tsd-kind-icon">is<wbr>Points</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_svf_mesh_.ipoints.html#pointsize" class="tsd-kind-icon">point<wbr>Size</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_svf_mesh_.ipoints.html#vcount" class="tsd-kind-icon">vcount</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_svf_mesh_.ipoints.html#vertices" class="tsd-kind-icon">vertices</a></li>
 							</ul>
 						</section>
 					</div>
@@ -98,62 +104,52 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="uri" class="tsd-anchor"></a>
-					<h3>URI</h3>
-					<div class="tsd-signature tsd-kind-icon">URI<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="colors" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> colors</h3>
+					<div class="tsd-signature tsd-kind-icon">colors<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Float32Array</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/4e23bab/src/svf/index.ts#L15">svf/index.ts:15</a></li>
+							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/76583b2/src/svf/mesh.ts#L41">svf/mesh.ts:41</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="id" class="tsd-anchor"></a>
-					<h3>id</h3>
-					<div class="tsd-signature tsd-kind-icon">id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="ispoints" class="tsd-anchor"></a>
+					<h3>is<wbr>Points</h3>
+					<div class="tsd-signature tsd-kind-icon">is<wbr>Points<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">true</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/4e23bab/src/svf/index.ts#L12">svf/index.ts:12</a></li>
+							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/76583b2/src/svf/mesh.ts#L38">svf/mesh.ts:38</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="size" class="tsd-anchor"></a>
-					<h3>size</h3>
-					<div class="tsd-signature tsd-kind-icon">size<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<a name="pointsize" class="tsd-anchor"></a>
+					<h3>point<wbr>Size</h3>
+					<div class="tsd-signature tsd-kind-icon">point<wbr>Size<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/4e23bab/src/svf/index.ts#L16">svf/index.ts:16</a></li>
+							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/76583b2/src/svf/mesh.ts#L42">svf/mesh.ts:42</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="type" class="tsd-anchor"></a>
-					<h3>type</h3>
-					<div class="tsd-signature tsd-kind-icon">type<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="vcount" class="tsd-anchor"></a>
+					<h3>vcount</h3>
+					<div class="tsd-signature tsd-kind-icon">vcount<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/4e23bab/src/svf/index.ts#L13">svf/index.ts:13</a></li>
+							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/76583b2/src/svf/mesh.ts#L39">svf/mesh.ts:39</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="typeset" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> typeset</h3>
-					<div class="tsd-signature tsd-kind-icon">typeset<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></div>
+					<a name="vertices" class="tsd-anchor"></a>
+					<h3>vertices</h3>
+					<div class="tsd-signature tsd-kind-icon">vertices<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Float32Array</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/4e23bab/src/svf/index.ts#L14">svf/index.ts:14</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="usize" class="tsd-anchor"></a>
-					<h3>usize</h3>
-					<div class="tsd-signature tsd-kind-icon">usize<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/4e23bab/src/svf/index.ts#L17">svf/index.ts:17</a></li>
+							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/76583b2/src/svf/mesh.ts#L40">svf/mesh.ts:40</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -186,54 +182,84 @@
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_model_derivative_.html">"model-<wbr>derivative"</a>
 					</li>
-					<li class="current tsd-kind-external-module">
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_svf_fragment_.html">"svf/fragment"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_svf_geometry_.html">"svf/geometry"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
 						<a href="../modules/_svf_index_.html">"svf/index"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_svf_input_stream_.html">"svf/input-<wbr>stream"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_svf_manifest_.html">"svf/manifest"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_svf_material_.html">"svf/material"</a>
+					</li>
+					<li class="current tsd-kind-external-module">
+						<a href="../modules/_svf_mesh_.html">"svf/mesh"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_svf_packfile_reader_.html">"svf/packfile-<wbr>reader"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_svf_propdb_reader_.html">"svf/propdb-<wbr>reader"</a>
 					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_svf_index_.isvfmanifest.html" class="tsd-kind-icon">ISvf<wbr>Manifest</a>
+						<a href="_svf_mesh_.ilines.html" class="tsd-kind-icon">ILines</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
+						<a href="_svf_mesh_.imesh.html" class="tsd-kind-icon">IMesh</a>
 					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_svf_index_.isvfmanifestasset.html" class="tsd-kind-icon">ISvf<wbr>Manifest<wbr>Asset</a>
+						<a href="_svf_mesh_.ipoints.html" class="tsd-kind-icon">IPoints</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_svf_index_.isvfmanifestasset.html#uri" class="tsd-kind-icon">URI</a>
+								<a href="_svf_mesh_.ipoints.html#colors" class="tsd-kind-icon">colors</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_svf_index_.isvfmanifestasset.html#id" class="tsd-kind-icon">id</a>
+								<a href="_svf_mesh_.ipoints.html#ispoints" class="tsd-kind-icon">is<wbr>Points</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_svf_index_.isvfmanifestasset.html#size" class="tsd-kind-icon">size</a>
+								<a href="_svf_mesh_.ipoints.html#pointsize" class="tsd-kind-icon">point<wbr>Size</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_svf_index_.isvfmanifestasset.html#type" class="tsd-kind-icon">type</a>
+								<a href="_svf_mesh_.ipoints.html#vcount" class="tsd-kind-icon">vcount</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_svf_index_.isvfmanifestasset.html#typeset" class="tsd-kind-icon">typeset</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_svf_index_.isvfmanifestasset.html#usize" class="tsd-kind-icon">usize</a>
+								<a href="_svf_mesh_.ipoints.html#vertices" class="tsd-kind-icon">vertices</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_svf_index_.isvfmanifesttype.html" class="tsd-kind-icon">ISvf<wbr>Manifest<wbr>Type</a>
+						<a href="_svf_mesh_.iuvmap.html" class="tsd-kind-icon">IUVMap</a>
 					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_svf_index_.isvfmanifesttypeset.html" class="tsd-kind-icon">ISvf<wbr>Manifest<wbr>Type<wbr>Set</a>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="../modules/_svf_mesh_.html#parselines" class="tsd-kind-icon">parse<wbr>Lines</a>
 					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_svf_index_.isvfmetadata.html" class="tsd-kind-icon">ISvf<wbr>Metadata</a>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="../modules/_svf_mesh_.html#parsemeshoctm" class="tsd-kind-icon">parse<wbr>MeshOCTM</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="../modules/_svf_mesh_.html#parsemeshraw" class="tsd-kind-icon">parse<wbr>MeshRAW</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module">
-						<a href="../modules/_svf_index_.html#parse" class="tsd-kind-icon">parse</a>
+						<a href="../modules/_svf_mesh_.html#parsemeshes" class="tsd-kind-icon">parse<wbr>Meshes</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="../modules/_svf_mesh_.html#parsepoints" class="tsd-kind-icon">parse<wbr>Points</a>
 					</li>
 				</ul>
 			</nav>
