@@ -7,17 +7,19 @@
 ![platforms](https://img.shields.io/badge/platform-windows%20%7C%20osx%20%7C%20linux-lightgray.svg)
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](http://opensource.org/licenses/MIT)
 
-Unofficial tools for accessing [Autodesk Forge](https://developer.autodesk.com/) APIs
-from Node.js applications, built using [TypeScript](https://www.typescriptlang.org) and modern language features like
+Unofficial tools for accessing [Autodesk Forge](https://developer.autodesk.com/) APIs from Node.js applications
+and from browsers, built using [TypeScript](https://www.typescriptlang.org) and modern language features like
 [async/await](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function)
 or [generators](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*).
+
+![Autodesk Forge](docs/logo.png)
 
 ## Usage
 
 ### Server Side
 
-The TypeScript implementation is transpiled into JavaScript with type definition files,
-so you can use it both in Node.js projects (as a CommonJS module), and in TypeScript projects (as an ES6 module):
+The TypeScript implementation is transpiled into CommonJS JavaScript module with type definition files,
+so you can use it both in Node.js projects, and in TypeScript projects:
 
 ```js
 // JavaScript
@@ -92,13 +94,17 @@ const bundles = await client.listAppBundles();
 console.log('App bundles', bundles);
 ```
 
-### Client Side (experimental feature)
+#### Downloading & Parsing Derivatives
+
+See [src/svf/README.md](src/svf/README.md) for more information.
+
+### Client Side (experimental)
 
 The transpiled output from TypeScript is also bundled using [webpack](https://webpack.js.org),
-so you can use the same functionality in a browser. There is a caveat, however: at the moment
-it is unfortunately not possible to request Forge access tokens from the browser
+so you can use the same functionality in a browser. There is a caveat, unfortunately: at the moment
+it is not possible to request Forge access tokens from the browser
 due to [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) limitations,
-so when creating instances of the different clients, instead of providing client ID and secret
+so when creating instances of the various clients, instead of providing client ID and secret
 you will have to provide the token directly.
 
 ```html
