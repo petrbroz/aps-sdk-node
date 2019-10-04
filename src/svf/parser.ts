@@ -12,21 +12,39 @@ import { IMaterial, parseMaterials } from './material';
 import { PropdbReader } from './propdb-reader';
 
 /**
+ * Entire content of SVF and its assets loaded in memory.
+ */
+export interface ISvfContent {
+    metadata: ISvfMetadata;
+    fragments: IFragment[];
+    geometries: IGeometryMetadata[];
+    meshpacks: (IMesh | ILines | IPoints | null)[][];
+    materials: (IMaterial | null)[];
+    properties: PropdbReader;
+    images: { [uri: string]: Buffer };
+}
+
+/**
  * Utility class for parsing SVF content from Model Derivative service or from local file system,
  * using the lower-level methods like {@link parseFragments} under the hood.
  * The class can only be instantiated using one of the two async static methods:
  * {@link Parser.FromFileSystem}, or {@link Parser.FromDerivativeService}.
- *
- * @example
- * const parser = await Parser.FromFileSystem('path/to/svf');
- * const fragments = await parser.listFragments();
- * console.log(fragments);
+ * After that, you can parse the entire SVF into memory using {@link parse}, or parse
+ * individual SVF objects using methods like {@link listFragments} or {@link enumerateGeometries}.
  *
  * @example
  * const auth = { client_id: 'forge client id', client_secret: 'forge client secreet' };
  * const parser = await Parser.FromDerivativeService('model urn', 'viewable guid', auth);
- * for await (const material of parser.enumerateMaterials()) {
- *   console.log(material);
+ * const svf = await parser.parse(); // Parse entire SVF into memory
+ * console.log(svf);
+ *
+ * @example
+ * const parser = await Parser.FromFileSystem('path/to/svf');
+ * // List all geometries
+ * console.log(await parser.listGeometries());
+ * // Enumerate fragments (without building a list of all of them)
+ * for await (const fragment of parser.enumerateFragments()) {
+ *   console.log(fragment);
  * }
  */
 export class Parser {
@@ -76,6 +94,56 @@ export class Parser {
 
     protected constructor(svfBuff: Buffer, protected resolve: (uri: string) => Promise<Buffer>) {
         this.svf = parseManifest(svfBuff);
+    }
+
+    /**
+     * Reads the entire SVF and all its referenced assets into memory.
+     * In cases where a more granular control is needed (for example, when trying to control
+     * memory consumption), consider parsing the different SVF elements individually,
+     * using methods like {@link listFragments}, {@link enumerateGeometries}, etc.
+     */
+    async parse(): Promise<ISvfContent> {
+        let output: any = {
+            metadata: await this.getMetadata(),
+            fragments: [],
+            geometries: [],
+            meshpacks: [],
+            materials: [],
+            properties: null,
+            images: {}
+        };
+        let tasks: Promise<void>[] = [];
+
+        tasks.push((async () => {
+            output.fragments = await this.listFragments();
+        })());
+        tasks.push((async () => {
+            output.geometries = await this.listGeometries();
+        })());
+        tasks.push((async () => {
+            output.materials = await this.listMaterials();
+        })());
+        tasks.push((async () => {
+            output.properties = await this.getPropertyDb();
+        })());
+        for (let i = 0, len = this.getMeshPackCount(); i < len; i++) {
+            tasks.push((async (id: number) => {
+                output.meshpacks[id] = await this.listMeshPack(id);
+            })(i));
+        }
+        for (const img of this.listImages()) {
+            tasks.push((async (uri: string) => {
+                try {
+                    // Sometimes, Model Derivative service URIs must be left unmodified...
+                    output.images[uri] = await this.getAsset(uri);
+                } catch(err) {
+                    // ... and sometimes they must be lower-cased :/
+                    output.images[uri] = await this.getAsset(uri.toLowerCase());
+                }
+            })(img));
+        }
+        await Promise.all(tasks);
+        return output as ISvfContent;
     }
 
     protected findAsset(query: { type?: AssetType, uri?: string }): ISvfManifestAsset | undefined {

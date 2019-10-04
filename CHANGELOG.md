@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Parsing entire SVF into memory
+
 ## [6.4.0] - 2019-10-04
 
 ### Added
