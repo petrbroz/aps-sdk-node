@@ -15,6 +15,7 @@ import { IFragment, parseFragments } from './fragment';
 import { IGeometryMetadata, parseGeometries } from './geometry';
 import { IMesh, parseMeshes, IPoints, ILines } from './mesh';
 import { IMaterial, parseMaterials } from './material';
+import { PropdbReader } from './propdb-reader';
 
 /**
  * Utility class for parsing SVF content from Model Derivative service or from local file system,
@@ -259,6 +260,30 @@ export class Parser {
         return this.svf.manifest.assets
             .filter(asset => asset.type === AssetType.Image)
             .map(asset => asset.URI);
+    }
+
+    /**
+     * Retrieves and parses the property database.
+     * @async
+     * @returns {Promise<PropdbReader>} Property database reader.
+     */
+    async getPropertyDb(): Promise<PropdbReader> {
+        const idsAsset = this.findAsset({ type: AssetType.PropertyIDs });
+        const offsetsAsset = this.findAsset({ type: AssetType.PropertyOffsets });
+        const avsAsset = this.findAsset({ type: AssetType.PropertyAVs });
+        const attrsAsset = this.findAsset({ type: AssetType.PropertyAttributes });
+        const valsAsset = this.findAsset({ type: AssetType.PropertyValues });
+        if (!idsAsset || !offsetsAsset || !avsAsset || !attrsAsset || !valsAsset) {
+            throw new Error('Could not parse property database. Some of the database assets are missing.');
+        }
+        const buffers = await Promise.all([
+            this.getAsset(idsAsset.URI),
+            this.getAsset(offsetsAsset.URI),
+            this.getAsset(avsAsset.URI),
+            this.getAsset(attrsAsset.URI),
+            this.getAsset(valsAsset.URI)
+        ]);
+        return new PropdbReader(buffers[0], buffers[1], buffers[2], buffers[3], buffers[4]);
     }
 }
 

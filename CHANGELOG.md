@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Listing SVF image assets
+- Parsing and querying SVF property database
 
 ## [6.3.0] - 2019-10-03
 
