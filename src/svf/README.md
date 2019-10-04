@@ -1,34 +1,53 @@
 # SVF
 
-This subfolder contains utilities for working with SVF, the file format used to represent 3D content
-in [Autodesk Forge](https://forge.autodesk.com).
-
 > Note: for now, the code in this folder is excluded from the webpack config
 > to avoid issues when bundling for browsers. This could change in the future.
 
-## Usage
+This subfolder provides additional utilities for parsing _SVF_
+(the proprietary file format used by the Forge Viewer), either from Model Derivative
+service, or from local folder.
 
 ```js
-const { parseManifest } = require('forge-server-utils/svf');
+const { ModelDerivativeClient, ManifestHelper } = require('forge-server-utils');
+const { Parser } = require('forge-server-utils/dist/svf');
+const { FORGE_CLIENT_ID, FORGE_CLIENT_SECRET } = process.env;
+const URN = 'dX...';
+const AUTH = { client_id: FORGE_CLIENT_ID, client_secret: FORGE_CLIENT_SECRET };
 
-const modelDerivativeClient = new ModelDerivativeClient({ client_id: '<your client id>', client_secret: '<your client secret>' });
+// Find SVF derivatives in a Model Derivative URN
+const modelDerivativeClient = new ModelDerivativeClient(AUTH);
+const helper = new ManifestHelper(await modelDerivativeClient.getManifest(URN));
+const derivatives = helper.search({ type: 'resource', role: 'graphics' });
 
-async function run(urn) {
-    // Fetch manifest for specific urn and find all SVF derivatives
-    const manifest = await modelDerivativeClient.getManifest(urn);
-    const helper = new ManifestHelper(manifest);
-    const derivatives = helper.search({ type: 'resource', role: 'graphics' });
-    for (const derivative of derivatives.filter(deriv => deriv.mime === 'application/autodesk-svf')) {
-        // Fetch each SVF derivative and parse its contents
-        const svf = await modelDerivativeClient.getDerivative(urn, derivative.urn);
-        const { manifest, metadata } = parseManifest(svf);
-        console.log('Manifest', manifest);
-        console.log('Metadata', metadata);
-        for (const asset of manifest.assets) {
-            console.log('Asset', asset);
-        }
+// Parse each derivative
+for (const derivative of derivatives.filter(d => d.mime === 'application/autodesk-svf')) {
+    const parser = await Parser.FromDerivativeService(URN, derivative.guid, AUTH);
+    // Enumerate fragments with an async iterator
+    for await (const fragment of parser.enumerateFragments()) {
+        console.log(JSON.stringify(fragment));
     }
+    // Or collect all fragments in memory
+    console.log(await parser.listFragments());
 }
+```
 
-run();
+```js
+const { Parser } = require('forge-server-utils/dist/svf');
+
+// Parse SVF from local folder
+const parser = await Parser.FromFileSystem('foo/bar.svf');
+// Parse the property database and query properties of root object
+const propdb = await parser.getPropertyDb();
+console.log(propdb.findProperties(1));
+```
+
+Or just download all SVFs (in parallel) of given model to your local folder:
+
+```js
+const { ModelDerivativeClient } = require('forge-server-utils');
+const { downloadViewables } = require('forge-server-utils/dist/svf');
+const { FORGE_CLIENT_ID, FORGE_CLIENT_SECRET } = process.env;
+
+const modelDerivativeClient = new ModelDerivativeClient({ client_id: FORGE_CLIENT_ID, client_secret: FORGE_CLIENT_SECRET });
+await downloadViewables('your model urn', 'path/to/output/folder', modelDerivativeClient);
 ```
