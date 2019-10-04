@@ -249,6 +249,17 @@ export class Parser {
             yield material;
         }
     }
+
+    /**
+     * Finds URIs of all image assets referenced in the SVF.
+     * These can then be retrieved using {@link getAsset}.
+     * @returns {string[]} Image asset URIs.
+     */
+    listImages(): string[] {
+        return this.svf.manifest.assets
+            .filter(asset => asset.type === AssetType.Image)
+            .map(asset => asset.URI);
+    }
 }
 
 /**
