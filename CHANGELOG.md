@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [7.0.0] - 2019-10-07
+
+### Removed
+- Utilities for parsing SVFs and writing glTF
+  - These are now available in a standalone package [forge-convert-utils](https://www.npmjs.com/package/forge-convert-utils)
+
 ## [6.6.0] - 2019-10-04
 
 ### Added
