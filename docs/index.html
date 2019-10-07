@@ -73,18 +73,19 @@
 					<img src="https://img.shields.io/npm/dw/forge-server-utils.svg" alt="npm downloads">
 					<img src="https://img.shields.io/badge/platform-windows%20%7C%20osx%20%7C%20linux-lightgray.svg" alt="platforms">
 				<a href="http://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="license"></a></p>
-				<p>Unofficial tools for accessing <a href="https://developer.autodesk.com/">Autodesk Forge</a> APIs
-					from Node.js applications, built using <a href="https://www.typescriptlang.org">TypeScript</a> and modern language features like
+				<p>Unofficial tools for accessing <a href="https://developer.autodesk.com/">Autodesk Forge</a> APIs from Node.js applications
+					and from browsers, built using <a href="https://www.typescriptlang.org">TypeScript</a> and modern language features like
 					<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function">async/await</a>
 				or <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*">generators</a>.</p>
+				<p><img src="docs/logo.png" alt="Autodesk Forge"></p>
 				<a href="#usage" id="usage" style="color: inherit; text-decoration: none;">
 					<h2>Usage</h2>
 				</a>
 				<a href="#server-side" id="server-side" style="color: inherit; text-decoration: none;">
 					<h3>Server Side</h3>
 				</a>
-				<p>The TypeScript implementation is transpiled into JavaScript with type definition files,
-				so you can use it both in Node.js projects (as a CommonJS module), and in TypeScript projects (as an ES6 module):</p>
+				<p>The TypeScript implementation is transpiled into CommonJS JavaScript module with type definition files,
+				so you can use it both in Node.js projects, and in TypeScript projects:</p>
 				<pre><code class="language-js"><span class="hljs-comment">// JavaScript</span>
 <span class="hljs-keyword">const</span> { DataManagementClient } = <span class="hljs-built_in">require</span>(<span class="hljs-string">'forge-server-utils'</span>);</code></pre>
 				<pre><code class="language-ts"><span class="hljs-comment">// TypeScript</span>
@@ -139,14 +140,14 @@
 <span class="hljs-keyword">const</span> client = <span class="hljs-keyword">new</span> DesignAutomationClient({ <span class="hljs-attr">client_id</span>: FORGE_CLIENT_ID, <span class="hljs-attr">client_secret</span>: FORGE_CLIENT_SECRET });
 <span class="hljs-keyword">const</span> bundles = <span class="hljs-keyword">await</span> client.listAppBundles();
 <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'App bundles'</span>, bundles);</code></pre>
-				<a href="#client-side-experimental-feature" id="client-side-experimental-feature" style="color: inherit; text-decoration: none;">
-					<h3>Client Side (experimental feature)</h3>
+				<a href="#client-side-experimental" id="client-side-experimental" style="color: inherit; text-decoration: none;">
+					<h3>Client Side (experimental)</h3>
 				</a>
 				<p>The transpiled output from TypeScript is also bundled using <a href="https://webpack.js.org">webpack</a>,
-					so you can use the same functionality in a browser. There is a caveat, however: at the moment
-					it is unfortunately not possible to request Forge access tokens from the browser
+					so you can use the same functionality in a browser. There is a caveat, unfortunately: at the moment
+					it is not possible to request Forge access tokens from the browser
 					due to <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS">CORS</a> limitations,
-					so when creating instances of the different clients, instead of providing client ID and secret
+					so when creating instances of the various clients, instead of providing client ID and secret
 				you will have to provide the token directly.</p>
 				<pre><code class="language-html"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"https://cdn.jsdelivr.net/npm/forge-server-utils/dist/browser/forge-server-utils.js"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
 <span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript">
@@ -198,33 +199,6 @@ yarn <span class="hljs-built_in">test</span></code></pre>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_model_derivative_.html">"model-<wbr>derivative"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_svf_fragment_.html">"svf/fragment"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_svf_geometry_.html">"svf/geometry"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_svf_index_.html">"svf/index"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_svf_input_stream_.html">"svf/input-<wbr>stream"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_svf_manifest_.html">"svf/manifest"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_svf_material_.html">"svf/material"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_svf_mesh_.html">"svf/mesh"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_svf_packfile_reader_.html">"svf/packfile-<wbr>reader"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_svf_propdb_reader_.html">"svf/propdb-<wbr>reader"</a>
 					</li>
 				</ul>
 			</nav>
