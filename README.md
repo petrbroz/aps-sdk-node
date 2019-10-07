@@ -94,10 +94,6 @@ const bundles = await client.listAppBundles();
 console.log('App bundles', bundles);
 ```
 
-#### Downloading & Parsing Derivatives
-
-See [src/svf/README.md](src/svf/README.md) for more information.
-
 ### Client Side (experimental)
 
 The transpiled output from TypeScript is also bundled using [webpack](https://webpack.js.org),
