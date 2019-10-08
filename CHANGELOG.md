@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Listing & enumerating webhooks
+
 ## [7.0.0] - 2019-10-07
 
 ### Removed
