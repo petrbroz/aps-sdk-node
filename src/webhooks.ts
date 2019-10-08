@@ -187,10 +187,11 @@ export class WebhooksClient extends ForgeClient {
      * @param {object} [metadata] Optional JSON to be included as webhook metadata.
      * The maximum size of the JSON object (content) should be less than 1KB.
      * @param {string} [filter] Optional JsonPath expression to filter the callbacks you receive.
-     * @returns {Promise<IWebhook[]>}
+     * @returns {Promise<IWebhook | IWebhook[]>} Single webhook (when both `system` and `event` parameters are provided).
+     * or a list of webhooks (when only `system` is specified).
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async createHook(system: WebhookSystem, event: WebhookEvent | undefined, callbackUrl: string, scope: WebhookScope, metadata?: object, filter?: string): Promise<IWebhook[]> {
+    async createHook(system: WebhookSystem, event: WebhookEvent | undefined, callbackUrl: string, scope: WebhookScope, metadata?: object, filter?: string): Promise<IWebhook | IWebhook[]> {
         const endpoint = event
             ? `systems/${system}/events/${event}/hooks?region=${this.region}`
             : `systems/${system}/hooks?region=${this.region}`;
@@ -202,6 +203,6 @@ export class WebhooksClient extends ForgeClient {
             params.filter = filter;
         }
         const response = await this.post(endpoint, params, {}, WriteTokenScopes);
-        return response.hooks;
+        return response.hooks ? response.hooks : response;
     }
 }
