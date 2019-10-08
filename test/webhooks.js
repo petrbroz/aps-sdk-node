@@ -1,6 +1,6 @@
 const assert = require('assert');
 
-const { WebhooksClient } = require('../dist');
+const { WebhooksClient, WebhookSystem, WebhookEvent } = require('../dist');
 
 describe('WebhooksClient', function() {
     beforeEach(function() {
@@ -36,4 +36,11 @@ describe('WebhooksClient', function() {
             }
         });
     });
+
+    // describe('createHook()', function() {
+    //     it('should create new webhook', async function() {
+    //         const hooks = await this.client.createHook(WebhookSystem.Derivative, undefined, 'http://bf067e05.ngrok.io/callback', { workflow: 'my-workflow-id' });
+    //         assert(hooks);
+    //     });
+    // });
 });

@@ -45,6 +45,8 @@ export enum WebhookEvent {
     FusionWorkflowTransition = 'workflow.transition'
 }
 
+export type WebhookScope = { folder: string; } | { workflow: string; } | { workspace: string; } | { 'workflow.transition': string; };
+
 /**
  * Webhook descriptor.
  */
@@ -58,8 +60,15 @@ export interface IWebhook {
     system: string;
     creatorType: string;
     status: string;
-    scope: { [key: string]: string };
+    scope: WebhookScope;
     urn: string;
+}
+
+interface ICreateWebhookParams {
+    callbackUrl: string;
+    scope: WebhookScope;
+    hookAttribute?: object;
+    filter?: string;
 }
 
 /**
@@ -157,9 +166,42 @@ export class WebhooksClient extends ForgeClient {
      * @param {WebhookSystem} system Webhook system (e.g., "data").
      * @param {WebhookEvent} event Webhook event (e.g., "dm.version.copied").
      * @returns {Promise<IWebhook>} Webhook details.
+     * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async getHookDetails(system: WebhookSystem, event: WebhookEvent, id: string): Promise<IWebhook> {
         const hook = await this.get(`systems/${system}/events/${event}/hooks/${id}`, {}, ReadTokenScopes);
         return hook;
+    }
+
+    /**
+     * Creates new webhook, either for entire webhook system, or for a specific event
+     * ({@link https://forge.autodesk.com/en/docs/webhooks/v1/reference/http/systems-system-hooks-POST|docs},
+     * {@link https://forge.autodesk.com/en/docs/webhooks/v1/reference/http/systems-system-events-event-hooks-POST|docs}).
+     * @param {WebhookSystem} system Webhook system (e.g., "data").
+     * @param {WebhookEvent | undefined} event Optional webhook event (e.g., "dm.version.copied").
+     * If undefined, the webhook will be defined for the entire webhook system.
+     * @param {string} callbackUrl Callback URL registered for the webhook.
+     * @param {WebhookScope} scope An object that represents the extent to where the event is monitored.
+     * For example, if the scope is folder, the webhooks service generates a notification for the specified event
+     * occurring in any sub folder or item within that folder.
+     * @param {object} [metadata] Optional JSON to be included as webhook metadata.
+     * The maximum size of the JSON object (content) should be less than 1KB.
+     * @param {string} [filter] Optional JsonPath expression to filter the callbacks you receive.
+     * @returns {Promise<IWebhook[]>}
+     * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
+     */
+    async createHook(system: WebhookSystem, event: WebhookEvent | undefined, callbackUrl: string, scope: WebhookScope, metadata?: object, filter?: string): Promise<IWebhook[]> {
+        const endpoint = event
+            ? `systems/${system}/events/${event}/hooks?region=${this.region}`
+            : `systems/${system}/hooks?region=${this.region}`;
+        const params: ICreateWebhookParams = { callbackUrl, scope };
+        if (metadata) {
+            params.hookAttribute = metadata;
+        }
+        if (filter) {
+            params.filter = filter;
+        }
+        const response = await this.post(endpoint, params, {}, WriteTokenScopes);
+        return response.hooks;
     }
 }
