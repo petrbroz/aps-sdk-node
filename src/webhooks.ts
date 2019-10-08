@@ -205,4 +205,16 @@ export class WebhooksClient extends ForgeClient {
         const response = await this.post(endpoint, params, {}, WriteTokenScopes);
         return response.hooks ? response.hooks : response;
     }
+
+    /**
+     * Deletes a webhook
+     * ({@link https://forge.autodesk.com/en/docs/webhooks/v1/reference/http/systems-system-events-event-hooks-hook_id-DELETE|docs}).
+     * @async
+     * @param {WebhookSystem} system Webhook system (e.g., "data").
+     * @param {WebhookEvent} event Webhook event (e.g., "dm.version.copied").
+     * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
+     */
+    async deleteHook(system: WebhookSystem, event: WebhookEvent, id: string) {
+        await this.delete(`systems/${system}/events/${event}/hooks/${id}`, {}, WriteTokenScopes);
+    }
 }
