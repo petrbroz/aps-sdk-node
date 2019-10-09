@@ -10,5 +10,8 @@
     },
     "design-automation": {
         "title": "Design Automation API"
+    },
+    "webhooks": {
+        "title": "Webhooks API"
     }
 }

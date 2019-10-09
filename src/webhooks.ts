@@ -122,6 +122,7 @@ export interface IUpdateWebhookParams {
 
 /**
  * Client providing access to Autodesk Forge {@link https://forge.autodesk.com/en/docs/webhooks/v1/developers_guide/overview|webhooks APIs}.
+ * @tutorial webhooks
  */
 export class WebhooksClient extends ForgeClient {
     /**
