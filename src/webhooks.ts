@@ -41,8 +41,8 @@ export enum WebhookEvent {
     FusionItemCreate = 'item.create',
     FusionItemLock = 'item.lock',
     FusionItemRelease = 'item.release',
-    FusionItemUnlock = 'item.Unlock',
-    FusionItemUpdate = 'item.Update',
+    FusionItemUnlock = 'item.unlock',
+    FusionItemUpdate = 'item.update',
     FusionWorkflowTransition = 'workflow.transition'
 }
 
