@@ -57,6 +57,95 @@ export enum WebhookStatus {
 export type WebhookScope = { folder: string; } | { workflow: string; } | { workspace: string; } | { 'workflow.transition': string; };
 
 /**
+ * List all event types available for specific webhook system.
+ * @param {WebhookSystem} system Webhook system (e.g. "data").
+ * @returns {WebhookEvent[]} List of webhook events.
+ */
+export function webhookSystemEvents(system: WebhookSystem): WebhookEvent[] {
+    switch (system) {
+        case WebhookSystem.Data:
+            return [
+                WebhookEvent.DataFolderAdded,
+                WebhookEvent.DataFolderCopied,
+                WebhookEvent.DataFolderDeleted,
+                WebhookEvent.DataFolderModified,
+                WebhookEvent.DataFolderMoved,
+                WebhookEvent.DataVersionAdded,
+                WebhookEvent.DataVersionCopied,
+                WebhookEvent.DataVersionDeleted,
+                WebhookEvent.DataVersionModified,
+                WebhookEvent.DataVersionMoved
+            ];
+        case WebhookSystem.Derivative:
+            return [
+                WebhookEvent.DerivativeExtractionUpdated,
+                WebhookEvent.DerivativeExtractionFinished
+            ];
+        case WebhookSystem.FusionLifecycle:
+            return [
+                WebhookEvent.FusionItemClone,
+                WebhookEvent.FusionItemCreate,
+                WebhookEvent.FusionItemLock,
+                WebhookEvent.FusionItemRelease,
+                WebhookEvent.FusionItemUnlock,
+                WebhookEvent.FusionItemUpdate,
+                WebhookEvent.FusionWorkflowTransition
+            ];
+        case WebhookSystem.RevitCloudWorksharing:
+            return [
+                WebhookEvent.RevitModelPublish,
+                WebhookEvent.RevitModelSync
+            ];
+    }
+}
+
+/**
+ * List all scope keys available for specific webhook event.
+ * @param {WebhookEvent} event Webhook event (e.g., "dm.folder.moved").
+ * @returns {string[]} List of scope names that can be used when creating or updating a webhook.
+ */
+export function webhookEventScopes(event: WebhookEvent): string[] {
+    switch (event) {
+        case WebhookEvent.DataVersionAdded:
+        case WebhookEvent.DataVersionModified:
+        case WebhookEvent.DataVersionDeleted:
+        case WebhookEvent.DataVersionMoved:
+        case WebhookEvent.DataVersionCopied:
+        case WebhookEvent.DataFolderAdded:
+        case WebhookEvent.DataFolderModified:
+        case WebhookEvent.DataFolderDeleted:
+        case WebhookEvent.DataFolderMoved:
+        case WebhookEvent.DataFolderCopied:
+            return [
+                'folder'
+            ];
+        case WebhookEvent.DerivativeExtractionFinished:
+        case WebhookEvent.DerivativeExtractionUpdated:
+            return [
+                'workflow'
+            ];
+        case WebhookEvent.RevitModelPublish:
+        case WebhookEvent.RevitModelSync:
+            return [
+                'folder'
+            ];
+        case WebhookEvent.FusionItemClone:
+        case WebhookEvent.FusionItemCreate:
+        case WebhookEvent.FusionItemLock:
+        case WebhookEvent.FusionItemRelease:
+        case WebhookEvent.FusionItemUnlock:
+        case WebhookEvent.FusionItemUpdate:
+            return [
+                'workspace'
+            ];
+        case WebhookEvent.FusionWorkflowTransition:
+            return [
+                'workflow.transition'
+            ];
+    }
+}
+
+/**
  * Webhook descriptor.
  */
 export interface IWebhook {
