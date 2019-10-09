@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Listing & enumerating webhooks
-- Creating, deleting webhooks
+- Creating, updating, and deleting webhooks
 
 ## [7.0.0] - 2019-10-07
 

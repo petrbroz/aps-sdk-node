@@ -45,6 +45,14 @@ export enum WebhookEvent {
     FusionWorkflowTransition = 'workflow.transition'
 }
 
+/**
+ * Webhook status.
+ */
+export enum WebhookStatus {
+    Active = 'active',
+    Inactive = 'inactive'
+}
+
 export type WebhookScope = { folder: string; } | { workflow: string; } | { workspace: string; } | { 'workflow.transition': string; };
 
 /**
@@ -59,16 +67,57 @@ export interface IWebhook {
     createdDate: string;
     system: string;
     creatorType: string;
-    status: string;
+    status: WebhookStatus;
     scope: WebhookScope;
     urn: string;
 }
 
-interface ICreateWebhookParams {
+/**
+ * Parameters when creating a webhook.
+ */
+export interface ICreateWebhookParams {
+    /**
+     * Callback URL registered for the webhook.
+     */
     callbackUrl: string;
+    /**
+     * An object that represents the extent to where the event is monitored.
+     * For example, if the scope is folder, the webhooks service generates a notification
+     * for the specified event occurring in any sub folder or item within that folder.
+     */
     scope: WebhookScope;
+    /**
+     * A user-defined JSON object, which you can use to store/set some custom information.
+     * The maximum size of the JSON object (content) should be less than 1KB.
+     */
     hookAttribute?: object;
+    /**
+     * JsonPath expression (for example, "$[?(@.ext=='txt')]") that can be used
+     * to filter the callbacks you receive.
+     */
     filter?: string;
+}
+
+/**
+ * Parameters when updating a webhook.
+ * Undefined properties are ignored, and null values
+ * can be used to clear the configuration property of webhook.
+ */
+export interface IUpdateWebhookParams {
+    /**
+     * Webhook status (can be either 'active' or 'inactive').
+     */
+    status?: WebhookStatus;
+    /**
+     * JsonPath expression (for example, "$[?(@.ext=='txt')]") that can be used
+     * to filter the callbacks you receive.
+     */
+    filter?: string | null;
+    /**
+     * A user-defined JSON object, which you can use to store/set some custom information.
+     * The maximum size of the JSON object (content) should be less than 1KB.
+     */
+    hookAttribute?: object | null;
 }
 
 /**
@@ -165,6 +214,7 @@ export class WebhooksClient extends ForgeClient {
      * @async
      * @param {WebhookSystem} system Webhook system (e.g., "data").
      * @param {WebhookEvent} event Webhook event (e.g., "dm.version.copied").
+     * @param {string} id Webhook ID.
      * @returns {Promise<IWebhook>} Webhook details.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
@@ -180,30 +230,31 @@ export class WebhooksClient extends ForgeClient {
      * @param {WebhookSystem} system Webhook system (e.g., "data").
      * @param {WebhookEvent | undefined} event Optional webhook event (e.g., "dm.version.copied").
      * If undefined, the webhook will be defined for the entire webhook system.
-     * @param {string} callbackUrl Callback URL registered for the webhook.
-     * @param {WebhookScope} scope An object that represents the extent to where the event is monitored.
-     * For example, if the scope is folder, the webhooks service generates a notification for the specified event
-     * occurring in any sub folder or item within that folder.
-     * @param {object} [metadata] Optional JSON to be included as webhook metadata.
-     * The maximum size of the JSON object (content) should be less than 1KB.
-     * @param {string} [filter] Optional JsonPath expression to filter the callbacks you receive.
+     * @param {ICreateWebhookParams} params Parameters of the new webhook.
      * @returns {Promise<IWebhook | IWebhook[]>} Single webhook (when both `system` and `event` parameters are provided).
      * or a list of webhooks (when only `system` is specified).
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async createHook(system: WebhookSystem, event: WebhookEvent | undefined, callbackUrl: string, scope: WebhookScope, metadata?: object, filter?: string): Promise<IWebhook | IWebhook[]> {
+    async createHook(system: WebhookSystem, event: WebhookEvent | undefined, params: ICreateWebhookParams): Promise<IWebhook | IWebhook[]> {
         const endpoint = event
             ? `systems/${system}/events/${event}/hooks?region=${this.region}`
             : `systems/${system}/hooks?region=${this.region}`;
-        const params: ICreateWebhookParams = { callbackUrl, scope };
-        if (metadata) {
-            params.hookAttribute = metadata;
-        }
-        if (filter) {
-            params.filter = filter;
-        }
         const response = await this.post(endpoint, params, {}, WriteTokenScopes);
         return response.hooks ? response.hooks : response;
+    }
+
+    /**
+     * Updates an existing webhook
+     * ({@link https://forge.autodesk.com/en/docs/webhooks/v1/reference/http/systems-system-events-event-hooks-hook_id-PATCH|docs}).
+     * @async
+     * @param {WebhookSystem} system Webhook system (e.g., "data").
+     * @param {WebhookEvent} event Webhook event (e.g., "dm.version.copied").
+     * @param {string} id Webhook ID.
+     * @param {IUpdateWebhookParams} params Parameters to update. Undefined properties are ignored,
+     * and "null" values can be used to clear the specific configuration of the webhook.
+     */
+    async updateHook(system: WebhookSystem, event: WebhookEvent, id: string, params: IUpdateWebhookParams) {
+        await this.patch(`systems/${system}/events/${event}/hooks/${id}?region=${this.region}`, params, {}, WriteTokenScopes);
     }
 
     /**
@@ -215,6 +266,6 @@ export class WebhooksClient extends ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async deleteHook(system: WebhookSystem, event: WebhookEvent, id: string) {
-        await this.delete(`systems/${system}/events/${event}/hooks/${id}`, {}, WriteTokenScopes);
+        await this.delete(`systems/${system}/events/${event}/hooks/${id}?region=${this.region}`, {}, WriteTokenScopes);
     }
 }
