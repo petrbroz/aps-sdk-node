@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [7.1.1] - 2019-10-09
+
+### Added
+- Helper methods for mapping webhook systems to events, and events to scopes
+
+### Fixed
+- When creating a single webhook, the method only returns the webhook ID, not the entire object
+
 ## [7.1.0] - 2019-10-09
 
 ### Added

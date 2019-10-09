@@ -1,4 +1,5 @@
 import { ForgeClient, IAuthOptions, Region } from './common';
+import { AxiosRequestConfig } from 'axios';
 
 const ReadTokenScopes = ['data:read'];
 const WriteTokenScopes = ['data:read', 'data:write'];
@@ -40,8 +41,8 @@ export enum WebhookEvent {
     FusionItemCreate = 'item.create',
     FusionItemLock = 'item.lock',
     FusionItemRelease = 'item.release',
-    FusionItemUnlock = 'item.Unlock',
-    FusionItemUpdate = 'item.Update',
+    FusionItemUnlock = 'item.unlock',
+    FusionItemUpdate = 'item.update',
     FusionWorkflowTransition = 'workflow.transition'
 }
 
@@ -54,6 +55,95 @@ export enum WebhookStatus {
 }
 
 export type WebhookScope = { folder: string; } | { workflow: string; } | { workspace: string; } | { 'workflow.transition': string; };
+
+/**
+ * List all event types available for specific webhook system.
+ * @param {WebhookSystem} system Webhook system (e.g. "data").
+ * @returns {WebhookEvent[]} List of webhook events.
+ */
+export function webhookSystemEvents(system: WebhookSystem): WebhookEvent[] {
+    switch (system) {
+        case WebhookSystem.Data:
+            return [
+                WebhookEvent.DataFolderAdded,
+                WebhookEvent.DataFolderCopied,
+                WebhookEvent.DataFolderDeleted,
+                WebhookEvent.DataFolderModified,
+                WebhookEvent.DataFolderMoved,
+                WebhookEvent.DataVersionAdded,
+                WebhookEvent.DataVersionCopied,
+                WebhookEvent.DataVersionDeleted,
+                WebhookEvent.DataVersionModified,
+                WebhookEvent.DataVersionMoved
+            ];
+        case WebhookSystem.Derivative:
+            return [
+                WebhookEvent.DerivativeExtractionUpdated,
+                WebhookEvent.DerivativeExtractionFinished
+            ];
+        case WebhookSystem.FusionLifecycle:
+            return [
+                WebhookEvent.FusionItemClone,
+                WebhookEvent.FusionItemCreate,
+                WebhookEvent.FusionItemLock,
+                WebhookEvent.FusionItemRelease,
+                WebhookEvent.FusionItemUnlock,
+                WebhookEvent.FusionItemUpdate,
+                WebhookEvent.FusionWorkflowTransition
+            ];
+        case WebhookSystem.RevitCloudWorksharing:
+            return [
+                WebhookEvent.RevitModelPublish,
+                WebhookEvent.RevitModelSync
+            ];
+    }
+}
+
+/**
+ * List all scope keys available for specific webhook event.
+ * @param {WebhookEvent} event Webhook event (e.g., "dm.folder.moved").
+ * @returns {string[]} List of scope names that can be used when creating or updating a webhook.
+ */
+export function webhookEventScopes(event: WebhookEvent): string[] {
+    switch (event) {
+        case WebhookEvent.DataVersionAdded:
+        case WebhookEvent.DataVersionModified:
+        case WebhookEvent.DataVersionDeleted:
+        case WebhookEvent.DataVersionMoved:
+        case WebhookEvent.DataVersionCopied:
+        case WebhookEvent.DataFolderAdded:
+        case WebhookEvent.DataFolderModified:
+        case WebhookEvent.DataFolderDeleted:
+        case WebhookEvent.DataFolderMoved:
+        case WebhookEvent.DataFolderCopied:
+            return [
+                'folder'
+            ];
+        case WebhookEvent.DerivativeExtractionFinished:
+        case WebhookEvent.DerivativeExtractionUpdated:
+            return [
+                'workflow'
+            ];
+        case WebhookEvent.RevitModelPublish:
+        case WebhookEvent.RevitModelSync:
+            return [
+                'folder'
+            ];
+        case WebhookEvent.FusionItemClone:
+        case WebhookEvent.FusionItemCreate:
+        case WebhookEvent.FusionItemLock:
+        case WebhookEvent.FusionItemRelease:
+        case WebhookEvent.FusionItemUnlock:
+        case WebhookEvent.FusionItemUpdate:
+            return [
+                'workspace'
+            ];
+        case WebhookEvent.FusionWorkflowTransition:
+            return [
+                'workflow.transition'
+            ];
+    }
+}
 
 /**
  * Webhook descriptor.
@@ -232,16 +322,24 @@ export class WebhooksClient extends ForgeClient {
      * @param {WebhookEvent | undefined} event Optional webhook event (e.g., "dm.version.copied").
      * If undefined, the webhook will be defined for the entire webhook system.
      * @param {ICreateWebhookParams} params Parameters of the new webhook.
-     * @returns {Promise<IWebhook | IWebhook[]>} Single webhook (when both `system` and `event` parameters are provided).
+     * @returns {Promise<string | IWebhook[]>} Webhook ID (when both `system` and `event` parameters are provided).
      * or a list of webhooks (when only `system` is specified).
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async createHook(system: WebhookSystem, event: WebhookEvent | undefined, params: ICreateWebhookParams): Promise<IWebhook | IWebhook[]> {
+    async createHook(system: WebhookSystem, event: WebhookEvent | undefined, params: ICreateWebhookParams): Promise<string | IWebhook[]> {
         const endpoint = event
             ? `systems/${system}/events/${event}/hooks?region=${this.region}`
             : `systems/${system}/hooks?region=${this.region}`;
-        const response = await this.post(endpoint, params, {}, WriteTokenScopes);
-        return response.hooks ? response.hooks : response;
+        const config: AxiosRequestConfig = {};
+        await this.setAuthorization(config, WriteTokenScopes);
+        const response = await this.axios.post(endpoint, params, config);
+        if (response.data.hooks) {
+            return response.data.hooks as IWebhook[];
+        } else {
+            const location = response.headers['Location'];
+            const tokens = location.split('/');
+            return tokens[tokens.length - 1];
+        }
     }
 
     /**

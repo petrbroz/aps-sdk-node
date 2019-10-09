@@ -22,7 +22,7 @@ export abstract class ForgeClient {
     protected root: string;
     protected host: string;
     protected region: Region;
-    private _axios: AxiosInstance;
+    protected axios: AxiosInstance;
 
     /**
      * Initializes new client with specific authentication method.
@@ -44,7 +44,7 @@ export abstract class ForgeClient {
         this.root = root;
         this.host = host || DefaultHost;
         this.region = region || Region.US;
-        this._axios = axios.create({ baseURL: this.host + '/' + this.root + '/' });
+        this.axios = axios.create({ baseURL: this.host + '/' + this.root + '/' });
     }
 
     /**
@@ -71,7 +71,7 @@ export abstract class ForgeClient {
         if (typeof region !== 'undefined') {
             this.region = region || Region.US;
         }
-        this._axios = axios.create({ baseURL: this.host + '/' + this.root + '/' });
+        this.axios = axios.create({ baseURL: this.host + '/' + this.root + '/' });
     }
 
     protected async setAuthorization(options: any, scopes: string[]) {
@@ -86,7 +86,7 @@ export abstract class ForgeClient {
 
     // Makes a general request and returns the entire response (not just its parsed body)
     protected async fetch(config: AxiosRequestConfig) {
-        return this._axios.request(config);
+        return this.axios.request(config);
     }
 
     // Helper method for GET requests,
@@ -94,10 +94,10 @@ export abstract class ForgeClient {
     protected async get(endpoint: string, headers: { [name: string]: string } = {}, scopes: string[], repeatOn202: boolean = false): Promise<any> {
         const config: AxiosRequestConfig = { headers };
         await this.setAuthorization(config, scopes);
-        let resp = await this._axios.get(endpoint, config);
+        let resp = await this.axios.get(endpoint, config);
         while (resp.status === 202 && repeatOn202) {
             sleep(RetryDelay);
-            resp = await this._axios.get(endpoint, config);
+            resp = await this.axios.get(endpoint, config);
         }
         return resp.data;
     }
@@ -107,10 +107,10 @@ export abstract class ForgeClient {
     protected async getBuffer(endpoint: string, headers: { [name: string]: string } = {}, scopes: string[], repeatOn202: boolean = false): Promise<any> {
         const config: AxiosRequestConfig = { headers, responseType: 'arraybuffer' };
         await this.setAuthorization(config, scopes);
-        let resp = await this._axios.get(endpoint, config);
+        let resp = await this.axios.get(endpoint, config);
         while (resp.status === 202 && repeatOn202) {
             sleep(RetryDelay);
-            resp = await this._axios.get(endpoint, config);
+            resp = await this.axios.get(endpoint, config);
         }
         return resp.data;
     }
@@ -120,10 +120,10 @@ export abstract class ForgeClient {
     protected async getStream(endpoint: string, headers: { [name: string]: string } = {}, scopes: string[], repeatOn202: boolean = false): Promise<any> {
         const config: AxiosRequestConfig = { headers, responseType: 'stream' };
         await this.setAuthorization(config, scopes);
-        let resp = await this._axios.get(endpoint, config);
+        let resp = await this.axios.get(endpoint, config);
         while (resp.status === 202 && repeatOn202) {
             sleep(RetryDelay);
-            resp = await this._axios.get(endpoint, config);
+            resp = await this.axios.get(endpoint, config);
         }
         return resp.data;
     }
@@ -133,7 +133,7 @@ export abstract class ForgeClient {
     protected async post(endpoint: string, data: any, headers: { [name: string]: string } = {}, scopes: string[]): Promise<any> {
         const config: AxiosRequestConfig = { headers };
         await this.setAuthorization(config, scopes);
-        const resp = await this._axios.post(endpoint, data, config);
+        const resp = await this.axios.post(endpoint, data, config);
         return resp.data;
     }
 
@@ -142,7 +142,7 @@ export abstract class ForgeClient {
     protected async put(endpoint: string, data: any, headers: { [name: string]: string } = {}, scopes: string[]): Promise<any> {
         const config: AxiosRequestConfig = { headers };
         await this.setAuthorization(config, scopes);
-        const resp = await this._axios.put(endpoint, data, config);
+        const resp = await this.axios.put(endpoint, data, config);
         return resp.data;
     }
 
@@ -151,7 +151,7 @@ export abstract class ForgeClient {
     protected async patch(endpoint: string, data: any, headers: { [name: string]: string } = {}, scopes: string[]): Promise<any> {
         const config: AxiosRequestConfig = { headers };
         await this.setAuthorization(config, scopes);
-        const resp = await this._axios.patch(endpoint, data, config);
+        const resp = await this.axios.patch(endpoint, data, config);
         return resp.data;
     }
 
@@ -160,7 +160,7 @@ export abstract class ForgeClient {
     protected async delete(endpoint: string, headers: { [name: string]: string } = {}, scopes: string[]): Promise<any> {
         const config: AxiosRequestConfig = { headers };
         await this.setAuthorization(config, scopes);
-        const resp = await this._axios.delete(endpoint, config);
+        const resp = await this.axios.delete(endpoint, config);
         return resp.data;
     }
 }
