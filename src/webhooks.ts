@@ -336,7 +336,7 @@ export class WebhooksClient extends ForgeClient {
         if (response.data.hooks) {
             return response.data.hooks as IWebhook[];
         } else {
-            const location = response.headers['Location'];
+            const location = response.headers['location'] || response.headers['Location'];
             const tokens = location.split('/');
             return tokens[tokens.length - 1];
         }
