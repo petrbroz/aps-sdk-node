@@ -1,4 +1,5 @@
 import { ForgeClient, IAuthOptions, Region } from './common';
+import { AxiosRequestConfig } from 'axios';
 
 const ReadTokenScopes = ['data:read'];
 const WriteTokenScopes = ['data:read', 'data:write'];
@@ -232,16 +233,24 @@ export class WebhooksClient extends ForgeClient {
      * @param {WebhookEvent | undefined} event Optional webhook event (e.g., "dm.version.copied").
      * If undefined, the webhook will be defined for the entire webhook system.
      * @param {ICreateWebhookParams} params Parameters of the new webhook.
-     * @returns {Promise<IWebhook | IWebhook[]>} Single webhook (when both `system` and `event` parameters are provided).
+     * @returns {Promise<string | IWebhook[]>} Webhook ID (when both `system` and `event` parameters are provided).
      * or a list of webhooks (when only `system` is specified).
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async createHook(system: WebhookSystem, event: WebhookEvent | undefined, params: ICreateWebhookParams): Promise<IWebhook | IWebhook[]> {
+    async createHook(system: WebhookSystem, event: WebhookEvent | undefined, params: ICreateWebhookParams): Promise<string | IWebhook[]> {
         const endpoint = event
             ? `systems/${system}/events/${event}/hooks?region=${this.region}`
             : `systems/${system}/hooks?region=${this.region}`;
-        const response = await this.post(endpoint, params, {}, WriteTokenScopes);
-        return response.hooks ? response.hooks : response;
+        const config: AxiosRequestConfig = {};
+        await this.setAuthorization(config, WriteTokenScopes);
+        const response = await this.axios.post(endpoint, params, config);
+        if (response.data.hooks) {
+            return response.data.hooks as IWebhook[];
+        } else {
+            const location = response.headers['Location'];
+            const tokens = location.split('/');
+            return tokens[tokens.length - 1];
+        }
     }
 
     /**
