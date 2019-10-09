@@ -105,6 +105,13 @@
 								<li class="tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported"><a href="_webhooks_.html#writetokenscopes" class="tsd-kind-icon">Write<wbr>Token<wbr>Scopes</a></li>
 							</ul>
 						</section>
+						<section class="tsd-index-section ">
+							<h3>Functions</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_webhooks_.html#webhookeventscopes" class="tsd-kind-icon">webhook<wbr>Event<wbr>Scopes</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_webhooks_.html#webhooksystemevents" class="tsd-kind-icon">webhook<wbr>System<wbr>Events</a></li>
+							</ul>
+						</section>
 					</div>
 				</section>
 			</section>
@@ -116,7 +123,7 @@
 					<div class="tsd-signature tsd-kind-icon">Webhook<wbr>Scope<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/d0e23cf/src/webhooks.ts#L56">webhooks.ts:56</a></li>
+							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/24e2857/src/webhooks.ts#L57">webhooks.ts:57</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -129,7 +136,7 @@
 					<div class="tsd-signature tsd-kind-icon">Read<wbr>Token<wbr>Scopes<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> =&nbsp;[&#x27;data:read&#x27;]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/d0e23cf/src/webhooks.ts#L3">webhooks.ts:3</a></li>
+							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/24e2857/src/webhooks.ts#L4">webhooks.ts:4</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -139,9 +146,76 @@
 					<div class="tsd-signature tsd-kind-icon">Write<wbr>Token<wbr>Scopes<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> =&nbsp;[&#x27;data:read&#x27;, &#x27;data:write&#x27;]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/d0e23cf/src/webhooks.ts#L4">webhooks.ts:4</a></li>
+							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/24e2857/src/webhooks.ts#L5">webhooks.ts:5</a></li>
 						</ul>
 					</aside>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Functions</h2>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
+					<a name="webhookeventscopes" class="tsd-anchor"></a>
+					<h3>webhook<wbr>Event<wbr>Scopes</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
+						<li class="tsd-signature tsd-kind-icon">webhook<wbr>Event<wbr>Scopes<span class="tsd-signature-symbol">(</span>event<span class="tsd-signature-symbol">: </span><a href="../enums/_webhooks_.webhookevent.html" class="tsd-signature-type">WebhookEvent</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/24e2857/src/webhooks.ts#L107">webhooks.ts:107</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>List all scope keys available for specific webhook event.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>event: <a href="../enums/_webhooks_.webhookevent.html" class="tsd-signature-type">WebhookEvent</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Webhook event (e.g., &quot;dm.folder.moved&quot;).</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h4>
+							<p>List of scope names that can be used when creating or updating a webhook.</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
+					<a name="webhooksystemevents" class="tsd-anchor"></a>
+					<h3>webhook<wbr>System<wbr>Events</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
+						<li class="tsd-signature tsd-kind-icon">webhook<wbr>System<wbr>Events<span class="tsd-signature-symbol">(</span>system<span class="tsd-signature-symbol">: </span><a href="../enums/_webhooks_.webhooksystem.html" class="tsd-signature-type">WebhookSystem</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../enums/_webhooks_.webhookevent.html" class="tsd-signature-type">WebhookEvent</a><span class="tsd-signature-symbol">[]</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/24e2857/src/webhooks.ts#L64">webhooks.ts:64</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>List all event types available for specific webhook system.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>system: <a href="../enums/_webhooks_.webhooksystem.html" class="tsd-signature-type">WebhookSystem</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Webhook system (e.g. &quot;data&quot;).</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../enums/_webhooks_.webhookevent.html" class="tsd-signature-type">WebhookEvent</a><span class="tsd-signature-symbol">[]</span></h4>
+							<p>List of webhook events.</p>
+						</li>
+					</ul>
 				</section>
 			</section>
 		</div>
@@ -208,6 +282,12 @@
 					</li>
 					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
 						<a href="_webhooks_.html#writetokenscopes" class="tsd-kind-icon">Write<wbr>Token<wbr>Scopes</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="_webhooks_.html#webhookeventscopes" class="tsd-kind-icon">webhook<wbr>Event<wbr>Scopes</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="_webhooks_.html#webhooksystemevents" class="tsd-kind-icon">webhook<wbr>System<wbr>Events</a>
 					</li>
 				</ul>
 			</nav>
