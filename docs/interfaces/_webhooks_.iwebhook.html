@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>IActivityParam | forge-server-utils</title>
+	<title>IWebhook | forge-server-utils</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,24 +56,31 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_design_automation_.html">&quot;design-automation&quot;</a>
+					<a href="../modules/_webhooks_.html">&quot;webhooks&quot;</a>
 				</li>
 				<li>
-					<a href="_design_automation_.iactivityparam.html">IActivityParam</a>
+					<a href="_webhooks_.iwebhook.html">IWebhook</a>
 				</li>
 			</ul>
-			<h1>Interface IActivityParam</h1>
+			<h1>Interface IWebhook</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>Webhook descriptor.</p>
+					</div>
+				</div>
+			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">IActivityParam</span>
+						<span class="target">IWebhook</span>
 					</li>
 				</ul>
 			</section>
@@ -84,13 +91,17 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_design_automation_.iactivityparam.html#description" class="tsd-kind-icon">description</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_design_automation_.iactivityparam.html#localname" class="tsd-kind-icon">local<wbr>Name</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_design_automation_.iactivityparam.html#name" class="tsd-kind-icon">name</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_design_automation_.iactivityparam.html#ondemand" class="tsd-kind-icon">ondemand</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_design_automation_.iactivityparam.html#required" class="tsd-kind-icon">required</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_design_automation_.iactivityparam.html#verb" class="tsd-kind-icon">verb</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_design_automation_.iactivityparam.html#zip" class="tsd-kind-icon">zip</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_webhooks_.iwebhook.html#callbackurl" class="tsd-kind-icon">callback<wbr>Url</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_webhooks_.iwebhook.html#createdby" class="tsd-kind-icon">created<wbr>By</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_webhooks_.iwebhook.html#createddate" class="tsd-kind-icon">created<wbr>Date</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_webhooks_.iwebhook.html#creatortype" class="tsd-kind-icon">creator<wbr>Type</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_webhooks_.iwebhook.html#event" class="tsd-kind-icon">event</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_webhooks_.iwebhook.html#hookid" class="tsd-kind-icon">hook<wbr>Id</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_webhooks_.iwebhook.html#scope" class="tsd-kind-icon">scope</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_webhooks_.iwebhook.html#status" class="tsd-kind-icon">status</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_webhooks_.iwebhook.html#system" class="tsd-kind-icon">system</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_webhooks_.iwebhook.html#tenant" class="tsd-kind-icon">tenant</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_webhooks_.iwebhook.html#urn" class="tsd-kind-icon">urn</a></li>
 							</ul>
 						</section>
 					</div>
@@ -99,72 +110,112 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="description" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> description</h3>
-					<div class="tsd-signature tsd-kind-icon">description<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></div>
+					<a name="callbackurl" class="tsd-anchor"></a>
+					<h3>callback<wbr>Url</h3>
+					<div class="tsd-signature tsd-kind-icon">callback<wbr>Url<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/d0e23cf/src/design-automation.ts#L51">design-automation.ts:51</a></li>
+							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/d0e23cf/src/webhooks.ts#L64">webhooks.ts:64</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="localname" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> local<wbr>Name</h3>
-					<div class="tsd-signature tsd-kind-icon">local<wbr>Name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></div>
+					<a name="createdby" class="tsd-anchor"></a>
+					<h3>created<wbr>By</h3>
+					<div class="tsd-signature tsd-kind-icon">created<wbr>By<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/d0e23cf/src/design-automation.ts#L52">design-automation.ts:52</a></li>
+							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/d0e23cf/src/webhooks.ts#L65">webhooks.ts:65</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="name" class="tsd-anchor"></a>
-					<h3>name</h3>
-					<div class="tsd-signature tsd-kind-icon">name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="createddate" class="tsd-anchor"></a>
+					<h3>created<wbr>Date</h3>
+					<div class="tsd-signature tsd-kind-icon">created<wbr>Date<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/d0e23cf/src/design-automation.ts#L49">design-automation.ts:49</a></li>
+							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/d0e23cf/src/webhooks.ts#L67">webhooks.ts:67</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="ondemand" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> ondemand</h3>
-					<div class="tsd-signature tsd-kind-icon">ondemand<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span></div>
+					<a name="creatortype" class="tsd-anchor"></a>
+					<h3>creator<wbr>Type</h3>
+					<div class="tsd-signature tsd-kind-icon">creator<wbr>Type<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/d0e23cf/src/design-automation.ts#L55">design-automation.ts:55</a></li>
+							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/d0e23cf/src/webhooks.ts#L69">webhooks.ts:69</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="required" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> required</h3>
-					<div class="tsd-signature tsd-kind-icon">required<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span></div>
+					<a name="event" class="tsd-anchor"></a>
+					<h3>event</h3>
+					<div class="tsd-signature tsd-kind-icon">event<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/d0e23cf/src/design-automation.ts#L53">design-automation.ts:53</a></li>
+							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/d0e23cf/src/webhooks.ts#L66">webhooks.ts:66</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="verb" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> verb</h3>
-					<div class="tsd-signature tsd-kind-icon">verb<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></div>
+					<a name="hookid" class="tsd-anchor"></a>
+					<h3>hook<wbr>Id</h3>
+					<div class="tsd-signature tsd-kind-icon">hook<wbr>Id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/d0e23cf/src/design-automation.ts#L50">design-automation.ts:50</a></li>
+							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/d0e23cf/src/webhooks.ts#L62">webhooks.ts:62</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="zip" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> zip</h3>
-					<div class="tsd-signature tsd-kind-icon">zip<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span></div>
+					<a name="scope" class="tsd-anchor"></a>
+					<h3>scope</h3>
+					<div class="tsd-signature tsd-kind-icon">scope<span class="tsd-signature-symbol">:</span> <a href="../modules/_webhooks_.html#webhookscope" class="tsd-signature-type">WebhookScope</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/d0e23cf/src/design-automation.ts#L54">design-automation.ts:54</a></li>
+							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/d0e23cf/src/webhooks.ts#L71">webhooks.ts:71</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="status" class="tsd-anchor"></a>
+					<h3>status</h3>
+					<div class="tsd-signature tsd-kind-icon">status<span class="tsd-signature-symbol">:</span> <a href="../enums/_webhooks_.webhookstatus.html" class="tsd-signature-type">WebhookStatus</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/d0e23cf/src/webhooks.ts#L70">webhooks.ts:70</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="system" class="tsd-anchor"></a>
+					<h3>system</h3>
+					<div class="tsd-signature tsd-kind-icon">system<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/d0e23cf/src/webhooks.ts#L68">webhooks.ts:68</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="tenant" class="tsd-anchor"></a>
+					<h3>tenant</h3>
+					<div class="tsd-signature tsd-kind-icon">tenant<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/d0e23cf/src/webhooks.ts#L63">webhooks.ts:63</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="urn" class="tsd-anchor"></a>
+					<h3>urn</h3>
+					<div class="tsd-signature tsd-kind-icon">urn<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/d0e23cf/src/webhooks.ts#L72">webhooks.ts:72</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -188,7 +239,7 @@
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_data_management_.html">"data-<wbr>management"</a>
 					</li>
-					<li class="current tsd-kind-external-module">
+					<li class=" tsd-kind-external-module">
 						<a href="../modules/_design_automation_.html">"design-<wbr>automation"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
@@ -197,96 +248,81 @@
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_model_derivative_.html">"model-<wbr>derivative"</a>
 					</li>
-					<li class=" tsd-kind-external-module">
+					<li class="current tsd-kind-external-module">
 						<a href="../modules/_webhooks_.html">"webhooks"</a>
 					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-class tsd-parent-kind-external-module">
-						<a href="../classes/_design_automation_.designautomationclient.html" class="tsd-kind-icon">Design<wbr>Automation<wbr>Client</a>
+					<li class=" tsd-kind-enum tsd-parent-kind-external-module">
+						<a href="../enums/_webhooks_.webhookevent.html" class="tsd-kind-icon">Webhook<wbr>Event</a>
+					</li>
+					<li class=" tsd-kind-enum tsd-parent-kind-external-module">
+						<a href="../enums/_webhooks_.webhookstatus.html" class="tsd-kind-icon">Webhook<wbr>Status</a>
+					</li>
+					<li class=" tsd-kind-enum tsd-parent-kind-external-module">
+						<a href="../enums/_webhooks_.webhooksystem.html" class="tsd-kind-icon">Webhook<wbr>System</a>
 					</li>
 					<li class=" tsd-kind-class tsd-parent-kind-external-module">
-						<a href="../classes/_design_automation_.designautomationid.html" class="tsd-kind-icon">Design<wbr>AutomationID</a>
+						<a href="../classes/_webhooks_.webhooksclient.html" class="tsd-kind-icon">Webhooks<wbr>Client</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_design_automation_.iactivitycommon.html" class="tsd-kind-icon">IActivity<wbr>Common</a>
+						<a href="_webhooks_.icreatewebhookparams.html" class="tsd-kind-icon">ICreate<wbr>Webhook<wbr>Params</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_design_automation_.iactivitydetail.html" class="tsd-kind-icon">IActivity<wbr>Detail</a>
+						<a href="_webhooks_.iupdatewebhookparams.html" class="tsd-kind-icon">IUpdate<wbr>Webhook<wbr>Params</a>
 					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_design_automation_.iactivityparam.html" class="tsd-kind-icon">IActivity<wbr>Param</a>
+						<a href="_webhooks_.iwebhook.html" class="tsd-kind-icon">IWebhook</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_design_automation_.iactivityparam.html#description" class="tsd-kind-icon">description</a>
+								<a href="_webhooks_.iwebhook.html#callbackurl" class="tsd-kind-icon">callback<wbr>Url</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_design_automation_.iactivityparam.html#localname" class="tsd-kind-icon">local<wbr>Name</a>
+								<a href="_webhooks_.iwebhook.html#createdby" class="tsd-kind-icon">created<wbr>By</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_design_automation_.iactivityparam.html#name" class="tsd-kind-icon">name</a>
+								<a href="_webhooks_.iwebhook.html#createddate" class="tsd-kind-icon">created<wbr>Date</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_design_automation_.iactivityparam.html#ondemand" class="tsd-kind-icon">ondemand</a>
+								<a href="_webhooks_.iwebhook.html#creatortype" class="tsd-kind-icon">creator<wbr>Type</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_design_automation_.iactivityparam.html#required" class="tsd-kind-icon">required</a>
+								<a href="_webhooks_.iwebhook.html#event" class="tsd-kind-icon">event</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_design_automation_.iactivityparam.html#verb" class="tsd-kind-icon">verb</a>
+								<a href="_webhooks_.iwebhook.html#hookid" class="tsd-kind-icon">hook<wbr>Id</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_design_automation_.iactivityparam.html#zip" class="tsd-kind-icon">zip</a>
+								<a href="_webhooks_.iwebhook.html#scope" class="tsd-kind-icon">scope</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_webhooks_.iwebhook.html#status" class="tsd-kind-icon">status</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_webhooks_.iwebhook.html#system" class="tsd-kind-icon">system</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_webhooks_.iwebhook.html#tenant" class="tsd-kind-icon">tenant</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_webhooks_.iwebhook.html#urn" class="tsd-kind-icon">urn</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_design_automation_.ialias.html" class="tsd-kind-icon">IAlias</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_design_automation_.iappbundlecommon.html" class="tsd-kind-icon">IApp<wbr>Bundle<wbr>Common</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_design_automation_.iappbundledetail.html" class="tsd-kind-icon">IApp<wbr>Bundle<wbr>Detail</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_design_automation_.iappbundleuploadparams.html" class="tsd-kind-icon">IApp<wbr>Bundle<wbr>Upload<wbr>Params</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_design_automation_.icreateactivityconfig.html" class="tsd-kind-icon">ICreate<wbr>Activity<wbr>Config</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_design_automation_.icreateappbundleconfig.html" class="tsd-kind-icon">ICreate<wbr>App<wbr>Bundle<wbr>Config</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_design_automation_.ienginedetail.html" class="tsd-kind-icon">IEngine<wbr>Detail</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_design_automation_.iupdateactivityconfig.html" class="tsd-kind-icon">IUpdate<wbr>Activity<wbr>Config</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_design_automation_.iupdateappbundleconfig.html" class="tsd-kind-icon">IUpdate<wbr>App<wbr>Bundle<wbr>Config</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_design_automation_.iworkitemconfig.html" class="tsd-kind-icon">IWork<wbr>Item<wbr>Config</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_design_automation_.iworkitemdetail.html" class="tsd-kind-icon">IWork<wbr>Item<wbr>Detail</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_design_automation_.iworkitemparam.html" class="tsd-kind-icon">IWork<wbr>Item<wbr>Param</a>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module">
+						<a href="../modules/_webhooks_.html#webhookscope" class="tsd-kind-icon">Webhook<wbr>Scope</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/_design_automation_.html#codescopes" class="tsd-kind-icon">Code<wbr>Scopes</a>
+						<a href="../modules/_webhooks_.html#readtokenscopes" class="tsd-kind-icon">Read<wbr>Token<wbr>Scopes</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/_design_automation_.html#rootpath" class="tsd-kind-icon">Root<wbr>Path</a>
+						<a href="../modules/_webhooks_.html#writetokenscopes" class="tsd-kind-icon">Write<wbr>Token<wbr>Scopes</a>
 					</li>
 				</ul>
 			</nav>

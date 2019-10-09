@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>ISignedUrl | forge-server-utils</title>
+	<title>WebhookSystem | forge-server-utils</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,71 +56,81 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_data_management_.html">&quot;data-management&quot;</a>
+					<a href="../modules/_webhooks_.html">&quot;webhooks&quot;</a>
 				</li>
 				<li>
-					<a href="_data_management_.isignedurl.html">ISignedUrl</a>
+					<a href="_webhooks_.webhooksystem.html">WebhookSystem</a>
 				</li>
 			</ul>
-			<h1>Interface ISignedUrl</h1>
+			<h1>Enumeration WebhookSystem</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
-			<section class="tsd-panel tsd-hierarchy">
-				<h3>Hierarchy</h3>
-				<ul class="tsd-hierarchy">
-					<li>
-						<span class="target">ISignedUrl</span>
-					</li>
-				</ul>
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>Available webhook systems.</p>
+					</div>
+				</div>
 			</section>
 			<section class="tsd-panel-group tsd-index-group">
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section ">
-							<h3>Properties</h3>
+							<h3>Enumeration members</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_data_management_.isignedurl.html#expiration" class="tsd-kind-icon">expiration</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_data_management_.isignedurl.html#signedurl" class="tsd-kind-icon">signed<wbr>Url</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_data_management_.isignedurl.html#singleuse" class="tsd-kind-icon">single<wbr>Use</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_webhooks_.webhooksystem.html#data" class="tsd-kind-icon">Data</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_webhooks_.webhooksystem.html#derivative" class="tsd-kind-icon">Derivative</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_webhooks_.webhooksystem.html#fusionlifecycle" class="tsd-kind-icon">Fusion<wbr>Lifecycle</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_webhooks_.webhooksystem.html#revitcloudworksharing" class="tsd-kind-icon">Revit<wbr>Cloud<wbr>Worksharing</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="expiration" class="tsd-anchor"></a>
-					<h3>expiration</h3>
-					<div class="tsd-signature tsd-kind-icon">expiration<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+				<h2>Enumeration members</h2>
+				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
+					<a name="data" class="tsd-anchor"></a>
+					<h3>Data</h3>
+					<div class="tsd-signature tsd-kind-icon">Data<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> =&nbsp;&quot;data&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/d0e23cf/src/data-management.ts#L46">data-management.ts:46</a></li>
+							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/d0e23cf/src/webhooks.ts#L10">webhooks.ts:10</a></li>
 						</ul>
 					</aside>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="signedurl" class="tsd-anchor"></a>
-					<h3>signed<wbr>Url</h3>
-					<div class="tsd-signature tsd-kind-icon">signed<wbr>Url<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
+					<a name="derivative" class="tsd-anchor"></a>
+					<h3>Derivative</h3>
+					<div class="tsd-signature tsd-kind-icon">Derivative<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> =&nbsp;&quot;derivative&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/d0e23cf/src/data-management.ts#L45">data-management.ts:45</a></li>
+							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/d0e23cf/src/webhooks.ts#L11">webhooks.ts:11</a></li>
 						</ul>
 					</aside>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="singleuse" class="tsd-anchor"></a>
-					<h3>single<wbr>Use</h3>
-					<div class="tsd-signature tsd-kind-icon">single<wbr>Use<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
+					<a name="fusionlifecycle" class="tsd-anchor"></a>
+					<h3>Fusion<wbr>Lifecycle</h3>
+					<div class="tsd-signature tsd-kind-icon">Fusion<wbr>Lifecycle<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> =&nbsp;&quot;adsk.flc.production&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/d0e23cf/src/data-management.ts#L47">data-management.ts:47</a></li>
+							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/d0e23cf/src/webhooks.ts#L13">webhooks.ts:13</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
+					<a name="revitcloudworksharing" class="tsd-anchor"></a>
+					<h3>Revit<wbr>Cloud<wbr>Worksharing</h3>
+					<div class="tsd-signature tsd-kind-icon">Revit<wbr>Cloud<wbr>Worksharing<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> =&nbsp;&quot;adsk.c4r&quot;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/d0e23cf/src/webhooks.ts#L12">webhooks.ts:12</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -141,7 +151,7 @@
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_common_.html">"common"</a>
 					</li>
-					<li class="current tsd-kind-external-module">
+					<li class=" tsd-kind-external-module">
 						<a href="../modules/_data_management_.html">"data-<wbr>management"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
@@ -153,7 +163,7 @@
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_model_derivative_.html">"model-<wbr>derivative"</a>
 					</li>
-					<li class=" tsd-kind-external-module">
+					<li class="current tsd-kind-external-module">
 						<a href="../modules/_webhooks_.html">"webhooks"</a>
 					</li>
 				</ul>
@@ -161,52 +171,52 @@
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
 					<li class=" tsd-kind-enum tsd-parent-kind-external-module">
-						<a href="../enums/_data_management_.dataretentionpolicy.html" class="tsd-kind-icon">Data<wbr>Retention<wbr>Policy</a>
+						<a href="_webhooks_.webhookevent.html" class="tsd-kind-icon">Webhook<wbr>Event</a>
 					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-external-module">
-						<a href="../classes/_data_management_.datamanagementclient.html" class="tsd-kind-icon">Data<wbr>Management<wbr>Client</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_data_management_.ibucket.html" class="tsd-kind-icon">IBucket</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_data_management_.ibucketdetail.html" class="tsd-kind-icon">IBucket<wbr>Detail</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_data_management_.ibucketpermission.html" class="tsd-kind-icon">IBucket<wbr>Permission</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_data_management_.iobject.html" class="tsd-kind-icon">IObject</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_data_management_.iresumableuploadrange.html" class="tsd-kind-icon">IResumable<wbr>Upload<wbr>Range</a>
+					<li class=" tsd-kind-enum tsd-parent-kind-external-module">
+						<a href="_webhooks_.webhookstatus.html" class="tsd-kind-icon">Webhook<wbr>Status</a>
 					</li>
 				</ul>
 				<ul class="current">
-					<li class="current tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_data_management_.isignedurl.html" class="tsd-kind-icon">ISigned<wbr>Url</a>
+					<li class="current tsd-kind-enum tsd-parent-kind-external-module">
+						<a href="_webhooks_.webhooksystem.html" class="tsd-kind-icon">Webhook<wbr>System</a>
 						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_data_management_.isignedurl.html#expiration" class="tsd-kind-icon">expiration</a>
+							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+								<a href="_webhooks_.webhooksystem.html#data" class="tsd-kind-icon">Data</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_data_management_.isignedurl.html#signedurl" class="tsd-kind-icon">signed<wbr>Url</a>
+							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+								<a href="_webhooks_.webhooksystem.html#derivative" class="tsd-kind-icon">Derivative</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_data_management_.isignedurl.html#singleuse" class="tsd-kind-icon">single<wbr>Use</a>
+							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+								<a href="_webhooks_.webhooksystem.html#fusionlifecycle" class="tsd-kind-icon">Fusion<wbr>Lifecycle</a>
+							</li>
+							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+								<a href="_webhooks_.webhooksystem.html#revitcloudworksharing" class="tsd-kind-icon">Revit<wbr>Cloud<wbr>Worksharing</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/_data_management_.html#readtokenscopes" class="tsd-kind-icon">Read<wbr>Token<wbr>Scopes</a>
+					<li class=" tsd-kind-class tsd-parent-kind-external-module">
+						<a href="../classes/_webhooks_.webhooksclient.html" class="tsd-kind-icon">Webhooks<wbr>Client</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
+						<a href="../interfaces/_webhooks_.icreatewebhookparams.html" class="tsd-kind-icon">ICreate<wbr>Webhook<wbr>Params</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
+						<a href="../interfaces/_webhooks_.iupdatewebhookparams.html" class="tsd-kind-icon">IUpdate<wbr>Webhook<wbr>Params</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
+						<a href="../interfaces/_webhooks_.iwebhook.html" class="tsd-kind-icon">IWebhook</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module">
+						<a href="../modules/_webhooks_.html#webhookscope" class="tsd-kind-icon">Webhook<wbr>Scope</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/_data_management_.html#rootpath" class="tsd-kind-icon">Root<wbr>Path</a>
+						<a href="../modules/_webhooks_.html#readtokenscopes" class="tsd-kind-icon">Read<wbr>Token<wbr>Scopes</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/_data_management_.html#writetokenscopes" class="tsd-kind-icon">Write<wbr>Token<wbr>Scopes</a>
+						<a href="../modules/_webhooks_.html#writetokenscopes" class="tsd-kind-icon">Write<wbr>Token<wbr>Scopes</a>
 					</li>
 				</ul>
 			</nav>
