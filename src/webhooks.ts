@@ -219,7 +219,7 @@ export class WebhooksClient extends ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async getHookDetails(system: WebhookSystem, event: WebhookEvent, id: string): Promise<IWebhook> {
-        const hook = await this.get(`systems/${system}/events/${event}/hooks/${id}`, {}, ReadTokenScopes);
+        const hook = await this.get(`systems/${system}/events/${event}/hooks/${id}?region=${this.region}`, {}, ReadTokenScopes);
         return hook;
     }
 
