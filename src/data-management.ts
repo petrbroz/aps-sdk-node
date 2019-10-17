@@ -392,4 +392,14 @@ export class DataManagementClient extends ForgeClient {
     async deleteObject(bucketKey: string, objectName: string) {
         return this.delete(`buckets/${bucketKey}/objects/${objectName}`, {}, WriteTokenScopes);
     }
+
+    /**
+     * Deletes bucket (this endpoint is not documented on the Forge portal).
+     * @async
+     * @param {string} bucketKey Bucket key.
+     * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
+     */
+    async deleteBucket(bucketKey: string) {
+        return this.delete(`buckets/${bucketKey}`, {}, WriteTokenScopes);
+    }
 }
