@@ -3,7 +3,7 @@ import { AxiosRequestConfig } from 'axios';
 
 const RootPath = 'oss/v2';
 const ReadTokenScopes = ['bucket:read', 'data:read'];
-const WriteTokenScopes = ['bucket:create', 'data:write'];
+const WriteTokenScopes = ['bucket:create', 'bucket:delete', 'data:write'];
 
 export interface IBucket {
     bucketKey: string;
