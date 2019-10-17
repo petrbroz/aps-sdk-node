@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Deleting buckets
+
 ## [7.1.2] - 2019-10-09
 
 ### Fixed
