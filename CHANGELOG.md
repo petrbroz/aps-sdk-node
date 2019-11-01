@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Basic support for listing BIM360 issues and issue types
+  - Note: the BIM360 client is **experimental**! It needs a lot of cleanup (pagination, restructuring the response JSON, etc.)
+
 ### Fixed
 - Missing '/' in 3-legged redirect URL.
 - Response when retrieving user profile
