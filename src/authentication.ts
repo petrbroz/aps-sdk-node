@@ -139,6 +139,27 @@ export class AuthenticationClient {
     }
 
     /**
+     * Refreshes 3-legged access token
+     * ({@link https://forge.autodesk.com/en/docs/oauth/v2/reference/http/refreshtoken-POST}).
+     * @async
+     * @param {string[]} scopes List of requested {@link https://forge.autodesk.com/en/docs/oauth/v2/developers_guide/scopes|scopes}.
+     * @param {string} refreshToken Refresh token.
+     * @returns {Promise<IThreeLeggedToken>} Promise of 3-legged authentication object containing
+     * 'access_token', 'refresh_token', and 'expires_in' with expiration time (in seconds).
+     */
+    async refreshToken(scopes: string[], refreshToken: string): Promise<IThreeLeggedToken> {
+        const params = {
+            'client_id': this.client_id,
+            'client_secret': this.client_secret,
+            'grant_type': 'refresh_token',
+            'refresh_token': refreshToken,
+            'scope': scopes.join(' ')
+        };
+        const resp = await this.post(`refreshtoken`, params);
+        return resp.data;
+    }
+
+    /**
      * Gets profile information for a user based on their 3-legged auth token
      * ({@link https://forge.autodesk.com/en/docs/oauth/v2/reference/http/users-@me-GET|docs}).
      * @async
