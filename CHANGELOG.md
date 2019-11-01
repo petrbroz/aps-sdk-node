@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [8.0.0] - 2019-11-02
+
 ### Added
 - Refreshing tokens
 - Listing, creating, updating BIM 360 issues, their comments, attachments, issue types, root causes, etc.
