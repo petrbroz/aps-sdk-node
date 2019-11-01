@@ -151,6 +151,7 @@ export class AuthenticationClient {
                 'Authorization': 'Bearer ' + token
             }
         };
-        return axios.get<any, IUserProfile>(this.host + '/userprofile/v1/users/@me', config);
+        const resp = await axios.get(this.host + '/userprofile/v1/users/@me', config);
+        return resp.data;
     }
 }
