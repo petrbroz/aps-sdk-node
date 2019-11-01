@@ -5,43 +5,61 @@ const ReadTokenScopes = ['data:read'];
 const WriteTokenScopes = ['data:write'];
 
 interface IHub {
-    type: string;
     id: string;
-    attributes: { [key: string]: any };
-    links: { [key: string]: any };
-    relationships: { [key: string]: any };
+
+    name?: string;
+    region?: string;
+    extension?: object;
 }
 
 interface IProject {
-    type: string;
     id: string;
-    attributes: { [key: string]: any };
-    links: { [key: string]: any };
-    relationships: { [key: string]: any };
+
+    name?: string;
+    scopes?: string[];
+    extension?: object;
 }
 
 interface IFolder {
-    type: string;
     id: string;
-    attributes: { [key: string]: any };
-    links: { [key: string]: any };
-    relationships: { [key: string]: any };
+
+    name?: string; // The name of the folder.
+    displayName?: string; // Note that this field is reserved for future releases and should not be used. Use attributes.name for the folder name.
+    objectCount?: number; // The number of objects inside the folder.
+    createTime?: string; // The time the folder was created, in the following format: YYYY-MM-DDThh:mm:ss.sz.
+    createUserId?: string; // The unique identifier of the user who created the folder.
+    createUserName?: string; // The name of the user who created the folder.
+    lastModifiedTime?: string; // The last time the folder was modified, in the following format: YYYY-MM-DDThh:mm:ss.sz.
+    lastModifiedUserId?: string; // The unique identifier of the user who last modified the folder.
+    lastModifiedUserName?: string; // The name of the user who last modified the folder.
+    hidden?: boolean; // The folder’s current visibility state.
+    extension?: object; // The extension object of the data.
 }
 
 interface IItem {
-    type: string;
     id: string;
-    attributes: { [key: string]: any };
-    links: { [key: string]: any };
-    relationships: { [key: string]: any };
+    type: string;
+
+    extension?: object;
 }
 
 interface IVersion {
-    type: string;
     id: string;
-    attributes: { [key: string]: any };
-    links: { [key: string]: any };
-    relationships: { [key: string]: any };
+    type: string;
+
+    name?: string; // The filename used when synced to local disk.
+    displayName?: string; // Displayable name of the version.
+    versionNumber?: number; // Version number of this versioned file.
+    mimeType?: string; // Mimetype of the version’s content.
+    fileType?: string; // File type, only present if this version represents a file.
+    storageSize?: number; // File size in bytes, only present if this version represents a file.
+    createTime?: string; // The time that the resource was created at.
+    createUserId?: string; // The userId that created the resource.
+    createUserName?: string; // The username that created the resource.
+    lastModifiedTime?: string; // The time that the resource was last modifed.
+    lastModifiedUserId?: string; // The userId that last modified the resource.
+    lastModifiedUserName?: string; // The username that last modified the resource.
+    extension?: object; // The extension object of the data.
 }
 
 interface IIssue {
@@ -208,101 +226,171 @@ export class BIM360Client extends ForgeClient {
         super('', auth, host, region);
     }
 
-    // Hub APIs
+    // #region Hubs
 
     /**
      * Gets a list of all hubs accessible to given credentials
-     * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/hubs-GET|docs}).
+     * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/hubs-GET}).
      * @async
      * @returns {Promise<IHub[]>} List of hubs.
      */
-    async hubs(): Promise<IHub[]> {
-        const response = await this.get(`project/v1/hubs`, {}, ReadTokenScopes);
-        return response.data;
+    async listHubs(): Promise<IHub[]> {
+        const headers = { 'Content-Type': 'application/vnd.api+json' };
+        let response = await this.get(`project/v1/hubs`, headers, ReadTokenScopes);
+        let results = response.data;
+        while (response.links && response.links.next) {
+            response = await this.get(response.links.next, headers, ReadTokenScopes);
+            results = results.concat(response.data);
+        }
+        return results.map((result: any) => Object.assign(result.attributes, { id: result.id }));
     }
 
     /**
-     * Gets a hub with specific ID.
-     * @param {string} id Hub ID.
+     * Gets details of specific hub
+     * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/hubs-hub_id-GET}).
      * @async
-     * @returns {Promise<IHub>} Hub or null if there isn't one.
+     * @param {string} hubId Hub ID.
+     * @returns {Promise<IHub>} Hub details or null if there isn't one.
      */
-    async hub(id: string): Promise<IHub> {
-        const response = await this.get(`project/v1/hubs/${id}`, {}, ReadTokenScopes);
-        return response.data;
+    async getHubDetails(hubId: string): Promise<IHub> {
+        const headers = { 'Content-Type': 'application/vnd.api+json' };
+        const response = await this.get(`project/v1/hubs/${hubId}`, headers, ReadTokenScopes);
+        return Object.assign(response.data.attributes, { id: response.data.id })
     }
 
+    // #endregion
+
+    // #region Projects
+
     /**
-     * Gets a list of all projects in a hub.
-     * @param {string} hub Hub ID.
+     * Gets a list of all projects in a hub
+     * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/hubs-hub_id-projects-GET}).
      * @async
+     * @param {string} hubId Hub ID.
      * @returns {Promise<IProject[]>} List of projects.
      */
-    async projects(hub: string): Promise<IProject[]> {
-        const response = await this.get(`project/v1/hubs/${hub}/projects`, {}, ReadTokenScopes);
-        return response.data;
+    async listProjects(hubId: string): Promise<IProject[]> {
+        const headers = { 'Content-Type': 'application/vnd.api+json' };
+        let response = await this.get(`project/v1/hubs/${hubId}/projects`, headers, ReadTokenScopes);
+        let results = response.data;
+        while (response.links && response.links.next) {
+            response = await this.get(response.links.next, headers, ReadTokenScopes);
+            results = results.concat(response.data);
+        }
+        return results.map((result: any) => Object.assign(result.attributes, { id: result.id }));
     }
 
     /**
-     * Gets a list of top folders in a project.
-     * @param {string} hub Hub ID.
-     * @param {string} project Project ID.
+     * Gets details of specific project
+     * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/hubs-hub_id-projects-project_id-GET}).
      * @async
+     * @param {string} hubId Hub ID.
+     * @param {string} projectId Project ID.
+     * @returns {Promise<IProject>} Hub details or null if there isn't one.
+     */
+    async getProjectDetails(hubId: string, projectId: string): Promise<IProject> {
+        const headers = { 'Content-Type': 'application/vnd.api+json' };
+        const response = await this.get(`project/v1/hubs/${hubId}/projects/${projectId}`, headers, ReadTokenScopes);
+        return Object.assign(response.data.attributes, { id: response.data.id })
+    }
+
+    /**
+     * Gets a list of top folders in a project
+     * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/hubs-hub_id-projects-project_id-topFolders-GET}).
+     * @async
+     * @param {string} hubId Hub ID.
+     * @param {string} projectId Project ID.
      * @returns {Promise<IFolder[]>} List of folder records.
      */
-    async folders(hub: string, project: string): Promise<IFolder[]> {
-        const response = await this.get(`project/v1/hubs/${hub}/projects/${project}/topFolders`, {}, ReadTokenScopes);
-        return response.data;
+    async listTopFolders(hubId: string, projectId: string): Promise<IFolder[]> {
+        const headers = { 'Content-Type': 'application/vnd.api+json' };
+        let response = await this.get(`project/v1/hubs/${hubId}/projects/${projectId}/topFolders`, {}, ReadTokenScopes);
+        let results = response.data;
+        while (response.links && response.links.next) {
+            response = await this.get(response.links.next, headers, ReadTokenScopes);
+            results = results.concat(response.data);
+        }
+        return results.map((result: any) => Object.assign(result.attributes, { id: result.id }));
     }
 
+    // #endregion
+
+    // #region Folders
+
     /**
-     * Gets contents of a folder.
-     * @param {string} project Project ID.
-     * @param {string} folder Folder ID.
+     * Gets contents of a folder
+     * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/projects-project_id-folders-folder_id-contents-GET}).
      * @async
+     * @param {string} projectId Project ID.
+     * @param {string} folderId Folder ID.
      * @returns {Promise<IItem[]>} List of folder contents.
      */
-    async contents(project: string, folder: string): Promise<IItem[]> {
-        const response = await this.get(`data/v1/projects/${project}/folders/${folder}/contents`, {}, ReadTokenScopes);
-        return response.data;
+    async listContents(projectId: string, folderId: string): Promise<IItem[]> {
+        const headers = { 'Content-Type': 'application/vnd.api+json' };
+        let response = await this.get(`data/v1/projects/${projectId}/folders/${folderId}/contents`, {}, ReadTokenScopes);
+        let results = response.data;
+        while (response.links && response.links.next) {
+            response = await this.get(response.links.next, headers, ReadTokenScopes);
+            results = results.concat(response.data);
+        }
+        return results.map((result: any) => Object.assign(result.attributes, { id: result.id, type: result.type }));
     }
 
+    // #endregion
+
+    // #region Items
+
     /**
-     * Gets versions of a folder item.
-     * @param {string} project Project ID.
-     * @param {string} item Item ID.
+     * Gets versions of a folder item
+     * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/projects-project_id-items-item_id-versions-GET}).
      * @async
+     * @param {string} projectId Project ID.
+     * @param {string} itemId Item ID.
      * @returns {Promise<IVersion[]>} List of item versions.
      */
-    async versions(project: string, item: string): Promise<IVersion[]> {
-        const response = await this.get(`data/v1/projects/${project}/items/${item}/versions`, {}, ReadTokenScopes);
-        return response.data;
+    async listVersions(projectId: string, itemId: string): Promise<IVersion[]> {
+        const headers = { 'Content-Type': 'application/vnd.api+json' };
+        let response = await this.get(`data/v1/projects/${projectId}/items/${itemId}/versions`, {}, ReadTokenScopes);
+        let results = response.data;
+        while (response.links && response.links.next) {
+            response = await this.get(response.links.next, headers, ReadTokenScopes);
+            results = results.concat(response.data);
+        }
+        return results.map((result: any) => Object.assign(result.attributes, { id: result.id, type: result.type }));
     }
 
     /**
-     * Gets specific version of a folder item.
-     * @param {string} project Project ID.
-     * @param {string} item Item ID.
-     * @param {string} id Version ID.
+     * Gets "tip" version of a folder item
+     * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/projects-project_id-items-item_id-tip-GET}).
      * @async
-     * @returns {Promise<IVersion>} Specific version of folder item.
-     */
-    async version(project: string, item: string, id: string): Promise<IVersion> {
-        const response = await this.get(`data/v1/projects/${project}/items/${item}/versions/${id}`, {}, ReadTokenScopes);
-        return response.data;
-    }
-
-    /**
-     * Gets "tip" version of a folder item.
-     * @param {string} project Project ID.
-     * @param {string} item Item ID.
-     * @async
+     * @param {string} projectId Project ID.
+     * @param {string} itemId Item ID.
      * @returns {Promise<IVersion>} Tip version of the item.
      */
-    async tip(project: string, item: string): Promise<IVersion> {
-        const response = await this.get(`data/v1/projects/${project}/items/${item}/tip`, {}, ReadTokenScopes);
+    async getTipVersion(projectId: string, itemId: string): Promise<IVersion> {
+        const response = await this.get(`data/v1/projects/${projectId}/items/${itemId}/tip`, {}, ReadTokenScopes);
         return response.data;
     }
+
+    // #endregion
+
+    // #region Versions
+
+    /**
+     * Gets specific version of a folder item
+     * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/projects-project_id-versions-version_id-GET}).
+     * @async
+     * @param {string} projectId Project ID.
+     * @param {string} itemId Item ID.
+     * @param {string} versionId Version ID.
+     * @returns {Promise<IVersion>} Specific version of folder item.
+     */
+    async getVersionDetails(projectId: string, itemId: string, versionId: string): Promise<IVersion> {
+        const response = await this.get(`data/v1/projects/${projectId}/items/${itemId}/versions/${versionId}`, {}, ReadTokenScopes);
+        return response.data;
+    }
+
+    // #endregion
 
     // #region Issues
 
