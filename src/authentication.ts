@@ -114,7 +114,7 @@ export class AuthenticationClient {
      * @returns {string} Autodesk login URL.
      */
     getAuthorizeRedirect(scopes: string[], redirectUri: string): string {
-        return `${this.host}${RootPath}/authorize?response_type=code&client_id=${this.client_id}&redirect_uri=${redirectUri}&scope=${scopes.join(' ')}`;
+        return `${this.host}/${RootPath}/authorize?response_type=code&client_id=${this.client_id}&redirect_uri=${redirectUri}&scope=${scopes.join(' ')}`;
     }
 
     /**
