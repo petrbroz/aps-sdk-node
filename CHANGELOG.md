@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [7.3.0] - 2019-11-01
+
 ### Added
 - Basic support for listing BIM360 issues and issue types
   - Note: the BIM360 client is **experimental**! It needs a lot of cleanup (pagination, restructuring the response JSON, etc.)
