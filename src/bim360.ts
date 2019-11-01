@@ -43,6 +43,32 @@ interface IVersion {
     relationships: { [key: string]: any };
 }
 
+interface IIssue {
+    type: string;
+    id: string;
+    attributes: { [key: string]: any };
+    links: { [key: string]: any };
+    relationships: { [key: string]: any };
+}
+
+// TODO: update with all properties and their required/optional status
+interface IIssueType {
+    id: string;
+    containerId: string;
+    isActive: boolean;
+    orderIndex: number;
+    createdBy?: string;
+    updatedBy?: string;
+    deletedBy?: string;
+    statusSet?: string;
+    createdAt?: string;
+    updatedAt?: string;
+    deletedAt?: string;
+    subtypes?: any[];
+    permittedActions?: any[];
+    permittedAttributes?: any[];
+}
+
 /**
  * Client providing access to Autodesk Forge
  * {@link https://forge.autodesk.com/en/docs/bim360/v1|BIM360 APIs}.
@@ -154,5 +180,29 @@ export class BIM360Client extends ForgeClient {
     async tip(project: string, item: string): Promise<IVersion> {
         const response = await this.get(`data/v1/projects/${project}/items/${item}/tip`, {}, ReadTokenScopes);
         return response.data;
+    }
+
+    /**
+     * Lists all issues in specific container.
+     * @async
+     * @param {string} containerId Container ID.
+     * @returns {Promise<IIssue[]>} List of all issues.
+     */
+    async issues(containerId: string): Promise<IIssue[]> {
+        // TODO: add pagination
+        const response = await this.get(`issues/v1/containers/${containerId}/quality-issues`, {}, ReadTokenScopes);
+        return response.data;
+    }
+
+    /**
+     * Lists issue types in specific container.
+     * @async
+     * @param {string} containerId Container ID.
+     * @returns {Promise<IIssueType[]>} List of issues types.
+     */
+    async issueTypes(containerId: string, includeSubtypes?: boolean): Promise<IIssueType[]> {
+        // TODO: add pagination
+        const response = await this.get(`issues/v1/containers/${containerId}/ng-issue-types${includeSubtypes ? '?include=subtypes' : ''}`, {}, ReadTokenScopes);
+        return response.results;
     }
 }
