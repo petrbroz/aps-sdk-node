@@ -395,6 +395,19 @@ export class BIM360Client extends ForgeClient {
     // #region Issues
 
     /**
+     * Retrieves ID of container for issues of specific BIM360 project.
+     * @async
+     * @param {string} hubId Hub ID.
+     * @param {string} projectId Project ID.
+     * @returns {Promise<string>} Issue container ID.
+     */
+    async getIssueContainerID(hubId: string, projectId: string): Promise<string> {
+        const headers = { 'Content-Type': 'application/vnd.api+json' };
+        const response = await this.get(`project/v1/hubs/${hubId}/projects/${projectId}`, headers, ReadTokenScopes);
+        return response.data.relationships.issues.data.id;
+    }
+
+    /**
      * Lists all issues in a BIM360 project.
      * Requires 3-legged token.
      * {@link https://forge.autodesk.com/en/docs/bim360/v1/reference/http/field-issues-GET}.
