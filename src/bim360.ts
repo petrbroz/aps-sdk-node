@@ -399,12 +399,16 @@ export class BIM360Client extends ForgeClient {
      * @async
      * @param {string} hubId Hub ID.
      * @param {string} projectId Project ID.
-     * @returns {Promise<string>} Issue container ID.
+     * @returns {Promise<string|null>} Issue container ID if there is one, otherwise null.
      */
-    async getIssueContainerID(hubId: string, projectId: string): Promise<string> {
+    async getIssueContainerID(hubId: string, projectId: string): Promise<string|null> {
         const headers = { 'Content-Type': 'application/vnd.api+json' };
         const response = await this.get(`project/v1/hubs/${hubId}/projects/${projectId}`, headers, ReadTokenScopes);
-        return response.data.relationships.issues.data.id;
+        if (response.data.relationships.issues) {
+            return response.data.relationships.issues.data.id;
+        } else {
+            return null;
+        }
     }
 
     /**
