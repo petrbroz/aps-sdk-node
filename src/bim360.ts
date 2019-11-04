@@ -209,6 +209,16 @@ interface IIssueType {
     subtypes?: any[]; // An array of data about the issue subtypes associated with the issue type.
 }
 
+interface IIssueFilter {
+    target_urn?: string; // Retrieves pushpin issues associated with the specified file. Only relevant for pushpin issues. A pushpin is a visual marker that denotes the location of a issue in a document.
+    due_date?: Date | [Date, Date]; // Retrieves issues due by the specified due date. Value can be either a Date object specifying the due date, or an array of two Date objects specifying the range.
+    synced_after?: Date; // Retrieves issues updated after the specified date. Value is the timestamp of date.
+    created_at?: Date | [Date, Date]; // Retrieves issues created after the specfied date. Value can be either a Date object specifying the due date, or an array of two Date objects specifying the range.
+    created_by?: string; // Retrieves issues created by the user. Value is the unique identifier of the user who created the issue.
+    ng_issue_type_id?: string; // Retrieves issues associated with the specified issue type. To verify the ID, call GET ng-issue-types. Separate multiple values with commas. (Note that issues that were created in the Document Management module prior to the release of the latest version of the Issues API are automatically assigned the design issue type. For more details, see the changelog.)
+    ng_issue_subtype_id?: string; // Retrieves issues associated with the specified issue subtype. To verify the ID, call GET ng-issue-types, with the include=subtypes query string parameter.
+}
+
 /**
  * Client providing access to Autodesk Forge
  * {@link https://forge.autodesk.com/en/docs/bim360/v1|BIM360 APIs}.
@@ -395,18 +405,68 @@ export class BIM360Client extends ForgeClient {
     // #region Issues
 
     /**
+     * Retrieves ID of container for issues of specific BIM360 project.
+     * @async
+     * @param {string} hubId Hub ID.
+     * @param {string} projectId Project ID.
+     * @returns {Promise<string|null>} Issue container ID if there is one, otherwise null.
+     */
+    async getIssueContainerID(hubId: string, projectId: string): Promise<string|null> {
+        const headers = { 'Content-Type': 'application/vnd.api+json' };
+        const response = await this.get(`project/v1/hubs/${hubId}/projects/${projectId}`, headers, ReadTokenScopes);
+        if (response.data.relationships.issues) {
+            return response.data.relationships.issues.data.id;
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * Lists all issues in a BIM360 project.
      * Requires 3-legged token.
      * {@link https://forge.autodesk.com/en/docs/bim360/v1/reference/http/field-issues-GET}.
      * @async
      * @param {string} containerId ID of container storing all issues for a specific projects.
-     * @returns {Promise<IIssue[]>} List of all issues.
+     * @param {IIssueFilter} [filter] Optional set of filters.
+     * @returns {Promise<IIssue[]>} List of matching issues.
      */
-    async listIssues(containerId: string): Promise<IIssue[]> {
-        // TODO: support 'filter', 'include', and 'fields' params
+    async listIssues(containerId: string, filter?: IIssueFilter): Promise<IIssue[]> {
+        // TODO: 'include', and 'fields' params
         const pageSize = 50;
         const headers = { 'Content-Type': 'application/vnd.api+json' };
-        let response = await this.get(`issues/v1/containers/${containerId}/quality-issues?page[limit]=${pageSize}`, headers, ReadTokenScopes);
+        let url = `issues/v1/containers/${containerId}/quality-issues?page[limit]=${pageSize}`;
+        if (filter) {
+            if (filter.target_urn) {
+                url += '&filter[target_urn]=' + filter.target_urn;
+            }
+            if (filter.due_date) {
+                url += '&filter[due_date]=' + (
+                    Array.isArray(filter.due_date)
+                    ? filter.due_date[0].toISOString() + '...' + filter.due_date[1].toISOString()
+                    : filter.due_date.toISOString()
+                );
+            }
+            if (filter.synced_after) {
+                url += '&filter[synced_after]=' + filter.synced_after.toISOString();
+            }
+            if (filter.created_at) {
+                url += '&filter[created_at]=' + (
+                    Array.isArray(filter.created_at)
+                    ? filter.created_at[0].toISOString() + '...' + filter.created_at[1].toISOString()
+                    : filter.created_at.toISOString()
+                );
+            }
+            if (filter.created_by) {
+                url += '&filter[created_by]=' + filter.created_by;
+            }
+            if (filter.ng_issue_type_id) {
+                url += '&filter[ng_issue_type_id]=' + filter.ng_issue_type_id;
+            }
+            if (filter.ng_issue_subtype_id) {
+                url += '&filter[ng_issue_subtype_id]=' + filter.ng_issue_subtype_id;
+            }
+        }
+        let response = await this.get(url, headers, ReadTokenScopes);
         let results = response.data;
         while (response.links && response.links.next) {
             response = await this.get(response.links.next, headers, ReadTokenScopes);
