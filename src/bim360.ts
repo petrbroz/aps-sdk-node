@@ -1,8 +1,9 @@
 import { Region } from './common';
 import { ForgeClient, IAuthOptions } from './common';
 
-const ReadTokenScopes = ['data:read'];
+const ReadTokenScopes = ['data:read', 'account:read'];
 const WriteTokenScopes = ['data:write'];
+const PageSize = 64;
 
 interface IHub {
     id: string;
@@ -219,6 +220,59 @@ interface IIssueFilter {
     ng_issue_subtype_id?: string; // Retrieves issues associated with the specified issue subtype. To verify the ID, call GET ng-issue-types, with the include=subtypes query string parameter.
 }
 
+interface IUser {
+    id: string; // User ID
+    account_id?: string; // Account ID
+    /*
+    The role of the user in the account.
+    Possible values
+        account_admin: user has BIM 360 account administration access
+        account_user : normal project user
+        project_admin: user has Project administration privileges at a service level
+    */
+    role?: string;
+    /*
+    Status of the user in the system.
+    Possible values:
+        active: user is active and has logged into the system sucessfully
+        inactive: user is disabled
+        pending: user is invited and is yet to accept the invitation
+        not_invited: user is not invited
+    */
+    status?: string;
+    company_id?: string; // The user’s default company ID in BIM 360
+    company_name?: string; // The name of the user’s default company name in BIM 360
+    last_sign_in?: string; // Timestamp of the last sign in, YYYY-MM-DDThh:mm:ss.sssZ format
+    email?: string; // User’s email (max length: 255)
+    name?: string; // Default display name (max length: 255)
+    nickname?: string; // Nick name for user (max length: 255)
+    first_name?: string; // User’s first name (max length: 255)
+    last_name?: string; // User’s last name (max length: 255)
+    uid?: string; // User’s Autodesk ID
+    image_url?: string; // URL for user’s profile image (max length: 255)
+    address_line_1?: string; // User’s address line 1 (max length: 255)
+    address_line_2?: string; // User’s address line 2 (max length: 255)
+    city?: string; // City in which user is located (max length: 255)
+    state_or_province?: string; // State or province in which user is located (max length: 255). Note that the state_or_province value depends on the selected country value; see the valid values in the state_or_province list in the Parameters guide.
+    postal_code?: string; // Postal code for the user’s location (max length: 255)
+    country?: string; // Country for this user. Refer to the country list in the Parameters guide.
+    phone?: string; // Contact phone number for the user (max length: 255)
+    company?: string; // Company information from the Autodesk user profile (max length: 255). Note that this is different from company in BIM 360.
+    job_title?: string; // User’s job title (max length: 255)
+    industry?: string; // Industry information for user (max length: 255)
+    about_me?: string; // Short description about the user (max length: 255)
+    created_at?: string; // YYYY-MM-DDThh:mm:ss.sssZ format
+    updated_at?: string; // YYYY-MM-DDThh:mm:ss.sssZ format
+}
+
+interface IUserFilter {
+    name?: string; // User name to match (max length: 255)
+    email?: string; // User email to match (max length: 255)
+    company_name?: string; // User company to match (max length: 255)
+    operator?: string; // Boolean operator to use: OR (default) or AND
+    partial?: boolean; // If true (default), perform a fuzzy match
+}
+
 /**
  * Client providing access to Autodesk Forge
  * {@link https://forge.autodesk.com/en/docs/bim360/v1|BIM360 APIs}.
@@ -432,9 +486,8 @@ export class BIM360Client extends ForgeClient {
      */
     async listIssues(containerId: string, filter?: IIssueFilter): Promise<IIssue[]> {
         // TODO: 'include', and 'fields' params
-        const pageSize = 50;
         const headers = { 'Content-Type': 'application/vnd.api+json' };
-        let url = `issues/v1/containers/${containerId}/quality-issues?page[limit]=${pageSize}`;
+        let url = `issues/v1/containers/${containerId}/quality-issues?page[limit]=${PageSize}`;
         if (filter) {
             if (filter.target_urn) {
                 url += '&filter[target_urn]=' + filter.target_urn;
@@ -547,9 +600,8 @@ export class BIM360Client extends ForgeClient {
      */
     async listIssueComments(containerId: string, issueId: string): Promise<IIssueComment[]> {
         // TODO: support 'filter', 'include', or 'fields' params
-        const pageSize = 50;
         const headers = { 'Content-Type': 'application/vnd.api+json' };
-        let response = await this.get(`issues/v1/containers/${containerId}/quality-issues/${issueId}/comments?page[limit]=${pageSize}`, headers, ReadTokenScopes);
+        let response = await this.get(`issues/v1/containers/${containerId}/quality-issues/${issueId}/comments?page[limit]=${PageSize}`, headers, ReadTokenScopes);
         let results = response.data;
         while (response.links && response.links.next) {
             response = await this.get(response.links.next, headers, ReadTokenScopes);
@@ -593,9 +645,8 @@ export class BIM360Client extends ForgeClient {
      */
     async listIssueAttachments(containerId: string, issueId: string): Promise<IIssueAttachment[]> {
         // TODO: support 'filter', 'include', or 'fields' params
-        const pageSize = 50;
         const headers = { 'Content-Type': 'application/vnd.api+json' };
-        let response = await this.get(`issues/v1/containers/${containerId}/quality-issues/${issueId}/attachments?page[limit]=${pageSize}`, headers, ReadTokenScopes);
+        let response = await this.get(`issues/v1/containers/${containerId}/quality-issues/${issueId}/attachments?page[limit]=${PageSize}`, headers, ReadTokenScopes);
         let results = response.data;
         while (response.links && response.links.next) {
             response = await this.get(response.links.next, headers, ReadTokenScopes);
@@ -633,9 +684,8 @@ export class BIM360Client extends ForgeClient {
      */
     async listIssueRootCauses(containerId: string): Promise<IIssueRootCause[]> {
         // TODO: support 'filter', 'include', or 'fields' params
-        const pageSize = 50;
         const headers = { 'Content-Type': 'application/vnd.api+json' };
-        let response = await this.get(`issues/v1/containers/${containerId}/root-causes?page[limit]=${pageSize}`, headers, ReadTokenScopes);
+        let response = await this.get(`issues/v1/containers/${containerId}/root-causes?page[limit]=${PageSize}`, headers, ReadTokenScopes);
         let results = response.data;
         return results.map((result: any) => Object.assign(result.attributes, { id: result.id }));
     }
@@ -649,12 +699,11 @@ export class BIM360Client extends ForgeClient {
      */
     async listIssueTypes(containerId: string, includeSubtypes?: boolean): Promise<IIssueType[]> {
         // TODO: support 'filter', 'include', or 'fields' params
-        const pageSize = 5;
         const headers = { 'Content-Type': 'application/vnd.api+json' };
-        let response = await this.get(`issues/v1/containers/${containerId}/ng-issue-types?limit=${pageSize}${includeSubtypes ? '&include=subtypes' : ''}`, headers, ReadTokenScopes);
+        let response = await this.get(`issues/v1/containers/${containerId}/ng-issue-types?limit=${PageSize}${includeSubtypes ? '&include=subtypes' : ''}`, headers, ReadTokenScopes);
         let results = response.results;
         while (response.pagination && response.pagination.offset + response.pagination.limit < response.pagination.totalResults) {
-            response = await this.get(`issues/v1/containers/${containerId}/ng-issue-types?offset=${response.pagination.offset + response.pagination.limit}&limit=${pageSize}${includeSubtypes ? '&include=subtypes' : ''}`, headers, ReadTokenScopes);
+            response = await this.get(`issues/v1/containers/${containerId}/ng-issue-types?offset=${response.pagination.offset + response.pagination.limit}&limit=${PageSize}${includeSubtypes ? '&include=subtypes' : ''}`, headers, ReadTokenScopes);
             results = results.concat(response.results);
         }
         return results;
@@ -662,12 +711,11 @@ export class BIM360Client extends ForgeClient {
 
     async listIssueAttributeDefinitions(containerId: string): Promise<any[]> {
         // TODO: support 'filter', 'include', or 'fields' params
-        const pageSize = 5;
         const headers = {};
-        let response = await this.get(`issues/v2/containers/${containerId}/issue-attribute-definitions?limit=${pageSize}`, headers, ReadTokenScopes);
+        let response = await this.get(`issues/v2/containers/${containerId}/issue-attribute-definitions?limit=${PageSize}`, headers, ReadTokenScopes);
         let results = response.results;
         while (response.pagination && response.pagination.offset + response.pagination.limit < response.pagination.totalResults) {
-            response = await this.get(`issues/v2/containers/${containerId}/issue-attribute-definitions?offset=${response.pagination.offset + response.pagination.limit}&limit=${pageSize}`, headers, ReadTokenScopes);
+            response = await this.get(`issues/v2/containers/${containerId}/issue-attribute-definitions?offset=${response.pagination.offset + response.pagination.limit}&limit=${PageSize}`, headers, ReadTokenScopes);
             results = results.concat(response.results);
         }
         return results;
@@ -675,15 +723,61 @@ export class BIM360Client extends ForgeClient {
 
     async listIssueAttributeMappings(containerId: string): Promise<any[]> {
         // TODO: support 'filter', 'include', or 'fields' params
-        const pageSize = 5;
         const headers = {};
-        let response = await this.get(`issues/v2/containers/${containerId}/issue-attribute-mappings?limit=${pageSize}`, headers, ReadTokenScopes);
+        let response = await this.get(`issues/v2/containers/${containerId}/issue-attribute-mappings?limit=${PageSize}`, headers, ReadTokenScopes);
         let results = response.results;
         while (response.pagination && response.pagination.offset + response.pagination.limit < response.pagination.totalResults) {
-            response = await this.get(`issues/v2/containers/${containerId}/issue-attribute-mappings?offset=${response.pagination.offset + response.pagination.limit}&limit=${pageSize}`, headers, ReadTokenScopes);
+            response = await this.get(`issues/v2/containers/${containerId}/issue-attribute-mappings?offset=${response.pagination.offset + response.pagination.limit}&limit=${PageSize}`, headers, ReadTokenScopes);
             results = results.concat(response.results);
         }
         return results;
+    }
+
+    // #endregion
+
+    // #region Account Admin
+
+    /**
+     * Lists all users in BIM 360 account, or just users matching specific criteria.
+     * {@link https://forge.autodesk.com/en/docs/bim360/v1/reference/http/users-GET}.
+     * {@link https://forge.autodesk.com/en/docs/bim360/v1/reference/http/users-search-GET}.
+     * @async
+     * @param {string} accountId The account ID of the users. This corresponds to hub ID in the Data Management API. To convert a hub ID into an account ID you need to remove the “b.” prefix. For example, a hub ID of b.c8b0c73d-3ae9 translates to an account ID of c8b0c73d-3ae9.
+     * @returns {Promise<IUser[]>} List of users.
+     */
+    async listUsers(accountId: string, filter?: IUserFilter): Promise<IUser[]> {
+        let url = this.region === Region.US ? `hq/v1/accounts/${accountId}/users` : `hq/v1/regions/eu/accounts/${accountId}/users`;
+        if (filter) {
+            url += `/search?limit=${PageSize}`;
+            for (const key of Object.keys(filter)) {
+                url += `&${key}=${(filter as any)[key]}`;
+            }
+        } else {
+            url += `?limit=${PageSize}`;
+        }
+
+        let results: IUser[] = [];
+        let offset = 0;
+        let response = await this.get(url, {}, ReadTokenScopes);
+        while (response.length) {
+            results = results.concat(response);
+            offset += PageSize;
+            response = await this.get(url + `&offset=${offset}`, {}, ReadTokenScopes);
+        }
+        return results;
+    }
+
+    /**
+     * Query the details of a specific user.
+     * {@link https://forge.autodesk.com/en/docs/bim360/v1/reference/http/users-:user_id-GET}.
+     * @param {string} accountId The account ID of the users. This corresponds to hub ID in the Data Management API. To convert a hub ID into an account ID you need to remove the “b.” prefix. For example, a hub ID of b.c8b0c73d-3ae9 translates to an account ID of c8b0c73d-3ae9.
+     * @param {string} userId User ID.
+     * @returns {Promise<IUser>} User details.
+    */
+    async getUserDetails(accountId: string, userId: string): Promise<IUser> {
+        const url = this.region === Region.US ? `hq/v1/accounts/${accountId}/users/${userId}` : `hq/v1/regions/eu/accounts/${accountId}/users/${userId}`;
+        const response = await this.get(url, {}, ReadTokenScopes);
+        return response;
     }
 
     // #endregion
