@@ -220,9 +220,9 @@ interface IIssueFilter {
     ng_issue_subtype_id?: string; // Retrieves issues associated with the specified issue subtype. To verify the ID, call GET ng-issue-types, with the include=subtypes query string parameter.
 }
 
-interface IIssuePage {
-    offset: number; // Page number that you want to begin issue results from.
-    limit: number; // Number of issues to return in the response payload. Acceptable values: 1-100. Default value: 10.
+interface IPage {
+    offset: number; // Offset in the complete list of records.
+    limit: number; // Number of records to return in the response payload. Acceptable values: 1-100. Default value: 10.
 }
 
 interface IUser {
@@ -487,10 +487,10 @@ export class BIM360Client extends ForgeClient {
      * @async
      * @param {string} containerId ID of container storing all issues for a specific projects.
      * @param {IIssueFilter} [filter] Optional set of filters.
-     * @param {IIssuePage} [page] Optional page of issues to retrieve. If not defined, *all* issues will be listed.
+     * @param {IPage} [page] Optional page of issues to retrieve. If not defined, *all* issues will be listed.
      * @returns {Promise<IIssue[]>} List of matching issues.
      */
-    async listIssues(containerId: string, filter?: IIssueFilter, page?: IIssuePage): Promise<IIssue[]> {
+    async listIssues(containerId: string, filter?: IIssueFilter, page?: IPage): Promise<IIssue[]> {
         // TODO: 'include', and 'fields' params
         const headers = { 'Content-Type': 'application/vnd.api+json' };
         let url = page
@@ -606,16 +606,22 @@ export class BIM360Client extends ForgeClient {
      * @async
      * @param {string} containerId ID of container storing all issues for a specific projects.
      * @param {string} issueId Issue ID.
+     * @param {IPage} [page] Optional page of issue comments. If not defined, *all* comments will be listed.
      * @returns {Promise<IIssueComment[]>} Issue comments.
      */
-    async listIssueComments(containerId: string, issueId: string): Promise<IIssueComment[]> {
+    async listIssueComments(containerId: string, issueId: string, page?: IPage): Promise<IIssueComment[]> {
         // TODO: support 'filter', 'include', or 'fields' params
         const headers = { 'Content-Type': 'application/vnd.api+json' };
-        let response = await this.get(`issues/v1/containers/${containerId}/quality-issues/${issueId}/comments?page[limit]=${PageSize}`, headers, ReadTokenScopes);
+        const url = page
+            ? `issues/v1/containers/${containerId}/quality-issues/${issueId}/comments?page[limit]=${page.limit}&page[offset]=${page.offset}`
+            : `issues/v1/containers/${containerId}/quality-issues/${issueId}/comments?page[limit]=${PageSize}`;
+        let response = await this.get(url, headers, ReadTokenScopes);
         let results = response.data;
-        while (response.links && response.links.next) {
-            response = await this.get(response.links.next, headers, ReadTokenScopes);
-            results = results.concat(response.data);
+        if (!page) {
+            while (response.links && response.links.next) {
+                response = await this.get(response.links.next, headers, ReadTokenScopes);
+                results = results.concat(response.data);
+            }
         }
         return results.map((result: any) => Object.assign(result.attributes, { id: result.id }));
     }
@@ -651,16 +657,22 @@ export class BIM360Client extends ForgeClient {
      * @async
      * @param {string} containerId ID of container storing all issues for a specific projects.
      * @param {string} issueId Issue ID.
+     * @param {IPage} [page] Optional page of issue attachments. If not defined, *all* attachments will be listed.
      * @returns {Promise<IIssueAttachment[]>} Issue attachments.
      */
-    async listIssueAttachments(containerId: string, issueId: string): Promise<IIssueAttachment[]> {
+    async listIssueAttachments(containerId: string, issueId: string, page?: IPage): Promise<IIssueAttachment[]> {
         // TODO: support 'filter', 'include', or 'fields' params
         const headers = { 'Content-Type': 'application/vnd.api+json' };
-        let response = await this.get(`issues/v1/containers/${containerId}/quality-issues/${issueId}/attachments?page[limit]=${PageSize}`, headers, ReadTokenScopes);
+        const url = page
+            ? `issues/v1/containers/${containerId}/quality-issues/${issueId}/attachments?page[limit]=${page.limit}&page[offset]=${page.offset}`
+            : `issues/v1/containers/${containerId}/quality-issues/${issueId}/attachments?page[limit]=${PageSize}`;
+        let response = await this.get(url, headers, ReadTokenScopes);
         let results = response.data;
-        while (response.links && response.links.next) {
-            response = await this.get(response.links.next, headers, ReadTokenScopes);
-            results = results.concat(response.data);
+        if (!page) {
+            while (response.links && response.links.next) {
+                response = await this.get(response.links.next, headers, ReadTokenScopes);
+                results = results.concat(response.data);
+            }
         }
         return results.map((result: any) => Object.assign(result.attributes, { id: result.id }));
     }
@@ -690,12 +702,16 @@ export class BIM360Client extends ForgeClient {
      * {@link https://forge.autodesk.com/en/docs/bim360/v1/reference/http/root-causes-GET}.
      * @async
      * @param {string} containerId ID of container storing all issues for a specific projects.
+     * @param {IPage} [page] Optional page of records. If not defined, *all* records will be listed.
      * @returns {Promise<IIssueRootCause[]>} Issue root causes.
      */
-    async listIssueRootCauses(containerId: string): Promise<IIssueRootCause[]> {
+    async listIssueRootCauses(containerId: string, page?: IPage): Promise<IIssueRootCause[]> {
         // TODO: support 'filter', 'include', or 'fields' params
         const headers = { 'Content-Type': 'application/vnd.api+json' };
-        let response = await this.get(`issues/v1/containers/${containerId}/root-causes?page[limit]=${PageSize}`, headers, ReadTokenScopes);
+        const url = page
+            ? `issues/v1/containers/${containerId}/root-causes?page[limit]=${page.limit}&page[offset]=${page.offset}`
+            : `issues/v1/containers/${containerId}/root-causes?page[limit]=${PageSize}`;
+        let response = await this.get(url, headers, ReadTokenScopes);
         let results = response.data;
         return results.map((result: any) => Object.assign(result.attributes, { id: result.id }));
     }
