@@ -265,6 +265,14 @@ interface IUser {
     updated_at?: string; // YYYY-MM-DDThh:mm:ss.sssZ format
 }
 
+interface IUserFilter {
+    name?: string; // User name to match (max length: 255)
+    email?: string; // User email to match (max length: 255)
+    company_name?: string; // User company to match (max length: 255)
+    operator?: string; // Boolean operator to use: OR (default) or AND
+    partial?: boolean; // If true (default), perform a fuzzy match
+}
+
 /**
  * Client providing access to Autodesk Forge
  * {@link https://forge.autodesk.com/en/docs/bim360/v1|BIM360 APIs}.
@@ -730,21 +738,31 @@ export class BIM360Client extends ForgeClient {
     // #region Account Admin
 
     /**
-     * Lists all users in BIM 360 account.
+     * Lists all users in BIM 360 account, or just users matching specific criteria.
      * {@link https://forge.autodesk.com/en/docs/bim360/v1/reference/http/users-GET}.
+     * {@link https://forge.autodesk.com/en/docs/bim360/v1/reference/http/users-search-GET}.
      * @async
      * @param {string} accountId The account ID of the users. This corresponds to hub ID in the Data Management API. To convert a hub ID into an account ID you need to remove the “b.” prefix. For example, a hub ID of b.c8b0c73d-3ae9 translates to an account ID of c8b0c73d-3ae9.
      * @returns {Promise<IUser[]>} List of users.
      */
-    async listUsers(accountId: string): Promise<IUser[]> {
-        const url = this.region === Region.US ? `hq/v1/accounts/${accountId}/users` : `hq/v1/regions/eu/accounts/${accountId}/users`;
-        let results: any[] = [];
+    async listUsers(accountId: string, filter?: IUserFilter): Promise<IUser[]> {
+        let url = this.region === Region.US ? `hq/v1/accounts/${accountId}/users` : `hq/v1/regions/eu/accounts/${accountId}/users`;
+        if (filter) {
+            url += `/search?limit=${PageSize}`;
+            for (const key of Object.keys(filter)) {
+                url += `&${key}=${(filter as any)[key]}`;
+            }
+        } else {
+            url += `?limit=${PageSize}`;
+        }
+
+        let results: IUser[] = [];
         let offset = 0;
-        let response = await this.get(url + `?limit=${PageSize}`, {}, ReadTokenScopes);
+        let response = await this.get(url, {}, ReadTokenScopes);
         while (response.length) {
             results = results.concat(response);
             offset += PageSize;
-            response = await this.get(url + `?limit=${PageSize}&offset=${offset}`, {}, ReadTokenScopes);
+            response = await this.get(url + `&offset=${offset}`, {}, ReadTokenScopes);
         }
         return results;
     }
