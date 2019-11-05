@@ -3,6 +3,7 @@ import { ForgeClient, IAuthOptions } from './common';
 
 const ReadTokenScopes = ['data:read', 'account:read'];
 const WriteTokenScopes = ['data:write'];
+const PageSize = 64;
 
 interface IHub {
     id: string;
@@ -477,9 +478,8 @@ export class BIM360Client extends ForgeClient {
      */
     async listIssues(containerId: string, filter?: IIssueFilter): Promise<IIssue[]> {
         // TODO: 'include', and 'fields' params
-        const pageSize = 50;
         const headers = { 'Content-Type': 'application/vnd.api+json' };
-        let url = `issues/v1/containers/${containerId}/quality-issues?page[limit]=${pageSize}`;
+        let url = `issues/v1/containers/${containerId}/quality-issues?page[limit]=${PageSize}`;
         if (filter) {
             if (filter.target_urn) {
                 url += '&filter[target_urn]=' + filter.target_urn;
@@ -592,9 +592,8 @@ export class BIM360Client extends ForgeClient {
      */
     async listIssueComments(containerId: string, issueId: string): Promise<IIssueComment[]> {
         // TODO: support 'filter', 'include', or 'fields' params
-        const pageSize = 50;
         const headers = { 'Content-Type': 'application/vnd.api+json' };
-        let response = await this.get(`issues/v1/containers/${containerId}/quality-issues/${issueId}/comments?page[limit]=${pageSize}`, headers, ReadTokenScopes);
+        let response = await this.get(`issues/v1/containers/${containerId}/quality-issues/${issueId}/comments?page[limit]=${PageSize}`, headers, ReadTokenScopes);
         let results = response.data;
         while (response.links && response.links.next) {
             response = await this.get(response.links.next, headers, ReadTokenScopes);
@@ -638,9 +637,8 @@ export class BIM360Client extends ForgeClient {
      */
     async listIssueAttachments(containerId: string, issueId: string): Promise<IIssueAttachment[]> {
         // TODO: support 'filter', 'include', or 'fields' params
-        const pageSize = 50;
         const headers = { 'Content-Type': 'application/vnd.api+json' };
-        let response = await this.get(`issues/v1/containers/${containerId}/quality-issues/${issueId}/attachments?page[limit]=${pageSize}`, headers, ReadTokenScopes);
+        let response = await this.get(`issues/v1/containers/${containerId}/quality-issues/${issueId}/attachments?page[limit]=${PageSize}`, headers, ReadTokenScopes);
         let results = response.data;
         while (response.links && response.links.next) {
             response = await this.get(response.links.next, headers, ReadTokenScopes);
@@ -678,9 +676,8 @@ export class BIM360Client extends ForgeClient {
      */
     async listIssueRootCauses(containerId: string): Promise<IIssueRootCause[]> {
         // TODO: support 'filter', 'include', or 'fields' params
-        const pageSize = 50;
         const headers = { 'Content-Type': 'application/vnd.api+json' };
-        let response = await this.get(`issues/v1/containers/${containerId}/root-causes?page[limit]=${pageSize}`, headers, ReadTokenScopes);
+        let response = await this.get(`issues/v1/containers/${containerId}/root-causes?page[limit]=${PageSize}`, headers, ReadTokenScopes);
         let results = response.data;
         return results.map((result: any) => Object.assign(result.attributes, { id: result.id }));
     }
@@ -694,12 +691,11 @@ export class BIM360Client extends ForgeClient {
      */
     async listIssueTypes(containerId: string, includeSubtypes?: boolean): Promise<IIssueType[]> {
         // TODO: support 'filter', 'include', or 'fields' params
-        const pageSize = 50;
         const headers = { 'Content-Type': 'application/vnd.api+json' };
-        let response = await this.get(`issues/v1/containers/${containerId}/ng-issue-types?limit=${pageSize}${includeSubtypes ? '&include=subtypes' : ''}`, headers, ReadTokenScopes);
+        let response = await this.get(`issues/v1/containers/${containerId}/ng-issue-types?limit=${PageSize}${includeSubtypes ? '&include=subtypes' : ''}`, headers, ReadTokenScopes);
         let results = response.results;
         while (response.pagination && response.pagination.offset + response.pagination.limit < response.pagination.totalResults) {
-            response = await this.get(`issues/v1/containers/${containerId}/ng-issue-types?offset=${response.pagination.offset + response.pagination.limit}&limit=${pageSize}${includeSubtypes ? '&include=subtypes' : ''}`, headers, ReadTokenScopes);
+            response = await this.get(`issues/v1/containers/${containerId}/ng-issue-types?offset=${response.pagination.offset + response.pagination.limit}&limit=${PageSize}${includeSubtypes ? '&include=subtypes' : ''}`, headers, ReadTokenScopes);
             results = results.concat(response.results);
         }
         return results;
@@ -707,12 +703,11 @@ export class BIM360Client extends ForgeClient {
 
     async listIssueAttributeDefinitions(containerId: string): Promise<any[]> {
         // TODO: support 'filter', 'include', or 'fields' params
-        const pageSize = 50;
         const headers = {};
-        let response = await this.get(`issues/v2/containers/${containerId}/issue-attribute-definitions?limit=${pageSize}`, headers, ReadTokenScopes);
+        let response = await this.get(`issues/v2/containers/${containerId}/issue-attribute-definitions?limit=${PageSize}`, headers, ReadTokenScopes);
         let results = response.results;
         while (response.pagination && response.pagination.offset + response.pagination.limit < response.pagination.totalResults) {
-            response = await this.get(`issues/v2/containers/${containerId}/issue-attribute-definitions?offset=${response.pagination.offset + response.pagination.limit}&limit=${pageSize}`, headers, ReadTokenScopes);
+            response = await this.get(`issues/v2/containers/${containerId}/issue-attribute-definitions?offset=${response.pagination.offset + response.pagination.limit}&limit=${PageSize}`, headers, ReadTokenScopes);
             results = results.concat(response.results);
         }
         return results;
@@ -720,12 +715,11 @@ export class BIM360Client extends ForgeClient {
 
     async listIssueAttributeMappings(containerId: string): Promise<any[]> {
         // TODO: support 'filter', 'include', or 'fields' params
-        const pageSize = 50;
         const headers = {};
-        let response = await this.get(`issues/v2/containers/${containerId}/issue-attribute-mappings?limit=${pageSize}`, headers, ReadTokenScopes);
+        let response = await this.get(`issues/v2/containers/${containerId}/issue-attribute-mappings?limit=${PageSize}`, headers, ReadTokenScopes);
         let results = response.results;
         while (response.pagination && response.pagination.offset + response.pagination.limit < response.pagination.totalResults) {
-            response = await this.get(`issues/v2/containers/${containerId}/issue-attribute-mappings?offset=${response.pagination.offset + response.pagination.limit}&limit=${pageSize}`, headers, ReadTokenScopes);
+            response = await this.get(`issues/v2/containers/${containerId}/issue-attribute-mappings?offset=${response.pagination.offset + response.pagination.limit}&limit=${PageSize}`, headers, ReadTokenScopes);
             results = results.concat(response.results);
         }
         return results;
@@ -743,15 +737,14 @@ export class BIM360Client extends ForgeClient {
      * @returns {Promise<IUser[]>} List of users.
      */
     async listUsers(accountId: string): Promise<IUser[]> {
-        const pageSize = 50;
         const url = this.region === Region.US ? `hq/v1/accounts/${accountId}/users` : `hq/v1/regions/eu/accounts/${accountId}/users`;
         let results: any[] = [];
         let offset = 0;
-        let response = await this.get(url + `?limit=${pageSize}`, {}, ReadTokenScopes);
+        let response = await this.get(url + `?limit=${PageSize}`, {}, ReadTokenScopes);
         while (response.length) {
             results = results.concat(response);
-            offset += pageSize;
-            response = await this.get(url + `?limit=${pageSize}&offset=${offset}`, {}, ReadTokenScopes);
+            offset += PageSize;
+            response = await this.get(url + `?limit=${PageSize}&offset=${offset}`, {}, ReadTokenScopes);
         }
         return results;
     }
