@@ -1,7 +1,7 @@
 import { Region } from './common';
 import { ForgeClient, IAuthOptions } from './common';
 
-const ReadTokenScopes = ['data:read'];
+const ReadTokenScopes = ['data:read', 'account:read'];
 const WriteTokenScopes = ['data:write'];
 
 interface IHub {
@@ -217,6 +217,51 @@ interface IIssueFilter {
     created_by?: string; // Retrieves issues created by the user. Value is the unique identifier of the user who created the issue.
     ng_issue_type_id?: string; // Retrieves issues associated with the specified issue type. To verify the ID, call GET ng-issue-types. Separate multiple values with commas. (Note that issues that were created in the Document Management module prior to the release of the latest version of the Issues API are automatically assigned the design issue type. For more details, see the changelog.)
     ng_issue_subtype_id?: string; // Retrieves issues associated with the specified issue subtype. To verify the ID, call GET ng-issue-types, with the include=subtypes query string parameter.
+}
+
+interface IUser {
+    id: string; // User ID
+    account_id?: string; // Account ID
+    /*
+    The role of the user in the account.
+    Possible values
+        account_admin: user has BIM 360 account administration access
+        account_user : normal project user
+        project_admin: user has Project administration privileges at a service level
+    */
+    role?: string;
+    /*
+    Status of the user in the system.
+    Possible values:
+        active: user is active and has logged into the system sucessfully
+        inactive: user is disabled
+        pending: user is invited and is yet to accept the invitation
+        not_invited: user is not invited
+    */
+    status?: string;
+    company_id?: string; // The user’s default company ID in BIM 360
+    company_name?: string; // The name of the user’s default company name in BIM 360
+    last_sign_in?: string; // Timestamp of the last sign in, YYYY-MM-DDThh:mm:ss.sssZ format
+    email?: string; // User’s email (max length: 255)
+    name?: string; // Default display name (max length: 255)
+    nickname?: string; // Nick name for user (max length: 255)
+    first_name?: string; // User’s first name (max length: 255)
+    last_name?: string; // User’s last name (max length: 255)
+    uid?: string; // User’s Autodesk ID
+    image_url?: string; // URL for user’s profile image (max length: 255)
+    address_line_1?: string; // User’s address line 1 (max length: 255)
+    address_line_2?: string; // User’s address line 2 (max length: 255)
+    city?: string; // City in which user is located (max length: 255)
+    state_or_province?: string; // State or province in which user is located (max length: 255). Note that the state_or_province value depends on the selected country value; see the valid values in the state_or_province list in the Parameters guide.
+    postal_code?: string; // Postal code for the user’s location (max length: 255)
+    country?: string; // Country for this user. Refer to the country list in the Parameters guide.
+    phone?: string; // Contact phone number for the user (max length: 255)
+    company?: string; // Company information from the Autodesk user profile (max length: 255). Note that this is different from company in BIM 360.
+    job_title?: string; // User’s job title (max length: 255)
+    industry?: string; // Industry information for user (max length: 255)
+    about_me?: string; // Short description about the user (max length: 255)
+    created_at?: string; // YYYY-MM-DDThh:mm:ss.sssZ format
+    updated_at?: string; // YYYY-MM-DDThh:mm:ss.sssZ format
 }
 
 /**
@@ -649,7 +694,7 @@ export class BIM360Client extends ForgeClient {
      */
     async listIssueTypes(containerId: string, includeSubtypes?: boolean): Promise<IIssueType[]> {
         // TODO: support 'filter', 'include', or 'fields' params
-        const pageSize = 5;
+        const pageSize = 50;
         const headers = { 'Content-Type': 'application/vnd.api+json' };
         let response = await this.get(`issues/v1/containers/${containerId}/ng-issue-types?limit=${pageSize}${includeSubtypes ? '&include=subtypes' : ''}`, headers, ReadTokenScopes);
         let results = response.results;
@@ -662,7 +707,7 @@ export class BIM360Client extends ForgeClient {
 
     async listIssueAttributeDefinitions(containerId: string): Promise<any[]> {
         // TODO: support 'filter', 'include', or 'fields' params
-        const pageSize = 5;
+        const pageSize = 50;
         const headers = {};
         let response = await this.get(`issues/v2/containers/${containerId}/issue-attribute-definitions?limit=${pageSize}`, headers, ReadTokenScopes);
         let results = response.results;
@@ -675,7 +720,7 @@ export class BIM360Client extends ForgeClient {
 
     async listIssueAttributeMappings(containerId: string): Promise<any[]> {
         // TODO: support 'filter', 'include', or 'fields' params
-        const pageSize = 5;
+        const pageSize = 50;
         const headers = {};
         let response = await this.get(`issues/v2/containers/${containerId}/issue-attribute-mappings?limit=${pageSize}`, headers, ReadTokenScopes);
         let results = response.results;
@@ -684,6 +729,44 @@ export class BIM360Client extends ForgeClient {
             results = results.concat(response.results);
         }
         return results;
+    }
+
+    // #endregion
+
+    // #region Account Admin
+
+    /**
+     * Lists all users in BIM 360 account.
+     * {@link https://forge.autodesk.com/en/docs/bim360/v1/reference/http/users-GET}.
+     * @async
+     * @param {string} accountId The account ID of the users. This corresponds to hub ID in the Data Management API. To convert a hub ID into an account ID you need to remove the “b.” prefix. For example, a hub ID of b.c8b0c73d-3ae9 translates to an account ID of c8b0c73d-3ae9.
+     * @returns {Promise<IUser[]>} List of users.
+     */
+    async listUsers(accountId: string): Promise<IUser[]> {
+        const pageSize = 50;
+        const url = this.region === Region.US ? `hq/v1/accounts/${accountId}/users` : `hq/v1/regions/eu/accounts/${accountId}/users`;
+        let results: any[] = [];
+        let offset = 0;
+        let response = await this.get(url + `?limit=${pageSize}`, {}, ReadTokenScopes);
+        while (response.length) {
+            results = results.concat(response);
+            offset += pageSize;
+            response = await this.get(url + `?limit=${pageSize}&offset=${offset}`, {}, ReadTokenScopes);
+        }
+        return results;
+    }
+
+    /**
+     * Query the details of a specific user.
+     * {@link https://forge.autodesk.com/en/docs/bim360/v1/reference/http/users-:user_id-GET}.
+     * @param {string} accountId The account ID of the users. This corresponds to hub ID in the Data Management API. To convert a hub ID into an account ID you need to remove the “b.” prefix. For example, a hub ID of b.c8b0c73d-3ae9 translates to an account ID of c8b0c73d-3ae9.
+     * @param {string} userId User ID.
+     * @returns {Promise<IUser>} User details.
+    */
+    async getUserDetails(accountId: string, userId: string): Promise<IUser> {
+        const url = this.region === Region.US ? `hq/v1/accounts/${accountId}/users/${userId}` : `hq/v1/regions/eu/accounts/${accountId}/users/${userId}`;
+        const response = await this.get(url, {}, ReadTokenScopes);
+        return response;
     }
 
     // #endregion

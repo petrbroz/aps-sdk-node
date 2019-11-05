@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Listing BIM360 users
+
 ## [8.0.1] - 2019-11-04
 
 ### Added
