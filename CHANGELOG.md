@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Pagination of BIM360 issues
+
 ## [8.0.2] - 2019-11-05
 
 ### Added

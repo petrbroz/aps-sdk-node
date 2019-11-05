@@ -220,6 +220,11 @@ interface IIssueFilter {
     ng_issue_subtype_id?: string; // Retrieves issues associated with the specified issue subtype. To verify the ID, call GET ng-issue-types, with the include=subtypes query string parameter.
 }
 
+interface IIssuePage {
+    offset: number; // Page number that you want to begin issue results from.
+    limit: number; // Number of issues to return in the response payload. Acceptable values: 1-100. Default value: 10.
+}
+
 interface IUser {
     id: string; // User ID
     account_id?: string; // Account ID
@@ -482,12 +487,15 @@ export class BIM360Client extends ForgeClient {
      * @async
      * @param {string} containerId ID of container storing all issues for a specific projects.
      * @param {IIssueFilter} [filter] Optional set of filters.
+     * @param {IIssuePage} [page] Optional page of issues to retrieve. If not defined, *all* issues will be listed.
      * @returns {Promise<IIssue[]>} List of matching issues.
      */
-    async listIssues(containerId: string, filter?: IIssueFilter): Promise<IIssue[]> {
+    async listIssues(containerId: string, filter?: IIssueFilter, page?: IIssuePage): Promise<IIssue[]> {
         // TODO: 'include', and 'fields' params
         const headers = { 'Content-Type': 'application/vnd.api+json' };
-        let url = `issues/v1/containers/${containerId}/quality-issues?page[limit]=${PageSize}`;
+        let url = page
+            ? `issues/v1/containers/${containerId}/quality-issues?page[limit]=${page.limit}&page[offset]=${page.offset}`
+            : `issues/v1/containers/${containerId}/quality-issues?page[limit]=${PageSize}`;
         if (filter) {
             if (filter.target_urn) {
                 url += '&filter[target_urn]=' + filter.target_urn;
@@ -521,9 +529,11 @@ export class BIM360Client extends ForgeClient {
         }
         let response = await this.get(url, headers, ReadTokenScopes);
         let results = response.data;
-        while (response.links && response.links.next) {
-            response = await this.get(response.links.next, headers, ReadTokenScopes);
-            results = results.concat(response.data);
+        if (!page) {
+            while (response.links && response.links.next) {
+                response = await this.get(response.links.next, headers, ReadTokenScopes);
+                results = results.concat(response.data);
+            }
         }
         return results.map((result: any) => Object.assign(result.attributes, { id: result.id }));
     }
