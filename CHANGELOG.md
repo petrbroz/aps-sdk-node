@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Getting BIM360 location container ID
 - Listing of BIM360 locations
 
 ## [8.0.3] - 2019-11-05
