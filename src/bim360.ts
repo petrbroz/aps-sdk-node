@@ -824,6 +824,23 @@ export class BIM360Client extends ForgeClient {
     // #region Locations
 
     /**
+     * Retrieves ID of container for locations of specific BIM360 project.
+     * @async
+     * @param {string} hubId Hub ID.
+     * @param {string} projectId Project ID.
+     * @returns {Promise<string|null>} Location container ID if there is one, otherwise null.
+     */
+    async getLocationContainerID(hubId: string, projectId: string): Promise<string|null> {
+        const headers = { 'Content-Type': 'application/vnd.api+json' };
+        const response = await this.get(`project/v1/hubs/${hubId}/projects/${projectId}`, headers, ReadTokenScopes);
+        if (response.data.relationships.locations) {
+            return response.data.relationships.locations.data.id;
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * Retrieves details about the locations (nodes) for a project.
      */
     async listLocationNodes(containerId: string): Promise<ILocationNode[]> {
