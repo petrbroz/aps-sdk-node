@@ -825,6 +825,7 @@ export class BIM360Client extends ForgeClient {
 
     /**
      * Retrieves ID of container for locations of specific BIM360 project.
+     * Note: this API is not yet officially documented and supported!
      * @async
      * @param {string} hubId Hub ID.
      * @param {string} projectId Project ID.
@@ -842,6 +843,10 @@ export class BIM360Client extends ForgeClient {
 
     /**
      * Retrieves details about the locations (nodes) for a project.
+     * Note: this API is not yet officially documented and supported!
+     * @async
+     * @param {string} containerId Location container ID retrieved using {@link getLocationContainerID}.
+     * @returns {Promise<ILocationNode[]>} Location nodes.
      */
     async listLocationNodes(containerId: string): Promise<ILocationNode[]> {
         const headers = {};
