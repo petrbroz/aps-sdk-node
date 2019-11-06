@@ -278,6 +278,19 @@ interface IUserFilter {
     partial?: boolean; // If true (default), perform a fuzzy match
 }
 
+interface ILocationNode {
+    id: string; // Node id
+    parentId?: string; // Parent node Id, null if this is the root node
+    type?: string; // Not relevant
+    name?: string; // Node name (max length: 255)
+    description?: string; // Not relevant
+    barcode?: string; // Not relevant
+    order?: number; // Node order. This number represents the relative position of a node under its parent. A node with a smaller order value will be positioned in front of a node with a higher order value.
+    documentCount?: number; // Node document count
+    areaDefined?: boolean; // Flag that indicates if an area has been defined
+    path?: string[]; // Path information from the root node to the current node. This information is only included if you use the filter[id] parameter
+}
+
 /**
  * Client providing access to Autodesk Forge
  * {@link https://forge.autodesk.com/en/docs/bim360/v1|BIM360 APIs}.
@@ -804,6 +817,47 @@ export class BIM360Client extends ForgeClient {
         const url = this.region === Region.US ? `hq/v1/accounts/${accountId}/users/${userId}` : `hq/v1/regions/eu/accounts/${accountId}/users/${userId}`;
         const response = await this.get(url, {}, ReadTokenScopes);
         return response;
+    }
+
+    // #endregion
+
+    // #region Locations
+
+    /**
+     * Retrieves ID of container for locations of specific BIM360 project.
+     * Note: this API is not yet officially documented and supported!
+     * @async
+     * @param {string} hubId Hub ID.
+     * @param {string} projectId Project ID.
+     * @returns {Promise<string|null>} Location container ID if there is one, otherwise null.
+     */
+    async getLocationContainerID(hubId: string, projectId: string): Promise<string|null> {
+        const headers = { 'Content-Type': 'application/vnd.api+json' };
+        const response = await this.get(`project/v1/hubs/${hubId}/projects/${projectId}`, headers, ReadTokenScopes);
+        if (response.data.relationships.locations) {
+            return response.data.relationships.locations.data.id;
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Retrieves details about the locations (nodes) for a project.
+     * Note: this API is not yet officially documented and supported!
+     * @async
+     * @param {string} containerId Location container ID retrieved using {@link getLocationContainerID}.
+     * @returns {Promise<ILocationNode[]>} Location nodes.
+     */
+    async listLocationNodes(containerId: string): Promise<ILocationNode[]> {
+        const headers = {};
+        const treeId = 'default';
+        let response = await this.get(`bim360/locations/v2/containers/${containerId}/trees/${treeId}/nodes?limit=${PageSize}`, headers, ReadTokenScopes);
+        let results = response.results;
+        while (response.pagination && response.pagination.offset + response.pagination.limit < response.pagination.totalResults) {
+            response = await this.get(`bim360/locations/v2/containers/${containerId}/trees/${treeId}/nodes?offset=${response.pagination.offset + response.pagination.limit}&limit=${PageSize}`, headers, ReadTokenScopes);
+            results = results.concat(response.results);
+        }
+        return results;
     }
 
     // #endregion
