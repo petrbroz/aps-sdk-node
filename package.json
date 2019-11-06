@@ -1,6 +1,6 @@
 {
   "name": "forge-server-utils",
-  "version": "8.0.3",
+  "version": "8.0.4",
   "description": "Tools for accessing Autodesk Forge APIs from Node.js apps and from browser.",
   "main": "dist/index.js",
   "scripts": {
