@@ -846,16 +846,22 @@ export class BIM360Client extends ForgeClient {
      * Note: this API is not yet officially documented and supported!
      * @async
      * @param {string} containerId Location container ID retrieved using {@link getLocationContainerID}.
+     * @param {IPage} [page] Optional page of locations to retrieve. If not defined, *all* issues will be listed.
      * @returns {Promise<ILocationNode[]>} Location nodes.
      */
-    async listLocationNodes(containerId: string): Promise<ILocationNode[]> {
+    async listLocationNodes(containerId: string, page?: IPage): Promise<ILocationNode[]> {
         const headers = {};
         const treeId = 'default';
-        let response = await this.get(`bim360/locations/v2/containers/${containerId}/trees/${treeId}/nodes?limit=${PageSize}`, headers, ReadTokenScopes);
+        const url = page
+            ? `bim360/locations/v2/containers/${containerId}/trees/${treeId}/nodes?offset=${page.offset}&limit=${page.limit}`
+            : `bim360/locations/v2/containers/${containerId}/trees/${treeId}/nodes?limit=${PageSize}`;
+        let response = await this.get(url, headers, ReadTokenScopes);
         let results = response.results;
-        while (response.pagination && response.pagination.offset + response.pagination.limit < response.pagination.totalResults) {
-            response = await this.get(`bim360/locations/v2/containers/${containerId}/trees/${treeId}/nodes?offset=${response.pagination.offset + response.pagination.limit}&limit=${PageSize}`, headers, ReadTokenScopes);
-            results = results.concat(response.results);
+        if (!page) {
+            while (response.pagination && response.pagination.offset + response.pagination.limit < response.pagination.totalResults) {
+                response = await this.get(`bim360/locations/v2/containers/${containerId}/trees/${treeId}/nodes?offset=${response.pagination.offset + response.pagination.limit}&limit=${PageSize}`, headers, ReadTokenScopes);
+                results = results.concat(response.results);
+            }
         }
         return results;
     }
