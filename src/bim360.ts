@@ -44,6 +44,26 @@ interface IItem {
     extension?: object;
 }
 
+interface IItemDetails {
+    id: string;
+    type: string;
+
+    displayName?: string; // Displayable name of an item.
+    createTime?: string; // The time the item was created, in the following format: YYYY-MM-DDThh:mm:ss.sz.
+    createUserId?: string; // The unique identifier of the user who created the item.
+    createUserName?: string; // The name of the user who created the item.
+    lastModifiedTime?: string; // The last time the item was modified, in the following format: YYYY-MM-DDThh:mm:ss.sz.
+    lastModifiedUserId?: string; // The unique identifier of the user who last modified the item.
+    lastModifiedUserName?: string; // The name of the user who last modified the item.
+    hidden?: boolean; // true if the file has been deleted. false if the file has not been deleted.
+    reserved?: boolean; // Indicates the availability of the file. A reserved file can only be modified by the user that reserved it.
+    reservedTime?: string; // The time the item was reserved.
+    reservedUserId?: string; // The unique identifier of the user who reserved the item.
+    reservedUserName?: string; // The name of the user who reserved the item.
+    pathInProject?: string; // The relative path of the item starting from project’s root folder.
+    extension?: object;
+}
+
 interface IVersion {
     id: string;
     type: string;
@@ -421,6 +441,19 @@ export class BIM360Client extends ForgeClient {
     // #endregion
 
     // #region Items
+
+    /**
+     * Gets details of an item
+     * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/projects-project_id-items-item_id-GET}).
+     * @async
+     * @param {string} projectId Project ID.
+     * @param {string} itemId Item ID.
+     * @returns {Promise<IItemDetails>} Item details.
+     */
+    async getItemDetails(projectId: string, itemId: string): Promise<IItemDetails> {
+        let response = await this.get(`data/v1/projects/${projectId}/items/${itemId}`, {}, ReadTokenScopes);
+        return Object.assign(response.data.attributes, { id: response.data.id, type: response.data.type })
+    }
 
     /**
      * Gets versions of a folder item
