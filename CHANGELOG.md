@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [8.0.6] - 2019-11-08
+
+### Added
+- Getting details of items in BIM360 data management
+
 ## [8.0.5] - 2019-11-07
 
 ### Added
