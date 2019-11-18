@@ -1,8 +1,7 @@
 import * as fs from 'fs';
 import FormData from 'form-data';
-import { ForgeClient, IAuthOptions, Region } from './common';
+import { ForgeClient, IAuthOptions, Region, RegionDa } from './common';
 
-const RootPath = 'da/us-east/v3';
 const CodeScopes = ['code:all'];
 
 export interface IEngineDetail {
@@ -147,9 +146,25 @@ export class DesignAutomationClient extends ForgeClient {
      * or a single `token` property (for 2-legged or 3-legged authentication with pre-generated access token).
      * @param {string} [host="https://developer.api.autodesk.com"] Forge API host.
      * @param {Region} [region="US"] Forge availability region.
+     * @param {RegionDa} [regionDa="US_EAST"]
      */
-    constructor(auth: IAuthOptions, host?: string, region?: Region) {
+    constructor(auth: IAuthOptions, host?: string, region?: Region, regionDa?: RegionDa) {
+        const RootPath = `da/${regionDa || RegionDa.US_EAST}/v3`;
         super(RootPath, auth, host, region);
+    }
+
+    /**
+     * Resets client to specific authentication method, Forge host, and availability region.
+     * @param {IAuthOptions} [auth] Authentication object,
+     * containing either `client_id` and `client_secret` properties (for 2-legged authentication),
+     * or a single `token` property (for 2-legged or 3-legged authentication with pre-generated access token).
+     * @param {string} [host="https://developer.api.autodesk.com"] Forge API host.
+     * @param {Region} [region="US"] Forge availability region ("US" or "EMEA").
+     * @param {RegionDa} [regionDa="US_EAST"]
+     */
+    public resetDA(auth?: IAuthOptions, host?: string, region?: Region, regionDa?: RegionDa) {
+        this.root = `da/${regionDa || RegionDa.US_EAST}/v3`;
+        this.reset(auth, host, region)
     }
 
     // Iterates (asynchronously) over pages of paginated results
