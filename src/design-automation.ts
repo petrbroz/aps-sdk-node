@@ -2,8 +2,12 @@ import * as fs from 'fs';
 import FormData from 'form-data';
 import { ForgeClient, IAuthOptions, Region } from './common';
 
-const RootPath = 'da/us-east/v3';
 const CodeScopes = ['code:all'];
+
+enum DesignAutomationRegion {
+    US_WEST = 'us-west',
+    US_EAST = 'us-east'
+}
 
 export interface IEngineDetail {
     productVersion: string;
@@ -146,10 +150,28 @@ export class DesignAutomationClient extends ForgeClient {
      * containing either `client_id` and `client_secret` properties (for 2-legged authentication),
      * or a single `token` property (for 2-legged or 3-legged authentication with pre-generated access token).
      * @param {string} [host="https://developer.api.autodesk.com"] Forge API host.
-     * @param {Region} [region="US"] Forge availability region.
+     * @param {Region} [_region] @deprecated Will be removed in next major version.
+     * @param {DesignAutomationRegion} [region] Design Automation specific availability region.
      */
-    constructor(auth: IAuthOptions, host?: string, region?: Region) {
-        super(RootPath, auth, host, region);
+    constructor(auth: IAuthOptions, host?: string, _region?: Region, region?: DesignAutomationRegion) {
+        // TODO: remove _region param
+        const RootPath = `da/${region || DesignAutomationRegion.US_EAST}/v3`;
+        super(RootPath, auth, host);
+    }
+
+    /**
+     * Resets client to specific authentication method, Forge host, and availability region.
+     * @param {IAuthOptions} [auth] Authentication object,
+     * containing either `client_id` and `client_secret` properties (for 2-legged authentication),
+     * or a single `token` property (for 2-legged or 3-legged authentication with pre-generated access token).
+     * @param {string} [host="https://developer.api.autodesk.com"] Forge API host.
+     * @param {Region} [_region] @deprecated Will be removed in next major version.
+     * @param {DesignAutomationRegion} [region] Design Automation specific availability region.
+     */
+    public reset(auth?: IAuthOptions, host?: string, _region?: Region, region?: DesignAutomationRegion) {
+        // TODO: remove _region param
+        this.root = `da/${region || DesignAutomationRegion.US_EAST}/v3`;
+        super.reset(auth, host);
     }
 
     // Iterates (asynchronously) over pages of paginated results
