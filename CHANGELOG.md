@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [8.0.7] - 2019-11-20
+
 ### Added
 - Design Automation now supports its own availability regions
 
