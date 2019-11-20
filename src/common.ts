@@ -12,6 +12,11 @@ export enum Region {
     EMEA = 'EMEA'
 }
 
+export enum RegionDa {
+    US_WEST = 'us-west',
+    US_EAST = 'us-east'
+}
+
 export type IAuthOptions = { client_id: string; client_secret: string; } | { token: string; };
 
 export type IRequestData = { urlencoded: any; } | { json: any; } | { buffer: any; };
