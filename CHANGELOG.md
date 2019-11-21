@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [8.0.8] - 2019-11-21
+
+### Added
+- Support for retrieving various Model Derivative data as readable stream
+
 ## [8.0.7] - 2019-11-20
 
 ### Added

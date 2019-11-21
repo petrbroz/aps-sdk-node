@@ -4,7 +4,7 @@ import { ForgeClient, IAuthOptions, Region } from './common';
 
 const CodeScopes = ['code:all'];
 
-enum DesignAutomationRegion {
+export enum DesignAutomationRegion {
     US_WEST = 'us-west',
     US_EAST = 'us-east'
 }
