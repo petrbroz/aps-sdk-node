@@ -281,6 +281,18 @@ export class ModelDerivativeClient extends ForgeClient {
     }
 
     /**
+     * Retrieves metadata of a derivative as a readable stream
+     * ({@link https://forge.autodesk.com/en/docs/model-derivative/v2/reference/http/urn-metadata-GET|docs}).
+     * @async
+     * @param {string} urn Document derivative URN.
+     * @returns {Promise<ReadableStream>} Document derivative metadata.
+     * @throws Error when the request fails, for example, due to insufficient rights.
+     */
+    async getMetadataStream(urn: string): Promise<ReadableStream> {
+        return this.getStream(this.region === Region.EMEA ? `regions/eu/designdata/${urn}/metadata` : `designdata/${urn}/metadata`, {}, ReadTokenScopes, true);
+    }
+
+    /**
      * Retrieves object tree of a specific viewable
      * ({@link https://forge.autodesk.com/en/docs/model-derivative/v2/reference/http/urn-metadata-guid-GET|docs}).
      * @async
@@ -295,6 +307,26 @@ export class ModelDerivativeClient extends ForgeClient {
     }
 
     /**
+     * Retrieves object tree of a specific viewable as a readable stream
+     * ({@link https://forge.autodesk.com/en/docs/model-derivative/v2/reference/http/urn-metadata-guid-GET|docs}).
+     * @async
+     * @param {string} urn Document derivative URN.
+     * @param {string} guid Viewable GUID.
+     * @param {boolean} [force] Force query even when exceeding the size limit (20MB).
+     * @returns {Promise<ReadableStream>} Readable stream.
+     * @throws Error when the request fails, for example, due to insufficient rights.
+     */
+    async getViewableTreeStream(urn: string, guid: string, force?: boolean): Promise<ReadableStream> {
+        let url = this.region === Region.EMEA
+            ? `regions/eu/designdata/${urn}/metadata/${guid}`
+            : `designdata/${urn}/metadata/${guid}`;
+        if (force) {
+            url += '?forceget=true';
+        }
+        return this.getStream(url, {}, ReadTokenScopes, true);
+    }
+
+    /**
      * Retrieves properties of a specific viewable
      * ({@link https://forge.autodesk.com/en/docs/model-derivative/v2/reference/http/urn-metadata-guid-properties-GET|docs}).
      * @async
@@ -306,6 +338,26 @@ export class ModelDerivativeClient extends ForgeClient {
      */
     async getViewableProperties(urn: string, guid: string, force?: boolean): Promise<IDerivativeProps> {
         return this.get(this.region === Region.EMEA ? `regions/eu/designdata/${urn}/metadata/${guid}/properties${force ? '?forceget=true' : ''}` : `designdata/${urn}/metadata/${guid}/properties${force ? '?forceget=true' : ''}`, {}, ReadTokenScopes, true);
+    }
+
+    /**
+     * Retrieves properties of a specific viewable as a readable stream
+     * ({@link https://forge.autodesk.com/en/docs/model-derivative/v2/reference/http/urn-metadata-guid-properties-GET|docs}).
+     * @async
+     * @param {string} urn Document derivative URN.
+     * @param {string} guid Viewable GUID.
+     * @param {boolean} [force] Force query even when exceeding the size limit (20MB).
+     * @returns {Promise<ReadableStream>} Readable stream.
+     * @throws Error when the request fails, for example, due to insufficient rights.
+     */
+    async getViewablePropertiesStream(urn: string, guid: string, force?: boolean): Promise<ReadableStream> {
+        let url = this.region === Region.EMEA
+            ? `regions/eu/designdata/${urn}/metadata/${guid}/properties`
+            : `designdata/${urn}/metadata/${guid}/properties`
+        if (force) {
+            url += '?forceget=true';
+        }
+        return this.getStream(url, {}, ReadTokenScopes, true);
     }
 
     /**
