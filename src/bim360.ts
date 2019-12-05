@@ -497,12 +497,12 @@ export class BIM360Client extends ForgeClient {
      * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/projects-project_id-versions-version_id-GET}).
      * @async
      * @param {string} projectId Project ID.
-     * @param {string} itemId Item ID.
+     * @param {string} itemId Item ID (@deprecated, will be removed in next major version).
      * @param {string} versionId Version ID.
      * @returns {Promise<IVersion>} Specific version of folder item.
      */
     async getVersionDetails(projectId: string, itemId: string, versionId: string): Promise<IVersion> {
-        const response = await this.get(`data/v1/projects/${projectId}/items/${itemId}/versions/${versionId}`, {}, ReadTokenScopes);
+        const response = await this.get(`data/v1/projects/${projectId}/versions/${versionId}`, {}, ReadTokenScopes);
         return response.data;
     }
 
