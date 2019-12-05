@@ -231,6 +231,7 @@ interface IIssueType {
 }
 
 interface IIssueFilter {
+    owner?: string; // ID of the owner of the issue
     target_urn?: string; // Retrieves pushpin issues associated with the specified file. Only relevant for pushpin issues. A pushpin is a visual marker that denotes the location of a issue in a document.
     due_date?: Date | [Date, Date]; // Retrieves issues due by the specified due date. Value can be either a Date object specifying the due date, or an array of two Date objects specifying the range.
     synced_after?: Date; // Retrieves issues updated after the specified date. Value is the timestamp of date.
@@ -543,6 +544,9 @@ export class BIM360Client extends ForgeClient {
             ? `issues/v1/containers/${containerId}/quality-issues?page[limit]=${page.limit}&page[offset]=${page.offset}`
             : `issues/v1/containers/${containerId}/quality-issues?page[limit]=${PageSize}`;
         if (filter) {
+            if (filter.owner) {
+                url += '&filter[owner]=' + filter.owner;
+            }
             if (filter.target_urn) {
                 url += '&filter[target_urn]=' + filter.target_urn;
             }
