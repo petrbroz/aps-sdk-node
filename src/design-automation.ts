@@ -198,6 +198,37 @@ export class DesignAutomationClient extends ForgeClient {
     }
 
     /**
+     * Gets current nickname for all your Design Automation entities
+     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/design-automation-forgeapps-id-GET|docs}).
+     * @async
+     * @returns {Promise<string>} Current nickname.
+     */
+    async getNickname(): Promise<string> {
+        return this.get(`forgeapps/me`, {}, CodeScopes);
+    }
+
+    /**
+     * Sets new nickname for all your Design Automation entities
+     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/design-automation-forgeapps-id-PATCH|docs}).
+     * @async
+     * @param {string} nickname New nickname.
+     * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
+     */
+    async setNickname(nickname: string): Promise<any> {
+        return this.patch(`forgeapps/me`, { nickname }, { 'Content-Type': 'application/json' }, CodeScopes);
+    }
+
+    /**
+     * Removes current nickname for all your Design Automation entities
+     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/design-automation-forgeapps-id-DELETE|docs}).
+     * @async
+     * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
+     */
+    async deleteNickname(): Promise<any> {
+        return this.delete(`forgeapps/me`, {}, CodeScopes);
+    }
+
+    /**
      * Iterates over all engines in pages of predefined size
      * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/engines-GET|docs}).
      * @async
