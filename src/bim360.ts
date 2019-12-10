@@ -357,7 +357,7 @@ export class BIM360Client extends ForgeClient {
      */
     async getHubDetails(hubId: string): Promise<IHub> {
         const headers = { 'Content-Type': 'application/vnd.api+json' };
-        const response = await this.get(`project/v1/hubs/${hubId}`, headers, ReadTokenScopes);
+        const response = await this.get(`project/v1/hubs/${encodeURIComponent(hubId)}`, headers, ReadTokenScopes);
         return Object.assign(response.data.attributes, { id: response.data.id })
     }
 
@@ -374,7 +374,7 @@ export class BIM360Client extends ForgeClient {
      */
     async listProjects(hubId: string): Promise<IProject[]> {
         const headers = { 'Content-Type': 'application/vnd.api+json' };
-        let response = await this.get(`project/v1/hubs/${hubId}/projects`, headers, ReadTokenScopes);
+        let response = await this.get(`project/v1/hubs/${encodeURIComponent(hubId)}/projects`, headers, ReadTokenScopes);
         let results = response.data;
         while (response.links && response.links.next) {
             response = await this.get(response.links.next, headers, ReadTokenScopes);
@@ -393,7 +393,7 @@ export class BIM360Client extends ForgeClient {
      */
     async getProjectDetails(hubId: string, projectId: string): Promise<IProject> {
         const headers = { 'Content-Type': 'application/vnd.api+json' };
-        const response = await this.get(`project/v1/hubs/${hubId}/projects/${projectId}`, headers, ReadTokenScopes);
+        const response = await this.get(`project/v1/hubs/${encodeURIComponent(hubId)}/projects/${encodeURIComponent(projectId)}`, headers, ReadTokenScopes);
         return Object.assign(response.data.attributes, { id: response.data.id })
     }
 
@@ -407,7 +407,7 @@ export class BIM360Client extends ForgeClient {
      */
     async listTopFolders(hubId: string, projectId: string): Promise<IFolder[]> {
         const headers = { 'Content-Type': 'application/vnd.api+json' };
-        let response = await this.get(`project/v1/hubs/${hubId}/projects/${projectId}/topFolders`, {}, ReadTokenScopes);
+        let response = await this.get(`project/v1/hubs/${encodeURIComponent(hubId)}/projects/${encodeURIComponent(projectId)}/topFolders`, {}, ReadTokenScopes);
         let results = response.data;
         while (response.links && response.links.next) {
             response = await this.get(response.links.next, headers, ReadTokenScopes);
@@ -430,7 +430,7 @@ export class BIM360Client extends ForgeClient {
      */
     async listContents(projectId: string, folderId: string): Promise<IItem[]> {
         const headers = { 'Content-Type': 'application/vnd.api+json' };
-        let response = await this.get(`data/v1/projects/${projectId}/folders/${folderId}/contents`, {}, ReadTokenScopes);
+        let response = await this.get(`data/v1/projects/${encodeURIComponent(projectId)}/folders/${encodeURIComponent(folderId)}/contents`, {}, ReadTokenScopes);
         let results = response.data;
         while (response.links && response.links.next) {
             response = await this.get(response.links.next, headers, ReadTokenScopes);
@@ -452,7 +452,7 @@ export class BIM360Client extends ForgeClient {
      * @returns {Promise<IItemDetails>} Item details.
      */
     async getItemDetails(projectId: string, itemId: string): Promise<IItemDetails> {
-        let response = await this.get(`data/v1/projects/${projectId}/items/${itemId}`, {}, ReadTokenScopes);
+        let response = await this.get(`data/v1/projects/${encodeURIComponent(projectId)}/items/${encodeURIComponent(itemId)}`, {}, ReadTokenScopes);
         return Object.assign(response.data.attributes, { id: response.data.id, type: response.data.type })
     }
 
@@ -466,7 +466,7 @@ export class BIM360Client extends ForgeClient {
      */
     async listVersions(projectId: string, itemId: string): Promise<IVersion[]> {
         const headers = { 'Content-Type': 'application/vnd.api+json' };
-        let response = await this.get(`data/v1/projects/${projectId}/items/${itemId}/versions`, {}, ReadTokenScopes);
+        let response = await this.get(`data/v1/projects/${encodeURIComponent(projectId)}/items/${encodeURIComponent(itemId)}/versions`, {}, ReadTokenScopes);
         let results = response.data;
         while (response.links && response.links.next) {
             response = await this.get(response.links.next, headers, ReadTokenScopes);
@@ -484,7 +484,7 @@ export class BIM360Client extends ForgeClient {
      * @returns {Promise<IVersion>} Tip version of the item.
      */
     async getTipVersion(projectId: string, itemId: string): Promise<IVersion> {
-        const response = await this.get(`data/v1/projects/${projectId}/items/${itemId}/tip`, {}, ReadTokenScopes);
+        const response = await this.get(`data/v1/projects/${encodeURIComponent(projectId)}/items/${encodeURIComponent(itemId)}/tip`, {}, ReadTokenScopes);
         return response.data;
     }
 
@@ -502,7 +502,7 @@ export class BIM360Client extends ForgeClient {
      * @returns {Promise<IVersion>} Specific version of folder item.
      */
     async getVersionDetails(projectId: string, itemId: string, versionId: string): Promise<IVersion> {
-        const response = await this.get(`data/v1/projects/${projectId}/versions/${versionId}`, {}, ReadTokenScopes);
+        const response = await this.get(`data/v1/projects/${encodeURIComponent(projectId)}/versions/${encodeURIComponent(versionId)}`, {}, ReadTokenScopes);
         return response.data;
     }
 
@@ -519,7 +519,7 @@ export class BIM360Client extends ForgeClient {
      */
     async getIssueContainerID(hubId: string, projectId: string): Promise<string|null> {
         const headers = { 'Content-Type': 'application/vnd.api+json' };
-        const response = await this.get(`project/v1/hubs/${hubId}/projects/${projectId}`, headers, ReadTokenScopes);
+        const response = await this.get(`project/v1/hubs/${encodeURIComponent(hubId)}/projects/${encodeURIComponent(projectId)}`, headers, ReadTokenScopes);
         if (response.data.relationships.issues) {
             return response.data.relationships.issues.data.id;
         } else {
@@ -541,8 +541,8 @@ export class BIM360Client extends ForgeClient {
         // TODO: 'include', and 'fields' params
         const headers = { 'Content-Type': 'application/vnd.api+json' };
         let url = page
-            ? `issues/v1/containers/${containerId}/quality-issues?page[limit]=${page.limit}&page[offset]=${page.offset}`
-            : `issues/v1/containers/${containerId}/quality-issues?page[limit]=${PageSize}`;
+            ? `issues/v1/containers/${encodeURIComponent(containerId)}/quality-issues?page[limit]=${page.limit}&page[offset]=${page.offset}`
+            : `issues/v1/containers/${encodeURIComponent(containerId)}/quality-issues?page[limit]=${PageSize}`;
         if (filter) {
             if (filter.owner) {
                 url += '&filter[owner]=' + filter.owner;
@@ -600,7 +600,7 @@ export class BIM360Client extends ForgeClient {
     async getIssueDetails(containerId: string, issueId: string): Promise<IIssue> {
         // TODO: support 'include', and 'fields' params
         const headers = { 'Content-Type': 'application/vnd.api+json' };
-        const response = await this.get(`issues/v1/containers/${containerId}/quality-issues/${issueId}`, headers, ReadTokenScopes);
+        const response = await this.get(`issues/v1/containers/${encodeURIComponent(containerId)}/quality-issues/${encodeURIComponent(issueId)}`, headers, ReadTokenScopes);
         return Object.assign(response.data.attributes, { id: response.data.id });
     }
 
@@ -622,7 +622,7 @@ export class BIM360Client extends ForgeClient {
                 attributes
             }
         };
-        const response = await this.post(`issues/v1/containers/${containerId}/quality-issues`, params, headers, WriteTokenScopes);
+        const response = await this.post(`issues/v1/containers/${encodeURIComponent(containerId)}/quality-issues`, params, headers, WriteTokenScopes);
         return Object.assign(response.data.attributes, { id: response.data.id });
     }
 
@@ -645,7 +645,7 @@ export class BIM360Client extends ForgeClient {
                 attributes
             }
         };
-        const response = await this.patch(`issues/v1/containers/${containerId}/quality-issues/${issueId}`, params, headers, WriteTokenScopes);
+        const response = await this.patch(`issues/v1/containers/${encodeURIComponent(containerId)}/quality-issues/${encodeURIComponent(issueId)}`, params, headers, WriteTokenScopes);
         return Object.assign(response.data.attributes, { id: response.data.id });
     }
 
@@ -663,8 +663,8 @@ export class BIM360Client extends ForgeClient {
         // TODO: support 'filter', 'include', or 'fields' params
         const headers = { 'Content-Type': 'application/vnd.api+json' };
         const url = page
-            ? `issues/v1/containers/${containerId}/quality-issues/${issueId}/comments?page[limit]=${page.limit}&page[offset]=${page.offset}`
-            : `issues/v1/containers/${containerId}/quality-issues/${issueId}/comments?page[limit]=${PageSize}`;
+            ? `issues/v1/containers/${encodeURIComponent(containerId)}/quality-issues/${encodeURIComponent(issueId)}/comments?page[limit]=${page.limit}&page[offset]=${page.offset}`
+            : `issues/v1/containers/${encodeURIComponent(containerId)}/quality-issues/${encodeURIComponent(issueId)}/comments?page[limit]=${PageSize}`;
         let response = await this.get(url, headers, ReadTokenScopes);
         let results = response.data;
         if (!page) {
@@ -696,7 +696,7 @@ export class BIM360Client extends ForgeClient {
                 }
             }
         };
-        const response = await this.post(`issues/v1/containers/${containerId}/comments`, params, headers, WriteTokenScopes);
+        const response = await this.post(`issues/v1/containers/${encodeURIComponent(containerId)}/comments`, params, headers, WriteTokenScopes);
         return Object.assign(response.data.attributes, { id: response.data.id });
     }
 
@@ -714,8 +714,8 @@ export class BIM360Client extends ForgeClient {
         // TODO: support 'filter', 'include', or 'fields' params
         const headers = { 'Content-Type': 'application/vnd.api+json' };
         const url = page
-            ? `issues/v1/containers/${containerId}/quality-issues/${issueId}/attachments?page[limit]=${page.limit}&page[offset]=${page.offset}`
-            : `issues/v1/containers/${containerId}/quality-issues/${issueId}/attachments?page[limit]=${PageSize}`;
+            ? `issues/v1/containers/${encodeURIComponent(containerId)}/quality-issues/${encodeURIComponent(issueId)}/attachments?page[limit]=${page.limit}&page[offset]=${page.offset}`
+            : `issues/v1/containers/${encodeURIComponent(containerId)}/quality-issues/${encodeURIComponent(issueId)}/attachments?page[limit]=${PageSize}`;
         let response = await this.get(url, headers, ReadTokenScopes);
         let results = response.data;
         if (!page) {
@@ -743,7 +743,7 @@ export class BIM360Client extends ForgeClient {
                 attributes
             }
         };
-        const response = await this.post(`issues/v1/containers/${containerId}/attachments`, params, headers, WriteTokenScopes);
+        const response = await this.post(`issues/v1/containers/${encodeURIComponent(containerId)}/attachments`, params, headers, WriteTokenScopes);
         return Object.assign(response.data.attributes, { id: response.data.id });
     }
 
@@ -759,8 +759,8 @@ export class BIM360Client extends ForgeClient {
         // TODO: support 'filter', 'include', or 'fields' params
         const headers = { 'Content-Type': 'application/vnd.api+json' };
         const url = page
-            ? `issues/v1/containers/${containerId}/root-causes?page[limit]=${page.limit}&page[offset]=${page.offset}`
-            : `issues/v1/containers/${containerId}/root-causes?page[limit]=${PageSize}`;
+            ? `issues/v1/containers/${encodeURIComponent(containerId)}/root-causes?page[limit]=${page.limit}&page[offset]=${page.offset}`
+            : `issues/v1/containers/${encodeURIComponent(containerId)}/root-causes?page[limit]=${PageSize}`;
         let response = await this.get(url, headers, ReadTokenScopes);
         let results = response.data;
         return results.map((result: any) => Object.assign(result.attributes, { id: result.id }));
@@ -776,10 +776,10 @@ export class BIM360Client extends ForgeClient {
     async listIssueTypes(containerId: string, includeSubtypes?: boolean): Promise<IIssueType[]> {
         // TODO: support 'filter', 'include', or 'fields' params
         const headers = { 'Content-Type': 'application/vnd.api+json' };
-        let response = await this.get(`issues/v1/containers/${containerId}/ng-issue-types?limit=${PageSize}${includeSubtypes ? '&include=subtypes' : ''}`, headers, ReadTokenScopes);
+        let response = await this.get(`issues/v1/containers/${encodeURIComponent(containerId)}/ng-issue-types?limit=${PageSize}${includeSubtypes ? '&include=subtypes' : ''}`, headers, ReadTokenScopes);
         let results = response.results;
         while (response.pagination && response.pagination.offset + response.pagination.limit < response.pagination.totalResults) {
-            response = await this.get(`issues/v1/containers/${containerId}/ng-issue-types?offset=${response.pagination.offset + response.pagination.limit}&limit=${PageSize}${includeSubtypes ? '&include=subtypes' : ''}`, headers, ReadTokenScopes);
+            response = await this.get(`issues/v1/containers/${encodeURIComponent(containerId)}/ng-issue-types?offset=${response.pagination.offset + response.pagination.limit}&limit=${PageSize}${includeSubtypes ? '&include=subtypes' : ''}`, headers, ReadTokenScopes);
             results = results.concat(response.results);
         }
         return results;
@@ -788,10 +788,10 @@ export class BIM360Client extends ForgeClient {
     async listIssueAttributeDefinitions(containerId: string): Promise<any[]> {
         // TODO: support 'filter', 'include', or 'fields' params
         const headers = {};
-        let response = await this.get(`issues/v2/containers/${containerId}/issue-attribute-definitions?limit=${PageSize}`, headers, ReadTokenScopes);
+        let response = await this.get(`issues/v2/containers/${encodeURIComponent(containerId)}/issue-attribute-definitions?limit=${PageSize}`, headers, ReadTokenScopes);
         let results = response.results;
         while (response.pagination && response.pagination.offset + response.pagination.limit < response.pagination.totalResults) {
-            response = await this.get(`issues/v2/containers/${containerId}/issue-attribute-definitions?offset=${response.pagination.offset + response.pagination.limit}&limit=${PageSize}`, headers, ReadTokenScopes);
+            response = await this.get(`issues/v2/containers/${encodeURIComponent(containerId)}/issue-attribute-definitions?offset=${response.pagination.offset + response.pagination.limit}&limit=${PageSize}`, headers, ReadTokenScopes);
             results = results.concat(response.results);
         }
         return results;
@@ -800,10 +800,10 @@ export class BIM360Client extends ForgeClient {
     async listIssueAttributeMappings(containerId: string): Promise<any[]> {
         // TODO: support 'filter', 'include', or 'fields' params
         const headers = {};
-        let response = await this.get(`issues/v2/containers/${containerId}/issue-attribute-mappings?limit=${PageSize}`, headers, ReadTokenScopes);
+        let response = await this.get(`issues/v2/containers/${encodeURIComponent(containerId)}/issue-attribute-mappings?limit=${PageSize}`, headers, ReadTokenScopes);
         let results = response.results;
         while (response.pagination && response.pagination.offset + response.pagination.limit < response.pagination.totalResults) {
-            response = await this.get(`issues/v2/containers/${containerId}/issue-attribute-mappings?offset=${response.pagination.offset + response.pagination.limit}&limit=${PageSize}`, headers, ReadTokenScopes);
+            response = await this.get(`issues/v2/containers/${encodeURIComponent(containerId)}/issue-attribute-mappings?offset=${response.pagination.offset + response.pagination.limit}&limit=${PageSize}`, headers, ReadTokenScopes);
             results = results.concat(response.results);
         }
         return results;
@@ -822,7 +822,9 @@ export class BIM360Client extends ForgeClient {
      * @returns {Promise<IUser[]>} List of users.
      */
     async listUsers(accountId: string, filter?: IUserFilter): Promise<IUser[]> {
-        let url = this.region === Region.US ? `hq/v1/accounts/${accountId}/users` : `hq/v1/regions/eu/accounts/${accountId}/users`;
+        let url = this.region === Region.US
+            ? `hq/v1/accounts/${encodeURIComponent(accountId)}/users`
+            : `hq/v1/regions/eu/accounts/${encodeURIComponent(accountId)}/users`;
         if (filter) {
             url += `/search?limit=${PageSize}`;
             for (const key of Object.keys(filter)) {
@@ -851,7 +853,9 @@ export class BIM360Client extends ForgeClient {
      * @returns {Promise<IUser>} User details.
     */
     async getUserDetails(accountId: string, userId: string): Promise<IUser> {
-        const url = this.region === Region.US ? `hq/v1/accounts/${accountId}/users/${userId}` : `hq/v1/regions/eu/accounts/${accountId}/users/${userId}`;
+        const url = this.region === Region.US
+            ? `hq/v1/accounts/${encodeURIComponent(accountId)}/users/${encodeURIComponent(userId)}`
+            : `hq/v1/regions/eu/accounts/${encodeURIComponent(accountId)}/users/${encodeURIComponent(userId)}`;
         const response = await this.get(url, {}, ReadTokenScopes);
         return response;
     }
@@ -870,7 +874,7 @@ export class BIM360Client extends ForgeClient {
      */
     async getLocationContainerID(hubId: string, projectId: string): Promise<string|null> {
         const headers = { 'Content-Type': 'application/vnd.api+json' };
-        const response = await this.get(`project/v1/hubs/${hubId}/projects/${projectId}`, headers, ReadTokenScopes);
+        const response = await this.get(`project/v1/hubs/${encodeURIComponent(hubId)}/projects/${encodeURIComponent(projectId)}`, headers, ReadTokenScopes);
         if (response.data.relationships.locations) {
             return response.data.relationships.locations.data.id;
         } else {
@@ -890,13 +894,13 @@ export class BIM360Client extends ForgeClient {
         const headers = {};
         const treeId = 'default';
         const url = page
-            ? `bim360/locations/v2/containers/${containerId}/trees/${treeId}/nodes?offset=${page.offset}&limit=${page.limit}`
-            : `bim360/locations/v2/containers/${containerId}/trees/${treeId}/nodes?limit=${PageSize}`;
+            ? `bim360/locations/v2/containers/${encodeURIComponent(containerId)}/trees/${encodeURIComponent(treeId)}/nodes?offset=${page.offset}&limit=${page.limit}`
+            : `bim360/locations/v2/containers/${encodeURIComponent(containerId)}/trees/${encodeURIComponent(treeId)}/nodes?limit=${PageSize}`;
         let response = await this.get(url, headers, ReadTokenScopes);
         let results = response.results;
         if (!page) {
             while (response.pagination && response.pagination.offset + response.pagination.limit < response.pagination.totalResults) {
-                response = await this.get(`bim360/locations/v2/containers/${containerId}/trees/${treeId}/nodes?offset=${response.pagination.offset + response.pagination.limit}&limit=${PageSize}`, headers, ReadTokenScopes);
+                response = await this.get(`bim360/locations/v2/containers/${encodeURIComponent(containerId)}/trees/${encodeURIComponent(treeId)}/nodes?offset=${response.pagination.offset + response.pagination.limit}&limit=${PageSize}`, headers, ReadTokenScopes);
                 results = results.concat(response.results);
             }
         }
