@@ -3,6 +3,7 @@ import axios, { AxiosRequestConfig, AxiosInstance } from 'axios';
 import { AuthenticationClient } from './authentication';
 
 const RetryDelay = 5000; // Delay (in milliseconds) before retrying after a "202 Accepted" response
+const MaxContentLength = Infinity;
 function sleep(ms: number) { return new Promise(function(resolve) { setTimeout(resolve, ms); }); }
 
 export const DefaultHost = 'https://developer.api.autodesk.com';
@@ -131,7 +132,7 @@ export abstract class ForgeClient {
     // Helper method for POST requests,
     // returning parsed response body of throwing an excetion in case of an issue
     protected async post(endpoint: string, data: any, headers: { [name: string]: string } = {}, scopes: string[]): Promise<any> {
-        const config: AxiosRequestConfig = { headers };
+        const config: AxiosRequestConfig = { headers, maxContentLength: MaxContentLength };
         await this.setAuthorization(config, scopes);
         const resp = await this.axios.post(endpoint, data, config);
         return resp.data;
@@ -140,7 +141,7 @@ export abstract class ForgeClient {
     // Helper method for PUT requests,
     // returning parsed response body of throwing an excetion in case of an issue
     protected async put(endpoint: string, data: any, headers: { [name: string]: string } = {}, scopes: string[]): Promise<any> {
-        const config: AxiosRequestConfig = { headers };
+        const config: AxiosRequestConfig = { headers, maxContentLength: MaxContentLength };
         await this.setAuthorization(config, scopes);
         const resp = await this.axios.put(endpoint, data, config);
         return resp.data;
@@ -149,7 +150,7 @@ export abstract class ForgeClient {
     // Helper method for PATCH requests,
     // returning parsed response body of throwing an excetion in case of an issue
     protected async patch(endpoint: string, data: any, headers: { [name: string]: string } = {}, scopes: string[]): Promise<any> {
-        const config: AxiosRequestConfig = { headers };
+        const config: AxiosRequestConfig = { headers, maxContentLength: MaxContentLength };
         await this.setAuthorization(config, scopes);
         const resp = await this.axios.patch(endpoint, data, config);
         return resp.data;
