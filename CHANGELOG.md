@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- POST/PUT/PATCH requests no longer limited by 10MB size
+
 ## [8.0.11] - 2019-12-10
 
 ### Added
