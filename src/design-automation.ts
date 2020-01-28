@@ -49,6 +49,19 @@ export interface IAlias {
     version: number;
 }
 
+export interface ICodeOnEngineStringSetting {
+    name: string;
+    value: string;
+    isEnvironmentVariable: boolean;
+}
+
+export interface ICodeOnEngineUrlSetting {
+    name: string;
+    url: string;
+    headers?: object;
+    verb?: string;
+}
+
 export interface IActivityParam {
     name: string;
     verb?: string;
@@ -582,7 +595,7 @@ export class DesignAutomationClient extends ForgeClient {
      * @returns {Promise<IActivityDetail>} Details of created activity.
      */
     async createActivity(id: string, engine: string, commands: string | string[], appBundleIDs?: string | string[],
-            parameters?: { [key: string]: IActivityParam }, settings?: { [key: string]: any }, description?: string): Promise<IActivityDetail> {
+            parameters?: { [key: string]: IActivityParam }, settings?: { [key: string]: (ICodeOnEngineStringSetting | ICodeOnEngineUrlSetting) }, description?: string): Promise<IActivityDetail> {
         // TODO: tests
         if (!this.auth) {
             throw new Error('Cannot create activity without client ID.');
