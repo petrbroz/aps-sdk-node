@@ -133,6 +133,7 @@
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_design_automation_.designautomationclient.html#deleteappbundle" class="tsd-kind-icon">delete<wbr>App<wbr>Bundle</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_design_automation_.designautomationclient.html#deleteappbundlealias" class="tsd-kind-icon">delete<wbr>App<wbr>Bundle<wbr>Alias</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_design_automation_.designautomationclient.html#deleteappbundleversion" class="tsd-kind-icon">delete<wbr>App<wbr>Bundle<wbr>Version</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_design_automation_.designautomationclient.html#deletenickname" class="tsd-kind-icon">delete<wbr>Nickname</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_design_automation_.designautomationclient.html#deleteworkitem" class="tsd-kind-icon">delete<wbr>Work<wbr>Item</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected"><a href="_design_automation_.designautomationclient.html#fetch" class="tsd-kind-icon">fetch</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected"><a href="_design_automation_.designautomationclient.html#get" class="tsd-kind-icon">get</a></li>
@@ -142,6 +143,7 @@
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_design_automation_.designautomationclient.html#getappbundleversion" class="tsd-kind-icon">get<wbr>App<wbr>Bundle<wbr>Version</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected"><a href="_design_automation_.designautomationclient.html#getbuffer" class="tsd-kind-icon">get<wbr>Buffer</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_design_automation_.designautomationclient.html#getengine" class="tsd-kind-icon">get<wbr>Engine</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_design_automation_.designautomationclient.html#getnickname" class="tsd-kind-icon">get<wbr>Nickname</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected"><a href="_design_automation_.designautomationclient.html#getstream" class="tsd-kind-icon">get<wbr>Stream</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_design_automation_.designautomationclient.html#getworkitem" class="tsd-kind-icon">get<wbr>Work<wbr>Item</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_design_automation_.designautomationclient.html#iterateactivities" class="tsd-kind-icon">iterate<wbr>Activities</a></li>
@@ -161,8 +163,9 @@
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected"><a href="_design_automation_.designautomationclient.html#patch" class="tsd-kind-icon">patch</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected"><a href="_design_automation_.designautomationclient.html#post" class="tsd-kind-icon">post</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected"><a href="_design_automation_.designautomationclient.html#put" class="tsd-kind-icon">put</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_design_automation_.designautomationclient.html#reset" class="tsd-kind-icon">reset</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="_design_automation_.designautomationclient.html#reset" class="tsd-kind-icon">reset</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected"><a href="_design_automation_.designautomationclient.html#setauthorization" class="tsd-kind-icon">set<wbr>Authorization</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_design_automation_.designautomationclient.html#setnickname" class="tsd-kind-icon">set<wbr>Nickname</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_design_automation_.designautomationclient.html#updateactivity" class="tsd-kind-icon">update<wbr>Activity</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_design_automation_.designautomationclient.html#updateactivityalias" class="tsd-kind-icon">update<wbr>Activity<wbr>Alias</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_design_automation_.designautomationclient.html#updateappbundle" class="tsd-kind-icon">update<wbr>App<wbr>Bundle</a></li>
@@ -179,14 +182,14 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Design<wbr>Automation<wbr>Client<span class="tsd-signature-symbol">(</span>auth<span class="tsd-signature-symbol">: </span><a href="../modules/_common_.html#iauthoptions" class="tsd-signature-type">IAuthOptions</a>, host<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span>, region<span class="tsd-signature-symbol">?: </span><a href="../enums/_common_.region.html" class="tsd-signature-type">Region</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_design_automation_.designautomationclient.html" class="tsd-signature-type">DesignAutomationClient</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Design<wbr>Automation<wbr>Client<span class="tsd-signature-symbol">(</span>auth<span class="tsd-signature-symbol">: </span><a href="../modules/_common_.html#iauthoptions" class="tsd-signature-type">IAuthOptions</a>, host<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span>, _region<span class="tsd-signature-symbol">?: </span><a href="../enums/_common_.region.html" class="tsd-signature-type">Region</a>, region<span class="tsd-signature-symbol">?: </span><a href="../enums/_design_automation_.designautomationregion.html" class="tsd-signature-type">DesignAutomationRegion</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_design_automation_.designautomationclient.html" class="tsd-signature-type">DesignAutomationClient</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Overrides <a href="_common_.forgeclient.html">ForgeClient</a>.<a href="_common_.forgeclient.html#constructor">constructor</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/175ec04/src/design-automation.ts#L142">design-automation.ts:142</a></li>
+									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/26fdd03/src/design-automation.ts#L159">design-automation.ts:159</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -210,7 +213,10 @@
 									<h5><span class="tsd-flag ts-flagOptional">Optional</span> host: <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></h5>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> region: <a href="../enums/_common_.region.html" class="tsd-signature-type">Region</a></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> _region: <a href="../enums/_common_.region.html" class="tsd-signature-type">Region</a></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> region: <a href="../enums/_design_automation_.designautomationregion.html" class="tsd-signature-type">DesignAutomationRegion</a></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="_design_automation_.designautomationclient.html" class="tsd-signature-type">DesignAutomationClient</a></h4>
@@ -227,7 +233,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="_common_.forgeclient.html">ForgeClient</a>.<a href="_common_.forgeclient.html#auth">auth</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/175ec04/src/common.ts#L20">common.ts:20</a></li>
+							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/26fdd03/src/common.ts#L21">common.ts:21</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -238,7 +244,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="_common_.forgeclient.html">ForgeClient</a>.<a href="_common_.forgeclient.html#axios">axios</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/175ec04/src/common.ts#L25">common.ts:25</a></li>
+							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/26fdd03/src/common.ts#L26">common.ts:26</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -249,7 +255,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="_common_.forgeclient.html">ForgeClient</a>.<a href="_common_.forgeclient.html#host">host</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/175ec04/src/common.ts#L23">common.ts:23</a></li>
+							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/26fdd03/src/common.ts#L24">common.ts:24</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -260,7 +266,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="_common_.forgeclient.html">ForgeClient</a>.<a href="_common_.forgeclient.html#region">region</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/175ec04/src/common.ts#L24">common.ts:24</a></li>
+							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/26fdd03/src/common.ts#L25">common.ts:25</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -271,7 +277,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="_common_.forgeclient.html">ForgeClient</a>.<a href="_common_.forgeclient.html#root">root</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/175ec04/src/common.ts#L22">common.ts:22</a></li>
+							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/26fdd03/src/common.ts#L23">common.ts:23</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -282,7 +288,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="_common_.forgeclient.html">ForgeClient</a>.<a href="_common_.forgeclient.html#token">token</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/175ec04/src/common.ts#L21">common.ts:21</a></li>
+							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/26fdd03/src/common.ts#L22">common.ts:22</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -299,7 +305,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/175ec04/src/design-automation.ts#L167">design-automation.ts:167</a></li>
+									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/26fdd03/src/design-automation.ts#L202">design-automation.ts:202</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -319,13 +325,13 @@
 					<a name="_pager" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _pager</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
-						<li class="tsd-signature tsd-kind-icon">_pager<span class="tsd-signature-symbol">(</span>endpoint<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, scopes<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">AsyncIterableIterator</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">_pager<span class="tsd-signature-symbol">(</span>endpoint<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, scopes<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">AsyncGenerator</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/175ec04/src/design-automation.ts#L156">design-automation.ts:156</a></li>
+									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/26fdd03/src/design-automation.ts#L191">design-automation.ts:191</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -337,7 +343,7 @@
 									<h5>scopes: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">AsyncIterableIterator</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">AsyncGenerator</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -345,13 +351,13 @@
 					<a name="createactivity" class="tsd-anchor"></a>
 					<h3>create<wbr>Activity</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">create<wbr>Activity<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, engine<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, commands<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span>, appBundleIDs<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span>, parameters<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">object</span>, settings<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">object</span>, description<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_design_automation_.iactivitydetail.html" class="tsd-signature-type">IActivityDetail</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">create<wbr>Activity<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, engine<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, commands<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span>, appBundleIDs<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span>, parameters<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">{}</span>, settings<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">{}</span>, description<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_design_automation_.iactivitydetail.html" class="tsd-signature-type">IActivityDetail</a><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/175ec04/src/design-automation.ts#L531">design-automation.ts:531</a></li>
+									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/26fdd03/src/design-automation.ts#L597">design-automation.ts:597</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -388,10 +394,10 @@
 									<h5><span class="tsd-flag ts-flagOptional">Optional</span> appBundleIDs: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h5>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> parameters: <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">object</span></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> parameters: <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">{}</span></h5>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> settings: <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">object</span></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> settings: <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">{}</span></h5>
 								</li>
 								<li>
 									<h5><span class="tsd-flag ts-flagOptional">Optional</span> description: <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></h5>
@@ -412,7 +418,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/175ec04/src/design-automation.ts#L658">design-automation.ts:658</a></li>
+									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/26fdd03/src/design-automation.ts#L724">design-automation.ts:724</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -455,13 +461,13 @@
 					<a name="createappbundle" class="tsd-anchor"></a>
 					<h3>create<wbr>App<wbr>Bundle</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">create<wbr>App<wbr>Bundle<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, engine<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, settings<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">object</span>, description<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_design_automation_.iappbundleuploadparams.html" class="tsd-signature-type">IAppBundleUploadParams</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">create<wbr>App<wbr>Bundle<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, engine<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, settings<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">{}</span>, description<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_design_automation_.iappbundleuploadparams.html" class="tsd-signature-type">IAppBundleUploadParams</a><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/175ec04/src/design-automation.ts#L277">design-automation.ts:277</a></li>
+									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/26fdd03/src/design-automation.ts#L343">design-automation.ts:343</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -492,7 +498,7 @@
 									</div>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> settings: <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">object</span></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> settings: <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">{}</span></h5>
 								</li>
 								<li>
 									<h5><span class="tsd-flag ts-flagOptional">Optional</span> description: <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></h5>
@@ -514,7 +520,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/175ec04/src/design-automation.ts#L414">design-automation.ts:414</a></li>
+									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/26fdd03/src/design-automation.ts#L480">design-automation.ts:480</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -560,13 +566,13 @@
 					<a name="createworkitem" class="tsd-anchor"></a>
 					<h3>create<wbr>Work<wbr>Item</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">create<wbr>Work<wbr>Item<span class="tsd-signature-symbol">(</span>activityId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, args<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">create<wbr>Work<wbr>Item<span class="tsd-signature-symbol">(</span>activityId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, args<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">{}</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/175ec04/src/design-automation.ts#L730">design-automation.ts:730</a></li>
+									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/26fdd03/src/design-automation.ts#L796">design-automation.ts:796</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -588,7 +594,7 @@
 									</div>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> args: <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">object</span></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> args: <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">{}</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -599,14 +605,14 @@
 					<a name="delete" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagProtected">Protected</span> delete</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
-						<li class="tsd-signature tsd-kind-icon">delete<span class="tsd-signature-symbol">(</span>endpoint<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, headers<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">object</span>, scopes<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">delete<span class="tsd-signature-symbol">(</span>endpoint<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, headers<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-symbol">{}</span>, scopes<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_common_.forgeclient.html">ForgeClient</a>.<a href="_common_.forgeclient.html#delete">delete</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/175ec04/src/common.ts#L160">common.ts:160</a></li>
+									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/26fdd03/src/common.ts#L161">common.ts:161</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -615,7 +621,7 @@
 									<h5>endpoint: <span class="tsd-signature-type">string</span></h5>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> headers: <span class="tsd-signature-type">object</span><span class="tsd-signature-symbol"> =&nbsp;{}</span></h5>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> headers: <span class="tsd-signature-symbol">{}</span><span class="tsd-signature-symbol"> = {}</span></h5>
 									<ul class="tsd-parameters">
 										<li class="tsd-parameter-index-signature">
 											<h5><span class="tsd-signature-symbol">[</span>name: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]: </span><span class="tsd-signature-type">string</span></h5>
@@ -640,7 +646,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/175ec04/src/design-automation.ts#L685">design-automation.ts:685</a></li>
+									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/26fdd03/src/design-automation.ts#L751">design-automation.ts:751</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -676,7 +682,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/175ec04/src/design-automation.ts#L696">design-automation.ts:696</a></li>
+									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/26fdd03/src/design-automation.ts#L762">design-automation.ts:762</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -718,7 +724,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/175ec04/src/design-automation.ts#L707">design-automation.ts:707</a></li>
+									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/26fdd03/src/design-automation.ts#L773">design-automation.ts:773</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -760,7 +766,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/175ec04/src/design-automation.ts#L442">design-automation.ts:442</a></li>
+									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/26fdd03/src/design-automation.ts#L508">design-automation.ts:508</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -796,7 +802,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/175ec04/src/design-automation.ts#L453">design-automation.ts:453</a></li>
+									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/26fdd03/src/design-automation.ts#L519">design-automation.ts:519</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -838,7 +844,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/175ec04/src/design-automation.ts#L464">design-automation.ts:464</a></li>
+									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/26fdd03/src/design-automation.ts#L530">design-automation.ts:530</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -871,6 +877,36 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="deletenickname" class="tsd-anchor"></a>
+					<h3>delete<wbr>Nickname</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">delete<wbr>Nickname<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/26fdd03/src/design-automation.ts#L240">design-automation.ts:240</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Removes current nickname for all your Design Automation entities
+									(<a href="https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/design-automation-forgeapps-id-DELETE" class="external">docs</a>).</p>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>async</dt>
+									<dd></dd>
+									<dt>throws</dt>
+									<dd><p>Error when the request fails, for example, due to insufficient rights, or incorrect scopes.</p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
 					<a name="deleteworkitem" class="tsd-anchor"></a>
 					<h3>delete<wbr>Work<wbr>Item</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -880,7 +916,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/175ec04/src/design-automation.ts#L747">design-automation.ts:747</a></li>
+									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/26fdd03/src/design-automation.ts#L813">design-automation.ts:813</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -917,7 +953,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_common_.forgeclient.html">ForgeClient</a>.<a href="_common_.forgeclient.html#fetch">fetch</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/175ec04/src/common.ts#L88">common.ts:88</a></li>
+									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/26fdd03/src/common.ts#L89">common.ts:89</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -934,14 +970,14 @@
 					<a name="get" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagProtected">Protected</span> get</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
-						<li class="tsd-signature tsd-kind-icon">get<span class="tsd-signature-symbol">(</span>endpoint<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, headers<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">object</span>, scopes<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span>, repeatOn202<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">get<span class="tsd-signature-symbol">(</span>endpoint<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, headers<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-symbol">{}</span>, scopes<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span>, repeatOn202<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_common_.forgeclient.html">ForgeClient</a>.<a href="_common_.forgeclient.html#get">get</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/175ec04/src/common.ts#L94">common.ts:94</a></li>
+									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/26fdd03/src/common.ts#L95">common.ts:95</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -950,7 +986,7 @@
 									<h5>endpoint: <span class="tsd-signature-type">string</span></h5>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> headers: <span class="tsd-signature-type">object</span><span class="tsd-signature-symbol"> =&nbsp;{}</span></h5>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> headers: <span class="tsd-signature-symbol">{}</span><span class="tsd-signature-symbol"> = {}</span></h5>
 									<ul class="tsd-parameters">
 										<li class="tsd-parameter-index-signature">
 											<h5><span class="tsd-signature-symbol">[</span>name: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]: </span><span class="tsd-signature-type">string</span></h5>
@@ -961,7 +997,7 @@
 									<h5>scopes: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h5>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> repeatOn202: <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;false</span></h5>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> repeatOn202: <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> = false</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -978,7 +1014,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/175ec04/src/design-automation.ts#L501">design-automation.ts:501</a></li>
+									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/26fdd03/src/design-automation.ts#L567">design-automation.ts:567</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1018,7 +1054,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/175ec04/src/design-automation.ts#L514">design-automation.ts:514</a></li>
+									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/26fdd03/src/design-automation.ts#L580">design-automation.ts:580</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1064,7 +1100,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/175ec04/src/design-automation.ts#L248">design-automation.ts:248</a></li>
+									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/26fdd03/src/design-automation.ts#L314">design-automation.ts:314</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1104,7 +1140,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/175ec04/src/design-automation.ts#L261">design-automation.ts:261</a></li>
+									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/26fdd03/src/design-automation.ts#L327">design-automation.ts:327</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1144,14 +1180,14 @@
 					<a name="getbuffer" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagProtected">Protected</span> get<wbr>Buffer</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Buffer<span class="tsd-signature-symbol">(</span>endpoint<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, headers<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">object</span>, scopes<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span>, repeatOn202<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Buffer<span class="tsd-signature-symbol">(</span>endpoint<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, headers<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-symbol">{}</span>, scopes<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span>, repeatOn202<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_common_.forgeclient.html">ForgeClient</a>.<a href="_common_.forgeclient.html#getbuffer">getBuffer</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/175ec04/src/common.ts#L107">common.ts:107</a></li>
+									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/26fdd03/src/common.ts#L108">common.ts:108</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1160,7 +1196,7 @@
 									<h5>endpoint: <span class="tsd-signature-type">string</span></h5>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> headers: <span class="tsd-signature-type">object</span><span class="tsd-signature-symbol"> =&nbsp;{}</span></h5>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> headers: <span class="tsd-signature-symbol">{}</span><span class="tsd-signature-symbol"> = {}</span></h5>
 									<ul class="tsd-parameters">
 										<li class="tsd-parameter-index-signature">
 											<h5><span class="tsd-signature-symbol">[</span>name: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]: </span><span class="tsd-signature-type">string</span></h5>
@@ -1171,7 +1207,7 @@
 									<h5>scopes: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h5>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> repeatOn202: <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;false</span></h5>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> repeatOn202: <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> = false</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -1188,7 +1224,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/175ec04/src/design-automation.ts#L211">design-automation.ts:211</a></li>
+									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/26fdd03/src/design-automation.ts#L277">design-automation.ts:277</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1218,18 +1254,46 @@
 						</li>
 					</ul>
 				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="getnickname" class="tsd-anchor"></a>
+					<h3>get<wbr>Nickname</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Nickname<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/26fdd03/src/design-automation.ts#L219">design-automation.ts:219</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Gets current nickname for all your Design Automation entities
+									(<a href="https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/design-automation-forgeapps-id-GET" class="external">docs</a>).</p>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>async</dt>
+									<dd></dd>
+								</dl>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p>Current nickname.</p>
+						</li>
+					</ul>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
 					<a name="getstream" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagProtected">Protected</span> get<wbr>Stream</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Stream<span class="tsd-signature-symbol">(</span>endpoint<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, headers<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">object</span>, scopes<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span>, repeatOn202<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Stream<span class="tsd-signature-symbol">(</span>endpoint<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, headers<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-symbol">{}</span>, scopes<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span>, repeatOn202<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_common_.forgeclient.html">ForgeClient</a>.<a href="_common_.forgeclient.html#getstream">getStream</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/175ec04/src/common.ts#L120">common.ts:120</a></li>
+									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/26fdd03/src/common.ts#L121">common.ts:121</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1238,7 +1302,7 @@
 									<h5>endpoint: <span class="tsd-signature-type">string</span></h5>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> headers: <span class="tsd-signature-type">object</span><span class="tsd-signature-symbol"> =&nbsp;{}</span></h5>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> headers: <span class="tsd-signature-symbol">{}</span><span class="tsd-signature-symbol"> = {}</span></h5>
 									<ul class="tsd-parameters">
 										<li class="tsd-parameter-index-signature">
 											<h5><span class="tsd-signature-symbol">[</span>name: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]: </span><span class="tsd-signature-type">string</span></h5>
@@ -1249,7 +1313,7 @@
 									<h5>scopes: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h5>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> repeatOn202: <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;false</span></h5>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> repeatOn202: <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> = false</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -1266,7 +1330,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/175ec04/src/design-automation.ts#L719">design-automation.ts:719</a></li>
+									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/26fdd03/src/design-automation.ts#L785">design-automation.ts:785</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1306,7 +1370,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/175ec04/src/design-automation.ts#L476">design-automation.ts:476</a></li>
+									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/26fdd03/src/design-automation.ts#L542">design-automation.ts:542</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1341,7 +1405,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/175ec04/src/design-automation.ts#L604">design-automation.ts:604</a></li>
+									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/26fdd03/src/design-automation.ts#L670">design-automation.ts:670</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1385,7 +1449,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/175ec04/src/design-automation.ts#L631">design-automation.ts:631</a></li>
+									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/26fdd03/src/design-automation.ts#L697">design-automation.ts:697</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1429,7 +1493,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/175ec04/src/design-automation.ts#L359">design-automation.ts:359</a></li>
+									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/26fdd03/src/design-automation.ts#L425">design-automation.ts:425</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1473,7 +1537,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/175ec04/src/design-automation.ts#L386">design-automation.ts:386</a></li>
+									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/26fdd03/src/design-automation.ts#L452">design-automation.ts:452</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1517,7 +1581,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/175ec04/src/design-automation.ts#L223">design-automation.ts:223</a></li>
+									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/26fdd03/src/design-automation.ts#L289">design-automation.ts:289</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1552,7 +1616,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/175ec04/src/design-automation.ts#L186">design-automation.ts:186</a></li>
+									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/26fdd03/src/design-automation.ts#L252">design-automation.ts:252</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1587,7 +1651,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/175ec04/src/design-automation.ts#L489">design-automation.ts:489</a></li>
+									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/26fdd03/src/design-automation.ts#L555">design-automation.ts:555</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1618,7 +1682,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/175ec04/src/design-automation.ts#L618">design-automation.ts:618</a></li>
+									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/26fdd03/src/design-automation.ts#L684">design-automation.ts:684</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1658,7 +1722,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/175ec04/src/design-automation.ts#L645">design-automation.ts:645</a></li>
+									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/26fdd03/src/design-automation.ts#L711">design-automation.ts:711</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1698,7 +1762,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/175ec04/src/design-automation.ts#L373">design-automation.ts:373</a></li>
+									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/26fdd03/src/design-automation.ts#L439">design-automation.ts:439</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1738,7 +1802,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/175ec04/src/design-automation.ts#L400">design-automation.ts:400</a></li>
+									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/26fdd03/src/design-automation.ts#L466">design-automation.ts:466</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1778,7 +1842,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/175ec04/src/design-automation.ts#L236">design-automation.ts:236</a></li>
+									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/26fdd03/src/design-automation.ts#L302">design-automation.ts:302</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1809,7 +1873,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/175ec04/src/design-automation.ts#L199">design-automation.ts:199</a></li>
+									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/26fdd03/src/design-automation.ts#L265">design-automation.ts:265</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1834,14 +1898,14 @@
 					<a name="patch" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagProtected">Protected</span> patch</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
-						<li class="tsd-signature tsd-kind-icon">patch<span class="tsd-signature-symbol">(</span>endpoint<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, headers<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">object</span>, scopes<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">patch<span class="tsd-signature-symbol">(</span>endpoint<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, headers<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-symbol">{}</span>, scopes<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_common_.forgeclient.html">ForgeClient</a>.<a href="_common_.forgeclient.html#patch">patch</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/175ec04/src/common.ts#L151">common.ts:151</a></li>
+									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/26fdd03/src/common.ts#L152">common.ts:152</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1853,7 +1917,7 @@
 									<h5>data: <span class="tsd-signature-type">any</span></h5>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> headers: <span class="tsd-signature-type">object</span><span class="tsd-signature-symbol"> =&nbsp;{}</span></h5>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> headers: <span class="tsd-signature-symbol">{}</span><span class="tsd-signature-symbol"> = {}</span></h5>
 									<ul class="tsd-parameters">
 										<li class="tsd-parameter-index-signature">
 											<h5><span class="tsd-signature-symbol">[</span>name: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]: </span><span class="tsd-signature-type">string</span></h5>
@@ -1872,14 +1936,14 @@
 					<a name="post" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagProtected">Protected</span> post</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
-						<li class="tsd-signature tsd-kind-icon">post<span class="tsd-signature-symbol">(</span>endpoint<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, headers<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">object</span>, scopes<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">post<span class="tsd-signature-symbol">(</span>endpoint<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, headers<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-symbol">{}</span>, scopes<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_common_.forgeclient.html">ForgeClient</a>.<a href="_common_.forgeclient.html#post">post</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/175ec04/src/common.ts#L133">common.ts:133</a></li>
+									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/26fdd03/src/common.ts#L134">common.ts:134</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1891,7 +1955,7 @@
 									<h5>data: <span class="tsd-signature-type">any</span></h5>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> headers: <span class="tsd-signature-type">object</span><span class="tsd-signature-symbol"> =&nbsp;{}</span></h5>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> headers: <span class="tsd-signature-symbol">{}</span><span class="tsd-signature-symbol"> = {}</span></h5>
 									<ul class="tsd-parameters">
 										<li class="tsd-parameter-index-signature">
 											<h5><span class="tsd-signature-symbol">[</span>name: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]: </span><span class="tsd-signature-type">string</span></h5>
@@ -1910,14 +1974,14 @@
 					<a name="put" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagProtected">Protected</span> put</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
-						<li class="tsd-signature tsd-kind-icon">put<span class="tsd-signature-symbol">(</span>endpoint<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, headers<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">object</span>, scopes<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">put<span class="tsd-signature-symbol">(</span>endpoint<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, headers<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-symbol">{}</span>, scopes<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_common_.forgeclient.html">ForgeClient</a>.<a href="_common_.forgeclient.html#put">put</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/175ec04/src/common.ts#L142">common.ts:142</a></li>
+									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/26fdd03/src/common.ts#L143">common.ts:143</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1929,7 +1993,7 @@
 									<h5>data: <span class="tsd-signature-type">any</span></h5>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> headers: <span class="tsd-signature-type">object</span><span class="tsd-signature-symbol"> =&nbsp;{}</span></h5>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> headers: <span class="tsd-signature-symbol">{}</span><span class="tsd-signature-symbol"> = {}</span></h5>
 									<ul class="tsd-parameters">
 										<li class="tsd-parameter-index-signature">
 											<h5><span class="tsd-signature-symbol">[</span>name: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]: </span><span class="tsd-signature-type">string</span></h5>
@@ -1944,18 +2008,18 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
 					<a name="reset" class="tsd-anchor"></a>
 					<h3>reset</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">reset<span class="tsd-signature-symbol">(</span>auth<span class="tsd-signature-symbol">?: </span><a href="../modules/_common_.html#iauthoptions" class="tsd-signature-type">IAuthOptions</a>, host<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span>, region<span class="tsd-signature-symbol">?: </span><a href="../enums/_common_.region.html" class="tsd-signature-type">Region</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+						<li class="tsd-signature tsd-kind-icon">reset<span class="tsd-signature-symbol">(</span>auth<span class="tsd-signature-symbol">?: </span><a href="../modules/_common_.html#iauthoptions" class="tsd-signature-type">IAuthOptions</a>, host<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span>, _region<span class="tsd-signature-symbol">?: </span><a href="../enums/_common_.region.html" class="tsd-signature-type">Region</a>, region<span class="tsd-signature-symbol">?: </span><a href="../enums/_design_automation_.designautomationregion.html" class="tsd-signature-type">DesignAutomationRegion</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="_common_.forgeclient.html">ForgeClient</a>.<a href="_common_.forgeclient.html#reset">reset</a></p>
+								<p>Overrides <a href="_common_.forgeclient.html">ForgeClient</a>.<a href="_common_.forgeclient.html#reset">reset</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/175ec04/src/common.ts#L58">common.ts:58</a></li>
+									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/26fdd03/src/design-automation.ts#L184">design-automation.ts:184</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1972,7 +2036,10 @@
 									<h5><span class="tsd-flag ts-flagOptional">Optional</span> host: <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></h5>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> region: <a href="../enums/_common_.region.html" class="tsd-signature-type">Region</a></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> _region: <a href="../enums/_common_.region.html" class="tsd-signature-type">Region</a></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> region: <a href="../enums/_design_automation_.designautomationregion.html" class="tsd-signature-type">DesignAutomationRegion</a></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -1990,7 +2057,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_common_.forgeclient.html">ForgeClient</a>.<a href="_common_.forgeclient.html#setauthorization">setAuthorization</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/175ec04/src/common.ts#L77">common.ts:77</a></li>
+									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/26fdd03/src/common.ts#L78">common.ts:78</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2007,16 +2074,55 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="updateactivity" class="tsd-anchor"></a>
-					<h3>update<wbr>Activity</h3>
+					<a name="setnickname" class="tsd-anchor"></a>
+					<h3>set<wbr>Nickname</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">update<wbr>Activity<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, engine<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, commands<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span>, appBundleIDs<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span>, parameters<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">object</span>, settings<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">object</span>, description<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_design_automation_.iactivitydetail.html" class="tsd-signature-type">IActivityDetail</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">set<wbr>Nickname<span class="tsd-signature-symbol">(</span>nickname<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/175ec04/src/design-automation.ts#L570">design-automation.ts:570</a></li>
+									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/26fdd03/src/design-automation.ts#L230">design-automation.ts:230</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Sets new nickname for all your Design Automation entities
+									(<a href="https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/design-automation-forgeapps-id-PATCH" class="external">docs</a>).</p>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>async</dt>
+									<dd></dd>
+									<dt>throws</dt>
+									<dd><p>Error when the request fails, for example, due to insufficient rights, or incorrect scopes.</p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>nickname: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>New nickname.</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="updateactivity" class="tsd-anchor"></a>
+					<h3>update<wbr>Activity</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">update<wbr>Activity<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, engine<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, commands<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span>, appBundleIDs<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span>, parameters<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">{}</span>, settings<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">{}</span>, description<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_design_automation_.iactivitydetail.html" class="tsd-signature-type">IActivityDetail</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/26fdd03/src/design-automation.ts#L636">design-automation.ts:636</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2053,10 +2159,10 @@
 									<h5><span class="tsd-flag ts-flagOptional">Optional</span> appBundleIDs: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h5>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> parameters: <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">object</span></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> parameters: <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">{}</span></h5>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> settings: <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">object</span></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> settings: <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">{}</span></h5>
 								</li>
 								<li>
 									<h5><span class="tsd-flag ts-flagOptional">Optional</span> description: <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></h5>
@@ -2077,7 +2183,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/175ec04/src/design-automation.ts#L673">design-automation.ts:673</a></li>
+									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/26fdd03/src/design-automation.ts#L739">design-automation.ts:739</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2120,13 +2226,13 @@
 					<a name="updateappbundle" class="tsd-anchor"></a>
 					<h3>update<wbr>App<wbr>Bundle</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">update<wbr>App<wbr>Bundle<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, engine<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, settings<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">object</span>, description<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_design_automation_.iappbundleuploadparams.html" class="tsd-signature-type">IAppBundleUploadParams</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">update<wbr>App<wbr>Bundle<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, engine<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, settings<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">{}</span>, description<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_design_automation_.iappbundleuploadparams.html" class="tsd-signature-type">IAppBundleUploadParams</a><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/175ec04/src/design-automation.ts#L300">design-automation.ts:300</a></li>
+									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/26fdd03/src/design-automation.ts#L366">design-automation.ts:366</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2154,7 +2260,7 @@
 									<h5>engine: <span class="tsd-signature-type">string</span></h5>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> settings: <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">object</span></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> settings: <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">{}</span></h5>
 								</li>
 								<li>
 									<h5><span class="tsd-flag ts-flagOptional">Optional</span> description: <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></h5>
@@ -2176,7 +2282,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/175ec04/src/design-automation.ts#L430">design-automation.ts:430</a></li>
+									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/26fdd03/src/design-automation.ts#L496">design-automation.ts:496</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2228,7 +2334,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/175ec04/src/design-automation.ts#L324">design-automation.ts:324</a></li>
+									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/26fdd03/src/design-automation.ts#L390">design-automation.ts:390</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -2275,33 +2381,36 @@
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="../modules/_authentication_.html">"authentication"</a>
+						<a href="../modules/_authentication_.html">&quot;authentication&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="../modules/_bim360_.html">"bim360"</a>
+						<a href="../modules/_bim360_.html">&quot;bim360&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="../modules/_common_.html">"common"</a>
+						<a href="../modules/_common_.html">&quot;common&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="../modules/_data_management_.html">"data-<wbr>management"</a>
+						<a href="../modules/_data_management_.html">&quot;data-<wbr>management&quot;</a>
 					</li>
 					<li class="current tsd-kind-external-module">
-						<a href="../modules/_design_automation_.html">"design-<wbr>automation"</a>
+						<a href="../modules/_design_automation_.html">&quot;design-<wbr>automation&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="../modules/_index_.html">"index"</a>
+						<a href="../modules/_index_.html">&quot;index&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="../modules/_model_derivative_.html">"model-<wbr>derivative"</a>
+						<a href="../modules/_model_derivative_.html">&quot;model-<wbr>derivative&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="../modules/_webhooks_.html">"webhooks"</a>
+						<a href="../modules/_webhooks_.html">&quot;webhooks&quot;</a>
 					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
+					<li class=" tsd-kind-enum tsd-parent-kind-external-module">
+						<a href="../enums/_design_automation_.designautomationregion.html" class="tsd-kind-icon">Design<wbr>Automation<wbr>Region</a>
+					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class tsd-parent-kind-external-module">
@@ -2371,6 +2480,9 @@
 								<a href="_design_automation_.designautomationclient.html#deleteappbundleversion" class="tsd-kind-icon">delete<wbr>App<wbr>Bundle<wbr>Version</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_design_automation_.designautomationclient.html#deletenickname" class="tsd-kind-icon">delete<wbr>Nickname</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_design_automation_.designautomationclient.html#deleteworkitem" class="tsd-kind-icon">delete<wbr>Work<wbr>Item</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
@@ -2396,6 +2508,9 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_design_automation_.designautomationclient.html#getengine" class="tsd-kind-icon">get<wbr>Engine</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_design_automation_.designautomationclient.html#getnickname" class="tsd-kind-icon">get<wbr>Nickname</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
 								<a href="_design_automation_.designautomationclient.html#getstream" class="tsd-kind-icon">get<wbr>Stream</a>
@@ -2454,11 +2569,14 @@
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
 								<a href="_design_automation_.designautomationclient.html#put" class="tsd-kind-icon">put</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
 								<a href="_design_automation_.designautomationclient.html#reset" class="tsd-kind-icon">reset</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
 								<a href="_design_automation_.designautomationclient.html#setauthorization" class="tsd-kind-icon">set<wbr>Authorization</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_design_automation_.designautomationclient.html#setnickname" class="tsd-kind-icon">set<wbr>Nickname</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_design_automation_.designautomationclient.html#updateactivity" class="tsd-kind-icon">update<wbr>Activity</a>
@@ -2504,6 +2622,12 @@
 						<a href="../interfaces/_design_automation_.iappbundleuploadparams.html" class="tsd-kind-icon">IApp<wbr>Bundle<wbr>Upload<wbr>Params</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
+						<a href="../interfaces/_design_automation_.icodeonenginestringsetting.html" class="tsd-kind-icon">ICode<wbr>OnEngine<wbr>String<wbr>Setting</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
+						<a href="../interfaces/_design_automation_.icodeonengineurlsetting.html" class="tsd-kind-icon">ICode<wbr>OnEngine<wbr>Url<wbr>Setting</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
 						<a href="../interfaces/_design_automation_.icreateactivityconfig.html" class="tsd-kind-icon">ICreate<wbr>Activity<wbr>Config</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
@@ -2529,9 +2653,6 @@
 					</li>
 					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
 						<a href="../modules/_design_automation_.html#codescopes" class="tsd-kind-icon">Code<wbr>Scopes</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/_design_automation_.html#rootpath" class="tsd-kind-icon">Root<wbr>Path</a>
 					</li>
 				</ul>
 			</nav>

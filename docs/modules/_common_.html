@@ -93,6 +93,7 @@
 							<h3>Variables</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-variable tsd-parent-kind-external-module"><a href="_common_.html#defaulthost" class="tsd-kind-icon">Default<wbr>Host</a></li>
+								<li class="tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported"><a href="_common_.html#maxcontentlength" class="tsd-kind-icon">Max<wbr>Content<wbr>Length</a></li>
 								<li class="tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported"><a href="_common_.html#retrydelay" class="tsd-kind-icon">Retry<wbr>Delay</a></li>
 							</ul>
 						</section>
@@ -110,20 +111,20 @@
 				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-external-module">
 					<a name="iauthoptions" class="tsd-anchor"></a>
 					<h3>IAuth<wbr>Options</h3>
-					<div class="tsd-signature tsd-kind-icon">IAuth<wbr>Options<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">object</span></div>
+					<div class="tsd-signature tsd-kind-icon">IAuth<wbr>Options<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>client_id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>client_secret<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">{ </span>token<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/175ec04/src/common.ts#L15">common.ts:15</a></li>
+							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/26fdd03/src/common.ts#L16">common.ts:16</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-external-module">
 					<a name="irequestdata" class="tsd-anchor"></a>
 					<h3>IRequest<wbr>Data</h3>
-					<div class="tsd-signature tsd-kind-icon">IRequest<wbr>Data<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">object</span></div>
+					<div class="tsd-signature tsd-kind-icon">IRequest<wbr>Data<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>urlencoded<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">{ </span>json<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">{ </span>buffer<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/175ec04/src/common.ts#L17">common.ts:17</a></li>
+							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/26fdd03/src/common.ts#L18">common.ts:18</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -133,20 +134,30 @@
 				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module">
 					<a name="defaulthost" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagConst">Const</span> Default<wbr>Host</h3>
-					<div class="tsd-signature tsd-kind-icon">Default<wbr>Host<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"https://developer.api.autodesk.com"</span><span class="tsd-signature-symbol"> =&nbsp;&quot;https://developer.api.autodesk.com&quot;</span></div>
+					<div class="tsd-signature tsd-kind-icon">Default<wbr>Host<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"https://developer.api.autodesk.com"</span><span class="tsd-signature-symbol"> = &quot;https://developer.api.autodesk.com&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/175ec04/src/common.ts#L8">common.ts:8</a></li>
+							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/26fdd03/src/common.ts#L9">common.ts:9</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+					<a name="maxcontentlength" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> Max<wbr>Content<wbr>Length</h3>
+					<div class="tsd-signature tsd-kind-icon">Max<wbr>Content<wbr>Length<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = Infinity</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/26fdd03/src/common.ts#L6">common.ts:6</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
 					<a name="retrydelay" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagConst">Const</span> Retry<wbr>Delay</h3>
-					<div class="tsd-signature tsd-kind-icon">Retry<wbr>Delay<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">5000</span><span class="tsd-signature-symbol"> =&nbsp;5000</span></div>
+					<div class="tsd-signature tsd-kind-icon">Retry<wbr>Delay<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">5000</span><span class="tsd-signature-symbol"> = 5000</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/175ec04/src/common.ts#L5">common.ts:5</a></li>
+							<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/26fdd03/src/common.ts#L5">common.ts:5</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -163,7 +174,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/175ec04/src/common.ts#L6">common.ts:6</a></li>
+									<li>Defined in <a href="https://github.com/petrbroz/autodesk-forge-tools/blob/26fdd03/src/common.ts#L7">common.ts:7</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -185,28 +196,28 @@
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="_authentication_.html">"authentication"</a>
+						<a href="_authentication_.html">&quot;authentication&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="_bim360_.html">"bim360"</a>
+						<a href="_bim360_.html">&quot;bim360&quot;</a>
 					</li>
 					<li class="current tsd-kind-external-module">
-						<a href="_common_.html">"common"</a>
+						<a href="_common_.html">&quot;common&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="_data_management_.html">"data-<wbr>management"</a>
+						<a href="_data_management_.html">&quot;data-<wbr>management&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="_design_automation_.html">"design-<wbr>automation"</a>
+						<a href="_design_automation_.html">&quot;design-<wbr>automation&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="_index_.html">"index"</a>
+						<a href="_index_.html">&quot;index&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="_model_derivative_.html">"model-<wbr>derivative"</a>
+						<a href="_model_derivative_.html">&quot;model-<wbr>derivative&quot;</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="_webhooks_.html">"webhooks"</a>
+						<a href="_webhooks_.html">&quot;webhooks&quot;</a>
 					</li>
 				</ul>
 			</nav>
@@ -226,6 +237,9 @@
 					</li>
 					<li class=" tsd-kind-variable tsd-parent-kind-external-module">
 						<a href="_common_.html#defaulthost" class="tsd-kind-icon">Default<wbr>Host</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="_common_.html#maxcontentlength" class="tsd-kind-icon">Max<wbr>Content<wbr>Length</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
 						<a href="_common_.html#retrydelay" class="tsd-kind-icon">Retry<wbr>Delay</a>
