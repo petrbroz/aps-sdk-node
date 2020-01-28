@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [8.0.13] - 2020-01-28
+
+### Fixed
+- NPM token for publishing now encrypted into Travis config
+
 ## [8.0.12] - 2020-01-28
 
 ### Changed

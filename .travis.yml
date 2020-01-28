@@ -1,16 +1,15 @@
 language: node_js
 node_js:
 - '10'
-
 script:
 - yarn run build
 - yarn run test
 - yarn run docs
-
 deploy:
   provider: npm
-  email: $NPM_EMAIL
-  api_key: $NPM_AUTH_TOKEN
+  email: "$NPM_EMAIL"
+  api_key:
+    secure: fxMc7Es0m7ehahPe1dHMOoSBfm3c2hizZD5Yg2NFUgVzYu2A51UuTVaHhIe0W5rYG+KrT/jW8Clbpk9oeGOgDa15e0R9eVsj+g/BGnUUl42hSAxWPAi8g560yWxKPVBCVyx2mpML+K/8micHRCDCSEZl+9JIs0IUncoynG8xuCKe3svie2ponigFSilb9SYBMK3TwfRh8TQcW5xdoOTckOpuONUqitxcDMDP7mm6XIvHRJRWrkjsgBWUANoRJBTntMQvi+vTJ1K+ZHGDlanSfg1FcaEJUcdEPDbKCqBcbsvJVdR9NG4HY7gP6dvuwmXklvmDUUAwW9MrlNRX5U5ydZ9jSlbOxcUL2/qSjZqFQwcuGCQX2oe6Vz6L/HVdpHK0OeS5nHnAGDgk++ubkZ0Oj12CYWCAmkVmwPl/vdpgl+fX7+x95RD/pa81aisFP7asl9kEssaNLK7XIPGGlUMS3lzw7xPEk48zyxQZwLETTqJT69DjcTwKSGdFE468uzaJnzPanYR1mAnyMApcYDY6Y4gM/HXj6z64AGBIdD8uJD9uJwcdGoghCjb6Mzxq+Vqy7k5kuxUv/a7z0rE3VhXqh5a+hR0F/2YIuEXMdooRZUND10OvKpS2dMTj5YRtn6LAngIWUut7wzonPS8jXzJu7J02jps45DmcLubz7fBiFnQ=
   skip_cleanup: true
   on:
     tags: true
