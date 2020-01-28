@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - POST/PUT/PATCH requests no longer limited by 10MB size
+- Additional settings for Design Automation activities
 
 ### Fixed
 - Upgraded dependencies to resolve audit warnings
