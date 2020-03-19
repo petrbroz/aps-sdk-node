@@ -62,6 +62,7 @@ interface IItemDetails {
     reservedUserName?: string; // The name of the user who reserved the item.
     pathInProject?: string; // The relative path of the item starting from project’s root folder.
     extension?: object;
+    derivative?: string; // URN of viewable
 }
 
 interface IVersion {
@@ -453,7 +454,11 @@ export class BIM360Client extends ForgeClient {
      */
     async getItemDetails(projectId: string, itemId: string): Promise<IItemDetails> {
         let response = await this.get(`data/v1/projects/${encodeURIComponent(projectId)}/items/${encodeURIComponent(itemId)}`, {}, ReadTokenScopes);
-        return Object.assign(response.data.attributes, { id: response.data.id, type: response.data.type })
+        if (response.included && response.included.length > 0) {
+            return Object.assign(response.data.attributes, { id: response.data.id, type: response.data.type, derivative: response.included[0].relationships.derivatives.data.id });
+        } else {
+            return Object.assign(response.data.attributes, { id: response.data.id, type: response.data.type, derivative: response.included[0].relationshops });
+        }
     }
 
     /**
