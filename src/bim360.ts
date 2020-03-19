@@ -457,7 +457,7 @@ export class BIM360Client extends ForgeClient {
         if (response.included && response.included.length > 0) {
             return Object.assign(response.data.attributes, { id: response.data.id, type: response.data.type, derivative: response.included[0].relationships.derivatives.data.id });
         } else {
-            return Object.assign(response.data.attributes, { id: response.data.id, type: response.data.type, derivative: response.included[0].relationshops });
+            return Object.assign(response.data.attributes, { id: response.data.id, type: response.data.type });
         }
     }
 
