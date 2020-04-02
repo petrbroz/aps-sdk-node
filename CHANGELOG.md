@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [8.0.14] - 2020-04-02
+
 ### Fixed
 - Hubs item details now including derivative URN (kudos to [liskaj](http://github.com/liskaj)!)
 
