@@ -1,4 +1,4 @@
-import qs from 'qs';
+import * as querystring from 'querystring';
 import { ForgeClient, IAuthOptions } from './common';
 
 const ReadTokenScopes = ['data:read'];
@@ -113,7 +113,7 @@ export interface IPhotoSceneProgress {
  * Client providing access to Autodesk Forge {@link https://forge.autodesk.com/en/docs/reality-capture/v1/developers_guide/overview|reality capture APIs}.
  * @tutorial realitycapture
  */
-export class RecapClient extends ForgeClient {
+export class RealityCaptureClient extends ForgeClient {
     /**
      * Initializes new client with specific authentication method
      * @param {IAuthOptions} auth Authentication object,
@@ -173,7 +173,7 @@ export class RecapClient extends ForgeClient {
         }
         const headers: { [key: string]: string } = {};
         headers['Content-Type'] = 'application/x-www-form-urlencoded';
-        return this.post('photoscene', qs.stringify(params), headers, WriteTokenScopes);
+        return this.post('photoscene', querystring.stringify(params), headers, WriteTokenScopes);
     }
 
     /**
@@ -201,7 +201,7 @@ export class RecapClient extends ForgeClient {
         }
         const headers: { [key: string]: string } = {};
         headers['Content-Type'] = 'application/x-www-form-urlencoded';
-        return this.post('file', qs.stringify(params), headers, WriteTokenScopes);
+        return this.post('file', querystring.stringify(params), headers, WriteTokenScopes);
     }
 
     /**
