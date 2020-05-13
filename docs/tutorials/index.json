@@ -13,5 +13,8 @@
     },
     "webhooks": {
         "title": "Webhooks API"
+    },
+    "reality-capture": {
+        "title": "Reality Capture API"
     }
 }
