@@ -7,6 +7,10 @@ describe('RealityCaptureClient', function() {
         const { FORGE_CLIENT_ID, FORGE_CLIENT_SECRET, SCENE_NAME, SCENE_CALLBACK, SCENE_FORMAT, SCENE_TYPE} = process.env;
         assert(FORGE_CLIENT_ID);
         assert(FORGE_CLIENT_SECRET);
+        assert(SCENE_NAME);
+        assert(SCENE_CALLBACK);
+        assert(SCENE_FORMAT);
+        assert(SCENE_TYPE);
         this.client = new RealityCaptureClient({ client_id: FORGE_CLIENT_ID, client_secret: FORGE_CLIENT_SECRET});
         this.scenename = SCENE_NAME;
         this.scenecallback = SCENE_CALLBACK;
@@ -24,7 +28,7 @@ describe('RealityCaptureClient', function() {
 
     describe('addImages()', function() {
         it('should add images to the photoscene', async function() {
-            const images = await this.client.addImages(this.sceneid, 'rcm', []);
+            const images = await this.client.addImages(this.sceneid, this.sceneformat, []);
             assert(images);
         });
     });
