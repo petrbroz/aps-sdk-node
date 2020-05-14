@@ -132,12 +132,12 @@ export class RealityCaptureClient extends ForgeClient {
      * @param {string} callback URI to be invoked when the processing of the photoscene has completed.
      * @param {OutputFormat} format Output file format. Multiple file formats can be listed in a comma-delimited list.
      * @param {SceneType} scenetype Specifies the subject type of the photoscene.
-     * @param {GpsType} gpstype Specifies the GPS coordinates type.
-     * @param {string} hubprojectid The identifier of an A360 Personal hub or BIM 360 Docs project. Output files will be delivered to a folder in this project.
-     * @param {string} hubfolderid The URN of an A360 Personal hub or BIM 360 Docs folder. Output files will be delivered to this folder.
-     * @param {EngineVersion} version The reconstruction engine version.
-     * @param {string[]} metadataname Fine-tuning parameter field names indexed to match the metadata_value index, beginning from index 0.
-     * @param {string[]} metadatavalue Fine-tuning parameter values indexed to match the metadata_name index, beginning from index 0.
+     * @param {GpsType} [gpstype] Specifies the GPS coordinates type.
+     * @param {string} [hubprojectid] The identifier of an A360 Personal hub or BIM 360 Docs project. Output files will be delivered to a folder in this project.
+     * @param {string} [hubfolderid] The URN of an A360 Personal hub or BIM 360 Docs folder. Output files will be delivered to this folder.
+     * @param {EngineVersion} [version] The reconstruction engine version.
+     * @param {string[]} [metadataname] Fine-tuning parameter field names indexed to match the metadata_value index, beginning from index 0.
+     * @param {string[]} [metadatavalue] Fine-tuning parameter values indexed to match the metadata_name index, beginning from index 0.
      * @returns {Promise<IPhotoScene>} A JSON object containing details of the photoscene that was created, with property 'photosceneid' ID of the photoscene that was created.
      * @throws Error when the request fails, for example, due to invalid request.
      */
