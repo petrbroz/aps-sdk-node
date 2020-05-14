@@ -84,6 +84,19 @@ export interface IPhotoSceneError {
     msg: string;
 }
 
+export interface IPhotoSceneOptions {
+    scenename: string;
+    callback?: string;
+    format?: OutputFormat;
+    scenetype?: SceneType;
+    gpstype?: GpsType;
+    hubprojectid?: string;
+    hubfolderid?: string;
+    version?: EngineVersion;
+    metadataname?: string[];
+    metadatavalue?: string[];
+}
+
 export interface IPhotoSceneOutput {
     Photoscene: {
         filesize: string;
@@ -128,47 +141,44 @@ export class RealityCaptureClient extends ForgeClient {
      * Creates new photoscene
      * {@link https://forge.autodesk.com/en/docs/reality-capture/v1/reference/http/photoscene-POST|docs}.
      * @async
-     * @param {string} scenename Specifies the name of the photoscene.
-     * @param {string} callback URI to be invoked when the processing of the photoscene has completed.
-     * @param {OutputFormat} format Output file format. Multiple file formats can be listed in a comma-delimited list.
-     * @param {SceneType} scenetype Specifies the subject type of the photoscene.
-     * @param {GpsType} [gpstype] Specifies the GPS coordinates type.
-     * @param {string} [hubprojectid] The identifier of an A360 Personal hub or BIM 360 Docs project. Output files will be delivered to a folder in this project.
-     * @param {string} [hubfolderid] The URN of an A360 Personal hub or BIM 360 Docs folder. Output files will be delivered to this folder.
-     * @param {EngineVersion} [version] The reconstruction engine version.
-     * @param {string[]} [metadataname] Fine-tuning parameter field names indexed to match the metadata_value index, beginning from index 0.
-     * @param {string[]} [metadatavalue] Fine-tuning parameter values indexed to match the metadata_name index, beginning from index 0.
+     * @param {IPhotoSceneOptions} options Specifies the parameters for the new photoscene.
      * @returns {Promise<IPhotoScene>} A JSON object containing details of the photoscene that was created, with property 'photosceneid' ID of the photoscene that was created.
      * @throws Error when the request fails, for example, due to invalid request.
      */
-    async createPhotoScene(scenename: string, callback: string, format: OutputFormat, scenetype: SceneType, gpstype?: GpsType, hubprojectid?: string, hubfolderid?: string, version?: EngineVersion, metadataname?: string[], metadatavalue?: string[]): Promise<IPhotoScene> {
+    async createPhotoScene(options: IPhotoSceneOptions): Promise<IPhotoScene> {
         const params: any = {
-            scenename,
-            callback,
-            format,
-            scenetype
+            scenename: options.scenename
         }
-        if (scenetype === 'aerial' && gpstype) { 
-            params.gpstype = gpstype;
+        if (options.callback) {
+            params.callback = options.callback;
         }
-        if (hubprojectid && hubfolderid) {
-            params.hubprojectid=hubprojectid;
-            params.hubfolderid=hubfolderid;
+        if (options.format) {
+            params.format = options.format;
         }
-        if (version) {
-            params.version=version;
+        if (options.scenetype) {
+            params.scenetype = options.scenetype;
+        }
+        if (options.scenetype !== 'object' && options.gpstype) { 
+            params.gpstype = options.gpstype;
+        }
+        if (options.hubprojectid && options.hubfolderid) {
+            params.hubprojectid = options.hubprojectid;
+            params.hubfolderid = options.hubfolderid;
+        }
+        if (options.version) {
+            params.version = options.version;
         }
         if (
-            scenetype === 'aerial'
-            && metadataname
-            && metadatavalue
-            && metadataname.length > 0
-            && metadatavalue.length > 0
-            && metadataname.length === metadatavalue.length
+            options.scenetype !== 'object'
+            && options.metadataname
+            && options.metadatavalue
+            && options.metadataname.length > 0
+            && options.metadatavalue.length > 0
+            && options.metadataname.length === options.metadatavalue.length
         ) {
-            for (let i=0; i<metadataname.length; i++) {
-                params[`metadataname[${i}]`]=metadataname[i];
-                params[`metadatavalue[${i}]`]=metadatavalue[i];
+            for (let i=0; i<options.metadataname.length; i++) {
+                params[`metadataname[${i}]`] = options.metadataname[i];
+                params[`metadatavalue[${i}]`] = options.metadatavalue[i];
             }
         }
         const headers: { [key: string]: string } = {};
