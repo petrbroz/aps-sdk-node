@@ -1,3 +1,4 @@
+import FormData from 'form-data';
 import * as querystring from 'querystring';
 import { ForgeClient, IAuthOptions } from './common';
 
@@ -197,11 +198,38 @@ export class RealityCaptureClient extends ForgeClient {
      * @async
      * @param {string} photosceneid Specifies the ID of the photoscene to add the files to.
      * @param {FileType} type Specifies the type of file being uploaded: image (default) or survey
-     * @param {string[]} files Specifies the files to be uploaded - these may be URLs (i.e. http://, https://) or local files. For externally stored files, please verify that the URLs are publically accessible.
+     * @param {Buffer[]} files Specifies the local files to be uploaded.
      * @returns {Promise<IFiles[]|IPhotoSceneError>} A JSON object containing details of the image files uploaded to the photoscene.
      * @throws Error when the request fails, for example, due to invalid request.
      */
-    async addImages(photosceneid: string, type: FileType, files: string[]): Promise<IFiles[]|IPhotoSceneError> {
+    async addImages(photosceneid: string, type: FileType, files: Buffer[]): Promise<IFiles[]|IPhotoSceneError> {
+        const form = new FormData();
+        form.append('photosceneid', photosceneid);
+        form.append('type', type);
+        for (let i=0; i<files.length; i++) {
+            form.append(`file[${i}]`, files[i]);
+        }
+        const headers: { [key: string]: string } = {};
+        headers['Content-Type'] = 'multipart/form-data';
+        return this.post('file', form, headers, WriteTokenScopes);
+    }
+
+    /**
+     * Adds one or more files to a photoscene.
+     * Only JPEG images are supported.
+     * Maximum number of files in a single request: 20
+     * Maximum size of a single file: 128 MB
+     * Maximum uncompressed size of image in memory: 512 MB
+     * Note: Uploaded files will be deleted after 30 days.
+     * {@link https://forge.autodesk.com/en/docs/reality-capture/v1/reference/http/file-POST|docs}.
+     * @async
+     * @param {string} photosceneid Specifies the ID of the photoscene to add the files to.
+     * @param {FileType} type Specifies the type of file being uploaded: image (default) or survey
+     * @param {string[]} files Specifies the file URLs to be uploaded (i.e. http://, https://). For externally stored files, please verify that the URLs are publically accessible.
+     * @returns {Promise<IFiles[]|IPhotoSceneError>} A JSON object containing details of the image files uploaded to the photoscene.
+     * @throws Error when the request fails, for example, due to invalid request.
+     */
+    async addImageURLs(photosceneid: string, type: FileType, files: string[]): Promise<IFiles[]|IPhotoSceneError> {
         const params: any = {
             photosceneid,
             type
