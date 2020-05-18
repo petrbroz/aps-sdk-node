@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Initial support for Reality Capture APIs (kudos to
+  [mazerab](https://github.com/mazerab))
+
 ## [8.0.14] - 2020-04-02
 
 ### Fixed
