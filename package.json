@@ -7,7 +7,7 @@
     "build": "yarn run build:node && yarn run build:web",
     "build:node": "tsc",
     "build:web": "webpack",
-    "test": "mocha",
+    "test": "mocha -u bdd",
     "docs": "typedoc --out dist/docs src"
   },
   "repository": {
@@ -29,7 +29,7 @@
   "homepage": "https://github.com/petrbroz/forge-server-utils#readme",
   "devDependencies": {
     "@types/node": "^12.7.0",
-    "mocha": "^5.2.0",
+    "mocha": "^7.1.2",
     "typedoc": "^0.16.9",
     "typescript": "^3.7.5",
     "webpack": "^4.39.0",
