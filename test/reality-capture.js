@@ -14,19 +14,21 @@ describe('RealityCaptureClient', function() {
 
     describe('createPhotoScene()', function() {
         before(function() {
-            const { SCENE_NAME, SCENE_CALLBACK, SCENE_FORMAT, SCENE_TYPE} = process.env;
+            const { SCENE_NAME, SCENE_CALLBACK } = process.env;
             assert(SCENE_NAME);
             assert(SCENE_CALLBACK);
-            assert(SCENE_FORMAT);
-            assert(SCENE_TYPE);
             this.scenename = SCENE_NAME;
             this.scenecallback = SCENE_CALLBACK;
-            this.sceneformat = SCENE_FORMAT;
-            this.scenetype = SCENE_TYPE;
         });
         it('should create a new photoscene', async function() {
-            /* const photoscene = await this.client.createPhotoScene(this.scenename, this.scenecallback, this.sceneformat, this.scenetype);
-            assert(photoscene); */
+            const options = {
+                scenename: this.scenename,
+                scenetype: SceneType.Object,
+                format: OutputFormat.RecapPhotoMesh,
+                callback: this.callback
+            };
+            const photoscene = await this.client.createPhotoScene(options);
+            assert(photoscene);
         });
     });
 
