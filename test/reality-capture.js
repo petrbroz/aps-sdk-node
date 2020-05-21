@@ -1,6 +1,6 @@
 const assert = require('assert');
 
-const { RealityCaptureClient } = require('..');
+const { OutputFormat, RealityCaptureClient, SceneType } = require('..');
 
 describe('RealityCaptureClient', function() {
     beforeEach(function() {
