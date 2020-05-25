@@ -1,6 +1,6 @@
 const assert = require('assert');
 
-const { RealityCaptureClient } = require('..');
+const { OutputFormat, RealityCaptureClient, SceneType } = require('..');
 
 describe('RealityCaptureClient', function() {
     beforeEach(function() {
@@ -25,7 +25,13 @@ describe('RealityCaptureClient', function() {
             // this.scenetype = SCENE_TYPE;
         });
         it('should create a new photoscene', async function() {
-            /* const photoscene = await this.client.createPhotoScene(this.scenename, this.scenecallback, this.sceneformat, this.scenetype);
+            /* const options = {
+                scenename: this.scenename,
+                scenetype: SceneType.Object,
+                format: OutputFormat.RecapPhotoMesh,
+                callback: this.callback
+            };
+            const photoscene = await this.client.createPhotoScene(options);
             assert(photoscene); */
         });
     });
