@@ -71,9 +71,11 @@ interface IVersion {
 
     name?: string; // The filename used when synced to local disk.
     displayName?: string; // Displayable name of the version.
+    derivative?: string; // URN of viewable for given version
     versionNumber?: number; // Version number of this versioned file.
     mimeType?: string; // Mimetype of the version’s content.
     fileType?: string; // File type, only present if this version represents a file.
+    storage?: number; // Storage ID for given file verison.
     storageSize?: number; // File size in bytes, only present if this version represents a file.
     createTime?: string; // The time that the resource was created at.
     createUserId?: string; // The userId that created the resource.
@@ -477,7 +479,12 @@ export class BIM360Client extends ForgeClient {
             response = await this.get(response.links.next, headers, ReadTokenScopes);
             results = results.concat(response.data);
         }
-        return results.map((result: any) => Object.assign(result.attributes, { id: result.id, type: result.type }));
+        return results.map((result: any) => Object.assign(result.attributes, {
+            id: result.id,
+            type: result.type,
+            derivative: result.relationships.derivatives.data.id,
+            storage: result.relationships.storage.data.id
+        }));
     }
 
     /**

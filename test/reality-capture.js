@@ -4,21 +4,25 @@ const { OutputFormat, RealityCaptureClient, SceneType } = require('..');
 
 describe('RealityCaptureClient', function() {
     beforeEach(function() {
-        const { FORGE_CLIENT_ID, FORGE_CLIENT_SECRET, SCENE_ID } = process.env;
-        assert(FORGE_CLIENT_ID);
-        assert(FORGE_CLIENT_SECRET);
-        assert(SCENE_ID);
-        this.client = new RealityCaptureClient({ client_id: FORGE_CLIENT_ID, client_secret: FORGE_CLIENT_SECRET});
-        this.sceneid = SCENE_ID;
+        // const { FORGE_CLIENT_ID, FORGE_CLIENT_SECRET, SCENE_ID } = process.env;
+        // assert(FORGE_CLIENT_ID);
+        // assert(FORGE_CLIENT_SECRET);
+        // assert(SCENE_ID);
+        // this.client = new RealityCaptureClient({ client_id: FORGE_CLIENT_ID, client_secret: FORGE_CLIENT_SECRET});
+        // this.sceneid = SCENE_ID;
     });
 
     describe('createPhotoScene()', function() {
         before(function() {
-            const { SCENE_NAME, SCENE_CALLBACK } = process.env;
-            assert(SCENE_NAME);
-            assert(SCENE_CALLBACK);
-            this.scenename = SCENE_NAME;
-            this.scenecallback = SCENE_CALLBACK;
+            // const { SCENE_NAME, SCENE_CALLBACK, SCENE_FORMAT, SCENE_TYPE} = process.env;
+            // assert(SCENE_NAME);
+            // assert(SCENE_CALLBACK);
+            // assert(SCENE_FORMAT);
+            // assert(SCENE_TYPE);
+            // this.scenename = SCENE_NAME;
+            // this.scenecallback = SCENE_CALLBACK;
+            // this.sceneformat = SCENE_FORMAT;
+            // this.scenetype = SCENE_TYPE;
         });
         it('should create a new photoscene', async function() {
             /* const options = {
