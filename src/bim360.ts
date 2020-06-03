@@ -343,7 +343,7 @@ export class BIM360Client extends ForgeClient {
         let response = await this.get(`project/v1/hubs`, headers, ReadTokenScopes);
         let results = response.data;
         while (response.links && response.links.next) {
-            response = await this.get(response.links.next, headers, ReadTokenScopes);
+            response = await this.get(response.links.next.href, headers, ReadTokenScopes);
             results = results.concat(response.data);
         }
         return results.map((result: any) => Object.assign(result.attributes, { id: result.id }));
@@ -378,7 +378,7 @@ export class BIM360Client extends ForgeClient {
         let response = await this.get(`project/v1/hubs/${encodeURIComponent(hubId)}/projects`, headers, ReadTokenScopes);
         let results = response.data;
         while (response.links && response.links.next) {
-            response = await this.get(response.links.next, headers, ReadTokenScopes);
+            response = await this.get(response.links.next.href, headers, ReadTokenScopes);
             results = results.concat(response.data);
         }
         return results.map((result: any) => Object.assign(result.attributes, { id: result.id }));
@@ -411,7 +411,7 @@ export class BIM360Client extends ForgeClient {
         let response = await this.get(`project/v1/hubs/${encodeURIComponent(hubId)}/projects/${encodeURIComponent(projectId)}/topFolders`, {}, ReadTokenScopes);
         let results = response.data;
         while (response.links && response.links.next) {
-            response = await this.get(response.links.next, headers, ReadTokenScopes);
+            response = await this.get(response.links.next.href, headers, ReadTokenScopes);
             results = results.concat(response.data);
         }
         return results.map((result: any) => Object.assign(result.attributes, { id: result.id }));
@@ -434,7 +434,7 @@ export class BIM360Client extends ForgeClient {
         let response = await this.get(`data/v1/projects/${encodeURIComponent(projectId)}/folders/${encodeURIComponent(folderId)}/contents`, {}, ReadTokenScopes);
         let results = response.data;
         while (response.links && response.links.next) {
-            response = await this.get(response.links.next, headers, ReadTokenScopes);
+            response = await this.get(response.links.next.href, headers, ReadTokenScopes);
             results = results.concat(response.data);
         }
         return results.map((result: any) => Object.assign(result.attributes, { id: result.id, type: result.type }));
@@ -474,7 +474,7 @@ export class BIM360Client extends ForgeClient {
         let response = await this.get(`data/v1/projects/${encodeURIComponent(projectId)}/items/${encodeURIComponent(itemId)}/versions`, {}, ReadTokenScopes);
         let results = response.data;
         while (response.links && response.links.next) {
-            response = await this.get(response.links.next, headers, ReadTokenScopes);
+            response = await this.get(response.links.next.href, headers, ReadTokenScopes);
             results = results.concat(response.data);
         }
         return results.map((result: any) => Object.assign(result.attributes, { id: result.id, type: result.type }));
@@ -586,7 +586,7 @@ export class BIM360Client extends ForgeClient {
         let results = response.data;
         if (!page) {
             while (response.links && response.links.next) {
-                response = await this.get(response.links.next, headers, ReadTokenScopes);
+                response = await this.get(response.links.next.href, headers, ReadTokenScopes);
                 results = results.concat(response.data);
             }
         }
@@ -674,7 +674,7 @@ export class BIM360Client extends ForgeClient {
         let results = response.data;
         if (!page) {
             while (response.links && response.links.next) {
-                response = await this.get(response.links.next, headers, ReadTokenScopes);
+                response = await this.get(response.links.next.href, headers, ReadTokenScopes);
                 results = results.concat(response.data);
             }
         }
@@ -725,7 +725,7 @@ export class BIM360Client extends ForgeClient {
         let results = response.data;
         if (!page) {
             while (response.links && response.links.next) {
-                response = await this.get(response.links.next, headers, ReadTokenScopes);
+                response = await this.get(response.links.next.href, headers, ReadTokenScopes);
                 results = results.concat(response.data);
             }
         }
