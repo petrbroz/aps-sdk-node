@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [8.1.2] - 2020-06-12
+
 ### Fixed
 - Operations on OSS objects now always URI-encode object names.
 
