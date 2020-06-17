@@ -63,6 +63,7 @@ interface IItemDetails {
     pathInProject?: string; // The relative path of the item starting from project’s root folder.
     extension?: object;
     derivative?: string; // URN of viewable
+    storage?: string; // storage ID
 }
 
 interface IVersion {
@@ -457,7 +458,7 @@ export class BIM360Client extends ForgeClient {
     async getItemDetails(projectId: string, itemId: string): Promise<IItemDetails> {
         let response = await this.get(`data/v1/projects/${encodeURIComponent(projectId)}/items/${encodeURIComponent(itemId)}`, {}, ReadTokenScopes);
         if (response.included && response.included.length > 0) {
-            return Object.assign(response.data.attributes, { id: response.data.id, type: response.data.type, derivative: response.included[0].relationships.derivatives.data.id });
+            return Object.assign(response.data.attributes, { id: response.data.id, type: response.data.type, derivative: response.included[0].relationships.derivatives.data.id, storage: response.included[0].relationships.storage.data.id });
         } else {
             return Object.assign(response.data.attributes, { id: response.data.id, type: response.data.type });
         }
