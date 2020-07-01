@@ -184,7 +184,7 @@ export class DataManagementClient extends ForgeClient {
     async listObjects(bucket: string, beginsWith?: string): Promise<IObject[]> {
         let url = `buckets/${bucket}/objects`;
         if (beginsWith) {
-            url += '?beginsWith=' + beginsWith;
+            url += '?beginsWith=' + encodeURIComponent(beginsWith);
         }
         return this._collect(url);
     }
@@ -203,7 +203,7 @@ export class DataManagementClient extends ForgeClient {
      */
     async uploadObject(bucket: string, name: string, contentType: string, data: Buffer): Promise<IObject> {
         const headers = { 'Content-Type': contentType };
-        return this.put(`buckets/${bucket}/objects/${name}`, data, headers, WriteTokenScopes);
+        return this.put(`buckets/${bucket}/objects/${encodeURIComponent(name)}`, data, headers, WriteTokenScopes);
     }
 
     /**
@@ -220,7 +220,7 @@ export class DataManagementClient extends ForgeClient {
      */
     async uploadObjectStream(bucket: string, name: string, contentType: string, stream: ReadableStream): Promise<IObject> {
         const headers = { 'Content-Type': contentType };
-        return this.put(`buckets/${bucket}/objects/${name}`, stream, headers, WriteTokenScopes);
+        return this.put(`buckets/${bucket}/objects/${encodeURIComponent(name)}`, stream, headers, WriteTokenScopes);
     }
 
     /**
@@ -244,7 +244,7 @@ export class DataManagementClient extends ForgeClient {
             'Content-Range': `bytes ${byteOffset}-${byteOffset + data.byteLength - 1}/${totalBytes}`,
             'Session-Id': sessionId
         }
-        return this.put(`buckets/${bucketKey}/objects/${objectName}/resumable`, data, headers, WriteTokenScopes);
+        return this.put(`buckets/${bucketKey}/objects/${encodeURIComponent(objectName)}/resumable`, data, headers, WriteTokenScopes);
     }
 
     /**
@@ -269,7 +269,7 @@ export class DataManagementClient extends ForgeClient {
             'Content-Range': `bytes ${byteOffset}-${byteOffset + chunkBytes - 1}/${totalBytes}`,
             'Session-Id': sessionId
         }
-        return this.put(`buckets/${bucketKey}/objects/${objectName}/resumable`, stream, headers, WriteTokenScopes);
+        return this.put(`buckets/${bucketKey}/objects/${encodeURIComponent(objectName)}/resumable`, stream, headers, WriteTokenScopes);
     }
 
     /**
@@ -286,7 +286,7 @@ export class DataManagementClient extends ForgeClient {
     async getResumableUploadStatus(bucketKey: string, objectName: string, sessionId: string): Promise<IResumableUploadRange[]> {
         const config: AxiosRequestConfig = {
             method: 'GET',
-            url: `buckets/${bucketKey}/objects/${objectName}/status/${sessionId}`,
+            url: `buckets/${bucketKey}/objects/${encodeURIComponent(objectName)}/status/${sessionId}`,
             headers: { 'Authorization': '' }
         };
         await this.setAuthorization(config, ReadTokenScopes);
@@ -319,7 +319,7 @@ export class DataManagementClient extends ForgeClient {
      * fs.writeFileSync(filepath, Buffer.from(buff), { encoding: 'binary' });
      */
     async downloadObject(bucket: string, object: string): Promise<ArrayBuffer> {
-        return this.getBuffer(`buckets/${bucket}/objects/${object}`, {}, ReadTokenScopes);
+        return this.getBuffer(`buckets/${bucket}/objects/${encodeURIComponent(object)}`, {}, ReadTokenScopes);
     }
 
     /**
@@ -335,7 +335,7 @@ export class DataManagementClient extends ForgeClient {
      * stream.pipe(fs.createWriteStream(filepath));
      */
     async downloadObjectStream(bucket: string, object: string): Promise<ReadableStream> {
-        return this.getStream(`buckets/${bucket}/objects/${object}`, {}, ReadTokenScopes);
+        return this.getStream(`buckets/${bucket}/objects/${encodeURIComponent(object)}`, {}, ReadTokenScopes);
     }
 
     /**
@@ -349,7 +349,7 @@ export class DataManagementClient extends ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async copyObject(bucket: string, oldObjectKey: string, newObjectKey: string): Promise<IObject> {
-        return this.put(`buckets/${bucket}/objects/${oldObjectKey}/copyto/${newObjectKey}`, null, {}, WriteTokenScopes);
+        return this.put(`buckets/${bucket}/objects/${encodeURIComponent(oldObjectKey)}/copyto/${encodeURIComponent(newObjectKey)}`, null, {}, WriteTokenScopes);
     }
 
     /**
@@ -364,7 +364,7 @@ export class DataManagementClient extends ForgeClient {
      * with this name does not exist.
      */
     async getObjectDetails(bucket: string, object: string): Promise<IObject> {
-        return this.get(`buckets/${bucket}/objects/${object}/details`, {}, ReadTokenScopes);
+        return this.get(`buckets/${bucket}/objects/${encodeURIComponent(object)}/details`, {}, ReadTokenScopes);
     }
 
     /**
@@ -378,7 +378,7 @@ export class DataManagementClient extends ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
     async createSignedUrl(bucketId: string, objectId: string, access = 'readwrite'): Promise<ISignedUrl> {
-        return this.post(`buckets/${bucketId}/objects/${objectId}/signed?access=${access}`, {}, {}, WriteTokenScopes);
+        return this.post(`buckets/${bucketId}/objects/${encodeURIComponent(objectId)}/signed?access=${access}`, {}, {}, WriteTokenScopes);
     }
 
     /**
@@ -390,7 +390,7 @@ export class DataManagementClient extends ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async deleteObject(bucketKey: string, objectName: string) {
-        return this.delete(`buckets/${bucketKey}/objects/${objectName}`, {}, WriteTokenScopes);
+        return this.delete(`buckets/${bucketKey}/objects/${encodeURIComponent(objectName)}`, {}, WriteTokenScopes);
     }
 
     /**
