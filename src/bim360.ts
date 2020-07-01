@@ -340,8 +340,12 @@ export class BIM360Client extends ForgeClient {
      * @async
      * @returns {Promise<IHub[]>} List of hubs.
      */
-    async listHubs(): Promise<IHub[]> {
-        const headers = { 'Content-Type': 'application/vnd.api+json' };
+    async listHubs(xUserId ?: string): Promise<IHub[]> {
+        const headers: { [key: string]: string } = {};
+        headers['Content-Type'] = 'application/vnd.api+json';
+        if (!!xUserId) {
+            headers['x-user-id'] = xUserId;
+        }
         let response = await this.get(`project/v1/hubs`, headers, ReadTokenScopes);
         let results = response.data;
         while (response.links && response.links.next) {
@@ -358,8 +362,12 @@ export class BIM360Client extends ForgeClient {
      * @param {string} hubId Hub ID.
      * @returns {Promise<IHub>} Hub details or null if there isn't one.
      */
-    async getHubDetails(hubId: string): Promise<IHub> {
-        const headers = { 'Content-Type': 'application/vnd.api+json' };
+    async getHubDetails(hubId: string, xUserId ?: string): Promise<IHub> {
+        const headers: { [key: string]: string } = {};
+        headers['Content-Type'] = 'application/vnd.api+json';
+        if (!!xUserId) {
+            headers['x-user-id'] = xUserId;
+        }
         const response = await this.get(`project/v1/hubs/${encodeURIComponent(hubId)}`, headers, ReadTokenScopes);
         return Object.assign(response.data.attributes, { id: response.data.id })
     }
@@ -375,8 +383,12 @@ export class BIM360Client extends ForgeClient {
      * @param {string} hubId Hub ID.
      * @returns {Promise<IProject[]>} List of projects.
      */
-    async listProjects(hubId: string): Promise<IProject[]> {
-        const headers = { 'Content-Type': 'application/vnd.api+json' };
+    async listProjects(hubId: string, xUserId ?: string): Promise<IProject[]> {
+        const headers: { [key: string]: string } = {};
+        headers['Content-Type'] = 'application/vnd.api+json';
+        if (!!xUserId) {
+            headers['x-user-id'] = xUserId;
+        }
         let response = await this.get(`project/v1/hubs/${encodeURIComponent(hubId)}/projects`, headers, ReadTokenScopes);
         let results = response.data;
         while (response.links && response.links.next) {
@@ -394,8 +406,12 @@ export class BIM360Client extends ForgeClient {
      * @param {string} projectId Project ID.
      * @returns {Promise<IProject>} Hub details or null if there isn't one.
      */
-    async getProjectDetails(hubId: string, projectId: string): Promise<IProject> {
-        const headers = { 'Content-Type': 'application/vnd.api+json' };
+    async getProjectDetails(hubId: string, projectId: string, xUserId ?: string): Promise<IProject> {
+        const headers: { [key: string]: string } = {};
+        headers['Content-Type'] = 'application/vnd.api+json';
+        if (!!xUserId) {
+            headers['x-user-id'] = xUserId;
+        }
         const response = await this.get(`project/v1/hubs/${encodeURIComponent(hubId)}/projects/${encodeURIComponent(projectId)}`, headers, ReadTokenScopes);
         return Object.assign(response.data.attributes, { id: response.data.id })
     }
@@ -408,9 +424,12 @@ export class BIM360Client extends ForgeClient {
      * @param {string} projectId Project ID.
      * @returns {Promise<IFolder[]>} List of folder records.
      */
-    async listTopFolders(hubId: string, projectId: string): Promise<IFolder[]> {
-        const headers = { 'Content-Type': 'application/vnd.api+json' };
-        let response = await this.get(`project/v1/hubs/${encodeURIComponent(hubId)}/projects/${encodeURIComponent(projectId)}/topFolders`, {}, ReadTokenScopes);
+    async listTopFolders(hubId: string, projectId: string, xUserId ?: string): Promise<IFolder[]> {
+        const headers: { [key: string]: string } = {};
+        if (!!xUserId) {
+            headers['x-user-id'] = xUserId;
+        }
+        let response = await this.get(`project/v1/hubs/${encodeURIComponent(hubId)}/projects/${encodeURIComponent(projectId)}/topFolders`, headers, ReadTokenScopes);
         let results = response.data;
         while (response.links && response.links.next) {
             response = await this.get(response.links.next, headers, ReadTokenScopes);
@@ -431,9 +450,12 @@ export class BIM360Client extends ForgeClient {
      * @param {string} folderId Folder ID.
      * @returns {Promise<IItem[]>} List of folder contents.
      */
-    async listContents(projectId: string, folderId: string): Promise<IItem[]> {
-        const headers = { 'Content-Type': 'application/vnd.api+json' };
-        let response = await this.get(`data/v1/projects/${encodeURIComponent(projectId)}/folders/${encodeURIComponent(folderId)}/contents`, {}, ReadTokenScopes);
+    async listContents(projectId: string, folderId: string, xUserId ?: string): Promise<IItem[]> {
+        const headers: { [key: string]: string } = {};
+        if (!!xUserId) {
+            headers['x-user-id'] = xUserId;
+        }
+        let response = await this.get(`data/v1/projects/${encodeURIComponent(projectId)}/folders/${encodeURIComponent(folderId)}/contents`, headers, ReadTokenScopes);
         let results = response.data;
         while (response.links && response.links.next) {
             response = await this.get(response.links.next, headers, ReadTokenScopes);
@@ -454,8 +476,12 @@ export class BIM360Client extends ForgeClient {
      * @param {string} itemId Item ID.
      * @returns {Promise<IItemDetails>} Item details.
      */
-    async getItemDetails(projectId: string, itemId: string): Promise<IItemDetails> {
-        let response = await this.get(`data/v1/projects/${encodeURIComponent(projectId)}/items/${encodeURIComponent(itemId)}`, {}, ReadTokenScopes);
+    async getItemDetails(projectId: string, itemId: string, xUserId ?: string): Promise<IItemDetails> {
+        const headers: { [key: string]: string } = {};
+        if (!!xUserId) {
+            headers['x-user-id'] = xUserId;
+        }
+        let response = await this.get(`data/v1/projects/${encodeURIComponent(projectId)}/items/${encodeURIComponent(itemId)}`, headers, ReadTokenScopes);
         if (response.included && response.included.length > 0) {
             return Object.assign(response.data.attributes, { id: response.data.id, type: response.data.type, derivative: response.included[0].relationships.derivatives.data.id });
         } else {
@@ -471,9 +497,13 @@ export class BIM360Client extends ForgeClient {
      * @param {string} itemId Item ID.
      * @returns {Promise<IVersion[]>} List of item versions.
      */
-    async listVersions(projectId: string, itemId: string): Promise<IVersion[]> {
-        const headers = { 'Content-Type': 'application/vnd.api+json' };
-        let response = await this.get(`data/v1/projects/${encodeURIComponent(projectId)}/items/${encodeURIComponent(itemId)}/versions`, {}, ReadTokenScopes);
+    async listVersions(projectId: string, itemId: string, xUserId ?: string): Promise<IVersion[]> {
+        const headers: { [key: string]: string } = {};
+        headers['Content-Type'] = 'application/vnd.api+json';
+        if (!!xUserId) {
+            headers['x-user-id'] = xUserId;
+        }
+        let response = await this.get(`data/v1/projects/${encodeURIComponent(projectId)}/items/${encodeURIComponent(itemId)}/versions`, headers, ReadTokenScopes);
         let results = response.data;
         while (response.links && response.links.next) {
             response = await this.get(response.links.next, headers, ReadTokenScopes);
@@ -495,8 +525,12 @@ export class BIM360Client extends ForgeClient {
      * @param {string} itemId Item ID.
      * @returns {Promise<IVersion>} Tip version of the item.
      */
-    async getTipVersion(projectId: string, itemId: string): Promise<IVersion> {
-        const response = await this.get(`data/v1/projects/${encodeURIComponent(projectId)}/items/${encodeURIComponent(itemId)}/tip`, {}, ReadTokenScopes);
+    async getTipVersion(projectId: string, itemId: string, xUserId ?: string): Promise<IVersion> {
+        const headers: { [key: string]: string } = {};
+        if (!!xUserId) {
+            headers['x-user-id'] = xUserId;
+        }
+        const response = await this.get(`data/v1/projects/${encodeURIComponent(projectId)}/items/${encodeURIComponent(itemId)}/tip`, headers, ReadTokenScopes);
         return response.data;
     }
 
@@ -513,8 +547,12 @@ export class BIM360Client extends ForgeClient {
      * @param {string} versionId Version ID.
      * @returns {Promise<IVersion>} Specific version of folder item.
      */
-    async getVersionDetails(projectId: string, itemId: string, versionId: string): Promise<IVersion> {
-        const response = await this.get(`data/v1/projects/${encodeURIComponent(projectId)}/versions/${encodeURIComponent(versionId)}`, {}, ReadTokenScopes);
+    async getVersionDetails(projectId: string, itemId: string, versionId: string, xUserId ?: string): Promise<IVersion> {
+        const headers: { [key: string]: string } = {};
+        if (!!xUserId) {
+            headers['x-user-id'] = xUserId;
+        }
+        const response = await this.get(`data/v1/projects/${encodeURIComponent(projectId)}/versions/${encodeURIComponent(versionId)}`, headers, ReadTokenScopes);
         return response.data;
     }
 
