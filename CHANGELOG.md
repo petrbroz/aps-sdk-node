@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Various BIM360 methods now support an additional parameter specifying user ID for 2-legged contexts (kudos to https://github.com/mazerab).
+- Getting BIM360 item details now returns additional information (kudos to https://github.com/liskaj).
 
 ## [8.1.2] - 2020-06-12
 
