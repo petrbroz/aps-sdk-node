@@ -484,7 +484,8 @@ export class BIM360Client extends ForgeClient {
         }
         let response = await this.get(`data/v1/projects/${encodeURIComponent(projectId)}/items/${encodeURIComponent(itemId)}`, headers, ReadTokenScopes);
         if (response.included && response.included.length > 0) {
-            return Object.assign(response.data.attributes, { id: response.data.id, type: response.data.type, derivative: response.included[0].relationships.derivatives.data.id, storage: response.included[0].relationships.storage.data.id });
+            const included = response.included[0];
+            return Object.assign(response.data.attributes, { id: response.data.id, type: response.data.type, derivative: included?.relationships?.derivatives?.data?.id, storage: included?.relationships?.storage?.data?.id });
         } else {
             return Object.assign(response.data.attributes, { id: response.data.id, type: response.data.type });
         }
@@ -513,8 +514,8 @@ export class BIM360Client extends ForgeClient {
         return results.map((result: any) => Object.assign(result.attributes, {
             id: result.id,
             type: result.type,
-            derivative: result.relationships.derivatives.data.id,
-            storage: result.relationships.storage.data.id
+            derivative: result?.relationships?.derivatives?.data?.id,
+            storage: result?.relationships?.storage?.data?.id
         }));
     }
 
@@ -571,11 +572,7 @@ export class BIM360Client extends ForgeClient {
     async getIssueContainerID(hubId: string, projectId: string): Promise<string|null> {
         const headers = { 'Content-Type': 'application/vnd.api+json' };
         const response = await this.get(`project/v1/hubs/${encodeURIComponent(hubId)}/projects/${encodeURIComponent(projectId)}`, headers, ReadTokenScopes);
-        if (response.data.relationships.issues) {
-            return response.data.relationships.issues.data.id;
-        } else {
-            return null;
-        }
+        return response.data?.relationships?.issues?.data?.id;
     }
 
     /**
@@ -926,11 +923,7 @@ export class BIM360Client extends ForgeClient {
     async getLocationContainerID(hubId: string, projectId: string): Promise<string|null> {
         const headers = { 'Content-Type': 'application/vnd.api+json' };
         const response = await this.get(`project/v1/hubs/${encodeURIComponent(hubId)}/projects/${encodeURIComponent(projectId)}`, headers, ReadTokenScopes);
-        if (response.data.relationships.locations) {
-            return response.data.relationships.locations.data.id;
-        } else {
-            return null;
-        }
+        return response.data?.relationships?.locations?.data?.id;
     }
 
     /**
