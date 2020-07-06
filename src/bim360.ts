@@ -2,7 +2,7 @@ import { Region } from './common';
 import { ForgeClient, IAuthOptions } from './common';
 
 const ReadTokenScopes = ['data:read', 'account:read'];
-const WriteTokenScopes = ['data:write'];
+const WriteTokenScopes = ['data:create', 'data:write'];
 const PageSize = 64;
 
 interface IHub {
@@ -19,6 +19,18 @@ interface IProject {
     name?: string;
     scopes?: string[];
     extension?: object;
+}
+
+interface IStorageLocation {
+    id: string;
+
+    resourceId?: string;
+    resourceType?: string;
+}
+
+enum ResourceType {
+    Folders = 'folders',
+    Items = 'items'
 }
 
 interface IFolder {
@@ -443,6 +455,45 @@ export class BIM360Client extends ForgeClient {
         return results.map((result: any) => Object.assign(result.attributes, { id: result.id }));
     }
 
+    /**
+     * Creates a storage location in the OSS where data can be uploaded to.
+     * @async
+     * @param {string} projectId Project Id.
+     * @param {string} fileName Displayable name of the resource.
+     * @param {ResourceType} resourceType The type of this resource. Possible values: folders, items.
+     * @param {string} resourceId Id of the resource.
+     * @param {string} [xUserId] Optional API will act on behalf of specified user Id.
+     * @returns {Promise<IStorageLocation>} A storage location. 
+     */
+    async createStorageLocation(projectId: string, fileName: string, resourceType: ResourceType, resourceId: string, xUserId?: string): Promise<IStorageLocation> {
+        const headers: { [key: string]: string } = {};
+        headers['Content-Type'] = 'application/vnd.api+json';
+        if (!!xUserId) {
+            headers['x-user-id'] = xUserId;
+        }
+        const params = {
+            jsonapi: {
+              version: '1.0'
+            },
+            data: {
+              type: 'objects',
+              attributes: {
+                name: fileName
+              },
+              relationships: {
+                target: {
+                  data: {
+                    type: resourceType,
+                    id: resourceId
+                  }
+                }
+              }
+            }
+        };
+        const response = await this.post(`data/v1/projects/${encodeURIComponent(projectId)}/storage`, params, headers, WriteTokenScopes);
+        return Object.assign(response.data.id, { id: response.data.id });
+    }
+
     // #endregion
 
     // #region Folders
@@ -557,13 +608,86 @@ export class BIM360Client extends ForgeClient {
      * @param {string} [xUserId] Optional API will act on behalf of specified user Id.
      * @returns {Promise<IVersion>} Specific version of folder item.
      */
-    async getVersionDetails(projectId: string, itemId: string, versionId: string, xUserId ?: string): Promise<IVersion> {
+    async getVersionDetails(projectId: string, itemId: string, versionId: string, xUserId?: string): Promise<IVersion> {
         const headers: { [key: string]: string } = {};
         if (!!xUserId) {
             headers['x-user-id'] = xUserId;
         }
         const response = await this.get(`data/v1/projects/${encodeURIComponent(projectId)}/versions/${encodeURIComponent(versionId)}`, headers, ReadTokenScopes);
         return response.data;
+    }
+
+    /**
+     * Creates versions of uploaded files (items) and makes copies of existing files.
+     * @param {string} projectId The project Id.
+     * @param {string} fileName Displayable name of an item.
+     * @param {string} folderId The folder Id.
+     * @param {string} storageId The storage location Id.
+     * @param {string} [xUserId] Optional API will act on behalf of specified user Id.
+     * @returns {Promise<IVersion>} Specific version of an item.
+     */
+    async createVersion(projectId: string, fileName: string, folderId: string, storageId: string, xUserId?: string): Promise<IVersion|null> {
+        const headers: { [key: string]: string } = {};
+        headers['Content-Type'] = 'application/vnd.api+json';
+        if (!!xUserId) {
+            headers['x-user-id'] = xUserId;
+        }
+        const params = {
+            jsonapi: {
+                version: '1.0'
+            },
+            data: {
+                type: 'items',
+                attributes: {
+                    displayName: fileName,
+                    extension: {
+                        type: 'items:autodesk.core:File',
+                        version: '1.0'
+                    }
+                },
+                relationships: {
+                    tip: {
+                        data: {
+                            type: 'versions',
+                            id: '1'
+                        }
+                    },
+                    parent: {
+                        data: {
+                            type: 'folders',
+                            id: folderId
+                        }
+                    }
+                }
+            },
+            included: [
+                {
+                    type: 'versions',
+                    id: '1',
+                    attributes: {
+                        name: fileName,
+                        extension: {
+                            type: 'versions:autodesk.core:File',
+                            version: '1.0'
+                        }
+                    },
+                    relationships: {
+                        storage: {
+                            data: {
+                                type: 'objects',
+                                id: storageId
+                            }
+                        }
+                    }
+                }
+            ]
+        };
+        const response = await this.post(`data/v1/projects/${encodeURIComponent(projectId)}/items}`, params, headers, WriteTokenScopes);
+        if (response.included.length = 1) {
+            return Object.assign(response.included.id, { id: response.included.id, type: 'versions' });
+        } else {
+            return null;
+        }
     }
 
     // #endregion
