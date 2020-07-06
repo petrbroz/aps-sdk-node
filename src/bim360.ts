@@ -338,6 +338,7 @@ export class BIM360Client extends ForgeClient {
      * Gets a list of all hubs accessible to given credentials
      * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/hubs-GET}).
      * @async
+     * @param {string} [xUserId] Optional API will act on behalf of specified user Id.
      * @returns {Promise<IHub[]>} List of hubs.
      */
     async listHubs(xUserId ?: string): Promise<IHub[]> {
@@ -360,6 +361,7 @@ export class BIM360Client extends ForgeClient {
      * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/hubs-hub_id-GET}).
      * @async
      * @param {string} hubId Hub ID.
+     * @param {string} [xUserId] Optional API will act on behalf of specified user Id.
      * @returns {Promise<IHub>} Hub details or null if there isn't one.
      */
     async getHubDetails(hubId: string, xUserId ?: string): Promise<IHub> {
@@ -381,6 +383,7 @@ export class BIM360Client extends ForgeClient {
      * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/hubs-hub_id-projects-GET}).
      * @async
      * @param {string} hubId Hub ID.
+     * @param {string} [xUserId] Optional API will act on behalf of specified user Id.
      * @returns {Promise<IProject[]>} List of projects.
      */
     async listProjects(hubId: string, xUserId ?: string): Promise<IProject[]> {
@@ -404,6 +407,7 @@ export class BIM360Client extends ForgeClient {
      * @async
      * @param {string} hubId Hub ID.
      * @param {string} projectId Project ID.
+     * @param {string} [xUserId] Optional API will act on behalf of specified user Id.
      * @returns {Promise<IProject>} Hub details or null if there isn't one.
      */
     async getProjectDetails(hubId: string, projectId: string, xUserId ?: string): Promise<IProject> {
@@ -422,6 +426,7 @@ export class BIM360Client extends ForgeClient {
      * @async
      * @param {string} hubId Hub ID.
      * @param {string} projectId Project ID.
+     * @param {string} [xUserId] Optional API will act on behalf of specified user Id.
      * @returns {Promise<IFolder[]>} List of folder records.
      */
     async listTopFolders(hubId: string, projectId: string, xUserId ?: string): Promise<IFolder[]> {
@@ -448,6 +453,7 @@ export class BIM360Client extends ForgeClient {
      * @async
      * @param {string} projectId Project ID.
      * @param {string} folderId Folder ID.
+     * @param {string} [xUserId] Optional API will act on behalf of specified user Id.
      * @returns {Promise<IItem[]>} List of folder contents.
      */
     async listContents(projectId: string, folderId: string, xUserId ?: string): Promise<IItem[]> {
@@ -474,6 +480,7 @@ export class BIM360Client extends ForgeClient {
      * @async
      * @param {string} projectId Project ID.
      * @param {string} itemId Item ID.
+     * @param {string} [xUserId] Optional API will act on behalf of specified user Id.
      * @returns {Promise<IItemDetails>} Item details.
      */
     async getItemDetails(projectId: string, itemId: string, xUserId ?: string): Promise<IItemDetails> {
@@ -495,6 +502,7 @@ export class BIM360Client extends ForgeClient {
      * @async
      * @param {string} projectId Project ID.
      * @param {string} itemId Item ID.
+     * @param {string} [xUserId] Optional API will act on behalf of specified user Id.
      * @returns {Promise<IVersion[]>} List of item versions.
      */
     async listVersions(projectId: string, itemId: string, xUserId ?: string): Promise<IVersion[]> {
@@ -523,6 +531,7 @@ export class BIM360Client extends ForgeClient {
      * @async
      * @param {string} projectId Project ID.
      * @param {string} itemId Item ID.
+     * @param {string} [xUserId] Optional API will act on behalf of specified user Id.
      * @returns {Promise<IVersion>} Tip version of the item.
      */
     async getTipVersion(projectId: string, itemId: string, xUserId ?: string): Promise<IVersion> {
@@ -545,6 +554,7 @@ export class BIM360Client extends ForgeClient {
      * @param {string} projectId Project ID.
      * @param {string} itemId Item ID (@deprecated, will be removed in next major version).
      * @param {string} versionId Version ID.
+     * @param {string} [xUserId] Optional API will act on behalf of specified user Id.
      * @returns {Promise<IVersion>} Specific version of folder item.
      */
     async getVersionDetails(projectId: string, itemId: string, versionId: string, xUserId ?: string): Promise<IVersion> {
