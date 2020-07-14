@@ -28,7 +28,7 @@ interface IStorageLocation {
     resourceType?: string;
 }
 
-enum ResourceType {
+export enum ResourceType {
     Folders = 'folders',
     Items = 'items'
 }
@@ -365,7 +365,7 @@ export class BIM360Client extends ForgeClient {
             response = await this.get(response.links.next.href, headers, ReadTokenScopes);
             results = results.concat(response.data);
         }
-        return results.map((result: any) => Object.assign(result.attributes, { id: result.id }));
+        return results.map((result: any) => Object.assign(result.attributes, { id: result.id, name: result.name }));
     }
 
     /**
@@ -410,7 +410,7 @@ export class BIM360Client extends ForgeClient {
             response = await this.get(response.links.next.href, headers, ReadTokenScopes);
             results = results.concat(response.data);
         }
-        return results.map((result: any) => Object.assign(result.attributes, { id: result.id }));
+        return results.map((result: any) => Object.assign(result.attributes, { id: result.id, name: result.name }));
     }
 
     /**
@@ -641,7 +641,7 @@ export class BIM360Client extends ForgeClient {
                 attributes: {
                     displayName: fileName,
                     extension: {
-                        type: 'items:autodesk.core:File',
+                        type: 'items:autodesk.bim360:File',
                         version: '1.0'
                     }
                 },
@@ -667,7 +667,7 @@ export class BIM360Client extends ForgeClient {
                     attributes: {
                         name: fileName,
                         extension: {
-                            type: 'versions:autodesk.core:File',
+                            type: 'versions:autodesk.bim360:File',
                             version: '1.0'
                         }
                     },
