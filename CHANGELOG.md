@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [8.1.4] - 2020-07-14
+
+### Added
+- Support for uploading to BIM360 Docs (kudos to [mazerab](https://github.com/mazerab))
+
 ## [8.1.3] - 2020-07-02
 
 ### Added
