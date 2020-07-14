@@ -684,7 +684,7 @@ export class BIM360Client extends ForgeClient {
         };
         const response = await this.post(`data/v1/projects/${encodeURIComponent(projectId)}/items`, params, headers, WriteTokenScopes);
         if (response.included.length = 1) {
-            return Object.assign(response.included.id, { id: response.included.id, type: 'versions' });
+            return Object.assign(response.included[0].id, { id: response.included[0].id, type: 'versions' });
         } else {
             return null;
         }
