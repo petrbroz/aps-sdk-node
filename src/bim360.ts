@@ -692,6 +692,75 @@ export class BIM360Client extends ForgeClient {
         }
     }
 
+    /**
+     * Creates next version of uploaded files (items).
+     * @param {string} projectId The project Id.
+     * @param {string} fileName  The name of the file.
+     * @param {string} itemId The ID of the item.
+     * @param {string} storageId The storage location Id.
+     * @param {string} [xUserId] Optional API will act on behalf of specified user Id.
+     * @returns {Promise<IVersion>} Specific version of an item.
+     */
+    async createNextVersion(projectId: string, fileName: string, itemId: string, storageId: string, urns: string[], xUserId?: string): Promise<IVersion|null>  {
+        const headers: { [key: string]: string } = {};
+        headers['Content-Type'] = 'application/vnd.api+json';
+        if (!!xUserId) {
+            headers['x-user-id'] = xUserId;
+        }
+        const xrefs = urns.map(function(urn) {
+            const xref = {
+                type: 'versions',
+                id: urn,
+                meta: {
+                    refType: 'xrefs',
+                    direction: 'from',
+                    extension: {
+                        type: 'xrefs:autodesk.core:Xref',
+                        version: '1.1',
+                        data: {
+                            nestedType: 'overlay'
+                        }
+                    }
+                }
+            };
+            return xref;
+        });
+        const params = {
+            jsonapi: {
+                version: '1.0'
+            },
+            data: {
+                type: 'versions',
+                attributes: {
+                    name: fileName,
+                    extension: {
+                        type: 'versions:autodesk.bim360:File',
+                        version: '1.0'
+                    }
+                },
+                relationships: {
+                    item: {
+                        data: {
+                            type: 'items',
+                            id: itemId
+                        }
+                    },
+                    storage: {
+                        data: {
+                            type: 'objects',
+                            id: storageId
+                        }
+                    },
+                    refs: {
+                        data: xrefs
+                    }
+                }
+            }
+        }
+        const response = await this.post(`data/v1/projects/${encodeURIComponent(projectId)}/versions`, params, headers, WriteTokenScopes);
+        return Object.assign(response.data.id, { id: response.data.id });
+    }
+
     // #endregion
 
     // #region Issues
