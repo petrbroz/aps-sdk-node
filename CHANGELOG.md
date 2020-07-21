@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [8.1.5] - 2020-07-21
+
+### Fixed
+- Couple of minor fixes in the BIM360 client by [mazerab](https://github.com/mazerab)
+
 ## [8.1.4] - 2020-07-14
 
 ### Added
