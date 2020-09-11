@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [8.1.7] - 2020-09-11
+
+### Added
+- Latest version of Data Management items now included in the response (kudos to https://github.com/liskaj).
+
+### Fixed
+- 3rd party dependencies.
+
 ## [8.1.6] - 2020-08-12
 
 ### Fixed
