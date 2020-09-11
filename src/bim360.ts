@@ -76,6 +76,7 @@ interface IItemDetails {
     extension?: object;
     derivative?: string; // URN of viewable
     storage?: string; // storage ID
+    versionNumber?: number; // version number of tip version
 }
 
 interface IVersion {
@@ -543,7 +544,14 @@ export class BIM360Client extends ForgeClient {
         let response = await this.get(`data/v1/projects/${encodeURIComponent(projectId)}/items/${encodeURIComponent(itemId)}`, headers, ReadTokenScopes);
         if (response.included && response.included.length > 0) {
             const included = response.included[0];
-            return Object.assign(response.data.attributes, { id: response.data.id, type: response.data.type, derivative: included?.relationships?.derivatives?.data?.id, storage: included?.relationships?.storage?.data?.id });
+
+            return Object.assign(response.data.attributes, {
+                id: response.data.id,
+                type: response.data.type,
+                derivative: included?.relationships?.derivatives?.data?.id,
+                storage: included?.relationships?.storage?.data?.id,
+                versionNumber: included?.attributes?.versionNumber
+            });
         } else {
             return Object.assign(response.data.attributes, { id: response.data.id, type: response.data.type });
         }
