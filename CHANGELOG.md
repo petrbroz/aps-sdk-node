@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [8.2.0] - 2020-10-29
+
 ### Added
 - Support for specifying workflow ID/attributes (for Forge Webhooks) in Model Derivative jobs.
 - Support for additional output types in Model Derivative jobs.
