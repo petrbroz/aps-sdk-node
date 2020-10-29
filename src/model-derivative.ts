@@ -21,9 +21,100 @@ export interface IDerivativeFormats {
     [outputFormat: string]: string[];
 }
 
-export interface IDerivativeOutputType {
+export type IDerivativeOutputType = IDerivativeOutputTypeSVF
+    | IDerivativeOutputTypeSVF2
+    | IDerivativeOutputTypeSTL
+    | IDerivativeOutputTypeSTEP
+    | IDerivativeOutputTypeIGES
+    | IDerivativeOutputTypeOBJ
+    | IDerivativeOutputTypeDWG
+    | IDerivativeOutputTypeIFC;
+
+export interface IDerivativeOutputTypeSVF {
     type: 'svf',
     views: string[];
+    advanced?: {
+        switchLoader?: boolean;
+        conversionMethod?: string;
+        buildingStoreys?: string;
+        spaces?: string;
+        openingElements?: string;
+        generateMasterViews?: boolean;
+        materialMode?: string;
+        hiddenObjects?: boolean;
+        basicMaterialProperties?: boolean;
+        autodeskMaterialProperties?: boolean;
+        timelinerProperties?: boolean;
+    };
+}
+
+export interface IDerivativeOutputTypeSVF2 {
+    type: 'svf2',
+    views: string[];
+    advanced?: {
+        switchLoader?: boolean;
+        conversionMethod?: string;
+        buildingStoreys?: string;
+        spaces?: string;
+        openingElements?: string;
+        generateMasterViews?: boolean;
+        materialMode?: string;
+        hiddenObjects?: boolean;
+        basicMaterialProperties?: boolean;
+        autodeskMaterialProperties?: boolean;
+        timelinerProperties?: boolean;
+    };
+}
+
+export interface IDerivativeOutputTypeSTL {
+    type: 'stl',
+    advanced?: {
+        format?: string;
+        exportColor?: boolean;
+        exportFileStructure?: string;
+    };
+}
+
+export interface IDerivativeOutputTypeSTEP {
+    type: 'step',
+    advanced?: {
+        applicationProtocol?: string;
+        tolerance?: number;
+    };
+}
+
+export interface IDerivativeOutputTypeIGES {
+    type: 'iges',
+    advanced?: {
+        tolerance?: number;
+        surfaceType?: string;
+        sheetType?: string;
+        solidType?: string;
+    };
+}
+
+export interface IDerivativeOutputTypeOBJ {
+    type: 'obj',
+    advanced?: {
+        exportFileStructure?: string;
+        unit?: string;
+        modelGuid?: string;
+        objectIds?: number[];
+    };
+}
+
+export interface IDerivativeOutputTypeDWG {
+    type: 'dwg',
+    advanced?: {
+        exportSettingName?: string;
+    };
+}
+
+export interface IDerivativeOutputTypeIFC {
+    type: 'ifc',
+    advanced?: {
+        exportSettingName?: string;
+    };
 }
 
 export interface IJob {
@@ -188,15 +279,16 @@ export class ModelDerivativeClient extends ForgeClient {
      * ({@link https://forge.autodesk.com/en/docs/model-derivative/v2/reference/http/job-POST|docs}).
      * @async
      * @param {string} urn Document to be translated.
-     * @param {IDerivativeOutputType[]} outputs List of requested output formats. Currently the one
-     * supported format is `{ type: 'svf', views: ['2d', '3d'] }`.
+     * @param {IDerivativeOutputType[]} outputs List of requested output formats.
      * @param {string} [pathInArchive] Optional relative path to root design if the translated file is an archive.
      * @param {boolean} [force] Force translation even if a derivative already exists.
+     * @param {string} [workflowId] Optional workflow ID to be used with Forge Webhooks.
+     * @param {object} [workflowAttr] Optional workflow attributes to be used with Forge Webhooks.
      * @returns {Promise<IJob>} Translation job details, with properties 'result',
      * 'urn', and 'acceptedJobs'.
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
-    async submitJob(urn: string, outputs: IDerivativeOutputType[], pathInArchive?: string, force?: boolean): Promise<IJob> {
+    async submitJob(urn: string, outputs: IDerivativeOutputType[], pathInArchive?: string, force?: boolean, workflowId?: string, workflowAttr?: object): Promise<IJob> {
         const params: any = {
             input: {
                 urn: urn
@@ -211,6 +303,14 @@ export class ModelDerivativeClient extends ForgeClient {
         if (pathInArchive) {
             params.input.compressedUrn = true;
             params.input.rootFilename = pathInArchive;
+        }
+        if (workflowId) {
+            params.misc = {
+                workflow: workflowId
+            };
+            if (workflowAttr) {
+                params.misc.workflowAttribute = workflowAttr;
+            }
         }
         const headers: { [key: string]: string } = {};
         if (force) {
