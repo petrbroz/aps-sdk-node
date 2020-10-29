@@ -282,11 +282,13 @@ export class ModelDerivativeClient extends ForgeClient {
      * @param {IDerivativeOutputType[]} outputs List of requested output formats.
      * @param {string} [pathInArchive] Optional relative path to root design if the translated file is an archive.
      * @param {boolean} [force] Force translation even if a derivative already exists.
+     * @param {string} [workflowId] Optional workflow ID to be used with Forge Webhooks.
+     * @param {object} [workflowAttr] Optional workflow attributes to be used with Forge Webhooks.
      * @returns {Promise<IJob>} Translation job details, with properties 'result',
      * 'urn', and 'acceptedJobs'.
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
-    async submitJob(urn: string, outputs: IDerivativeOutputType[], pathInArchive?: string, force?: boolean): Promise<IJob> {
+    async submitJob(urn: string, outputs: IDerivativeOutputType[], pathInArchive?: string, force?: boolean, workflowId?: string, workflowAttr?: object): Promise<IJob> {
         const params: any = {
             input: {
                 urn: urn
@@ -301,6 +303,14 @@ export class ModelDerivativeClient extends ForgeClient {
         if (pathInArchive) {
             params.input.compressedUrn = true;
             params.input.rootFilename = pathInArchive;
+        }
+        if (workflowId) {
+            params.misc = {
+                workflow: workflowId
+            };
+            if (workflowAttr) {
+                params.misc.workflowAttribute = workflowAttr;
+            }
         }
         const headers: { [key: string]: string } = {};
         if (force) {
