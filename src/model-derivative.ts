@@ -1,7 +1,8 @@
 import { Readable } from 'stream';
-import { isNullOrUndefined } from 'util';
 
 import { ForgeClient, IAuthOptions, Region } from './common';
+
+const isNullOrUndefined = (value: any) => value === null || value === undefined;
 
 const RootPath = 'modelderivative/v2';
 const ReadTokenScopes = ['data:read'];
