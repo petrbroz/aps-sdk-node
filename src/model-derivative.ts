@@ -1,5 +1,7 @@
-import { ForgeClient, IAuthOptions, Region } from './common';
+import { Readable } from 'stream';
 import { isNullOrUndefined } from 'util';
+
+import { ForgeClient, IAuthOptions, Region } from './common';
 
 const RootPath = 'modelderivative/v2';
 const ReadTokenScopes = ['data:read'];
@@ -366,6 +368,35 @@ export class ModelDerivativeClient extends ForgeClient {
      */
     async getDerivativeStream(modelUrn: string, derivativeUrn: string): Promise<ReadableStream> {
         return this.getStream(this.region === Region.EMEA ? `regions/eu/designdata/${modelUrn}/manifest/${derivativeUrn}` : `designdata/${modelUrn}/manifest/${derivativeUrn}`, {}, ReadTokenScopes);
+    }
+
+    /**
+     * Downloads content of a specific model derivative asset in chunks
+     * ({@link https://forge.autodesk.com/en/docs/model-derivative/v2/reference/http/urn-manifest-derivativeurn-GET/|docs}).
+     * @param {string} modelUrn Model URN.
+     * @param {string} derivativeUrn Derivative URN.
+     * @param {number} [maxChunkSize=1<<24] Maximum size (in bytes) of a single downloaded chunk.
+     * @returns {Readable} Readable stream with the content of the downloaded derivative asset.
+     * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
+     */
+    getDerivativeChunked(modelUrn: string, derivativeUrn: string, maxChunkSize: number = 1 << 24): Readable {
+        const url = this.region === Region.EMEA ? `regions/eu/designdata/${modelUrn}/manifest/${derivativeUrn}` : `designdata/${modelUrn}/manifest/${derivativeUrn}`;
+        const client = this;
+        async function * read() {
+            const config = {};
+            await client.setAuthorization(config, ReadTokenScopes);
+            let resp = await client.axios.head(url, config);
+            const contentLength = parseInt(resp.headers['content-length']);
+            let streamedBytes = 0;
+            while (streamedBytes < contentLength) {
+                const chunkSize = Math.min(maxChunkSize, contentLength - streamedBytes);
+                await client.setAuthorization(config, ReadTokenScopes);
+                const buff = await client.getBuffer(url, { Range: `bytes=${streamedBytes}-${streamedBytes + chunkSize - 1}` }, ReadTokenScopes);
+                yield buff;
+                streamedBytes += chunkSize;
+            }
+        }
+        return Readable.from(read());
     }
 
     /**
