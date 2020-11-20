@@ -7,8 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [8.2.1] - 2020-11-20
+
 ### Added
 - Downloading Model Derivative assets in chunks using the Range header
+
+### Fixed
+- Removed deprecated utility code
+- Upgraded dependency versions
 
 ## [8.2.0] - 2020-10-29
 
