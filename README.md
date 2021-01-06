@@ -1,6 +1,6 @@
 # forge-server-utils
 
-[![build status](https://travis-ci.org/petrbroz/forge-server-utils.svg?branch=master)](https://travis-ci.org/petrbroz/forge-server-utils)
+[![build status](https://travis-ci.com/petrbroz/forge-server-utils.svg?branch=master)](https://travis-ci.com/petrbroz/forge-server-utils)
 [![npm version](https://badge.fury.io/js/forge-server-utils.svg)](https://badge.fury.io/js/forge-server-utils)
 ![node](https://img.shields.io/node/v/forge-server-utils.svg)
 ![npm downloads](https://img.shields.io/npm/dw/forge-server-utils.svg)
