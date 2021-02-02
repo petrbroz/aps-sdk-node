@@ -523,6 +523,26 @@ export class BIM360Client extends ForgeClient {
         return results.map((result: any) => Object.assign(result.attributes, { id: result.id, type: result.type }));
     }
 
+    /**
+     * Returns the folder by ID for any folder within a given project.
+     * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/projects-project_id-folders-folder_id-GET/}).
+     * @param {string} projectId Project ID.
+     * @param {string} folderId Folder ID.
+     * @param {string} [xUserId] Optional API will act on behalf of specified user Id.
+     * @returns {Promise<IFolder>} Folder details.
+     */
+    async getFolder(projectId: string, folderId: string, xUserId ?: string): Promise<IFolder> {
+        const headers: { [key: string]: string } = {};
+        if (!!xUserId) {
+            headers['x-user-id'] = xUserId;
+        }
+        let response = await this.get(`data/v1/projects/${encodeURIComponent(projectId)}/folders/${encodeURIComponent(folderId)}`, headers, ReadTokenScopes);
+        
+        return Object.assign(response.data.attributes, {
+            id: response.data.id
+        });
+    }
+
     // #endregion
 
     // #region Items
