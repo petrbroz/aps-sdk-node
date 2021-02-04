@@ -26,7 +26,7 @@ jobs:
           FORGE_MODEL_URN: ${{secrets.FORGE_MODEL_URN}}
       - run: yarn run docs
 
-  publish-npm:
+  publish:
     needs: build
     runs-on: ubuntu-latest
     steps:
@@ -35,6 +35,9 @@ jobs:
         with:
           node-version: 12
           registry-url: https://registry.npmjs.org/
+      - run: yarn install
+      - run: yarn run build
+      - run: yarn run docs
       - run: yarn publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}

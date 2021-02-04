@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [8.3.1] - 2021-02-04
+
+### Fixed
+- Fixed Github Actions build and NPM publishing
+
 ## [8.3.0] - 2021-02-04
 
 ### Added
