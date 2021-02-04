@@ -11,6 +11,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Method for retrieving info about BIM 360 folders
 - Including parent folder info in BIM 360 items
 
+### Fixed
+- Updated dependencies
+
+### Changed
+- Moved CI/CD to Github Actions
+
 ## [8.2.2] - 2021-01-06
 
 ### Fixed
