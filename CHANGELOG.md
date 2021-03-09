@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [8.3.2] - 2021-03-09
+
+### Fixed
+- Object uploading now allows large files
+
 ## [8.3.1] - 2021-02-04
 
 ### Fixed
