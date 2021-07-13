@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+# Changed
+- Uploading/downloading of OSS objects now uses the new binary transfer endpoints.
+- Resumable upload methods (`uploadObjectResumable`, `uploadObjectStreamResumable`, `getResumableUploadStatus`)
+are now marked as deprecated, and will be removed in the next major release. Use `getUploadUrls` and `completeUpload` instead.
+
 ## [8.4.0] - 2022-07-04
 
 ### Added
