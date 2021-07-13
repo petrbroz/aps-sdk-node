@@ -221,12 +221,15 @@ export class DataManagementClient extends ForgeClient {
         return this._collect(url);
     }
 
-
     /**
      * Generates one or more signed URLs that can be used to upload a file (or its parts) to OSS,
      * and an upload key that is used to generate additional URLs or in {@see completeUpload}
      * after all the parts have been uploaded successfully.
+     *
      * The URLs are valid for 60min.
+     *
+     * Note that if you are uploading in multiple parts, each part except for the final one
+     * must be of size at least 5MB, otherwise the call to {@see completeUpload} will fail.
      *
      * @param {string} bucketKey Bucket key.
      * @param {string} objectKey Object key.
