@@ -27,6 +27,38 @@ export enum DataRetentionPolicy {
     Persistent = 'persistent'
 }
 
+export interface IUploadParams {
+    urls: string[];
+    uploadKey: string;
+}
+
+export enum DownloadStatus {
+    /** Raw uploads or merged resumable uploads. */
+    'complete',
+    /** Unmerged resumable uploads and `public-resource-fallback = false`. */
+    'chunked',
+    /** Unmerged resumable uploads and `public-resource-fallback = true`. */
+    'fallback'
+}
+
+export interface IDownloadParams {
+    /** Indicates status of the object */
+    status: DownloadStatus;
+    /** The S3 signed URL to download from. This attribute is returned when the value
+     * of the status attribute is complete or fallback (in which case the URL will be
+     * an OSS Signed URL instead of an S3 signed URL).
+     */
+    url?: string;
+    /** A map of S3 signed URLs where each key correspond to a specific byte range chunk.
+     * This attribute is returned when the value of the status attribute is chunked.
+     */
+    urls?: { [range: string]: string };
+    /** The values for the updatable params that were used in the creation of the returned
+     * S3 signed URL (`Content-Type`, `Content-Disposition` & `Cache-Control`).
+     */
+    params?: object;
+}
+
 export interface IObject {
     objectKey: string;
     bucketKey: string;
@@ -189,41 +221,99 @@ export class DataManagementClient extends ForgeClient {
         return this._collect(url);
     }
 
+
+    /**
+     * Generates one or more signed URLs that can be used to upload a file (or its parts) to OSS,
+     * and an upload key that is used to generate additional URLs or in {@see completeUpload}
+     * after all the parts have been uploaded successfully.
+     * The URLs are valid for 60min.
+     *
+     * @param {string} bucketKey Bucket key.
+     * @param {string} objectKey Object key.
+     * @param {number} [parts=1] How many URLs to generate in case of multi-part upload.
+     * @param {number} [firstPart=1] Index of the part the first returned URL should point to.
+     * For example, to upload parts 10 through 15 of a file, use `firstPart` = 10 and `parts` = 6.
+     * @param {string} [uploadKey] Optional upload key if this is a continuation of a previously
+     * initiated upload.
+     * @returns {IUploadParams} Signed URLs for uploading chunks of the file to AWS S3 (valid for 60min),
+     * and a unique upload key used to generate additional URLs or to complete the upload.
+     */
+    async getUploadUrls(bucketKey: string, objectKey: string, parts: number = 1, firstPart: number = 1, uploadKey?: string): Promise<IUploadParams> {
+        const headers = { 'Content-Type': 'application/json' };
+        let url = `buckets/${bucketKey}/objects/${encodeURIComponent(objectKey)}/signeds3upload?parts=${parts}&firstPart=${firstPart}`;
+        if (uploadKey) {
+            url += `&uploadKey=${uploadKey}`
+        }
+        return this.get(url, headers, WriteTokenScopes);
+    }
+
+    /**
+     * Finalizes the upload of a file to OSS.
+     * @param {string} bucketKey Bucket key.
+     * @param {string} objectKey Object key.
+     * @param {string} uploadKey Upload key returned by {@see getUploadUrls}.
+     * @param {string} [contentType] Optinal content type that should be recorded for the uploaded file.
+     * @returns {IObject} Details of the uploaded object in OSS.
+     */
+    async completeUpload(bucketKey: string, objectKey: string, uploadKey: string, contentType?: string): Promise<IObject> {
+        const headers: { [header: string]: string } = { 'Content-Type': 'application/json' };
+        if (contentType) {
+            headers['x-ads-meta-Content-Type'] = contentType;
+        }
+        return this.post(`buckets/${bucketKey}/objects/${encodeURIComponent(objectKey)}/signeds3upload`, { uploadKey }, headers, WriteTokenScopes);
+    }
+
+    /**
+     * Generates one or more signed URLs that can be used to download a file (or its parts) to OSS.
+     * @param bucketKey Bucket key.
+     * @param objectKey Object key.
+     * @returns {IDownloadParams} Download URLs and potentially other helpful information.
+     */
+    async getDownloadUrls(bucketKey: string, objectKey: string): Promise<IDownloadParams> {
+        const headers: { [header: string]: string } = { 'Content-Type': 'application/json' };
+        return this.get(`buckets/${bucketKey}/objects/${encodeURIComponent(objectKey)}/signeds3download`, headers, ReadTokenScopes);
+    }
+
     /**
      * Uploads content to a specific bucket object
      * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/buckets-:bucketKey-objects-:objectName-PUT|docs}).
      * @async
-     * @param {string} bucket Bucket key.
-     * @param {string} name Name of uploaded object.
+     * @param {string} bucketKey Bucket key.
+     * @param {string} objectKey Name of uploaded object.
      * @param {string} contentType Type of content to be used in HTTP headers, for example, "application/json".
      * @param {Buffer} data Object content.
      * @returns {Promise<IObject>} Object description containing 'bucketKey', 'objectKey', 'objectId',
      * 'sha1', 'size', 'location', and 'contentType'.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async uploadObject(bucket: string, name: string, contentType: string, data: Buffer): Promise<IObject> {
-        const headers = { 'Content-Type': contentType };
-        return this.put(`buckets/${bucket}/objects/${encodeURIComponent(name)}`, data, headers, WriteTokenScopes);
+    async uploadObject(bucketKey: string, objectKey: string, contentType: string, data: Buffer): Promise<IObject> {
+        const uploadParams = await this.getUploadUrls(bucketKey, objectKey);
+        await this.axios.put(uploadParams.urls[0], data);
+        return this.completeUpload(bucketKey, objectKey, uploadParams.uploadKey, contentType);
     }
 
     /**
      * Uploads content stream to a specific bucket object
      * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/buckets-:bucketKey-objects-:objectName-PUT|docs}).
      * @async
-     * @param {string} bucket Bucket key.
-     * @param {string} name Name of uploaded object.
+     * @param {string} bucketKey Bucket key.
+     * @param {string} objectKey Name of uploaded object.
      * @param {string} contentType Type of content to be used in HTTP headers, for example, "application/json".
      * @param {ReadableStream} stream Object content stream.
      * @returns {Promise<IObject>} Object description containing 'bucketKey', 'objectKey', 'objectId',
      * 'sha1', 'size', 'location', and 'contentType'.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async uploadObjectStream(bucket: string, name: string, contentType: string, stream: ReadableStream): Promise<IObject> {
-        const headers = { 'Content-Type': contentType };
-        return this.put(`buckets/${bucket}/objects/${encodeURIComponent(name)}`, stream, headers, WriteTokenScopes);
+    async uploadObjectStream(bucketKey: string, objectKey: string, contentType: string, stream: ReadableStream): Promise<IObject> {
+        const uploadParams = await this.getUploadUrls(bucketKey, objectKey);
+        await this.axios.put(uploadParams.urls[0], stream);
+        return this.completeUpload(bucketKey, objectKey, uploadParams.uploadKey, contentType);
     }
 
     /**
+     * @deprecated This method of resumable upload is now deprecated and will be removed in future versions.
+     * Use {@see getUploadUrls} and {@see completeUpload} instead.
+     *
      * Uploads content to a specific bucket object using the resumable capabilities
      * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/buckets-:bucketKey-objects-:objectName-resumable-PUT|docs}).
      * @async
@@ -237,6 +327,7 @@ export class DataManagementClient extends ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async uploadObjectResumable(bucketKey: string, objectName: string, data: Buffer, byteOffset: number, totalBytes: number, sessionId: string, contentType: string = 'application/stream') {
+        console.warn('This method of resumable upload is now deprecated and will be removed in future versions.');
         const headers = {
             'Authorization': '',
             'Content-Type': contentType,
@@ -248,6 +339,9 @@ export class DataManagementClient extends ForgeClient {
     }
 
     /**
+     * @deprecated This method of resumable upload is now deprecated and will be removed in future versions.
+     * Use {@see getUploadUrls} and {@see completeUpload} instead.
+     *
      * Uploads content stream to a specific bucket object using the resumable capabilities
      * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/buckets-:bucketKey-objects-:objectName-resumable-PUT|docs}).
      * @async
@@ -262,6 +356,7 @@ export class DataManagementClient extends ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async uploadObjectStreamResumable(bucketKey: string, objectName: string, stream: ReadableStream, chunkBytes: number, byteOffset: number, totalBytes: number, sessionId: string, contentType: string = 'application/stream') {
+        console.warn('This method of resumable upload is now deprecated and will be removed in future versions.');
         const headers = {
             'Authorization': '',
             'Content-Type': contentType,
@@ -273,6 +368,9 @@ export class DataManagementClient extends ForgeClient {
     }
 
     /**
+     * @deprecated This method of resumable upload is now deprecated and will be removed in future versions.
+     * Use {@see getUploadUrls} and {@see completeUpload} instead.
+     *
      * Gets status of a resumable upload session
      * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/buckets-:bucketKey-objects-:objectName-status-:sessionId-GET|docs}).
      * @async
@@ -284,6 +382,7 @@ export class DataManagementClient extends ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async getResumableUploadStatus(bucketKey: string, objectName: string, sessionId: string): Promise<IResumableUploadRange[]> {
+        console.warn('This method of resumable upload is now deprecated and will be removed in future versions.');
         const config: AxiosRequestConfig = {
             method: 'GET',
             url: `buckets/${bucketKey}/objects/${encodeURIComponent(objectName)}/status/${sessionId}`,
@@ -310,32 +409,36 @@ export class DataManagementClient extends ForgeClient {
      * Downloads content of a specific bucket object
      * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/buckets-:bucketKey-objects-:objectName-GET|docs}).
      * @async
-     * @param {string} bucket Bucket key.
-     * @param {string} object Object name.
+     * @param {string} bucketKey Bucket key.
+     * @param {string} objectKey Object key.
      * @returns {Promise<ArrayBuffer>} Object content.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      * @example
      * const buff = await dataManagementClient.downloadObject(bucketKey, objectKey);
      * fs.writeFileSync(filepath, Buffer.from(buff), { encoding: 'binary' });
      */
-    async downloadObject(bucket: string, object: string): Promise<ArrayBuffer> {
-        return this.getBuffer(`buckets/${bucket}/objects/${encodeURIComponent(object)}`, {}, ReadTokenScopes);
+    async downloadObject(bucketKey: string, objectKey: string): Promise<ArrayBuffer> {
+        const downloadParams = await this.getDownloadUrls(bucketKey, objectKey);
+        const resp = await this.axios.get(downloadParams.url as string, { responseType: 'arraybuffer' });
+        return resp.data;
     }
 
     /**
      * Downloads content stream of a specific bucket object
      * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/buckets-:bucketKey-objects-:objectName-GET|docs}).
      * @async
-     * @param {string} bucket Bucket key.
-     * @param {string} object Object name.
+     * @param {string} bucketKey Bucket key.
+     * @param {string} objectKey Object name.
      * @returns {Promise<ReadableStream>} Object content stream.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      * @example
      * const stream = await dataManagementClient.downloadObjectStream(bucketKey, objectKey);
      * stream.pipe(fs.createWriteStream(filepath));
      */
-    async downloadObjectStream(bucket: string, object: string): Promise<ReadableStream> {
-        return this.getStream(`buckets/${bucket}/objects/${encodeURIComponent(object)}`, {}, ReadTokenScopes);
+    async downloadObjectStream(bucketKey: string, objectKey: string): Promise<ReadableStream> {
+        const downloadParams = await this.getDownloadUrls(bucketKey, objectKey);
+        const resp = await this.axios.get(downloadParams.url as string, { responseType: 'stream' });
+        return resp.data;
     }
 
     /**
