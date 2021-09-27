@@ -72,7 +72,7 @@ export class DataManagementClient extends ForgeClient {
         while (response.next) {
             const next = new URL(response.next);
             const startAt = next.searchParams.get('startAt') || '';
-            response = await this.get(`${endpoint}${endpoint.indexOf('?') === -1 ? '?' : '&'}startAt=${startAt}&limit=${limit}`, {}, ReadTokenScopes);
+            response = await this.get(`${endpoint}${endpoint.indexOf('?') === -1 ? '?' : '&'}startAt=${encodeURIComponent(startAt)}&limit=${limit}`, {}, ReadTokenScopes);
             yield response.items;
         }
     }
@@ -85,7 +85,7 @@ export class DataManagementClient extends ForgeClient {
         while (response.next) {
             const next = new URL(response.next);
             const startAt = next.searchParams.get('startAt') || '';
-            response = await this.get(`${endpoint}${endpoint.indexOf('?') === -1 ? '?' : '&'}startAt=${startAt}`, {}, ReadTokenScopes);
+            response = await this.get(`${endpoint}${endpoint.indexOf('?') === -1 ? '?' : '&'}startAt=${encodeURIComponent(startAt)}`, {}, ReadTokenScopes);
             results = results.concat(response.items);
         }
         return results;
