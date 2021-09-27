@@ -5,3 +5,4 @@ export * from './bim360';
 export * from './design-automation';
 export * from './webhooks';
 export * from './reality-capture';
+export { ForgeClient } from './common';
