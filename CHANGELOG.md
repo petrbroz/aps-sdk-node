@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [8.3.4] - 2021-11-01
+
+### Added
+- Support for specifying `receiver` of DA app bundle and activity aliases
+
 ## [8.3.3] - 2021-09-27
 
 ### Added
