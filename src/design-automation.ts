@@ -47,6 +47,7 @@ export interface IAppBundleUploadParams extends IAppBundleCommon {
 export interface IAlias {
     id: string;
     version: number;
+    receiver?: string;
 }
 
 export interface ICodeOnEngineStringSetting {
@@ -407,7 +408,7 @@ export class DesignAutomationClient extends ForgeClient {
                 if (err) {
                     reject(err);
                 } else {
-                    resolve();
+                    resolve({});
                 }
             });
         });
@@ -474,12 +475,16 @@ export class DesignAutomationClient extends ForgeClient {
      * @param {string} name Name of the app bundle.
      * @param {string} alias Alias name.
      * @param {number} version Version of app bundle to link to this alias.
+     * @param {string} [receiver] Optional ID of another Forge application to share this app bundle with.
      * @returns {Promise<IAlias>} Details of the created alias.
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
-    async createAppBundleAlias(name: string, alias: string, version: number): Promise<IAlias> {
+    async createAppBundleAlias(name: string, alias: string, version: number, receiver?: string): Promise<IAlias> {
         // TODO: tests
-        const config = { id: alias, version: version };
+        const config: { id: string; version: number; receiver?: string; } = { id: alias, version: version };
+        if (receiver) {
+            config.receiver = receiver;
+        }
         return this.post(`appbundles/${name}/aliases`, config, {}, CodeScopes);
     }
 
@@ -490,12 +495,16 @@ export class DesignAutomationClient extends ForgeClient {
      * @param {string} name Name of the app bundle.
      * @param {string} alias Alias name.
      * @param {number} version Version of app bundle to link to this alias.
+     * @param {string} [receiver] Optional ID of another Forge application to share this app bundle with.
      * @returns {Promise<IAlias>} Details of the updated alias.
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
-    async updateAppBundleAlias(name: string, alias: string, version: number): Promise<IAlias> {
+    async updateAppBundleAlias(name: string, alias: string, version: number, receiver?: string): Promise<IAlias> {
         // TODO: tests
-        const config = { version: version };
+        const config: { version: number; receiver?: string; } = { version: version };
+        if (receiver) {
+            config.receiver = receiver;
+        }
         return this.patch(`appbundles/${name}/aliases/${alias}`, config, {}, CodeScopes);
     }
 
@@ -595,7 +604,9 @@ export class DesignAutomationClient extends ForgeClient {
      * @returns {Promise<IActivityDetail>} Details of created activity.
      */
     async createActivity(id: string, engine: string, commands: string | string[], appBundleIDs?: string | string[],
-            parameters?: { [key: string]: IActivityParam }, settings?: { [key: string]: (ICodeOnEngineStringSetting | ICodeOnEngineUrlSetting) }, description?: string): Promise<IActivityDetail> {
+        parameters?: { [key: string]: IActivityParam },
+        settings?: { [key: string]: (ICodeOnEngineStringSetting | ICodeOnEngineUrlSetting) },
+        description?: string): Promise<IActivityDetail> {
         // TODO: tests
         if (!this.auth) {
             throw new Error('Cannot create activity without client ID.');
@@ -719,11 +730,15 @@ export class DesignAutomationClient extends ForgeClient {
      * @param {string} id Activity ID.
      * @param {string} alias New alias name.
      * @param {number} version Activity version to link to this alias.
+     * @param {string} [receiver] Optional ID of another Forge application to share this activity with.
      * @returns {Promise<IAlias>} Details of created alias.
      */
-    async createActivityAlias(id: string, alias: string, version: number): Promise<IAlias> {
+    async createActivityAlias(id: string, alias: string, version: number, receiver?: string): Promise<IAlias> {
         // TODO: tests
-        const config = { id: alias, version: version };
+        const config: { id: string; version: number; receiver?: string; } = { id: alias, version: version };
+        if (receiver) {
+            config.receiver = receiver;
+        }
         return this.post(`activities/${id}/aliases`, config, {}, CodeScopes);
     }
 
@@ -734,11 +749,15 @@ export class DesignAutomationClient extends ForgeClient {
      * @param {string} id Activity ID.
      * @param {string} alias Activity alias.
      * @param {number} version Activity version to link to this alias.
+     * @param {string} [receiver] Optional ID of another Forge application to share this activity with.
      * @returns {Promise<IAlias>} Details of updated alias.
      */
-    async updateActivityAlias(id: string, alias: string, version: number): Promise<IAlias> {
+    async updateActivityAlias(id: string, alias: string, version: number, receiver?: string): Promise<IAlias> {
         // TODO: tests
-        const config = { version: version };
+        const config: { version: number; receiver?: string; } = { version: version };
+        if (receiver) {
+            config.receiver = receiver;
+        }
         return this.patch(`activities/${id}/aliases/${alias}`, config, {}, CodeScopes);
     }
 
