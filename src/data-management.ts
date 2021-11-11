@@ -74,6 +74,18 @@ export interface ISignedUrl {
     singleUse: boolean;
 }
 
+export interface IUploadOptions {
+    contentType?: string;
+    progress?: (bytesUploaded: number, totalBytes?: number) => void;
+    //cancel?: () => boolean;
+}
+
+export interface IDownloadOptions {
+    contentType?: string;
+    progress?: (bytesDownloaded: number, totalBytes?: number) => void;
+    //cancel?: () => boolean;
+}
+
 async function sleep(ms: number): Promise<void> {
     return new Promise(function (resolve, reject) {
         setTimeout(resolve, ms);
@@ -273,18 +285,19 @@ export class DataManagementClient extends ForgeClient {
      * @param {string} bucketKey Bucket key.
      * @param {string} objectKey Name of uploaded object.
      * @param {Buffer} data Object content.
-     * @param {string} [contentType] Type of content to be used in HTTP headers, for example, "application/json".
+     * @param {IUploadOptions} [options] Additional upload options.
      * @returns {Promise<IObject>} Object description containing 'bucketKey', 'objectKey', 'objectId',
      * 'sha1', 'size', 'location', and 'contentType'.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async uploadObject(bucketKey: string, objectKey: string, data: Buffer, contentType?: string): Promise<IObject> {
+    async uploadObject(bucketKey: string, objectKey: string, data: Buffer, options?: IUploadOptions): Promise<IObject> {
         console.assert(data.byteLength > 0);
         const ChunkSize = 5 << 20;
         const MaxBatches = 25;
         const MaxRetries = 5;
         const totalParts = Math.ceil(data.byteLength / ChunkSize);
         let partsUploaded = 0;
+        let bytesUploaded = 0;
         let uploadUrls: string[] = [];
         let uploadKey: string | undefined;
         while (partsUploaded < totalParts) {
@@ -319,9 +332,13 @@ export class DataManagementClient extends ForgeClient {
             }
             console.debug('Part successfully uploaded', partsUploaded + 1);
             partsUploaded++;
+            bytesUploaded += chunk.byteLength;
+            if (options?.progress) {
+                options.progress(bytesUploaded, data.byteLength);
+            }
         }
         console.debug('Completing part upload');
-        return this.completeUpload(bucketKey, objectKey, uploadKey as string, contentType);
+        return this.completeUpload(bucketKey, objectKey, uploadKey as string, options?.contentType);
     }
 
     /**
@@ -330,15 +347,16 @@ export class DataManagementClient extends ForgeClient {
      * @param {string} bucketKey Bucket key.
      * @param {string} objectKey Name of uploaded object.
      * @param {AsyncIterable<Buffer>} stream Asynchronous iterable buffer stream. Note that each chunk read from the stream must be at least 5MB in size.
-     * @param {string} [contentType] Type of content to be used in HTTP headers, for example, "application/json".
+     * @param {IUploadOptions} [options] Additional upload options.
      * @returns {Promise<IObject>} Object description containing 'bucketKey', 'objectKey', 'objectId',
      * 'sha1', 'size', 'location', and 'contentType'.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async uploadObjectStream(bucketKey: string, objectKey: string, stream: AsyncIterable<Buffer>, contentType?: string): Promise<IObject> {
+    async uploadObjectStream(bucketKey: string, objectKey: string, stream: AsyncIterable<Buffer>, options?: IUploadOptions): Promise<IObject> {
         const MaxBatches = 25;
         const MaxRetries = 5;
         let partsUploaded = 0;
+        let bytesUploaded = 0;
         let uploadUrls: string[] = [];
         let uploadKey: string | undefined;
         for await (const chunk of stream) {
@@ -372,9 +390,13 @@ export class DataManagementClient extends ForgeClient {
             }
             console.debug('Part successfully uploaded', partsUploaded + 1);
             partsUploaded++;
+            bytesUploaded += chunk.byteLength;
+            if (options?.progress) {
+                options.progress(bytesUploaded, undefined);
+            }
         }
         console.debug('Completing part upload');
-        return this.completeUpload(bucketKey, objectKey, uploadKey as string, contentType);
+        return this.completeUpload(bucketKey, objectKey, uploadKey as string, options?.contentType);
     }
 
     /**
@@ -393,10 +415,11 @@ export class DataManagementClient extends ForgeClient {
      * @async
      * @param {string} bucketKey Bucket key.
      * @param {string} objectKey Object key.
+     * @param {IDownloadOptions} [options] Additional download options.
      * @returns {Promise<ArrayBuffer>} Object content.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async downloadObject(bucketKey: string, objectKey: string): Promise<ArrayBuffer> {
+    async downloadObject(bucketKey: string, objectKey: string, options?: IDownloadOptions): Promise<ArrayBuffer> {
         const MaxRetries = 5;
         console.debug('Retrieving download URL');
         const downloadParams = await this.getDownloadUrl(bucketKey, objectKey);
@@ -409,7 +432,15 @@ export class DataManagementClient extends ForgeClient {
             console.debug('Downloading', downloadParams.url, 'attempt', attempts);
             try {
                 const resp = await this.axios.get(downloadParams.url as string, {
-                    responseType: 'arraybuffer'
+                    responseType: 'arraybuffer',
+                    onDownloadProgress: progressEvent => {
+                        const downloadedBytes = progressEvent.currentTarget.response.length;
+                        const totalBytes = parseInt(progressEvent.currentTarget.responseHeaders['Content-Length']);
+                        console.debug('Downloaded', downloadedBytes, 'bytes of', totalBytes);
+                        if (options?.progress) {
+                            options.progress(downloadedBytes, totalBytes);
+                        }
+                    }
                 });
                 return resp.data;
             } catch (err) {
@@ -430,10 +461,11 @@ export class DataManagementClient extends ForgeClient {
      * @async
      * @param {string} bucketKey Bucket key.
      * @param {string} objectKey Object name.
+     * @param {IDownloadOptions} [options] Additional download options.
      * @returns {Promise<ReadableStream>} Object content stream.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async downloadObjectStream(bucketKey: string, objectKey: string): Promise<ReadableStream> {
+    async downloadObjectStream(bucketKey: string, objectKey: string, options?: IDownloadOptions): Promise<ReadableStream> {
         const MaxRetries = 5;
         console.debug('Retrieving download URL');
         const downloadParams = await this.getDownloadUrl(bucketKey, objectKey);
@@ -446,7 +478,15 @@ export class DataManagementClient extends ForgeClient {
             console.debug('Downloading', downloadParams.url, 'attempt', attempts);
             try {
                 const resp = await this.axios.get(downloadParams.url as string, {
-                    responseType: 'stream'
+                    responseType: 'stream',
+                    onDownloadProgress: progressEvent => {
+                        const downloadedBytes = progressEvent.currentTarget.response.length;
+                        const totalBytes = parseInt(progressEvent.currentTarget.responseHeaders['Content-Length']);
+                        console.debug('Downloaded', downloadedBytes, 'bytes of', totalBytes);
+                        if (options?.progress) {
+                            options.progress(downloadedBytes, totalBytes);
+                        }
+                    }
                 });
                 return resp.data;
             } catch (err) {
