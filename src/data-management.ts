@@ -1,5 +1,5 @@
 import { ForgeClient, IAuthOptions, Region } from './common';
-import { AxiosRequestConfig } from 'axios';
+import { AxiosError, AxiosRequestConfig } from 'axios';
 
 const RootPath = 'oss/v2';
 const ReadTokenScopes = ['bucket:read', 'data:read'];
@@ -32,18 +32,9 @@ export interface IUploadParams {
     uploadKey: string;
 }
 
-export enum DownloadStatus {
-    /** Raw uploads or merged resumable uploads. */
-    'complete',
-    /** Unmerged resumable uploads and `public-resource-fallback = false`. */
-    'chunked',
-    /** Unmerged resumable uploads and `public-resource-fallback = true`. */
-    'fallback'
-}
-
 export interface IDownloadParams {
     /** Indicates status of the object */
-    status: DownloadStatus;
+    status: 'complete' | 'chunked' | 'fallback';
     /** The S3 signed URL to download from. This attribute is returned when the value
      * of the status attribute is complete or fallback (in which case the URL will be
      * an OSS Signed URL instead of an S3 signed URL).
@@ -57,6 +48,10 @@ export interface IDownloadParams {
      * S3 signed URL (`Content-Type`, `Content-Disposition` & `Cache-Control`).
      */
     params?: object;
+    /** The object size in bytes. */
+    size?: number;
+    /** The calculated SHA-1 hash of the object, if available. */
+    sha1?: string;
 }
 
 export interface IObject {
@@ -77,6 +72,12 @@ export interface ISignedUrl {
     signedUrl: string;
     expiration: number;
     singleUse: boolean;
+}
+
+async function sleep(ms: number): Promise<void> {
+    return new Promise(function (resolve, reject) {
+        setTimeout(resolve, ms);
+    });
 }
 
 /**
@@ -267,50 +268,198 @@ export class DataManagementClient extends ForgeClient {
     }
 
     /**
-     * Generates one or more signed URLs that can be used to download a file (or its parts) to OSS.
+     * Uploads content to a specific bucket object.
+     * @async
+     * @param {string} bucketKey Bucket key.
+     * @param {string} objectKey Name of uploaded object.
+     * @param {Buffer} data Object content.
+     * @param {string} [contentType] Type of content to be used in HTTP headers, for example, "application/json".
+     * @returns {Promise<IObject>} Object description containing 'bucketKey', 'objectKey', 'objectId',
+     * 'sha1', 'size', 'location', and 'contentType'.
+     * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
+     */
+    async uploadObject(bucketKey: string, objectKey: string, data: Buffer, contentType?: string): Promise<IObject> {
+        console.assert(data.byteLength > 0);
+        const ChunkSize = 5 << 20;
+        const MaxBatches = 25;
+        const MaxRetries = 5;
+        const totalParts = Math.ceil(data.byteLength / ChunkSize);
+        let partsUploaded = 0;
+        let uploadUrls: string[] = [];
+        let uploadKey: string | undefined;
+        while (partsUploaded < totalParts) {
+            const chunk = data.slice(partsUploaded * ChunkSize, Math.min((partsUploaded + 1) * ChunkSize, data.byteLength));
+            let attempts = 0;
+            while (true) {
+                attempts++;
+                console.debug('Uploading part', partsUploaded + 1, 'attempt', attempts);
+                if (uploadUrls.length === 0) {
+                    const uploadParams = await this.getUploadUrls(bucketKey, objectKey, Math.min(totalParts - partsUploaded, MaxBatches), partsUploaded + 1, uploadKey);
+                    uploadUrls = uploadParams.urls.slice();
+                    uploadKey = uploadParams.uploadKey;
+                }
+                const url = uploadUrls.shift() as string;
+                try {
+                    await this.axios.put(url, chunk);
+                    break;
+                } catch (err) {
+                    const status = (err as AxiosError).response?.status as number;
+                    if (status === 403) {
+                        console.debug('Got 403, refreshing upload URLs');
+                        uploadUrls = [];
+                        attempts = 0; // Couldn't this cause an infinite loop? (i.e., could the server keep responding with 403 indefinitely?)
+                    } else if (status >= 500 && status <= 599 && attempts < MaxRetries) {
+                        const delay = Math.pow(2, attempts);
+                        console.debug('Retrying in', delay, 'seconds after error', err);
+                        await sleep(delay * 1000);
+                    } else {
+                        throw err;
+                    }
+                }
+            }
+            console.debug('Part successfully uploaded', partsUploaded + 1);
+            partsUploaded++;
+        }
+        console.debug('Completing part upload');
+        return this.completeUpload(bucketKey, objectKey, uploadKey as string, contentType);
+    }
+
+    /**
+     * Uploads content stream to a specific bucket object.
+     * @async
+     * @param {string} bucketKey Bucket key.
+     * @param {string} objectKey Name of uploaded object.
+     * @param {AsyncIterable<Buffer>} stream Asynchronous iterable buffer stream. Note that each chunk read from the stream must be at least 5MB in size.
+     * @param {string} [contentType] Type of content to be used in HTTP headers, for example, "application/json".
+     * @returns {Promise<IObject>} Object description containing 'bucketKey', 'objectKey', 'objectId',
+     * 'sha1', 'size', 'location', and 'contentType'.
+     * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
+     */
+    async uploadObjectStream(bucketKey: string, objectKey: string, stream: AsyncIterable<Buffer>, contentType?: string): Promise<IObject> {
+        const MaxBatches = 25;
+        const MaxRetries = 5;
+        let partsUploaded = 0;
+        let uploadUrls: string[] = [];
+        let uploadKey: string | undefined;
+        for await (const chunk of stream) {
+            let attempts = 0;
+            while (true) {
+                attempts++;
+                console.debug('Uploading part', partsUploaded + 1, 'attempt', attempts);
+                if (uploadUrls.length === 0) {
+                    const uploadParams = await this.getUploadUrls(bucketKey, objectKey, MaxBatches, partsUploaded + 1, uploadKey);
+                    uploadUrls = uploadParams.urls.slice();
+                    uploadKey = uploadParams.uploadKey;
+                }
+                const url = uploadUrls.shift() as string;
+                try {
+                    await this.axios.put(url, chunk);
+                    break;
+                } catch (err) {
+                    const status = (err as AxiosError).response?.status as number;
+                    if (status === 403) {
+                        console.debug('Got 403, refreshing upload URLs');
+                        uploadUrls = [];
+                        attempts = 0; // Couldn't this cause an infinite loop? (i.e., could the server keep responding with 403 indefinitely?
+                    } else if (status >= 500 && status <= 599 && attempts < MaxRetries) {
+                        const delay = Math.pow(2, attempts);
+                        console.debug('Retrying in', delay, 'seconds after error', err);
+                        await sleep(delay * 1000);
+                    } else {
+                        throw err;
+                    }
+                }
+            }
+            console.debug('Part successfully uploaded', partsUploaded + 1);
+            partsUploaded++;
+        }
+        console.debug('Completing part upload');
+        return this.completeUpload(bucketKey, objectKey, uploadKey as string, contentType);
+    }
+
+    /**
+     * Generates a signed URL that can be used to download a file from OSS.
      * @param bucketKey Bucket key.
      * @param objectKey Object key.
      * @returns {IDownloadParams} Download URLs and potentially other helpful information.
      */
-    async getDownloadUrls(bucketKey: string, objectKey: string): Promise<IDownloadParams> {
+    async getDownloadUrl(bucketKey: string, objectKey: string, useCdn: boolean = true): Promise<IDownloadParams> {
         const headers: { [header: string]: string } = { 'Content-Type': 'application/json' };
-        return this.get(`buckets/${bucketKey}/objects/${encodeURIComponent(objectKey)}/signeds3download`, headers, ReadTokenScopes);
+        return this.get(`buckets/${bucketKey}/objects/${encodeURIComponent(objectKey)}/signeds3download?useCdn=${useCdn}`, headers, ReadTokenScopes);
     }
 
     /**
-     * Uploads content to a specific bucket object
-     * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/buckets-:bucketKey-objects-:objectName-PUT|docs}).
+     * Downloads a specific OSS object.
      * @async
      * @param {string} bucketKey Bucket key.
-     * @param {string} objectKey Name of uploaded object.
-     * @param {string} contentType Type of content to be used in HTTP headers, for example, "application/json".
-     * @param {Buffer} data Object content.
-     * @returns {Promise<IObject>} Object description containing 'bucketKey', 'objectKey', 'objectId',
-     * 'sha1', 'size', 'location', and 'contentType'.
+     * @param {string} objectKey Object key.
+     * @returns {Promise<ArrayBuffer>} Object content.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async uploadObject(bucketKey: string, objectKey: string, contentType: string, data: Buffer): Promise<IObject> {
-        const uploadParams = await this.getUploadUrls(bucketKey, objectKey);
-        await this.axios.put(uploadParams.urls[0], data);
-        return this.completeUpload(bucketKey, objectKey, uploadParams.uploadKey, contentType);
+    async downloadObject(bucketKey: string, objectKey: string): Promise<ArrayBuffer> {
+        const MaxRetries = 5;
+        console.debug('Retrieving download URL');
+        const downloadParams = await this.getDownloadUrl(bucketKey, objectKey);
+        if (downloadParams.status !== 'complete') {
+            throw new Error('File not available for download yet.');
+        }
+        let attempts = 0;
+        while (true) {
+            attempts++;
+            console.debug('Downloading', downloadParams.url, 'attempt', attempts);
+            try {
+                const resp = await this.axios.get(downloadParams.url as string, {
+                    responseType: 'arraybuffer'
+                });
+                return resp.data;
+            } catch (err) {
+                const status = (err as AxiosError).response?.status as number;
+                if (status >= 500 && status <= 599 && attempts < MaxRetries) {
+                    const delay = Math.pow(2, attempts);
+                    console.debug('Retrying in', delay, 'seconds after error', err);
+                    await sleep(delay * 1000);
+                } else {
+                    throw err;
+                }
+            }
+        }
     }
 
     /**
-     * Uploads content stream to a specific bucket object
-     * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/buckets-:bucketKey-objects-:objectName-PUT|docs}).
+     * Downloads content stream of a specific bucket object.
      * @async
      * @param {string} bucketKey Bucket key.
-     * @param {string} objectKey Name of uploaded object.
-     * @param {string} contentType Type of content to be used in HTTP headers, for example, "application/json".
-     * @param {ReadableStream} stream Object content stream.
-     * @returns {Promise<IObject>} Object description containing 'bucketKey', 'objectKey', 'objectId',
-     * 'sha1', 'size', 'location', and 'contentType'.
+     * @param {string} objectKey Object name.
+     * @returns {Promise<ReadableStream>} Object content stream.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async uploadObjectStream(bucketKey: string, objectKey: string, contentType: string, stream: ReadableStream): Promise<IObject> {
-        const uploadParams = await this.getUploadUrls(bucketKey, objectKey);
-        await this.axios.put(uploadParams.urls[0], stream);
-        return this.completeUpload(bucketKey, objectKey, uploadParams.uploadKey, contentType);
+    async downloadObjectStream(bucketKey: string, objectKey: string): Promise<ReadableStream> {
+        const MaxRetries = 5;
+        console.debug('Retrieving download URL');
+        const downloadParams = await this.getDownloadUrl(bucketKey, objectKey);
+        if (downloadParams.status !== 'complete') {
+            throw new Error('File not available for download yet.');
+        }
+        let attempts = 0;
+        while (true) {
+            attempts++;
+            console.debug('Downloading', downloadParams.url, 'attempt', attempts);
+            try {
+                const resp = await this.axios.get(downloadParams.url as string, {
+                    responseType: 'stream'
+                });
+                return resp.data;
+            } catch (err) {
+                const status = (err as AxiosError).response?.status as number;
+                if (status >= 500 && status <= 599 && attempts < MaxRetries) {
+                    const delay = Math.pow(2, attempts);
+                    console.debug('Retrying in', delay, 'seconds after error', err);
+                    await sleep(delay * 1000);
+                } else {
+                    throw err;
+                }
+            }
+        }
     }
 
     /**
@@ -330,7 +479,7 @@ export class DataManagementClient extends ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async uploadObjectResumable(bucketKey: string, objectName: string, data: Buffer, byteOffset: number, totalBytes: number, sessionId: string, contentType: string = 'application/stream') {
-        console.warn('This method of resumable upload is now deprecated and will be removed in future versions.');
+        console.warn('This method is deprecated and will be removed in future versions.');
         const headers = {
             'Authorization': '',
             'Content-Type': contentType,
@@ -359,7 +508,7 @@ export class DataManagementClient extends ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async uploadObjectStreamResumable(bucketKey: string, objectName: string, stream: ReadableStream, chunkBytes: number, byteOffset: number, totalBytes: number, sessionId: string, contentType: string = 'application/stream') {
-        console.warn('This method of resumable upload is now deprecated and will be removed in future versions.');
+        console.warn('This method is deprecated and will be removed in future versions.');
         const headers = {
             'Authorization': '',
             'Content-Type': contentType,
@@ -385,7 +534,7 @@ export class DataManagementClient extends ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async getResumableUploadStatus(bucketKey: string, objectName: string, sessionId: string): Promise<IResumableUploadRange[]> {
-        console.warn('This method of resumable upload is now deprecated and will be removed in future versions.');
+        console.warn('This method is deprecated and will be removed in future versions.');
         const config: AxiosRequestConfig = {
             method: 'GET',
             url: `buckets/${bucketKey}/objects/${encodeURIComponent(objectName)}/status/${sessionId}`,
@@ -406,42 +555,6 @@ export class DataManagementClient extends ForgeClient {
         } else {
             throw new Error('Unexpected range format: ' + ranges);
         }
-    }
-
-    /**
-     * Downloads content of a specific bucket object
-     * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/buckets-:bucketKey-objects-:objectName-GET|docs}).
-     * @async
-     * @param {string} bucketKey Bucket key.
-     * @param {string} objectKey Object key.
-     * @returns {Promise<ArrayBuffer>} Object content.
-     * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
-     * @example
-     * const buff = await dataManagementClient.downloadObject(bucketKey, objectKey);
-     * fs.writeFileSync(filepath, Buffer.from(buff), { encoding: 'binary' });
-     */
-    async downloadObject(bucketKey: string, objectKey: string): Promise<ArrayBuffer> {
-        const downloadParams = await this.getDownloadUrls(bucketKey, objectKey);
-        const resp = await this.axios.get(downloadParams.url as string, { responseType: 'arraybuffer' });
-        return resp.data;
-    }
-
-    /**
-     * Downloads content stream of a specific bucket object
-     * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/buckets-:bucketKey-objects-:objectName-GET|docs}).
-     * @async
-     * @param {string} bucketKey Bucket key.
-     * @param {string} objectKey Object name.
-     * @returns {Promise<ReadableStream>} Object content stream.
-     * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
-     * @example
-     * const stream = await dataManagementClient.downloadObjectStream(bucketKey, objectKey);
-     * stream.pipe(fs.createWriteStream(filepath));
-     */
-    async downloadObjectStream(bucketKey: string, objectKey: string): Promise<ReadableStream> {
-        const downloadParams = await this.getDownloadUrls(bucketKey, objectKey);
-        const resp = await this.axios.get(downloadParams.url as string, { responseType: 'stream' });
-        return resp.data;
     }
 
     /**
@@ -484,6 +597,7 @@ export class DataManagementClient extends ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
     async createSignedUrl(bucketId: string, objectId: string, access = 'readwrite'): Promise<ISignedUrl> {
+        console.warn('This method is deprecated and will be removed in future versions.');
         return this.post(`buckets/${bucketId}/objects/${encodeURIComponent(objectId)}/signed?access=${access}`, {}, {}, WriteTokenScopes);
     }
 
