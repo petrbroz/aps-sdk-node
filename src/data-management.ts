@@ -346,20 +346,38 @@ export class DataManagementClient extends ForgeClient {
      * @async
      * @param {string} bucketKey Bucket key.
      * @param {string} objectKey Name of uploaded object.
-     * @param {AsyncIterable<Buffer>} stream Asynchronous iterable buffer stream. Note that each chunk read from the stream must be at least 5MB in size.
+     * @param {AsyncIterable<Buffer>} stream Input stream.
      * @param {IUploadOptions} [options] Additional upload options.
      * @returns {Promise<IObject>} Object description containing 'bucketKey', 'objectKey', 'objectId',
      * 'sha1', 'size', 'location', and 'contentType'.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
-    async uploadObjectStream(bucketKey: string, objectKey: string, stream: AsyncIterable<Buffer>, options?: IUploadOptions): Promise<IObject> {
+    async uploadObjectStream(bucketKey: string, objectKey: string, input: AsyncIterable<Buffer>, options?: IUploadOptions): Promise<IObject> {
+        // Helper async generator making sure that each chunk has at least certain number of bytes
+        async function* bufferChunks(input: AsyncIterable<Buffer>, minChunkSize: number) {
+            let buffer = Buffer.alloc(2 * minChunkSize);
+            let bytesRead = 0;
+            for await (const chunk of input) {
+                chunk.copy(buffer, bytesRead);
+                bytesRead += chunk.byteLength;
+                if (bytesRead >= minChunkSize) {
+                    yield buffer.slice(0, bytesRead);
+                    bytesRead = 0;
+                }
+            }
+            if (bytesRead > 0) {
+                yield buffer.slice(0, bytesRead);
+            }
+        }
+
         const MaxBatches = 25;
         const MaxRetries = 5;
+        const ChunkSize = 5 << 20;
         let partsUploaded = 0;
         let bytesUploaded = 0;
         let uploadUrls: string[] = [];
         let uploadKey: string | undefined;
-        for await (const chunk of stream) {
+        for await (const chunk of bufferChunks(input, ChunkSize)) {
             let attempts = 0;
             while (true) {
                 attempts++;
