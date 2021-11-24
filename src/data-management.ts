@@ -1,4 +1,4 @@
-import { ForgeClient, IAuthOptions, Region } from './common';
+import { ForgeClient, IAuthOptions, Region, sleep } from './common';
 import { AxiosError, AxiosRequestConfig } from 'axios';
 
 const RootPath = 'oss/v2';
@@ -84,12 +84,6 @@ export interface IDownloadOptions {
     contentType?: string;
     progress?: (bytesDownloaded: number, totalBytes?: number) => void;
     //cancel?: () => boolean;
-}
-
-async function sleep(ms: number): Promise<void> {
-    return new Promise(function (resolve, reject) {
-        setTimeout(resolve, ms);
-    });
 }
 
 /**
@@ -255,12 +249,11 @@ export class DataManagementClient extends ForgeClient {
      * and a unique upload key used to generate additional URLs or to complete the upload.
      */
     async getUploadUrls(bucketKey: string, objectKey: string, parts: number = 1, firstPart: number = 1, uploadKey?: string): Promise<IUploadParams> {
-        const headers = { 'Content-Type': 'application/json' };
-        let url = `buckets/${bucketKey}/objects/${encodeURIComponent(objectKey)}/signeds3upload?parts=${parts}&firstPart=${firstPart}`;
+        let endpoint = `buckets/${bucketKey}/objects/${encodeURIComponent(objectKey)}/signeds3upload?parts=${parts}&firstPart=${firstPart}`;
         if (uploadKey) {
-            url += `&uploadKey=${uploadKey}`
+            endpoint += `&uploadKey=${uploadKey}`;
         }
-        return this.get(url, headers, WriteTokenScopes);
+        return this.get(endpoint, { 'Content-Type': 'application/json' }, WriteTokenScopes); // Automatically retries 429 responses
     }
 
     /**
@@ -276,7 +269,7 @@ export class DataManagementClient extends ForgeClient {
         if (contentType) {
             headers['x-ads-meta-Content-Type'] = contentType;
         }
-        return this.post(`buckets/${bucketKey}/objects/${encodeURIComponent(objectKey)}/signeds3upload`, { uploadKey }, headers, WriteTokenScopes);
+        return this.post(`buckets/${bucketKey}/objects/${encodeURIComponent(objectKey)}/signeds3upload`, { uploadKey }, headers, WriteTokenScopes); // Automatically retries 429 responses
     }
 
     /**
@@ -397,7 +390,7 @@ export class DataManagementClient extends ForgeClient {
                         console.debug('Got 403, refreshing upload URLs');
                         uploadUrls = [];
                         attempts = 0; // Couldn't this cause an infinite loop? (i.e., could the server keep responding with 403 indefinitely?
-                    } else if (status >= 500 && status <= 599 && attempts < MaxRetries) {
+                    } else if (status === 429 && attempts <= MaxRetries) {
                         const delay = Math.pow(2, attempts);
                         console.debug('Retrying in', delay, 'seconds after error', err);
                         await sleep(delay * 1000);
@@ -424,8 +417,8 @@ export class DataManagementClient extends ForgeClient {
      * @returns {IDownloadParams} Download URLs and potentially other helpful information.
      */
     async getDownloadUrl(bucketKey: string, objectKey: string, useCdn: boolean = true): Promise<IDownloadParams> {
-        const headers: { [header: string]: string } = { 'Content-Type': 'application/json' };
-        return this.get(`buckets/${bucketKey}/objects/${encodeURIComponent(objectKey)}/signeds3download?useCdn=${useCdn}`, headers, ReadTokenScopes);
+        const endpoint = `buckets/${bucketKey}/objects/${encodeURIComponent(objectKey)}/signeds3download?useCdn=${useCdn}`;
+        return this.get(endpoint, { 'Content-Type': 'application/json' }, ReadTokenScopes); // Automatically retries 429 responses
     }
 
     /**
@@ -463,7 +456,7 @@ export class DataManagementClient extends ForgeClient {
                 return resp.data;
             } catch (err) {
                 const status = (err as AxiosError).response?.status as number;
-                if (status >= 500 && status <= 599 && attempts < MaxRetries) {
+                if (status === 429 && attempts <= MaxRetries) {
                     const delay = Math.pow(2, attempts);
                     console.debug('Retrying in', delay, 'seconds after error', err);
                     await sleep(delay * 1000);
@@ -509,7 +502,7 @@ export class DataManagementClient extends ForgeClient {
                 return resp.data;
             } catch (err) {
                 const status = (err as AxiosError).response?.status as number;
-                if (status >= 500 && status <= 599 && attempts < MaxRetries) {
+                if (status === 429 && attempts <= MaxRetries) {
                     const delay = Math.pow(2, attempts);
                     console.debug('Retrying in', delay, 'seconds after error', err);
                     await sleep(delay * 1000);

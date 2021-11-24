@@ -1,11 +1,12 @@
-import axios, { AxiosRequestConfig, AxiosInstance } from 'axios';
+import axios, { AxiosRequestConfig, AxiosInstance, AxiosError } from 'axios';
 
 import { AuthenticationClient } from './authentication';
 
 const RetryDelay = 5000; // Delay (in milliseconds) before retrying after a "202 Accepted" response
 const MaxContentLength = Number.MAX_SAFE_INTEGER;
 const MaxBodyLength = Number.MAX_SAFE_INTEGER;
-function sleep(ms: number) { return new Promise(function(resolve) { setTimeout(resolve, ms); }); }
+
+export function sleep(ms: number) { return new Promise(function(resolve) { setTimeout(resolve, ms); }); }
 
 export const DefaultHost = 'https://developer.api.autodesk.com';
 
@@ -99,13 +100,25 @@ export abstract class ForgeClient {
     // returning parsed response body or throwing an excetion in case of an issue
     protected async get(endpoint: string, headers: { [name: string]: string } = {}, scopes: string[], repeatOn202: boolean = false): Promise<any> {
         const config: AxiosRequestConfig = { headers };
-        await this.setAuthorization(config, scopes);
-        let resp = await this.axios.get(endpoint, config);
-        while (resp.status === 202 && repeatOn202) {
-            sleep(RetryDelay);
-            resp = await this.axios.get(endpoint, config);
+        const MaxAttempts = 5;
+        let attempts = 0;
+        while (true) {
+            attempts++;
+            await this.setAuthorization(config, scopes);
+            try {
+                let resp = await this.axios.get(endpoint, config);
+                return resp.data;
+            } catch (err) {
+                const status = (err as AxiosError).response?.status as number;
+                if (status === 429 && attempts <= MaxAttempts) {
+                    const delay = Math.pow(2, attempts);
+                    console.debug('Retrying in', delay, 'seconds after error', err);
+                    await sleep(delay * 1000);
+                } else {
+                    throw err;
+                }
+            }
         }
-        return resp.data;
     }
 
     // Helper method for GET requests returning binary data,
@@ -138,27 +151,75 @@ export abstract class ForgeClient {
     // returning parsed response body of throwing an excetion in case of an issue
     protected async post(endpoint: string, data: any, headers: { [name: string]: string } = {}, scopes: string[]): Promise<any> {
         const config: AxiosRequestConfig = { headers };
-        await this.setAuthorization(config, scopes);
-        const resp = await this.axios.post(endpoint, data, config);
-        return resp.data;
+        const MaxAttempts = 5;
+        let attempts = 0;
+        while (true) {
+            attempts++;
+            await this.setAuthorization(config, scopes);
+            try {
+                let resp = await this.axios.post(endpoint, data, config);
+                return resp.data;
+            } catch (err) {
+                const status = (err as AxiosError).response?.status as number;
+                if (status === 429 && attempts <= MaxAttempts) {
+                    const delay = Math.pow(2, attempts);
+                    console.debug('Retrying in', delay, 'seconds after error', err);
+                    await sleep(delay * 1000);
+                } else {
+                    throw err;
+                }
+            }
+        }
     }
 
     // Helper method for PUT requests,
     // returning parsed response body of throwing an excetion in case of an issue
     protected async put(endpoint: string, data: any, headers: { [name: string]: string } = {}, scopes: string[]): Promise<any> {
         const config: AxiosRequestConfig = { headers };
-        await this.setAuthorization(config, scopes);
-        const resp = await this.axios.put(endpoint, data, config);
-        return resp.data;
+        const MaxAttempts = 5;
+        let attempts = 0;
+        while (true) {
+            attempts++;
+            await this.setAuthorization(config, scopes);
+            try {
+                let resp = await this.axios.put(endpoint, data, config);
+                return resp.data;
+            } catch (err) {
+                const status = (err as AxiosError).response?.status as number;
+                if (status === 429 && attempts <= MaxAttempts) {
+                    const delay = Math.pow(2, attempts);
+                    console.debug('Retrying in', delay, 'seconds after error', err);
+                    await sleep(delay * 1000);
+                } else {
+                    throw err;
+                }
+            }
+        }
     }
 
     // Helper method for PATCH requests,
     // returning parsed response body of throwing an excetion in case of an issue
     protected async patch(endpoint: string, data: any, headers: { [name: string]: string } = {}, scopes: string[]): Promise<any> {
         const config: AxiosRequestConfig = { headers };
-        await this.setAuthorization(config, scopes);
-        const resp = await this.axios.patch(endpoint, data, config);
-        return resp.data;
+        const MaxAttempts = 5;
+        let attempts = 0;
+        while (true) {
+            attempts++;
+            await this.setAuthorization(config, scopes);
+            try {
+                let resp = await this.axios.patch(endpoint, data, config);
+                return resp.data;
+            } catch (err) {
+                const status = (err as AxiosError).response?.status as number;
+                if (status === 429 && attempts <= MaxAttempts) {
+                    const delay = Math.pow(2, attempts);
+                    console.debug('Retrying in', delay, 'seconds after error', err);
+                    await sleep(delay * 1000);
+                } else {
+                    throw err;
+                }
+            }
+        }
     }
 
     // Helper method for DELETE requests,
