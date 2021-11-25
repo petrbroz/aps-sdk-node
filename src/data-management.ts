@@ -253,7 +253,7 @@ export class DataManagementClient extends ForgeClient {
         if (uploadKey) {
             endpoint += `&uploadKey=${uploadKey}`;
         }
-        return this.get(endpoint, { 'Content-Type': 'application/json' }, WriteTokenScopes); // Automatically retries 429 responses
+        return this.get(endpoint, { 'Content-Type': 'application/json' }, WriteTokenScopes);
     }
 
     /**
@@ -269,7 +269,7 @@ export class DataManagementClient extends ForgeClient {
         if (contentType) {
             headers['x-ads-meta-Content-Type'] = contentType;
         }
-        return this.post(`buckets/${bucketKey}/objects/${encodeURIComponent(objectKey)}/signeds3upload`, { uploadKey }, headers, WriteTokenScopes); // Automatically retries 429 responses
+        return this.post(`buckets/${bucketKey}/objects/${encodeURIComponent(objectKey)}/signeds3upload`, { uploadKey }, headers, WriteTokenScopes);
     }
 
     /**
@@ -287,7 +287,6 @@ export class DataManagementClient extends ForgeClient {
         console.assert(data.byteLength > 0);
         const ChunkSize = 5 << 20;
         const MaxBatches = 25;
-        const MaxRetries = 5;
         const totalParts = Math.ceil(data.byteLength / ChunkSize);
         let partsUploaded = 0;
         let bytesUploaded = 0;
@@ -295,12 +294,10 @@ export class DataManagementClient extends ForgeClient {
         let uploadKey: string | undefined;
         while (partsUploaded < totalParts) {
             const chunk = data.slice(partsUploaded * ChunkSize, Math.min((partsUploaded + 1) * ChunkSize, data.byteLength));
-            let attempts = 0;
             while (true) {
-                attempts++;
-                console.debug('Uploading part', partsUploaded + 1, 'attempt', attempts);
+                console.debug('Uploading part', partsUploaded + 1);
                 if (uploadUrls.length === 0) {
-                    const uploadParams = await this.getUploadUrls(bucketKey, objectKey, Math.min(totalParts - partsUploaded, MaxBatches), partsUploaded + 1, uploadKey);
+                    const uploadParams = await this.getUploadUrls(bucketKey, objectKey, Math.min(totalParts - partsUploaded, MaxBatches), partsUploaded + 1, uploadKey); // Automatically retries 429 and 500-599 responses
                     uploadUrls = uploadParams.urls.slice();
                     uploadKey = uploadParams.uploadKey;
                 }
@@ -312,12 +309,7 @@ export class DataManagementClient extends ForgeClient {
                     const status = (err as AxiosError).response?.status as number;
                     if (status === 403) {
                         console.debug('Got 403, refreshing upload URLs');
-                        uploadUrls = [];
-                        attempts = 0; // Couldn't this cause an infinite loop? (i.e., could the server keep responding with 403 indefinitely?)
-                    } else if (status >= 500 && status <= 599 && attempts < MaxRetries) {
-                        const delay = Math.pow(2, attempts);
-                        console.debug('Retrying in', delay, 'seconds after error', err);
-                        await sleep(delay * 1000);
+                        uploadUrls = []; // Couldn't this cause an infinite loop? (i.e., could the server keep responding with 403 indefinitely?)
                     } else {
                         throw err;
                     }
@@ -364,17 +356,14 @@ export class DataManagementClient extends ForgeClient {
         }
 
         const MaxBatches = 25;
-        const MaxRetries = 5;
         const ChunkSize = 5 << 20;
         let partsUploaded = 0;
         let bytesUploaded = 0;
         let uploadUrls: string[] = [];
         let uploadKey: string | undefined;
         for await (const chunk of bufferChunks(input, ChunkSize)) {
-            let attempts = 0;
             while (true) {
-                attempts++;
-                console.debug('Uploading part', partsUploaded + 1, 'attempt', attempts);
+                console.debug('Uploading part', partsUploaded + 1);
                 if (uploadUrls.length === 0) {
                     const uploadParams = await this.getUploadUrls(bucketKey, objectKey, MaxBatches, partsUploaded + 1, uploadKey);
                     uploadUrls = uploadParams.urls.slice();
@@ -388,12 +377,7 @@ export class DataManagementClient extends ForgeClient {
                     const status = (err as AxiosError).response?.status as number;
                     if (status === 403) {
                         console.debug('Got 403, refreshing upload URLs');
-                        uploadUrls = [];
-                        attempts = 0; // Couldn't this cause an infinite loop? (i.e., could the server keep responding with 403 indefinitely?
-                    } else if (status === 429 && attempts <= MaxRetries) {
-                        const delay = Math.pow(2, attempts);
-                        console.debug('Retrying in', delay, 'seconds after error', err);
-                        await sleep(delay * 1000);
+                        uploadUrls = []; // Couldn't this cause an infinite loop? (i.e., could the server keep responding with 403 indefinitely?
                     } else {
                         throw err;
                     }
@@ -418,7 +402,7 @@ export class DataManagementClient extends ForgeClient {
      */
     async getDownloadUrl(bucketKey: string, objectKey: string, useCdn: boolean = true): Promise<IDownloadParams> {
         const endpoint = `buckets/${bucketKey}/objects/${encodeURIComponent(objectKey)}/signeds3download?useCdn=${useCdn}`;
-        return this.get(endpoint, { 'Content-Type': 'application/json' }, ReadTokenScopes); // Automatically retries 429 responses
+        return this.get(endpoint, { 'Content-Type': 'application/json' }, ReadTokenScopes);
     }
 
     /**
@@ -431,40 +415,23 @@ export class DataManagementClient extends ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async downloadObject(bucketKey: string, objectKey: string, options?: IDownloadOptions): Promise<ArrayBuffer> {
-        const MaxRetries = 5;
         console.debug('Retrieving download URL');
         const downloadParams = await this.getDownloadUrl(bucketKey, objectKey);
         if (downloadParams.status !== 'complete') {
             throw new Error('File not available for download yet.');
         }
-        let attempts = 0;
-        while (true) {
-            attempts++;
-            console.debug('Downloading', downloadParams.url, 'attempt', attempts);
-            try {
-                const resp = await this.axios.get(downloadParams.url as string, {
-                    responseType: 'arraybuffer',
-                    onDownloadProgress: progressEvent => {
-                        const downloadedBytes = progressEvent.currentTarget.response.length;
-                        const totalBytes = parseInt(progressEvent.currentTarget.responseHeaders['Content-Length']);
-                        console.debug('Downloaded', downloadedBytes, 'bytes of', totalBytes);
-                        if (options?.progress) {
-                            options.progress(downloadedBytes, totalBytes);
-                        }
-                    }
-                });
-                return resp.data;
-            } catch (err) {
-                const status = (err as AxiosError).response?.status as number;
-                if (status === 429 && attempts <= MaxRetries) {
-                    const delay = Math.pow(2, attempts);
-                    console.debug('Retrying in', delay, 'seconds after error', err);
-                    await sleep(delay * 1000);
-                } else {
-                    throw err;
+        const resp = await this.axios.get(downloadParams.url as string, {
+            responseType: 'arraybuffer',
+            onDownloadProgress: progressEvent => {
+                const downloadedBytes = progressEvent.currentTarget.response.length;
+                const totalBytes = parseInt(progressEvent.currentTarget.responseHeaders['Content-Length']);
+                console.debug('Downloaded', downloadedBytes, 'bytes of', totalBytes);
+                if (options?.progress) {
+                    options.progress(downloadedBytes, totalBytes);
                 }
             }
-        }
+        });
+        return resp.data;
     }
 
     /**
@@ -477,40 +444,23 @@ export class DataManagementClient extends ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async downloadObjectStream(bucketKey: string, objectKey: string, options?: IDownloadOptions): Promise<ReadableStream> {
-        const MaxRetries = 5;
         console.debug('Retrieving download URL');
         const downloadParams = await this.getDownloadUrl(bucketKey, objectKey);
         if (downloadParams.status !== 'complete') {
             throw new Error('File not available for download yet.');
         }
-        let attempts = 0;
-        while (true) {
-            attempts++;
-            console.debug('Downloading', downloadParams.url, 'attempt', attempts);
-            try {
-                const resp = await this.axios.get(downloadParams.url as string, {
-                    responseType: 'stream',
-                    onDownloadProgress: progressEvent => {
-                        const downloadedBytes = progressEvent.currentTarget.response.length;
-                        const totalBytes = parseInt(progressEvent.currentTarget.responseHeaders['Content-Length']);
-                        console.debug('Downloaded', downloadedBytes, 'bytes of', totalBytes);
-                        if (options?.progress) {
-                            options.progress(downloadedBytes, totalBytes);
-                        }
-                    }
-                });
-                return resp.data;
-            } catch (err) {
-                const status = (err as AxiosError).response?.status as number;
-                if (status === 429 && attempts <= MaxRetries) {
-                    const delay = Math.pow(2, attempts);
-                    console.debug('Retrying in', delay, 'seconds after error', err);
-                    await sleep(delay * 1000);
-                } else {
-                    throw err;
+        const resp = await this.axios.get(downloadParams.url as string, {
+            responseType: 'stream',
+            onDownloadProgress: progressEvent => {
+                const downloadedBytes = progressEvent.currentTarget.response.length;
+                const totalBytes = parseInt(progressEvent.currentTarget.responseHeaders['Content-Length']);
+                console.debug('Downloaded', downloadedBytes, 'bytes of', totalBytes);
+                if (options?.progress) {
+                    options.progress(downloadedBytes, totalBytes);
                 }
             }
-        }
+        });
+        return resp.data;
     }
 
     /**
