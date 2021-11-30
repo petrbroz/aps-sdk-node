@@ -86,6 +86,37 @@ export interface IDownloadOptions {
     //cancel?: () => boolean;
 }
 
+type Task = () => Promise<void>;
+
+/**
+ * Executes a list of asynchronous tasks, running up to {@see concurrency} tasks at the same time.
+ * @param tasks Async tasks to execute.
+ * @param concurrency Max number of tasks to run at the same time.
+ * @returns Promise that is resolved when all tasks have completed, or rejected when some of the tasks fail.
+ */
+function parallelize(tasks: Task[], concurrency: number = 5): Promise<void> {
+    const queue = tasks.slice();
+    let remaining = queue.length;
+    return new Promise(function (resolve, reject) {
+        function onTaskCompleted() {
+            remaining--;
+            if (remaining === 0) {
+                resolve();
+            } else if (queue.length > 0) {
+                const task = queue.shift() as Task;
+                task().then(onTaskCompleted).catch(onTaskFailed);
+            }
+        }
+        function onTaskFailed(reason: any) {
+            reject(reason);
+        }
+        for (let i = 0; i < concurrency && queue.length > 0; i++) {
+            const task = queue.shift() as Task;
+            task().then(onTaskCompleted).catch(onTaskFailed);
+        }
+    });
+}
+
 /**
  * Client providing access to Autodesk Forge {@link https://forge.autodesk.com/en/docs/data/v2|data management APIs}.
  * @tutorial data-management
