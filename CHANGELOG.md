@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Support for filtering BIM360 issues by `status` and `assigned_to`
+
 ## [8.3.4] - 2021-11-01
 
 ### Added
