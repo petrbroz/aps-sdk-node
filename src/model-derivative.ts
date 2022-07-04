@@ -264,6 +264,10 @@ export class ModelDerivativeClient extends ForgeClient {
         super(RootPath, auth, host, region);
     }
 
+    private getBaseUrl(path: string): URL {
+        return new URL(this.host + '/' + RootPath + '/' + path);
+    }
+
     /**
      * Gets a list of supported translation formats
      * ({@link https://forge.autodesk.com/en/docs/model-derivative/v2/reference/http/formats-GET|docs}).
@@ -431,11 +435,18 @@ export class ModelDerivativeClient extends ForgeClient {
      * @param {string} urn Document derivative URN.
      * @param {string} guid Viewable GUID.
      * @param {boolean} [force] Force query even when exceeding the size limit (20MB).
+     * @param {number} [objectId] If specified, retrieves the sub-tree that has the specified object ID as its parent node.
+     * If this parameter is not specified, retrieves the entire object tree.
      * @returns {Promise<IDerivativeTree>} Viewable object tree.
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
-    async getViewableTree(urn: string, guid: string, force?: boolean): Promise<IDerivativeTree> {
-        return this.get(this.region === Region.EMEA ? `regions/eu/designdata/${urn}/metadata/${guid}${force ? '?forceget=true' : ''}` : `designdata/${urn}/metadata/${guid}${force ? '?forceget=true' : ''}`, {}, ReadTokenScopes, true);
+    async getViewableTree(urn: string, guid: string, force?: boolean, objectId?: number): Promise<IDerivativeTree> {
+        const url = this.getBaseUrl(this.region === Region.EMEA ? `regions/eu/designdata/${urn}/metadata/${guid}` : `designdata/${urn}/metadata/${guid}`);
+        if (force)
+            url.searchParams.append('forceget', 'true');
+        if (objectId)
+            url.searchParams.append('objectid', objectId.toString());
+        return this.get(url.toString(), {}, ReadTokenScopes, true);
     }
 
     /**
@@ -445,17 +456,18 @@ export class ModelDerivativeClient extends ForgeClient {
      * @param {string} urn Document derivative URN.
      * @param {string} guid Viewable GUID.
      * @param {boolean} [force] Force query even when exceeding the size limit (20MB).
+     * @param {number} [objectId] If specified, retrieves the sub-tree that has the specified object ID as its parent node.
+     * If this parameter is not specified, retrieves the entire object tree.
      * @returns {Promise<ReadableStream>} Readable stream.
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
-    async getViewableTreeStream(urn: string, guid: string, force?: boolean): Promise<ReadableStream> {
-        let url = this.region === Region.EMEA
-            ? `regions/eu/designdata/${urn}/metadata/${guid}`
-            : `designdata/${urn}/metadata/${guid}`;
-        if (force) {
-            url += '?forceget=true';
-        }
-        return this.getStream(url, {}, ReadTokenScopes, true);
+    async getViewableTreeStream(urn: string, guid: string, force?: boolean, objectId?: number): Promise<ReadableStream> {
+        const url = this.getBaseUrl(this.region === Region.EMEA ? `regions/eu/designdata/${urn}/metadata/${guid}` : `designdata/${urn}/metadata/${guid}`);
+        if (force)
+            url.searchParams.append('forceget', 'true');
+        if (objectId)
+            url.searchParams.append('objectid', objectId.toString());
+        return this.getStream(url.toString(), {}, ReadTokenScopes, true);
     }
 
     /**
@@ -465,11 +477,18 @@ export class ModelDerivativeClient extends ForgeClient {
      * @param {string} urn Document derivative URN.
      * @param {string} guid Viewable GUID.
      * @param {boolean} [force] Force query even when exceeding the size limit (20MB).
+     * @param {number} [objectId] The Object ID of the object you want to query properties for.
+     * If `objectid` is omitted, the server returns properties for all objects.
      * @returns {Promise<IDerivativeProps>} Viewable properties.
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
-    async getViewableProperties(urn: string, guid: string, force?: boolean): Promise<IDerivativeProps> {
-        return this.get(this.region === Region.EMEA ? `regions/eu/designdata/${urn}/metadata/${guid}/properties${force ? '?forceget=true' : ''}` : `designdata/${urn}/metadata/${guid}/properties${force ? '?forceget=true' : ''}`, {}, ReadTokenScopes, true);
+    async getViewableProperties(urn: string, guid: string, force?: boolean, objectId?: number): Promise<IDerivativeProps> {
+        const url = this.getBaseUrl(this.region === Region.EMEA ? `regions/eu/designdata/${urn}/metadata/${guid}/properties` : `designdata/${urn}/metadata/${guid}/properties`);
+        if (force)
+            url.searchParams.append('forceget', 'true');
+        if (objectId)
+            url.searchParams.append('objectid', objectId.toString());
+        return this.get(url.toString(), {}, ReadTokenScopes, true);
     }
 
     /**
@@ -479,17 +498,18 @@ export class ModelDerivativeClient extends ForgeClient {
      * @param {string} urn Document derivative URN.
      * @param {string} guid Viewable GUID.
      * @param {boolean} [force] Force query even when exceeding the size limit (20MB).
+     * @param {number} [objectId] The Object ID of the object you want to query properties for.
+     * If `objectid` is omitted, the server returns properties for all objects.
      * @returns {Promise<ReadableStream>} Readable stream.
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
-    async getViewablePropertiesStream(urn: string, guid: string, force?: boolean): Promise<ReadableStream> {
-        let url = this.region === Region.EMEA
-            ? `regions/eu/designdata/${urn}/metadata/${guid}/properties`
-            : `designdata/${urn}/metadata/${guid}/properties`
-        if (force) {
-            url += '?forceget=true';
-        }
-        return this.getStream(url, {}, ReadTokenScopes, true);
+    async getViewablePropertiesStream(urn: string, guid: string, force?: boolean, objectId?: number): Promise<ReadableStream> {
+        const url = this.getBaseUrl(this.region === Region.EMEA ? `regions/eu/designdata/${urn}/metadata/${guid}/properties` : `designdata/${urn}/metadata/${guid}/properties`);
+        if (force)
+            url.searchParams.append('forceget', 'true');
+        if (objectId)
+            url.searchParams.append('objectid', objectId.toString());
+        return this.getStream(url.toString(), {}, ReadTokenScopes, true);
     }
 
     /**

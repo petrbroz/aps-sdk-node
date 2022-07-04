@@ -97,6 +97,13 @@ export interface IActivityDetail extends IActivityCommon {
 export interface IWorkItemConfig {
     activityId: string;
     arguments?: { [name: string]: IWorkItemParam };
+    signatures?: {
+        activityId?: string;
+        baseUrls?: {
+            url: string;
+            signature: string
+        }};
+    limitProcessingTimeSec?: number
 }
 
 export interface IWorkItemDetail {
@@ -811,14 +818,30 @@ export class DesignAutomationClient extends ForgeClient {
      * @async
      * @param {string} activityId Activity ID.
      * @param {{ [name: string]: IWorkItemParam }} [args] Arguments to pass in as activity parameters.
+     * @param {{ activityId?: string; baseUrls?: { url: string; signature: string } }} signatures Signatures.
+     * @param {number} limitProcessingTimeSec limit of max processing time in seconds.
      */
-    async createWorkItem(activityId: string, args?: { [name: string]: IWorkItemParam }) {
+    async createWorkItem(activityId: string, args?: { [name: string]: IWorkItemParam },
+        signatures?: {
+            activityId?: string;
+            baseUrls?: {
+                url: string;
+                signature: string;
+            }
+        },
+        limitProcessingTimeSec?: number) {
         // TODO: tests
         const config: IWorkItemConfig = {
             activityId: activityId
         };
         if (args) {
             config.arguments = args;
+        }
+        if (signatures) {
+            config.signatures = signatures;
+        }
+        if (limitProcessingTimeSec) {
+            config.limitProcessingTimeSec = limitProcessingTimeSec;
         }
         return this.post('workitems', config, {}, CodeScopes);
     }
