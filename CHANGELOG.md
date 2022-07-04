@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Querying derivative trees and properties for specific object ID
+
 ## [8.3.5] - 2022-01-05
 
 ### Added
