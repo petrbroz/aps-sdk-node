@@ -1,12 +1,13 @@
 import { Readable } from 'stream';
 
-import { ForgeClient, IAuthOptions, Region } from './common';
+import { ForgeClient, IAuthOptions, Region, sleep } from './common';
 
 const isNullOrUndefined = (value: any) => value === null || value === undefined;
 
 const RootPath = 'modelderivative/v2';
 const ReadTokenScopes = ['data:read'];
 const WriteTokenScopes = ['data:read', 'data:write', 'data:create'];
+const RetryDelay = 5000;
 
 /**
  * Converts ID of an object to base64-encoded URN expected by {@link ModelDerivativeClient}.
@@ -264,7 +265,7 @@ export class ModelDerivativeClient extends ForgeClient {
         super(RootPath, auth, host, region);
     }
 
-    private getBaseUrl(path: string): URL {
+    private getUrl(path: string): URL {
         return new URL(this.host + '/' + RootPath + '/' + path);
     }
 
@@ -335,7 +336,7 @@ export class ModelDerivativeClient extends ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
     async getManifest(urn: string): Promise<IDerivativeManifest> {
-        return this.get(this.region === Region.EMEA ? `regions/eu/designdata/${urn}/manifest` : `designdata/${urn}/manifest`, {}, ReadTokenScopes, true);
+        return this.get(this.region === Region.EMEA ? `regions/eu/designdata/${urn}/manifest` : `designdata/${urn}/manifest`, {}, ReadTokenScopes);
     }
 
     /**
@@ -413,7 +414,7 @@ export class ModelDerivativeClient extends ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
     async getMetadata(urn: string): Promise<IDerivativeMetadata> {
-        return this.get(this.region === Region.EMEA ? `regions/eu/designdata/${urn}/metadata` : `designdata/${urn}/metadata`, {}, ReadTokenScopes, true);
+        return this.get(this.region === Region.EMEA ? `regions/eu/designdata/${urn}/metadata` : `designdata/${urn}/metadata`, {}, ReadTokenScopes);
     }
 
     /**
@@ -425,7 +426,7 @@ export class ModelDerivativeClient extends ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
     async getMetadataStream(urn: string): Promise<ReadableStream> {
-        return this.getStream(this.region === Region.EMEA ? `regions/eu/designdata/${urn}/metadata` : `designdata/${urn}/metadata`, {}, ReadTokenScopes, true);
+        return this.getStream(this.region === Region.EMEA ? `regions/eu/designdata/${urn}/metadata` : `designdata/${urn}/metadata`, {}, ReadTokenScopes);
     }
 
     /**
@@ -437,16 +438,25 @@ export class ModelDerivativeClient extends ForgeClient {
      * @param {boolean} [force] Force query even when exceeding the size limit (20MB).
      * @param {number} [objectId] If specified, retrieves the sub-tree that has the specified object ID as its parent node.
      * If this parameter is not specified, retrieves the entire object tree.
+     * @param {boolean} [retryOn202] Keep repeating the request while the response status is 202 (indicating that the resource is being prepared).
      * @returns {Promise<IDerivativeTree>} Viewable object tree.
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
-    async getViewableTree(urn: string, guid: string, force?: boolean, objectId?: number): Promise<IDerivativeTree> {
-        const url = this.getBaseUrl(this.region === Region.EMEA ? `regions/eu/designdata/${urn}/metadata/${guid}` : `designdata/${urn}/metadata/${guid}`);
+    async getViewableTree(urn: string, guid: string, force?: boolean, objectId?: number, retryOn202: boolean = true): Promise<IDerivativeTree> {
+        const url = this.getUrl(this.region === Region.EMEA ? `regions/eu/designdata/${urn}/metadata/${guid}` : `designdata/${urn}/metadata/${guid}`);
         if (force)
             url.searchParams.append('forceget', 'true');
         if (objectId)
             url.searchParams.append('objectid', objectId.toString());
-        return this.get(url.toString(), {}, ReadTokenScopes, true);
+        const config = {};
+        await this.setAuthorization(config, ReadTokenScopes);
+        let resp = await this.axios.get(url.toString(), config);
+        while (resp.status === 202 && retryOn202) {
+            await sleep(RetryDelay);
+            await this.setAuthorization(config, ReadTokenScopes);
+            resp = await this.axios.get(url.toString(), config);
+        }
+        return resp.data;
     }
 
     /**
@@ -458,16 +468,25 @@ export class ModelDerivativeClient extends ForgeClient {
      * @param {boolean} [force] Force query even when exceeding the size limit (20MB).
      * @param {number} [objectId] If specified, retrieves the sub-tree that has the specified object ID as its parent node.
      * If this parameter is not specified, retrieves the entire object tree.
+     * @param {boolean} [retryOn202] Keep repeating the request while the response status is 202 (indicating that the resource is being prepared).
      * @returns {Promise<ReadableStream>} Readable stream.
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
-    async getViewableTreeStream(urn: string, guid: string, force?: boolean, objectId?: number): Promise<ReadableStream> {
-        const url = this.getBaseUrl(this.region === Region.EMEA ? `regions/eu/designdata/${urn}/metadata/${guid}` : `designdata/${urn}/metadata/${guid}`);
+    async getViewableTreeStream(urn: string, guid: string, force?: boolean, objectId?: number, retryOn202: boolean = true): Promise<ReadableStream> {
+        const url = this.getUrl(this.region === Region.EMEA ? `regions/eu/designdata/${urn}/metadata/${guid}` : `designdata/${urn}/metadata/${guid}`);
         if (force)
             url.searchParams.append('forceget', 'true');
         if (objectId)
             url.searchParams.append('objectid', objectId.toString());
-        return this.getStream(url.toString(), {}, ReadTokenScopes, true);
+        const config: any = { responseType: 'stream' };
+        await this.setAuthorization(config, ReadTokenScopes);
+        let resp = await this.axios.get(url.toString(), config);
+        while (resp.status === 202 && retryOn202) {
+            await sleep(RetryDelay);
+            await this.setAuthorization(config, ReadTokenScopes);
+            resp = await this.axios.get(url.toString(), config);
+        }
+        return resp.data;
     }
 
     /**
@@ -479,16 +498,25 @@ export class ModelDerivativeClient extends ForgeClient {
      * @param {boolean} [force] Force query even when exceeding the size limit (20MB).
      * @param {number} [objectId] The Object ID of the object you want to query properties for.
      * If `objectid` is omitted, the server returns properties for all objects.
+     * @param {boolean} [retryOn202] Keep repeating the request while the response status is 202 (indicating that the resource is being prepared).
      * @returns {Promise<IDerivativeProps>} Viewable properties.
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
-    async getViewableProperties(urn: string, guid: string, force?: boolean, objectId?: number): Promise<IDerivativeProps> {
-        const url = this.getBaseUrl(this.region === Region.EMEA ? `regions/eu/designdata/${urn}/metadata/${guid}/properties` : `designdata/${urn}/metadata/${guid}/properties`);
+    async getViewableProperties(urn: string, guid: string, force?: boolean, objectId?: number, retryOn202: boolean = true): Promise<IDerivativeProps> {
+        const url = this.getUrl(this.region === Region.EMEA ? `regions/eu/designdata/${urn}/metadata/${guid}/properties` : `designdata/${urn}/metadata/${guid}/properties`);
         if (force)
             url.searchParams.append('forceget', 'true');
         if (objectId)
             url.searchParams.append('objectid', objectId.toString());
-        return this.get(url.toString(), {}, ReadTokenScopes, true);
+        const config: any = {};
+        await this.setAuthorization(config, ReadTokenScopes);
+        let resp = await this.axios.get(url.toString(), config);
+        while (resp.status === 202 && retryOn202) {
+            await sleep(RetryDelay);
+            await this.setAuthorization(config, ReadTokenScopes);
+            resp = await this.axios.get(url.toString(), config);
+        }
+        return resp.data;
     }
 
     /**
@@ -500,16 +528,25 @@ export class ModelDerivativeClient extends ForgeClient {
      * @param {boolean} [force] Force query even when exceeding the size limit (20MB).
      * @param {number} [objectId] The Object ID of the object you want to query properties for.
      * If `objectid` is omitted, the server returns properties for all objects.
+     * @param {boolean} [retryOn202] Keep repeating the request while the response status is 202 (indicating that the resource is being prepared).
      * @returns {Promise<ReadableStream>} Readable stream.
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
-    async getViewablePropertiesStream(urn: string, guid: string, force?: boolean, objectId?: number): Promise<ReadableStream> {
-        const url = this.getBaseUrl(this.region === Region.EMEA ? `regions/eu/designdata/${urn}/metadata/${guid}/properties` : `designdata/${urn}/metadata/${guid}/properties`);
+    async getViewablePropertiesStream(urn: string, guid: string, force?: boolean, objectId?: number, retryOn202: boolean = true): Promise<ReadableStream> {
+        const url = this.getUrl(this.region === Region.EMEA ? `regions/eu/designdata/${urn}/metadata/${guid}/properties` : `designdata/${urn}/metadata/${guid}/properties`);
         if (force)
             url.searchParams.append('forceget', 'true');
         if (objectId)
             url.searchParams.append('objectid', objectId.toString());
-        return this.getStream(url.toString(), {}, ReadTokenScopes, true);
+        const config: any = { responseType: 'stream' };
+        await this.setAuthorization(config, ReadTokenScopes);
+        let resp = await this.axios.get(url.toString(), config);
+        while (resp.status === 202 && retryOn202) {
+            await sleep(RetryDelay);
+            await this.setAuthorization(config, ReadTokenScopes);
+            resp = await this.axios.get(url.toString(), config);
+        }
+        return resp.data;
     }
 
     /**

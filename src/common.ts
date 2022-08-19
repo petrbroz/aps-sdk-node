@@ -1,11 +1,12 @@
 import axios, { AxiosRequestConfig, AxiosInstance } from 'axios';
+import * as rax from 'retry-axios';
 
 import { AuthenticationClient } from './authentication';
 
-const RetryDelay = 5000; // Delay (in milliseconds) before retrying after a "202 Accepted" response
 const MaxContentLength = Number.MAX_SAFE_INTEGER;
 const MaxBodyLength = Number.MAX_SAFE_INTEGER;
-function sleep(ms: number) { return new Promise(function(resolve) { setTimeout(resolve, ms); }); }
+
+export function sleep(ms: number) { return new Promise(function(resolve) { setTimeout(resolve, ms); }); }
 
 export const DefaultHost = 'https://developer.api.autodesk.com';
 
@@ -51,6 +52,12 @@ export abstract class ForgeClient {
             maxContentLength: MaxContentLength,
             maxBodyLength: MaxBodyLength
         });
+        // Attach an interceptor to the axios instance that will retry response codes 100-199, 429, and 500-599.
+        // For default settings, see https://github.com/JustinBeckwith/retry-axios#usage.
+        this.axios.defaults.raxConfig = {
+            instance: this.axios
+        };
+        rax.attach(this.axios);
     }
 
     /**
@@ -97,40 +104,28 @@ export abstract class ForgeClient {
 
     // Helper method for GET requests,
     // returning parsed response body or throwing an excetion in case of an issue
-    protected async get(endpoint: string, headers: { [name: string]: string } = {}, scopes: string[], repeatOn202: boolean = false): Promise<any> {
+    protected async get(endpoint: string, headers: { [name: string]: string } = {}, scopes: string[]): Promise<any> {
         const config: AxiosRequestConfig = { headers };
         await this.setAuthorization(config, scopes);
-        let resp = await this.axios.get(endpoint, config);
-        while (resp.status === 202 && repeatOn202) {
-            sleep(RetryDelay);
-            resp = await this.axios.get(endpoint, config);
-        }
+        const resp = await this.axios.get(endpoint, config);
         return resp.data;
     }
 
     // Helper method for GET requests returning binary data,
     // throwing an excetion in case of an issue
-    protected async getBuffer(endpoint: string, headers: { [name: string]: string } = {}, scopes: string[], repeatOn202: boolean = false): Promise<any> {
+    protected async getBuffer(endpoint: string, headers: { [name: string]: string } = {}, scopes: string[]): Promise<any> {
         const config: AxiosRequestConfig = { headers, responseType: 'arraybuffer' };
         await this.setAuthorization(config, scopes);
-        let resp = await this.axios.get(endpoint, config);
-        while (resp.status === 202 && repeatOn202) {
-            sleep(RetryDelay);
-            resp = await this.axios.get(endpoint, config);
-        }
+        const resp = await this.axios.get(endpoint, config);
         return resp.data;
     }
 
     // Helper method for GET requests returning stream data,
     // throwing an excetion in case of an issue
-    protected async getStream(endpoint: string, headers: { [name: string]: string } = {}, scopes: string[], repeatOn202: boolean = false): Promise<any> {
+    protected async getStream(endpoint: string, headers: { [name: string]: string } = {}, scopes: string[]): Promise<any> {
         const config: AxiosRequestConfig = { headers, responseType: 'stream' };
         await this.setAuthorization(config, scopes);
-        let resp = await this.axios.get(endpoint, config);
-        while (resp.status === 202 && repeatOn202) {
-            sleep(RetryDelay);
-            resp = await this.axios.get(endpoint, config);
-        }
+        const resp = await this.axios.get(endpoint, config);
         return resp.data;
     }
 

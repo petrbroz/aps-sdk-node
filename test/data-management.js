@@ -1,4 +1,5 @@
 const assert = require('assert');
+const axios = require('axios');
 const { Readable, Writable } = require('stream');
 
 const { DataManagementClient } = require('..');
@@ -99,7 +100,7 @@ describe('DataManagementClient', function() {
             this.timeout(30000);
             const objectName = 'test-file';
             const buff = Buffer.from('This is a test string!', 'utf8');
-            const result = await this.client.uploadObject(this.bucket, objectName, 'text/plain; charset=UTF-8', buff);
+            const result = await this.client.uploadObject(this.bucket, objectName, buff, { contentType: 'text/plain; charset=UTF-8' });
             assert(result);
             assert(result.location);
             assert(result.location.indexOf(objectName) !== -1);
@@ -113,7 +114,7 @@ describe('DataManagementClient', function() {
                     this.push(null);
                 }
             });
-            const result = await this.client.uploadObjectStream(this.bucket, objectName, 'text/plain; charset=UTF-8', stream);
+            const result = await this.client.uploadObjectStream(this.bucket, objectName, stream, { contentType: 'text/plain; charset=UTF-8' });
             assert(result);
             assert(result.location);
             assert(result.location.indexOf(objectName) !== -1);
@@ -165,30 +166,29 @@ describe('DataManagementClient', function() {
     });
 
     describe('uploadObjectResumable()', function() {
-        it('should upload multiple chunks in one session', async function() {
+        it('should upload object in multiple chunks', async function() {
             this.timeout(30000);
-
-            const ObjectName = 'forge-serve-utils-test-file-' + new Date().toISOString();
-            const SessionID = 'test-session';
-            const arr = new Uint8Array(5 << 20);
-            for (let i = 0; i < arr.length; i++) {
-                arr[i] = i % 255;
+            const arr1 = new Uint8Array(5 << 20);
+            for (let i = 0; i < arr1.length; i++) {
+                arr1[i] = i % 255;
             }
-            let ranges = null;
-
-            await this.client.uploadObjectResumable(this.bucket, ObjectName, arr, 0, 10 << 20, SessionID, 'text/plain');
-            ranges = await this.client.getResumableUploadStatus(this.bucket, ObjectName, SessionID);
-            assert(ranges && ranges.length === 1);
-            await this.client.uploadObjectResumable(this.bucket, ObjectName, arr, 5 << 20, 10 << 20, SessionID, 'text/plain');
-            ranges = await this.client.getResumableUploadStatus(this.bucket, ObjectName, SessionID);
-            assert(ranges && ranges.length === 2);
+            const arr2 = new Uint8Array(1 << 20);
+            for (let i = 0; i < arr2.length; i++) {
+                arr2[i] = i % 255;
+            }
+            const objectKey = 'forge-serve-utils-test-file-' + new Date().toISOString();
+            const uploadParams = await this.client.getUploadUrls(this.bucket, objectKey, 2, 1);
+            await axios.put(uploadParams.urls[0], arr1);
+            await axios.put(uploadParams.urls[1], arr2);
+            const obj = await this.client.completeUpload(this.bucket, objectKey, uploadParams.uploadKey);
+            assert(obj.size, arr1.byteLength + arr2.byteLength);
         });
     });
 
     describe('copyObject()', function() {
-        it('should copy object to another object with new name', async function() {
-            const obj = await this.client.copyObject(this.bucket, 'test-file', 'test-file-copy');
-            assert(obj.objectKey === 'test-file-copy');
+        it('should copy object to another object with new name', async function () {
+            const obj = await this.client.copyObject(this.bucket, 'buffer-upload-test.txt', 'buffer-upload-test-copy.txt');
+            assert(obj.objectKey === 'buffer-upload-test-copy.txt');
         });
     });
 });
