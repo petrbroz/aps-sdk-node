@@ -618,7 +618,6 @@ export class DataManagementClient extends ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
     async createSignedUrl(bucketId: string, objectId: string, access = 'readwrite', useCdn = true): Promise<ISignedUrl> {
-        console.warn('This method is deprecated and will be removed in future versions.');
         return this.post(`buckets/${bucketId}/objects/${encodeURIComponent(objectId)}/signed?access=${access}&useCdn=${useCdn}`, {}, {}, WriteTokenScopes);
     }
 

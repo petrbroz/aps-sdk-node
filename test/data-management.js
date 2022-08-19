@@ -100,7 +100,7 @@ describe('DataManagementClient', function() {
             this.timeout(30000);
             const objectName = 'test-file';
             const buff = Buffer.from('This is a test string!', 'utf8');
-            const result = await this.client.uploadObject(this.bucket, objectName, 'text/plain; charset=UTF-8', buff);
+            const result = await this.client.uploadObject(this.bucket, objectName, buff, { contentType: 'text/plain; charset=UTF-8' });
             assert(result);
             assert(result.location);
             assert(result.location.indexOf(objectName) !== -1);
@@ -114,7 +114,7 @@ describe('DataManagementClient', function() {
                     this.push(null);
                 }
             });
-            const result = await this.client.uploadObjectStream(this.bucket, objectName, 'text/plain; charset=UTF-8', stream);
+            const result = await this.client.uploadObjectStream(this.bucket, objectName, stream, { contentType: 'text/plain; charset=UTF-8' });
             assert(result);
             assert(result.location);
             assert(result.location.indexOf(objectName) !== -1);
