@@ -326,7 +326,6 @@ export class DataManagementClient extends ForgeClient {
         while (partsUploaded < totalParts) {
             const chunk = data.slice(partsUploaded * ChunkSize, Math.min((partsUploaded + 1) * ChunkSize, data.byteLength));
             while (true) {
-                console.debug('Uploading part', partsUploaded + 1);
                 if (uploadUrls.length === 0) {
                     const uploadParams = await this.getUploadUrls(bucketKey, objectKey, Math.min(totalParts - partsUploaded, MaxBatches), partsUploaded + 1, uploadKey); // Automatically retries 429 and 500-599 responses
                     uploadUrls = uploadParams.urls.slice();
@@ -339,21 +338,18 @@ export class DataManagementClient extends ForgeClient {
                 } catch (err) {
                     const status = (err as AxiosError).response?.status as number;
                     if (status === 403) {
-                        console.debug('Got 403, refreshing upload URLs');
                         uploadUrls = []; // Couldn't this cause an infinite loop? (i.e., could the server keep responding with 403 indefinitely?)
                     } else {
                         throw err;
                     }
                 }
             }
-            console.debug('Part successfully uploaded', partsUploaded + 1);
             partsUploaded++;
             bytesUploaded += chunk.byteLength;
             if (options?.progress) {
                 options.progress(bytesUploaded, data.byteLength);
             }
         }
-        console.debug('Completing part upload');
         return this.completeUpload(bucketKey, objectKey, uploadKey as string, options?.contentType);
     }
 
@@ -394,7 +390,6 @@ export class DataManagementClient extends ForgeClient {
         let uploadKey: string | undefined;
         for await (const chunk of bufferChunks(input, ChunkSize)) {
             while (true) {
-                console.debug('Uploading part', partsUploaded + 1);
                 if (uploadUrls.length === 0) {
                     const uploadParams = await this.getUploadUrls(bucketKey, objectKey, MaxBatches, partsUploaded + 1, uploadKey);
                     uploadUrls = uploadParams.urls.slice();
@@ -407,21 +402,18 @@ export class DataManagementClient extends ForgeClient {
                 } catch (err) {
                     const status = (err as AxiosError).response?.status as number;
                     if (status === 403) {
-                        console.debug('Got 403, refreshing upload URLs');
                         uploadUrls = []; // Couldn't this cause an infinite loop? (i.e., could the server keep responding with 403 indefinitely?
                     } else {
                         throw err;
                     }
                 }
             }
-            console.debug('Part successfully uploaded', partsUploaded + 1);
             partsUploaded++;
             bytesUploaded += chunk.byteLength;
             if (options?.progress) {
                 options.progress(bytesUploaded, undefined);
             }
         }
-        console.debug('Completing part upload');
         return this.completeUpload(bucketKey, objectKey, uploadKey as string, options?.contentType);
     }
 
@@ -446,7 +438,6 @@ export class DataManagementClient extends ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async downloadObject(bucketKey: string, objectKey: string, options?: IDownloadOptions): Promise<ArrayBuffer> {
-        console.debug('Retrieving download URL');
         const downloadParams = await this.getDownloadUrl(bucketKey, objectKey);
         if (downloadParams.status !== 'complete') {
             throw new Error('File not available for download yet.');
@@ -456,7 +447,6 @@ export class DataManagementClient extends ForgeClient {
             onDownloadProgress: progressEvent => {
                 const downloadedBytes = progressEvent.currentTarget.response.length;
                 const totalBytes = parseInt(progressEvent.currentTarget.responseHeaders['Content-Length']);
-                console.debug('Downloaded', downloadedBytes, 'bytes of', totalBytes);
                 if (options?.progress) {
                     options.progress(downloadedBytes, totalBytes);
                 }
@@ -475,7 +465,6 @@ export class DataManagementClient extends ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async downloadObjectStream(bucketKey: string, objectKey: string, options?: IDownloadOptions): Promise<ReadableStream> {
-        console.debug('Retrieving download URL');
         const downloadParams = await this.getDownloadUrl(bucketKey, objectKey);
         if (downloadParams.status !== 'complete') {
             throw new Error('File not available for download yet.');
@@ -485,7 +474,6 @@ export class DataManagementClient extends ForgeClient {
             onDownloadProgress: progressEvent => {
                 const downloadedBytes = progressEvent.currentTarget.response.length;
                 const totalBytes = parseInt(progressEvent.currentTarget.responseHeaders['Content-Length']);
-                console.debug('Downloaded', downloadedBytes, 'bytes of', totalBytes);
                 if (options?.progress) {
                     options.progress(downloadedBytes, totalBytes);
                 }
