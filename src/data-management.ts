@@ -613,12 +613,13 @@ export class DataManagementClient extends ForgeClient {
      * @param {string} bucketId Bucket key.
      * @param {string} objectId Object key.
      * @param {string} [access="readwrite"] Signed URL access authorization.
+     * @param {boolean} [useCdn=true] If true, this will generate a CloudFront URL for the S3 object.
      * @returns {Promise<ISignedUrl>} Description of the new signed URL resource.
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
-    async createSignedUrl(bucketId: string, objectId: string, access = 'readwrite'): Promise<ISignedUrl> {
+    async createSignedUrl(bucketId: string, objectId: string, access = 'readwrite', useCdn = true): Promise<ISignedUrl> {
         console.warn('This method is deprecated and will be removed in future versions.');
-        return this.post(`buckets/${bucketId}/objects/${encodeURIComponent(objectId)}/signed?access=${access}`, {}, {}, WriteTokenScopes);
+        return this.post(`buckets/${bucketId}/objects/${encodeURIComponent(objectId)}/signed?access=${access}&useCdn=${useCdn}`, {}, {}, WriteTokenScopes);
     }
 
     /**
