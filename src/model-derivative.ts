@@ -265,7 +265,7 @@ export class ModelDerivativeClient extends ForgeClient {
         super(RootPath, auth, host, region);
     }
 
-    private getBaseUrl(path: string): URL {
+    private getUrl(path: string): URL {
         return new URL(this.host + '/' + RootPath + '/' + path);
     }
 
@@ -443,7 +443,7 @@ export class ModelDerivativeClient extends ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
     async getViewableTree(urn: string, guid: string, force?: boolean, objectId?: number, retryOn202: boolean = true): Promise<IDerivativeTree> {
-        const url = this.getBaseUrl(this.region === Region.EMEA ? `regions/eu/designdata/${urn}/metadata/${guid}` : `designdata/${urn}/metadata/${guid}`);
+        const url = this.getUrl(this.region === Region.EMEA ? `regions/eu/designdata/${urn}/metadata/${guid}` : `designdata/${urn}/metadata/${guid}`);
         if (force)
             url.searchParams.append('forceget', 'true');
         if (objectId)
@@ -473,7 +473,7 @@ export class ModelDerivativeClient extends ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
     async getViewableTreeStream(urn: string, guid: string, force?: boolean, objectId?: number, retryOn202: boolean = true): Promise<ReadableStream> {
-        const url = this.getBaseUrl(this.region === Region.EMEA ? `regions/eu/designdata/${urn}/metadata/${guid}` : `designdata/${urn}/metadata/${guid}`);
+        const url = this.getUrl(this.region === Region.EMEA ? `regions/eu/designdata/${urn}/metadata/${guid}` : `designdata/${urn}/metadata/${guid}`);
         if (force)
             url.searchParams.append('forceget', 'true');
         if (objectId)
@@ -496,11 +496,27 @@ export class ModelDerivativeClient extends ForgeClient {
      * @param {string} urn Document derivative URN.
      * @param {string} guid Viewable GUID.
      * @param {boolean} [force] Force query even when exceeding the size limit (20MB).
+     * @param {number} [objectId] The Object ID of the object you want to query properties for.
+     * If `objectid` is omitted, the server returns properties for all objects.
+     * @param {boolean} [retryOn202] Keep repeating the request while the response status is 202 (indicating that the resource is being prepared).
      * @returns {Promise<IDerivativeProps>} Viewable properties.
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
-    async getViewableProperties(urn: string, guid: string, force?: boolean): Promise<IDerivativeProps> {
-        return this.get(this.region === Region.EMEA ? `regions/eu/designdata/${urn}/metadata/${guid}/properties${force ? '?forceget=true' : ''}` : `designdata/${urn}/metadata/${guid}/properties${force ? '?forceget=true' : ''}`, {}, ReadTokenScopes, true);
+    async getViewableProperties(urn: string, guid: string, force?: boolean, objectId?: number, retryOn202: boolean = true): Promise<IDerivativeProps> {
+        const url = this.getUrl(this.region === Region.EMEA ? `regions/eu/designdata/${urn}/metadata/${guid}/properties` : `designdata/${urn}/metadata/${guid}/properties`);
+        if (force)
+            url.searchParams.append('forceget', 'true');
+        if (objectId)
+            url.searchParams.append('objectid', objectId.toString());
+        const config: any = {};
+        await this.setAuthorization(config, ReadTokenScopes);
+        let resp = await this.axios.get(url.toString(), config);
+        while (resp.status === 202 && retryOn202) {
+            await sleep(RetryDelay);
+            await this.setAuthorization(config, ReadTokenScopes);
+            resp = await this.axios.get(url.toString(), config);
+        }
+        return resp.data;
     }
 
     /**
@@ -517,7 +533,7 @@ export class ModelDerivativeClient extends ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
     async getViewablePropertiesStream(urn: string, guid: string, force?: boolean, objectId?: number, retryOn202: boolean = true): Promise<ReadableStream> {
-        const url = this.getBaseUrl(this.region === Region.EMEA ? `regions/eu/designdata/${urn}/metadata/${guid}/properties` : `designdata/${urn}/metadata/${guid}/properties`);
+        const url = this.getUrl(this.region === Region.EMEA ? `regions/eu/designdata/${urn}/metadata/${guid}/properties` : `designdata/${urn}/metadata/${guid}/properties`);
         if (force)
             url.searchParams.append('forceget', 'true');
         if (objectId)
