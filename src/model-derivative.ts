@@ -199,6 +199,15 @@ export enum ThumbnailSize {
     Large = 400
 }
 
+interface IDerivativeDownloadInfo {
+    etag: string;
+    size: number;
+    url: string;
+    'content-type': string;
+    expiration: number;
+    cookies: { [key: string]: string };
+}
+
 /**
  * Utility class for querying {@see IDerivativeManifest}.
  */
@@ -350,6 +359,31 @@ export class ModelDerivativeClient extends ForgeClient {
         return this.delete(this.region === Region.EMEA ? `regions/eu/designdata/${urn}/manifest` : `designdata/${urn}/manifest`, {}, WriteTokenScopes);
     }
 
+    // Generates URL for downloading specific derivative
+    // https://forge.autodesk.com/en/docs/model-derivative/v2/reference/http/urn-manifest-derivativeUrn-signedcookies-GET
+    protected async getDerivativeDownloadUrl(modelUrn: string, derivativeUrn: string): Promise<IDerivativeDownloadInfo> {
+        const endpoint = this.region === Region.EMEA
+            ? `regions/eu/designdata/${modelUrn}/manifest/${derivativeUrn}/signedcookies`
+            : `designdata/${modelUrn}/manifest/${derivativeUrn}/signedcookies`;
+        const config = {};
+        await this.setAuthorization(config, ReadTokenScopes);
+        const resp = await this.axios.get(endpoint, config);
+        const record: IDerivativeDownloadInfo = {
+            etag: resp.data.etag,
+            size: resp.data.size,
+            url: resp.data.url,
+            'content-type': resp.data['content-type'],
+            expiration: resp.data.expiration,
+            cookies: {}
+        };
+        for (const cookie of resp.headers['set-cookie']) {
+            const tokens = cookie.split(';');
+            const [key, val] = tokens[0].trim().split('=');
+            record.cookies[key] = val;
+        }
+        return record;
+    }
+
     /**
      * Downloads content of a specific model derivative
      * ({@link https://forge.autodesk.com/en/docs/model-derivative/v2/reference/http/urn-manifest-derivativeurn-GET/|docs}).
@@ -360,7 +394,15 @@ export class ModelDerivativeClient extends ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async getDerivative(modelUrn: string, derivativeUrn: string): Promise<ArrayBuffer> {
-        return this.getBuffer(this.region === Region.EMEA ? `regions/eu/designdata/${modelUrn}/manifest/${derivativeUrn}` : `designdata/${modelUrn}/manifest/${derivativeUrn}`, {}, ReadTokenScopes);
+        const downloadInfo = await this.getDerivativeDownloadUrl(modelUrn, derivativeUrn);
+        const resp = await this.axios.get(downloadInfo.url, {
+            responseType: 'arraybuffer',
+            decompress: false,
+            headers: {
+                Cookie: Object.keys(downloadInfo.cookies).map(key => `${key}=${downloadInfo.cookies[key]}`).join(';')
+            }
+        });
+        return resp.data;
     }
 
     /**
@@ -373,7 +415,12 @@ export class ModelDerivativeClient extends ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     async getDerivativeStream(modelUrn: string, derivativeUrn: string): Promise<ReadableStream> {
-        return this.getStream(this.region === Region.EMEA ? `regions/eu/designdata/${modelUrn}/manifest/${derivativeUrn}` : `designdata/${modelUrn}/manifest/${derivativeUrn}`, {}, ReadTokenScopes);
+        const downloadInfo = await this.getDerivativeDownloadUrl(modelUrn, derivativeUrn);
+        const resp = await this.axios.get(downloadInfo.url, {
+            responseType: 'stream',
+            decompress: false
+        });
+        return resp.data;
     }
 
     /**
@@ -386,19 +433,22 @@ export class ModelDerivativeClient extends ForgeClient {
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
     getDerivativeChunked(modelUrn: string, derivativeUrn: string, maxChunkSize: number = 1 << 24): Readable {
-        const url = this.region === Region.EMEA ? `regions/eu/designdata/${modelUrn}/manifest/${derivativeUrn}` : `designdata/${modelUrn}/manifest/${derivativeUrn}`;
         const client = this;
         async function * read() {
-            const config = {};
-            await client.setAuthorization(config, ReadTokenScopes);
-            let resp = await client.axios.head(url, config);
-            const contentLength = parseInt(resp.headers['content-length']);
+            const downloadInfo = await client.getDerivativeDownloadUrl(modelUrn, derivativeUrn);
+            const contentLength = downloadInfo.size;
+            let resp = await client.axios.head(downloadInfo.url);
             let streamedBytes = 0;
             while (streamedBytes < contentLength) {
                 const chunkSize = Math.min(maxChunkSize, contentLength - streamedBytes);
-                await client.setAuthorization(config, ReadTokenScopes);
-                const buff = await client.getBuffer(url, { Range: `bytes=${streamedBytes}-${streamedBytes + chunkSize - 1}` }, ReadTokenScopes);
-                yield buff;
+                resp = await client.axios.get(downloadInfo.url, {
+                    responseType: 'arraybuffer',
+                    decompress: false,
+                    headers: {
+                        Range: `bytes=${streamedBytes}-${streamedBytes + chunkSize - 1}`
+                    }
+                });
+                yield resp.data;
                 streamedBytes += chunkSize;
             }
         }
