@@ -376,6 +376,9 @@ export class ModelDerivativeClient extends ForgeClient {
             expiration: resp.data.expiration,
             cookies: {}
         };
+        if(!resp || !resp.headers || !resp.headers['set-cookie']){
+            return record
+        }
         for (const cookie of resp.headers['set-cookie']) {
             const tokens = cookie.split(';');
             const [key, val] = tokens[0].trim().split('=');
