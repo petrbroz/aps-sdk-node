@@ -492,15 +492,18 @@ export class ModelDerivativeClient extends ForgeClient {
      * @param {number} [objectId] If specified, retrieves the sub-tree that has the specified object ID as its parent node.
      * If this parameter is not specified, retrieves the entire object tree.
      * @param {boolean} [retryOn202] Keep repeating the request while the response status is 202 (indicating that the resource is being prepared).
+     * @param {boolean} [includeLevel1] If true, grabs only the first level from the specified objectId. ObjectId must be provided.
      * @returns {Promise<IDerivativeTree>} Viewable object tree.
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
-    async getViewableTree(urn: string, guid: string, force?: boolean, objectId?: number, retryOn202: boolean = true): Promise<IDerivativeTree> {
+    async getViewableTree(urn: string, guid: string, force?: boolean, objectId?: number, retryOn202: boolean = true, includeLevel1?: boolean): Promise<IDerivativeTree> {
         const url = this.getUrl(this.region === Region.EMEA ? `regions/eu/designdata/${urn}/metadata/${guid}` : `designdata/${urn}/metadata/${guid}`);
         if (force)
             url.searchParams.append('forceget', 'true');
         if (objectId)
             url.searchParams.append('objectid', objectId.toString());
+        if(includeLevel1 && objectId)
+            url.searchParams.append('level', "1");
         const config = {};
         await this.setAuthorization(config, ReadTokenScopes);
         let resp = await this.axios.get(url.toString(), config);
