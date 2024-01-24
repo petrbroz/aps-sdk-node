@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.0.4] - 2024-01-24
+
+### Changed
+- Disabled object download tests.
+
 ## [9.0.3] - 2024-01-24
 
 ### Fixed
