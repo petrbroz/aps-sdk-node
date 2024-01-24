@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Model derivative downloads now use the new direct-s3 logic.
+- Additional params when quering object tree in the Model Derivative service.
+- Updated axios version.
 
 ## [9.0.0] - 2022-08-19
 
