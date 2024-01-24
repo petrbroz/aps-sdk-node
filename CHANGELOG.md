@@ -7,27 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [9.0.4] - 2024-01-24
+## [9.0.5] - 2024-01-24
 
 ### Changed
 - Disabled object download tests.
-
-## [9.0.3] - 2024-01-24
-
-### Fixed
-- Webpack version.
-
-## [9.0.2] - 2024-01-24
-
-### Fixed
-- Node.js version for GitHub Actions.
-
-## [9.0.1] - 2024-01-24
-
-### Changed
 - Model derivative downloads now use the new direct-s3 logic.
 - Additional params when quering object tree in the Model Derivative service.
 - Updated axios version.
+
+### Fixed
+- Dependencies (webpack, typedoc).
+- Node.js version for GitHub Actions.
 
 ## [9.0.0] - 2022-08-19
 
