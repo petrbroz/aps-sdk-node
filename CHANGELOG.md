@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.0.2] - 2024-01-24
+
+### Fixed
+- Node.js version for GitHub Actions.
+
 ## [9.0.1] - 2024-01-24
 
 ### Changed
