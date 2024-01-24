@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.0.1] - 2024-01-24
+
 ### Changed
 - Model derivative downloads now use the new direct-s3 logic.
 - Additional params when quering object tree in the Model Derivative service.
