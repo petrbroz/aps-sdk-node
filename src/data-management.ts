@@ -445,8 +445,8 @@ export class DataManagementClient extends ForgeClient {
         const resp = await this.axios.get(downloadParams.url as string, {
             responseType: 'arraybuffer',
             onDownloadProgress: progressEvent => {
-                const downloadedBytes = progressEvent.currentTarget.response.length;
-                const totalBytes = parseInt(progressEvent.currentTarget.responseHeaders['Content-Length']);
+                const downloadedBytes = progressEvent.event.response.length;
+                const totalBytes = parseInt(progressEvent.event.responseHeaders['Content-Length']);
                 if (options?.progress) {
                     options.progress(downloadedBytes, totalBytes);
                 }
@@ -472,8 +472,8 @@ export class DataManagementClient extends ForgeClient {
         const resp = await this.axios.get(downloadParams.url as string, {
             responseType: 'stream',
             onDownloadProgress: progressEvent => {
-                const downloadedBytes = progressEvent.currentTarget.response.length;
-                const totalBytes = parseInt(progressEvent.currentTarget.responseHeaders['Content-Length']);
+                const downloadedBytes = progressEvent.event.response.length;
+                const totalBytes = parseInt(progressEvent.event.responseHeaders['Content-Length']);
                 if (options?.progress) {
                     options.progress(downloadedBytes, totalBytes);
                 }
