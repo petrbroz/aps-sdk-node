@@ -7,6 +7,44 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.0.1] - 2024-01-24
+
+### Changed
+- Model derivative downloads now use the new direct-s3 logic.
+- Additional params when quering object tree in the Model Derivative service.
+- Updated axios version.
+
+## [9.0.0] - 2022-08-19
+
+### Changed
+- Uploading/downloading of OSS objects now uses the new binary transfer endpoints.
+- Resumable upload methods (`uploadObjectResumable`, `uploadObjectStreamResumable`, `getResumableUploadStatus`)
+are now marked as deprecated, and will be removed in the next major release. Use `getUploadUrls` and `completeUpload` instead.
+- New `useCdn` flag when generating signed URLs (true by default).
+
+## [8.4.0] - 2022-07-04
+
+### Added
+- Querying derivative trees and properties for specific object ID
+
+## [8.3.5] - 2022-01-05
+
+### Added
+- Support for filtering BIM360 issues by `status` and `assigned_to`
+
+## [8.3.4] - 2021-11-01
+
+### Added
+- Support for specifying `receiver` of DA app bundle and activity aliases
+
+## [8.3.3] - 2021-09-27
+
+### Added
+- The `ForgeClient` base class is now included in the library index
+
+### Fixed
+- URL-encoding when paging through OSS entities
+
 ## [8.3.2] - 2021-03-09
 
 ### Fixed

@@ -249,12 +249,14 @@ interface IIssueType {
 }
 
 interface IIssueFilter {
+    status?: string;
     owner?: string; // ID of the owner of the issue
     target_urn?: string; // Retrieves pushpin issues associated with the specified file. Only relevant for pushpin issues. A pushpin is a visual marker that denotes the location of a issue in a document.
     due_date?: Date | [Date, Date]; // Retrieves issues due by the specified due date. Value can be either a Date object specifying the due date, or an array of two Date objects specifying the range.
     synced_after?: Date; // Retrieves issues updated after the specified date. Value is the timestamp of date.
     created_at?: Date | [Date, Date]; // Retrieves issues created after the specfied date. Value can be either a Date object specifying the due date, or an array of two Date objects specifying the range.
     created_by?: string; // Retrieves issues created by the user. Value is the unique identifier of the user who created the issue.
+    assigned_to?: string;
     ng_issue_type_id?: string; // Retrieves issues associated with the specified issue type. To verify the ID, call GET ng-issue-types. Separate multiple values with commas. (Note that issues that were created in the Document Management module prior to the release of the latest version of the Issues API are automatically assigned the design issue type. For more details, see the changelog.)
     ng_issue_subtype_id?: string; // Retrieves issues associated with the specified issue subtype. To verify the ID, call GET ng-issue-types, with the include=subtypes query string parameter.
 }
@@ -829,6 +831,9 @@ export class BIM360Client extends ForgeClient {
             ? `issues/v1/containers/${encodeURIComponent(containerId)}/quality-issues?page[limit]=${page.limit}&page[offset]=${page.offset}`
             : `issues/v1/containers/${encodeURIComponent(containerId)}/quality-issues?page[limit]=${PageSize}`;
         if (filter) {
+            if (filter.status) {
+                url += '&filter[status]=' + filter.status;
+            }
             if (filter.owner) {
                 url += '&filter[owner]=' + filter.owner;
             }
@@ -854,6 +859,9 @@ export class BIM360Client extends ForgeClient {
             }
             if (filter.created_by) {
                 url += '&filter[created_by]=' + filter.created_by;
+            }
+            if (filter.assigned_to) {
+                url += '&filter[assigned_to]=' + filter.assigned_to;
             }
             if (filter.ng_issue_type_id) {
                 url += '&filter[ng_issue_type_id]=' + filter.ng_issue_type_id;
