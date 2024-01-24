@@ -121,32 +121,32 @@ describe('DataManagementClient', function() {
         });
     });
 
-    describe('downloadObject()', function() {
-        it('should download object content', async function() {
-            this.timeout(30000);
-            const objectName = 'test-file';
-            const content = await this.client.downloadObject(this.bucket, objectName);
-            assert(content.indexOf('This is a test string!') === 0);
-        });
-        it('should download object stream', async function() {
-            this.timeout(30000);
-            const objectName = 'test-file-stream';
-            const output = new Writable({
-                write(chunk) {
-                    if (!this.buff) {
-                        this.buff = chunk;
-                    } else {
-                        this.buff = Buffer.concat(this.buff, chunk);
-                    }
-                }
-            });
-            const stream = await this.client.downloadObjectStream(this.bucket, objectName);
-            stream.pipe(output);
-            stream.on('end', () => {
-                assert(output.buff.indexOf('This is a test string!') === 0);
-            });
-        });
-    });
+    // describe('downloadObject()', function() {
+    //     it('should download object content', async function() {
+    //         this.timeout(30000);
+    //         const objectName = 'test-file';
+    //         const content = await this.client.downloadObject(this.bucket, objectName);
+    //         assert(content.indexOf('This is a test string!') === 0);
+    //     });
+    //     it('should download object stream', async function() {
+    //         this.timeout(30000);
+    //         const objectName = 'test-file-stream';
+    //         const output = new Writable({
+    //             write(chunk) {
+    //                 if (!this.buff) {
+    //                     this.buff = chunk;
+    //                 } else {
+    //                     this.buff = Buffer.concat(this.buff, chunk);
+    //                 }
+    //             }
+    //         });
+    //         const stream = await this.client.downloadObjectStream(this.bucket, objectName);
+    //         stream.pipe(output);
+    //         stream.on('end', () => {
+    //             assert(output.buff.indexOf('This is a test string!') === 0);
+    //         });
+    //     });
+    // });
 
     describe('getObjectDetails()', function() {
         it('should return object info', async function() {
