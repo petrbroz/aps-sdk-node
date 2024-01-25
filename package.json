@@ -29,7 +29,7 @@
   "homepage": "https://github.com/petrbroz/forge-server-utils#readme",
   "devDependencies": {
     "@types/node": "^16.11.7",
-    "mocha": "^8.4.0",
+    "mocha": "^10.2.0",
     "typedoc": "^0.25.7",
     "typescript": "^5.1.3",
     "webpack": "^5.90.0",
