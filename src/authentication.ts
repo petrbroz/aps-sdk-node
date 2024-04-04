@@ -59,8 +59,8 @@ export class AuthenticationClient {
     }
 
     // Helper method for POST requests with urlencoded params
-    protected async post(endpoint: string, params: any) {
-        return axios.post(this.host + '/' + RootPath + '/' + endpoint, querystring.stringify(params));
+    protected async post(endpoint: string, params: any, headers = {}) {
+        return axios.post(`${this.host}/${RootPath}/${endpoint}`, querystring.stringify(params), { headers });
     }
 
     /**
@@ -88,19 +88,26 @@ export class AuthenticationClient {
 
         // Otherwise request a new token and cache it
         const params = {
-            'client_id': this.client_id,
-            'client_secret': this.client_secret,
             'grant_type': 'client_credentials',
             'scope': scopes.join(' ')
         };
+        
+        // Base64 encode client_id and client_secret
+        const credentials = btoa(this.client_id + ':' + this.client_secret);
+        
         const cache = this._cached[key] = {
             expires_at: Number.MAX_VALUE,
-            promise: this.post('authenticate', params).then((resp) => {
+            promise: this.post('token', params, {
+                headers: {
+                    'Authorization': `Basic ${credentials}`
+                }
+            }).then((resp) => {
                 const { data } = resp;
                 this._cached[key].expires_at = Date.now() + data.expires_in * 1000;
                 return data.access_token;
             })
         };
+        
         return cache.promise.then((token) => ({
             access_token: token,
             expires_in: Math.floor((cache.expires_at - Date.now()) / 1000)
