@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import FormData from 'form-data';
-import { ForgeClient, IAuthOptions, Region } from './common';
+import { BaseClient, IAuthOptions, Region } from './common';
 
 const CodeScopes = ['code:all'];
 
@@ -125,7 +125,7 @@ export interface IWorkItemParam {
 
 /**
  * Helper class for working with Design Automation
- * {@link https://forge.autodesk.com/en/docs/design-automation/v3/developers_guide/aliases-and-ids|aliases and IDs}.
+ * {@link https://aps.autodesk.com/en/docs/design-automation/v3/developers_guide/aliases-and-ids|aliases and IDs}.
  */
 export class DesignAutomationID {
     /**
@@ -160,17 +160,17 @@ export class DesignAutomationID {
 }
 
 /**
- * Client providing access to Autodesk Forge
- * {@link https://forge.autodesk.com/en/docs/design-automation/v3|design automation APIs}.
+ * Client providing access to Autodesk Platform Services
+ * {@link https://aps.autodesk.com/en/docs/design-automation/v3|design automation APIs}.
  * @tutorial design-automation
  */
-export class DesignAutomationClient extends ForgeClient {
+export class DesignAutomationClient extends BaseClient {
     /**
      * Initializes new client with specific authentication method.
      * @param {IAuthOptions} auth Authentication object,
      * containing either `client_id` and `client_secret` properties (for 2-legged authentication),
      * or a single `token` property (for 2-legged or 3-legged authentication with pre-generated access token).
-     * @param {string} [host="https://developer.api.autodesk.com"] Forge API host.
+     * @param {string} [host="https://developer.api.autodesk.com"] APS host.
      * @param {Region} [_region] @deprecated Will be removed in next major version.
      * @param {DesignAutomationRegion} [region] Design Automation specific availability region.
      */
@@ -181,11 +181,11 @@ export class DesignAutomationClient extends ForgeClient {
     }
 
     /**
-     * Resets client to specific authentication method, Forge host, and availability region.
+     * Resets client to specific authentication method, APS host, and availability region.
      * @param {IAuthOptions} [auth] Authentication object,
      * containing either `client_id` and `client_secret` properties (for 2-legged authentication),
      * or a single `token` property (for 2-legged or 3-legged authentication with pre-generated access token).
-     * @param {string} [host="https://developer.api.autodesk.com"] Forge API host.
+     * @param {string} [host="https://developer.api.autodesk.com"] APS host.
      * @param {Region} [_region] @deprecated Will be removed in next major version.
      * @param {DesignAutomationRegion} [region] Design Automation specific availability region.
      */
@@ -220,7 +220,7 @@ export class DesignAutomationClient extends ForgeClient {
 
     /**
      * Gets current nickname for all your Design Automation entities
-     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/design-automation-forgeapps-id-GET|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/design-automation/v3/reference/http/design-automation-forgeapps-id-GET|docs}).
      * @async
      * @returns {Promise<string>} Current nickname.
      */
@@ -230,7 +230,7 @@ export class DesignAutomationClient extends ForgeClient {
 
     /**
      * Sets new nickname for all your Design Automation entities
-     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/design-automation-forgeapps-id-PATCH|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/design-automation/v3/reference/http/design-automation-forgeapps-id-PATCH|docs}).
      * @async
      * @param {string} nickname New nickname.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
@@ -241,7 +241,7 @@ export class DesignAutomationClient extends ForgeClient {
 
     /**
      * Removes current nickname for all your Design Automation entities
-     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/design-automation-forgeapps-id-DELETE|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/design-automation/v3/reference/http/design-automation-forgeapps-id-DELETE|docs}).
      * @async
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
      */
@@ -251,7 +251,7 @@ export class DesignAutomationClient extends ForgeClient {
 
     /**
      * Iterates over all engines in pages of predefined size
-     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/engines-GET|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/design-automation/v3/reference/http/engines-GET|docs}).
      * @async
      * @generator
      * @yields {AsyncIterable<string[]>} List of engine (full) IDs.
@@ -265,7 +265,7 @@ export class DesignAutomationClient extends ForgeClient {
 
     /**
      * Gets a list of all engines
-     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/engines-GET|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/design-automation/v3/reference/http/engines-GET|docs}).
      * @async
      * @returns {Promise<string[]>} List of engine (full) IDs.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
@@ -276,7 +276,7 @@ export class DesignAutomationClient extends ForgeClient {
 
     /**
      * Gets single engine details
-     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/engines-id-GET|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/design-automation/v3/reference/http/engines-id-GET|docs}).
      * @async
      * @param {string} engineId Fully qualified engine ID.
      * @returns {Promise<IEngineDetail>} Engine details.
@@ -288,7 +288,7 @@ export class DesignAutomationClient extends ForgeClient {
 
     /**
      * Iterates over all app bundles in pages of predefined size
-     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-GET|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-GET|docs}).
      * @async
      * @generator
      * @yields {AsyncIterable<string[]>} List of appbundle (full) IDs.
@@ -302,7 +302,7 @@ export class DesignAutomationClient extends ForgeClient {
 
     /**
      * Gets a list of all appbundles
-     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-GET|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-GET|docs}).
      * @async
      * @returns {Promise<string[]>} List of appbundle (full) IDs.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
@@ -313,7 +313,7 @@ export class DesignAutomationClient extends ForgeClient {
 
     /**
      * Gets single appbundle details
-     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-id-GET|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-id-GET|docs}).
      * @async
      * @param {string} bundleId Fully qualified appbundle ID.
      * @returns {Promise<IAppBundleDetail>} Appbundle details.
@@ -325,7 +325,7 @@ export class DesignAutomationClient extends ForgeClient {
 
     /**
      * Gets single appbundle version details
-     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-id-versions-version-GET|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-id-versions-version-GET|docs}).
      * @async
      * @param {string} id Short (unqualified) app bundle ID.
      * @param {number} version App bundle version.
@@ -338,7 +338,7 @@ export class DesignAutomationClient extends ForgeClient {
 
     /**
      * Creates a new app bundle
-     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-POST|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-POST|docs}).
      * @async
      * @param {string} id Unique name of the bundle.
      * @param {string} engine ID of one of the supported {@link engines}.
@@ -361,7 +361,7 @@ export class DesignAutomationClient extends ForgeClient {
 
     /**
      * Updates an existing app bundle, creating its new version
-     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-id-versions-POST|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-id-versions-POST|docs}).
      * @async
      * @param {string} id ID of the app bundle.
      * @param {string} [engine] ID of one of the supported {@link engines}.
@@ -423,7 +423,7 @@ export class DesignAutomationClient extends ForgeClient {
 
     /**
      * Iterates over all app bundle aliases in pages of predefined size
-     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-id-aliases-GET|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-id-aliases-GET|docs}).
      * @async
      * @generator
      * @param {string} name Unique name of the bundle.
@@ -438,7 +438,7 @@ export class DesignAutomationClient extends ForgeClient {
 
     /**
      * Gets a list of all appbundle aliases
-     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-id-aliases-GET|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-id-aliases-GET|docs}).
      * @async
      * @param {string} name Unique name of the bundle.
      * @returns {Promise<IAlias[]>} List of appbundle alias objects.
@@ -450,7 +450,7 @@ export class DesignAutomationClient extends ForgeClient {
 
     /**
      * Iterates over all app bundle versions in pages of predefined size
-     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-id-versions-GET|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-id-versions-GET|docs}).
      * @async
      * @generator
      * @param {string} name Unique name of the bundle.
@@ -465,7 +465,7 @@ export class DesignAutomationClient extends ForgeClient {
 
     /**
      * Gets a list of all appbundle versions
-     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-id-versions-GET|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-id-versions-GET|docs}).
      * @async
      * @param {string} name Unique name of the bundle.
      * @returns {Promise<number[]>} List of appbundle version numbers.
@@ -477,12 +477,12 @@ export class DesignAutomationClient extends ForgeClient {
 
     /**
      * Creates new alias for an app bundle
-     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-id-aliases-POST/|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-id-aliases-POST/|docs}).
      * @async
      * @param {string} name Name of the app bundle.
      * @param {string} alias Alias name.
      * @param {number} version Version of app bundle to link to this alias.
-     * @param {string} [receiver] Optional ID of another Forge application to share this app bundle with.
+     * @param {string} [receiver] Optional ID of another APS application to share this app bundle with.
      * @returns {Promise<IAlias>} Details of the created alias.
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
@@ -497,12 +497,12 @@ export class DesignAutomationClient extends ForgeClient {
 
     /**
      * Updates existing alias for an app bundle
-     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-id-aliases-aliasId-PATCH/|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-id-aliases-aliasId-PATCH/|docs}).
      * @async
      * @param {string} name Name of the app bundle.
      * @param {string} alias Alias name.
      * @param {number} version Version of app bundle to link to this alias.
-     * @param {string} [receiver] Optional ID of another Forge application to share this app bundle with.
+     * @param {string} [receiver] Optional ID of another APS application to share this app bundle with.
      * @returns {Promise<IAlias>} Details of the updated alias.
      * @throws Error when the request fails, for example, due to insufficient rights.
      */
@@ -517,7 +517,7 @@ export class DesignAutomationClient extends ForgeClient {
 
     /**
      * Deletes app bundle and all its versions and aliases
-     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-id-DELETE|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-id-DELETE|docs}).
      * @async
      * @param {string} shortId Short (unqualified) app bundle ID.
      */
@@ -527,7 +527,7 @@ export class DesignAutomationClient extends ForgeClient {
 
     /**
      * Deletes app bundle alias
-     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-id-aliases-aliasId-DELETE|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-id-aliases-aliasId-DELETE|docs}).
      * @async
      * @param {string} shortId Short (unqualified) app bundle ID.
      * @param {string} alias App bundle alias.
@@ -538,7 +538,7 @@ export class DesignAutomationClient extends ForgeClient {
 
     /**
      * Deletes app bundle version
-     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-id-versions-version-DELETE|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/design-automation/v3/reference/http/appbundles-id-versions-version-DELETE|docs}).
      * @async
      * @param {string} shortId Short (unqualified) app bundle ID.
      * @param {number} version App bundle version.
@@ -549,7 +549,7 @@ export class DesignAutomationClient extends ForgeClient {
 
     /**
      * Iterates over all activities in pages of predefined size
-     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/activities-GET|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/design-automation/v3/reference/http/activities-GET|docs}).
      * @async
      * @generator
      * @yields {AsyncIterable<string[]>} List of activity (full) IDs.
@@ -563,7 +563,7 @@ export class DesignAutomationClient extends ForgeClient {
 
     /**
      * Gets a list of all activities
-     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/activities-GET|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/design-automation/v3/reference/http/activities-GET|docs}).
      * @async
      * @returns {Promise<string[]>} List of activity (full) IDs.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
@@ -574,7 +574,7 @@ export class DesignAutomationClient extends ForgeClient {
 
     /**
      * Gets single activity details
-     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/activities-id-GET|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/design-automation/v3/reference/http/activities-id-GET|docs}).
      * @async
      * @param {string} activityId Fully qualified activity ID.
      * @returns {Promise<object>} Activity details.
@@ -586,7 +586,7 @@ export class DesignAutomationClient extends ForgeClient {
 
     /**
      * Gets single activity version details
-     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/activities-id-versions-version-GET|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/design-automation/v3/reference/http/activities-id-versions-version-GET|docs}).
      * @async
      * @param {string} id Short (unqualified) activity ID.
      * @param {number} version Activity version.
@@ -599,7 +599,7 @@ export class DesignAutomationClient extends ForgeClient {
 
     /**
      * Creates new activity
-     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/activities-POST|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/design-automation/v3/reference/http/activities-POST|docs}).
      * @async
      * @param {string} id New activity ID.
      * @param {string} engine ID of one of the supported {@link engines}.
@@ -640,7 +640,7 @@ export class DesignAutomationClient extends ForgeClient {
 
     /**
      * Updates existing activity, creating its new version
-     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/activities-id-versions-POST|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/design-automation/v3/reference/http/activities-id-versions-POST|docs}).
      * @async
      * @param {string} id New activity ID.
      * @param {string} engine ID of one of the supported {@link engines}.
@@ -678,7 +678,7 @@ export class DesignAutomationClient extends ForgeClient {
 
     /**
      * Iterates over all activity aliases in pages of predefined size
-     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/activities-id-aliases-GET|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/design-automation/v3/reference/http/activities-id-aliases-GET|docs}).
      * @async
      * @generator
      * @param {string} name Unique name of activity.
@@ -693,7 +693,7 @@ export class DesignAutomationClient extends ForgeClient {
 
     /**
      * Gets a list of all activity aliases
-     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/activities-id-aliases-GET|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/design-automation/v3/reference/http/activities-id-aliases-GET|docs}).
      * @async
      * @param {string} name Unique name of activity.
      * @returns {Promise<IAlias[]>} List of activity alias objects.
@@ -705,7 +705,7 @@ export class DesignAutomationClient extends ForgeClient {
 
     /**
      * Iterates over all activity versions in pages of predefined size
-     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/activities-id-versions-GET|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/design-automation/v3/reference/http/activities-id-versions-GET|docs}).
      * @async
      * @generator
      * @param {string} name Unique name of activity.
@@ -720,7 +720,7 @@ export class DesignAutomationClient extends ForgeClient {
 
     /**
      * Gets a list of all activity versions
-     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/activities-id-versions-GET|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/design-automation/v3/reference/http/activities-id-versions-GET|docs}).
      * @async
      * @param {string} name Unique name of activity.
      * @returns {Promise<number[]>} List of activity versions.
@@ -732,12 +732,12 @@ export class DesignAutomationClient extends ForgeClient {
 
     /**
      * Creates new alias for an activity
-     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/activities-id-aliases-POST|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/design-automation/v3/reference/http/activities-id-aliases-POST|docs}).
      * @async
      * @param {string} id Activity ID.
      * @param {string} alias New alias name.
      * @param {number} version Activity version to link to this alias.
-     * @param {string} [receiver] Optional ID of another Forge application to share this activity with.
+     * @param {string} [receiver] Optional ID of another APS application to share this activity with.
      * @returns {Promise<IAlias>} Details of created alias.
      */
     async createActivityAlias(id: string, alias: string, version: number, receiver?: string): Promise<IAlias> {
@@ -751,12 +751,12 @@ export class DesignAutomationClient extends ForgeClient {
 
     /**
      * Updates existing alias for an activity
-     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/activities-id-aliases-aliasId-PATCH|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/design-automation/v3/reference/http/activities-id-aliases-aliasId-PATCH|docs}).
      * @async
      * @param {string} id Activity ID.
      * @param {string} alias Activity alias.
      * @param {number} version Activity version to link to this alias.
-     * @param {string} [receiver] Optional ID of another Forge application to share this activity with.
+     * @param {string} [receiver] Optional ID of another APS application to share this activity with.
      * @returns {Promise<IAlias>} Details of updated alias.
      */
     async updateActivityAlias(id: string, alias: string, version: number, receiver?: string): Promise<IAlias> {
@@ -770,7 +770,7 @@ export class DesignAutomationClient extends ForgeClient {
 
     /**
      * Deletes activity and all its versions and aliases
-     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/activities-id-DELETE|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/design-automation/v3/reference/http/activities-id-DELETE|docs}).
      * @async
      * @param {string} shortId Short (unqualified) activity ID.
      */
@@ -780,7 +780,7 @@ export class DesignAutomationClient extends ForgeClient {
 
     /**
      * Deletes activity alias
-     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/activities-id-aliases-aliasId-DELETE|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/design-automation/v3/reference/http/activities-id-aliases-aliasId-DELETE|docs}).
      * @async
      * @param {string} shortId Short (unqualified) activity ID.
      * @param {string} alias Activity alias.
@@ -791,7 +791,7 @@ export class DesignAutomationClient extends ForgeClient {
 
     /**
      * Deletes activity version
-     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/activities-id-versions-version-DELETE|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/design-automation/v3/reference/http/activities-id-versions-version-DELETE|docs}).
      * @async
      * @param {string} shortId Short (unqualified) activity ID.
      * @param {number} version Activity version.
@@ -802,7 +802,7 @@ export class DesignAutomationClient extends ForgeClient {
 
     /**
      * Gets details of a specific work item
-     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/workitems-id-GET|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/design-automation/v3/reference/http/workitems-id-GET|docs}).
      * @async
      * @param {string} id Work item ID.
      * @returns {Promise<IWorkItemDetail>} Work item details.
@@ -814,7 +814,7 @@ export class DesignAutomationClient extends ForgeClient {
 
     /**
      * Creates new work item
-     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/workitems-POST|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/design-automation/v3/reference/http/workitems-POST|docs}).
      * @async
      * @param {string} activityId Activity ID.
      * @param {{ [name: string]: IWorkItemParam }} [args] Arguments to pass in as activity parameters.
@@ -848,7 +848,7 @@ export class DesignAutomationClient extends ForgeClient {
 
     /**
      * Cancels work item, removing it from waiting queue or cancelling a running job
-     * ({@link https://forge.autodesk.com/en/docs/design-automation/v3/reference/http/workitems-id-DELETE|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/design-automation/v3/reference/http/workitems-id-DELETE|docs}).
      * @async
      * @param {string} id Work item ID.
      */

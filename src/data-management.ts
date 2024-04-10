@@ -1,4 +1,4 @@
-import { ForgeClient, IAuthOptions, Region, sleep } from './common';
+import { BaseClient, IAuthOptions, Region, sleep } from './common';
 import { AxiosError, AxiosRequestConfig } from 'axios';
 
 const RootPath = 'oss/v2';
@@ -118,17 +118,17 @@ function parallelize(tasks: Task[], concurrency: number = 5): Promise<void> {
 }
 
 /**
- * Client providing access to Autodesk Forge {@link https://forge.autodesk.com/en/docs/data/v2|data management APIs}.
+ * Client providing access to APS Data Management API ({@link https://aps.autodesk.com/en/docs/data/v2/reference/http/}).
  * @tutorial data-management
  */
-export class DataManagementClient extends ForgeClient {
+export class DataManagementClient extends BaseClient {
     /**
      * Initializes new client with specific authentication method.
      * @param {IAuthOptions} auth Authentication object,
      * containing either `client_id` and `client_secret` properties (for 2-legged authentication),
      * or a single `token` property (for 2-legged or 3-legged authentication with pre-generated access token).
-     * @param {string} [host="https://developer.api.autodesk.com"] Forge API host.
-     * @param {Region} [region="US"] Forge availability region ("US" or "EMEA").
+     * @param {string} [host="https://developer.api.autodesk.com"] APS host.
+     * @param {Region} [region="US"] APS availability region ("US" or "EMEA").
      */
     constructor(auth: IAuthOptions, host?: string, region?: Region) {
         super(RootPath, auth, host, region);
@@ -165,7 +165,7 @@ export class DataManagementClient extends ForgeClient {
 
     /**
      * Iterates over all buckets in pages of predefined size
-     * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/buckets-GET|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/data/v2/reference/http/buckets-GET|docs}).
      * @async
      * @generator
      * @param {number} [limit=16] Max number of buckets to receive in one batch (allowed values: 1-100).
@@ -180,7 +180,7 @@ export class DataManagementClient extends ForgeClient {
 
     /**
      * Lists all buckets
-     * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/buckets-GET|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/data/v2/reference/http/buckets-GET|docs}).
      * @async
      * @returns {Promise<IBucket[]>} List of bucket objects.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
@@ -191,7 +191,7 @@ export class DataManagementClient extends ForgeClient {
 
     /**
      * Gets details of a specific bucket
-     * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/buckets-:bucketKey-details-GET|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/data/v2/reference/http/buckets-:bucketKey-details-GET|docs}).
      * @async
      * @param {string} bucket Bucket key.
      * @returns {Promise<IBucketDetail>} Bucket details, with properties "bucketKey", "bucketOwner", "createdDate",
@@ -205,7 +205,7 @@ export class DataManagementClient extends ForgeClient {
 
     /**
      * Creates a new bucket
-     * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/buckets-POST|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/data/v2/reference/http/buckets-POST|docs}).
      * @async
      * @param {string} bucket Bucket key.
      * @param {DataRetentionPolicy} dataRetention Data retention policy for objects uploaded to this bucket.
@@ -223,7 +223,7 @@ export class DataManagementClient extends ForgeClient {
 
     /**
      * Iterates over all objects in a bucket in pages of predefined size
-     * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/buckets-:bucketKey-objects-GET|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/data/v2/reference/http/buckets-:bucketKey-objects-GET|docs}).
      * @async
      * @generator
      * @param {string} bucket Bucket key.
@@ -244,7 +244,7 @@ export class DataManagementClient extends ForgeClient {
 
     /**
      * Lists all objects in a bucket
-     * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/buckets-:bucketKey-objects-GET|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/data/v2/reference/http/buckets-:bucketKey-objects-GET|docs}).
      * @async
      * @param {string} bucket Bucket key.
      * @param {string} [beginsWith] Optional filter to only return objects whose keys are prefixed with this value.
@@ -487,7 +487,7 @@ export class DataManagementClient extends ForgeClient {
      * Use {@see getUploadUrls} and {@see completeUpload} instead.
      *
      * Uploads content to a specific bucket object using the resumable capabilities
-     * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/buckets-:bucketKey-objects-:objectName-resumable-PUT|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/data/v2/reference/http/buckets-:bucketKey-objects-:objectName-resumable-PUT|docs}).
      * @async
      * @param {string} bucketKey Bucket key.
      * @param {string} objectName Name of uploaded object.
@@ -515,7 +515,7 @@ export class DataManagementClient extends ForgeClient {
      * Use {@see getUploadUrls} and {@see completeUpload} instead.
      *
      * Uploads content stream to a specific bucket object using the resumable capabilities
-     * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/buckets-:bucketKey-objects-:objectName-resumable-PUT|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/data/v2/reference/http/buckets-:bucketKey-objects-:objectName-resumable-PUT|docs}).
      * @async
      * @param {string} bucketKey Bucket key.
      * @param {string} objectName Name of uploaded object.
@@ -544,7 +544,7 @@ export class DataManagementClient extends ForgeClient {
      * Use {@see getUploadUrls} and {@see completeUpload} instead.
      *
      * Gets status of a resumable upload session
-     * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/buckets-:bucketKey-objects-:objectName-status-:sessionId-GET|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/data/v2/reference/http/buckets-:bucketKey-objects-:objectName-status-:sessionId-GET|docs}).
      * @async
      * @param {string} bucketKey Bucket key.
      * @param {string} objectName Name of uploaded object.
@@ -579,7 +579,7 @@ export class DataManagementClient extends ForgeClient {
 
     /**
      * Makes a copy of object under another name within the same bucket
-     * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/buckets-:bucketKey-objects-:objectName-copyto-:newObjectName-PUT|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/data/v2/reference/http/buckets-:bucketKey-objects-:objectName-copyto-:newObjectName-PUT|docs}).
      * @async
      * @param {string} bucket Bucket key.
      * @param {string} oldObjectKey Original object key.
@@ -593,7 +593,7 @@ export class DataManagementClient extends ForgeClient {
 
     /**
      * Gets details of a specific bucket object
-     * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/buckets-:bucketKey-objects-:objectName-details-GET|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/data/v2/reference/http/buckets-:bucketKey-objects-:objectName-details-GET|docs}).
      * @async
      * @param {string} bucket Bucket key.
      * @param {string} object Object name.
@@ -608,7 +608,7 @@ export class DataManagementClient extends ForgeClient {
 
     /**
      * Creates signed URL for specific object
-     * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/buckets-:bucketKey-objects-:objectName-signed-POST|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/data/v2/reference/http/buckets-:bucketKey-objects-:objectName-signed-POST|docs}).
      * @async
      * @param {string} bucketId Bucket key.
      * @param {string} objectId Object key.
@@ -623,7 +623,7 @@ export class DataManagementClient extends ForgeClient {
 
     /**
      * Deletes object
-     * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/buckets-:bucketKey-objects-:objectName-DELETE|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/data/v2/reference/http/buckets-:bucketKey-objects-:objectName-DELETE|docs}).
      * @async
      * @param {string} bucketKey Bucket key.
      * @param {string} objectName Name of object to delete.
@@ -634,7 +634,7 @@ export class DataManagementClient extends ForgeClient {
     }
 
     /**
-     * Deletes bucket (this endpoint is not documented on the Forge portal).
+     * Deletes bucket.
      * @async
      * @param {string} bucketKey Bucket key.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.

@@ -1,7 +1,7 @@
 {
-  "name": "forge-server-utils",
+  "name": "aps-sdk-node",
   "version": "9.0.0",
-  "description": "Tools for accessing Autodesk Forge APIs from Node.js apps and from browser.",
+  "description": "Unofficial Autodesk Platform Services SDK for Node.js.",
   "main": "dist/index.js",
   "scripts": {
     "build": "yarn run build:node && yarn run build:web",
@@ -12,11 +12,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/petrbroz/forge-server-utils.git"
+    "url": "git+https://github.com/petrbroz/aps-sdk-node.git"
   },
   "keywords": [
-    "autodesk",
-    "forge",
+    "autodesk-platform-services",
     "api",
     "node.js",
     "typescript"
@@ -24,16 +23,16 @@
   "author": "Petr Broz <petr.broz@autodesk.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/petrbroz/forge-server-utils/issues"
+    "url": "https://github.com/petrbroz/aps-sdk-node/issues"
   },
-  "homepage": "https://github.com/petrbroz/forge-server-utils#readme",
+  "homepage": "https://github.com/petrbroz/aps-sdk-node#readme",
   "devDependencies": {
     "@types/node": "^12.7.0",
     "mocha": "^7.1.2",
     "typedoc": "^0.20.13",
     "typescript": "^3.7.5",
-    "webpack": "^4.39.0",
-    "webpack-cli": "^3.3.6"
+    "webpack": "^4.0.0",
+    "webpack-cli": "^4.0.0"
   },
   "dependencies": {
     "@types/adm-zip": "^0.4.32",

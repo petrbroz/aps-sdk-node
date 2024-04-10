@@ -4,10 +4,10 @@ const { DesignAutomationClient } = require('..');
 
 describe('DesignAutomationClient', function() {
     beforeEach(function() {
-        const { FORGE_CLIENT_ID, FORGE_CLIENT_SECRET } = process.env;
-        assert(FORGE_CLIENT_ID);
-        assert(FORGE_CLIENT_SECRET);
-        this.client = new DesignAutomationClient({ client_id: FORGE_CLIENT_ID, client_secret: FORGE_CLIENT_SECRET });
+        const { APS_CLIENT_ID, APS_CLIENT_SECRET } = process.env;
+        assert(APS_CLIENT_ID);
+        assert(APS_CLIENT_SECRET);
+        this.client = new DesignAutomationClient({ client_id: APS_CLIENT_ID, client_secret: APS_CLIENT_SECRET });
         this.timeout(10000); // Increase timeout to 10 seconds
     });
 
@@ -45,7 +45,7 @@ describe('DesignAutomationClient', function() {
 
     describe('createAppBundle()', function() {
         it('should fail because a bundle with this name already exists', function(done) {
-            this.client.createAppBundle('ForgeNodejsUtilsTestBundle', 'Autodesk.Revit+2019')
+            this.client.createAppBundle('TestBundle', 'Autodesk.Revit+2019')
                 .catch((err) => {
                     //console.log(err);
                     done();

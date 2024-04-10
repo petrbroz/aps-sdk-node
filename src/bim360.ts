@@ -1,5 +1,5 @@
 import { Region } from './common';
-import { ForgeClient, IAuthOptions } from './common';
+import { BaseClient, IAuthOptions } from './common';
 
 const ReadTokenScopes = ['data:read', 'account:read'];
 const WriteTokenScopes = ['data:create', 'data:write'];
@@ -333,17 +333,17 @@ interface ILocationNode {
 }
 
 /**
- * Client providing access to Autodesk Forge
- * {@link https://forge.autodesk.com/en/docs/bim360/v1|BIM360 APIs}.
+ * Client providing access to Autodesk Platform Services
+ * {@link https://aps.autodesk.com/en/docs/bim360/v1|BIM360 APIs}.
  */
-export class BIM360Client extends ForgeClient {
+export class BIM360Client extends BaseClient {
     /**
      * Initializes new client with specific authentication method.
      * @param {IAuthOptions} auth Authentication object,
      * containing either `client_id` and `client_secret` properties (for 2-legged authentication),
      * or a single `token` property (for 2-legged or 3-legged authentication with pre-generated access token).
-     * @param {string} [host="https://developer.api.autodesk.com"] Forge API host.
-     * @param {Region} [region="US"] Forge availability region ("US" or "EMEA").
+     * @param {string} [host="https://developer.api.autodesk.com"] APS host.
+     * @param {Region} [region="US"] APS availability region ("US" or "EMEA").
      */
     constructor(auth: IAuthOptions, host?: string, region?: Region) {
         super('', auth, host, region);
@@ -353,7 +353,7 @@ export class BIM360Client extends ForgeClient {
 
     /**
      * Gets a list of all hubs accessible to given credentials
-     * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/hubs-GET}).
+     * ({@link https://aps.autodesk.com/en/docs/data/v2/reference/http/hubs-GET}).
      * @async
      * @param {string} [xUserId] Optional API will act on behalf of specified user Id.
      * @returns {Promise<IHub[]>} List of hubs.
@@ -375,7 +375,7 @@ export class BIM360Client extends ForgeClient {
 
     /**
      * Gets details of specific hub
-     * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/hubs-hub_id-GET}).
+     * ({@link https://aps.autodesk.com/en/docs/data/v2/reference/http/hubs-hub_id-GET}).
      * @async
      * @param {string} hubId Hub ID.
      * @param {string} [xUserId] Optional API will act on behalf of specified user Id.
@@ -397,7 +397,7 @@ export class BIM360Client extends ForgeClient {
 
     /**
      * Gets a list of all projects in a hub
-     * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/hubs-hub_id-projects-GET}).
+     * ({@link https://aps.autodesk.com/en/docs/data/v2/reference/http/hubs-hub_id-projects-GET}).
      * @async
      * @param {string} hubId Hub ID.
      * @param {string} [xUserId] Optional API will act on behalf of specified user Id.
@@ -420,7 +420,7 @@ export class BIM360Client extends ForgeClient {
 
     /**
      * Gets details of specific project
-     * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/hubs-hub_id-projects-project_id-GET}).
+     * ({@link https://aps.autodesk.com/en/docs/data/v2/reference/http/hubs-hub_id-projects-project_id-GET}).
      * @async
      * @param {string} hubId Hub ID.
      * @param {string} projectId Project ID.
@@ -439,7 +439,7 @@ export class BIM360Client extends ForgeClient {
 
     /**
      * Gets a list of top folders in a project
-     * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/hubs-hub_id-projects-project_id-topFolders-GET}).
+     * ({@link https://aps.autodesk.com/en/docs/data/v2/reference/http/hubs-hub_id-projects-project_id-topFolders-GET}).
      * @async
      * @param {string} hubId Hub ID.
      * @param {string} projectId Project ID.
@@ -505,7 +505,7 @@ export class BIM360Client extends ForgeClient {
 
     /**
      * Gets contents of a folder
-     * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/projects-project_id-folders-folder_id-contents-GET}).
+     * ({@link https://aps.autodesk.com/en/docs/data/v2/reference/http/projects-project_id-folders-folder_id-contents-GET}).
      * @async
      * @param {string} projectId Project ID.
      * @param {string} folderId Folder ID.
@@ -528,7 +528,7 @@ export class BIM360Client extends ForgeClient {
 
     /**
      * Returns the folder by ID for any folder within a given project.
-     * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/projects-project_id-folders-folder_id-GET/}).
+     * ({@link https://aps.autodesk.com/en/docs/data/v2/reference/http/projects-project_id-folders-folder_id-GET/}).
      * @param {string} projectId Project ID.
      * @param {string} folderId Folder ID.
      * @param {string} [xUserId] Optional API will act on behalf of specified user Id.
@@ -552,7 +552,7 @@ export class BIM360Client extends ForgeClient {
 
     /**
      * Gets details of an item
-     * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/projects-project_id-items-item_id-GET}).
+     * ({@link https://aps.autodesk.com/en/docs/data/v2/reference/http/projects-project_id-items-item_id-GET}).
      * @async
      * @param {string} projectId Project ID.
      * @param {string} itemId Item ID.
@@ -587,7 +587,7 @@ export class BIM360Client extends ForgeClient {
 
     /**
      * Gets versions of a folder item
-     * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/projects-project_id-items-item_id-versions-GET}).
+     * ({@link https://aps.autodesk.com/en/docs/data/v2/reference/http/projects-project_id-items-item_id-versions-GET}).
      * @async
      * @param {string} projectId Project ID.
      * @param {string} itemId Item ID.
@@ -616,7 +616,7 @@ export class BIM360Client extends ForgeClient {
 
     /**
      * Gets "tip" version of a folder item
-     * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/projects-project_id-items-item_id-tip-GET}).
+     * ({@link https://aps.autodesk.com/en/docs/data/v2/reference/http/projects-project_id-items-item_id-tip-GET}).
      * @async
      * @param {string} projectId Project ID.
      * @param {string} itemId Item ID.
@@ -638,7 +638,7 @@ export class BIM360Client extends ForgeClient {
 
     /**
      * Gets specific version of a folder item
-     * ({@link https://forge.autodesk.com/en/docs/data/v2/reference/http/projects-project_id-versions-version_id-GET}).
+     * ({@link https://aps.autodesk.com/en/docs/data/v2/reference/http/projects-project_id-versions-version_id-GET}).
      * @async
      * @param {string} projectId Project ID.
      * @param {string} itemId Item ID (@deprecated, will be removed in next major version).
@@ -817,7 +817,7 @@ export class BIM360Client extends ForgeClient {
     /**
      * Lists all issues in a BIM360 project.
      * Requires 3-legged token.
-     * {@link https://forge.autodesk.com/en/docs/bim360/v1/reference/http/field-issues-GET}.
+     * {@link https://aps.autodesk.com/en/docs/bim360/v1/reference/http/field-issues-GET}.
      * @async
      * @param {string} containerId ID of container storing all issues for a specific projects.
      * @param {IIssueFilter} [filter] Optional set of filters.
@@ -884,7 +884,7 @@ export class BIM360Client extends ForgeClient {
     /**
      * Obtains detail information about BIM360 issue.
      * Requires 3-legged token.
-     * {@link https://forge.autodesk.com/en/docs/bim360/v1/reference/http/field-issues-:id-GET}.
+     * {@link https://aps.autodesk.com/en/docs/bim360/v1/reference/http/field-issues-:id-GET}.
      * @async
      * @param {string} containerId ID of container storing all issues for a specific projects.
      * @param {string} issueId Issue ID.
@@ -900,7 +900,7 @@ export class BIM360Client extends ForgeClient {
     /**
      * Creates new BIM360 issue.
      * Requires 3-legged token.
-     * {@link https://forge.autodesk.com/en/docs/bim360/v1/reference/http/field-issues-POST}.
+     * {@link https://aps.autodesk.com/en/docs/bim360/v1/reference/http/field-issues-POST}.
      * @async
      * @param {string} containerId ID of container storing all issues for a specific projects.
      * @param {INewIssue} attributes New issue attributes.
@@ -922,7 +922,7 @@ export class BIM360Client extends ForgeClient {
     /**
      * Updates existing BIM360 issue.
      * Requires 3-legged token.
-     * {@link https://forge.autodesk.com/en/docs/bim360/v1/reference/http/field-issues-:id-PATCH}.
+     * {@link https://aps.autodesk.com/en/docs/bim360/v1/reference/http/field-issues-:id-PATCH}.
      * @async
      * @param {string} containerId ID of container storing all issues for a specific projects.
      * @param {string} issueId ID of updated issue.
@@ -945,7 +945,7 @@ export class BIM360Client extends ForgeClient {
     /**
      * Lists all comments associated with a BIM360 issue.
      * Requires 3-legged token.
-     * {@link https://forge.autodesk.com/en/docs/bim360/v1/reference/http/field-issues-:id-comments-GET}.
+     * {@link https://aps.autodesk.com/en/docs/bim360/v1/reference/http/field-issues-:id-comments-GET}.
      * @async
      * @param {string} containerId ID of container storing all issues for a specific projects.
      * @param {string} issueId Issue ID.
@@ -971,7 +971,7 @@ export class BIM360Client extends ForgeClient {
 
     /**
      * Creates new comment associated with a BIM360 issue.
-     * {@link https://forge.autodesk.com/en/docs/bim360/v1/reference/http/field-issues-comments-POST}.
+     * {@link https://aps.autodesk.com/en/docs/bim360/v1/reference/http/field-issues-comments-POST}.
      * @async
      * @param {string} containerId ID of container storing all issues for a specific projects.
      * @param {string} issueId Issue ID.
@@ -996,7 +996,7 @@ export class BIM360Client extends ForgeClient {
     /**
      * Lists all attachments associated with a BIM360 issue.
      * Requires 3-legged token.
-     * {@link https://forge.autodesk.com/en/docs/bim360/v1/reference/http/field-issues-attachments-GET}.
+     * {@link https://aps.autodesk.com/en/docs/bim360/v1/reference/http/field-issues-attachments-GET}.
      * @async
      * @param {string} containerId ID of container storing all issues for a specific projects.
      * @param {string} issueId Issue ID.
@@ -1022,7 +1022,7 @@ export class BIM360Client extends ForgeClient {
 
     /**
      * Creates new attachment associated with a BIM360 issue.
-     * {@link https://forge.autodesk.com/en/docs/bim360/v1/reference/http/field-issues-attachments-POST}.
+     * {@link https://aps.autodesk.com/en/docs/bim360/v1/reference/http/field-issues-attachments-POST}.
      * @async
      * @param {string} containerId ID of container storing all issues for a specific projects.
      * @returns {Promise<IIssueAttachment>} New issue attachment.
@@ -1042,7 +1042,7 @@ export class BIM360Client extends ForgeClient {
 
     /**
      * Retrieves a list of supported root causes that you can allocate to an issue.
-     * {@link https://forge.autodesk.com/en/docs/bim360/v1/reference/http/root-causes-GET}.
+     * {@link https://aps.autodesk.com/en/docs/bim360/v1/reference/http/root-causes-GET}.
      * @async
      * @param {string} containerId ID of container storing all issues for a specific projects.
      * @param {IPage} [page] Optional page of records. If not defined, *all* records will be listed.
@@ -1061,7 +1061,7 @@ export class BIM360Client extends ForgeClient {
 
     /**
      * Lists issue types in specific container.
-     * {@link https://forge.autodesk.com/en/docs/bim360/v1/reference/http/ng-issue-types-GET}.
+     * {@link https://aps.autodesk.com/en/docs/bim360/v1/reference/http/ng-issue-types-GET}.
      * @async
      * @param {string} containerId ID of container storing all issues for a specific projects.
      * @returns {Promise<IIssueType[]>} List of issues types.
@@ -1108,8 +1108,8 @@ export class BIM360Client extends ForgeClient {
 
     /**
      * Lists all users in BIM 360 account, or just users matching specific criteria.
-     * {@link https://forge.autodesk.com/en/docs/bim360/v1/reference/http/users-GET}.
-     * {@link https://forge.autodesk.com/en/docs/bim360/v1/reference/http/users-search-GET}.
+     * {@link https://aps.autodesk.com/en/docs/bim360/v1/reference/http/users-GET}.
+     * {@link https://aps.autodesk.com/en/docs/bim360/v1/reference/http/users-search-GET}.
      * @async
      * @param {string} accountId The account ID of the users. This corresponds to hub ID in the Data Management API. To convert a hub ID into an account ID you need to remove the “b.” prefix. For example, a hub ID of b.c8b0c73d-3ae9 translates to an account ID of c8b0c73d-3ae9.
      * @returns {Promise<IUser[]>} List of users.
@@ -1140,7 +1140,7 @@ export class BIM360Client extends ForgeClient {
 
     /**
      * Query the details of a specific user.
-     * {@link https://forge.autodesk.com/en/docs/bim360/v1/reference/http/users-:user_id-GET}.
+     * {@link https://aps.autodesk.com/en/docs/bim360/v1/reference/http/users-:user_id-GET}.
      * @param {string} accountId The account ID of the users. This corresponds to hub ID in the Data Management API. To convert a hub ID into an account ID you need to remove the “b.” prefix. For example, a hub ID of b.c8b0c73d-3ae9 translates to an account ID of c8b0c73d-3ae9.
      * @param {string} userId User ID.
      * @returns {Promise<IUser>} User details.
