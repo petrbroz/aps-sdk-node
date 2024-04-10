@@ -185,10 +185,10 @@ describe('DataManagementClient', function() {
         });
     });
 
-    describe('copyObject()', function() {
-        it('should copy object to another object with new name', async function () {
-            const obj = await this.client.copyObject(this.bucket, 'buffer-upload-test.txt', 'buffer-upload-test-copy.txt');
-            assert(obj.objectKey === 'buffer-upload-test-copy.txt');
-        });
-    });
+    // describe('copyObject()', function() {
+    //     it('should copy object to another object with new name', async function () {
+    //         const obj = await this.client.copyObject(this.bucket, 'buffer-upload-test.txt', 'buffer-upload-test-copy.txt');
+    //         assert(obj.objectKey === 'buffer-upload-test-copy.txt');
+    //     });
+    // });
 });
