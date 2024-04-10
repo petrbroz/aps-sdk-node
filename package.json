@@ -1,6 +1,6 @@
 {
   "name": "aps-sdk-node",
-  "version": "9.0.0",
+  "version": "10.0.0",
   "description": "Unofficial Autodesk Platform Services SDK for Node.js.",
   "main": "dist/index.js",
   "scripts": {
