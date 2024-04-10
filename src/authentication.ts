@@ -1,7 +1,7 @@
 import * as querystring from 'querystring';
-import axios from 'axios';
+import axios, { AxiosRequestConfig } from 'axios';
 
-const RootPath = `authentication/v1`;
+const RootPath = `authentication/v2`;
 
 interface ITokenCache {
     promise: Promise<string>;
@@ -18,23 +18,40 @@ export interface IThreeLeggedToken extends ITwoLeggedToken {
 }
 
 export interface IUserProfile {
-    userId: string;
-    userName: string;
-    emailId: string;
-    firstName: string;
-    lastName: string;
-    emailVerified: boolean;
-    '2FaEnabled': boolean;
-    countryCode: string;
-    language: string;
-    optin: boolean;
-    lastModified: string;
-    websiteUrl: string;
-    profileImages: { [key: string]: string };
+    sub: string; // Oxygen id of the user
+    name: string; // Full name of the user
+    given_name: string; // First name of the user
+    family_name: string; // Last name of the user
+    preferred_username: string; // Username of the user
+    email: string; // Primary email of the user
+    email_verified: boolean; // Flag that shows if the user's email is verified or not
+    profile: string; // URL for the profile of the user
+    picture: string; // Profile image of the user (x120 thumbnail)
+    locale: string; // End-User's locale, represented as a BCP47 standard (eg, en-US)
+    updated_at: number; // The second-precision Unix timestamp of last modification on the user profile
+    is_2fa_enabled: boolean; // Flag is true if two factor authentication is enabled for this profile.
+    country_code: string; // The country code assigned to the account at creation.
+    address: object; // object containing contact address information
+    phone_number: string; // The primary phone number of the user profile with country code and extension in the format: "+(countryCode) (phoneNumber) #(Extension)"
+    phone_number_verified: boolean; // Flag to tell whether or not above phone number was verified
+    ldap_enabled: boolean; // Flag for the LDAP/SSO Status of the user, true if is ldap user.
+    ldap_domain: string; // Domain name for the LDAP user null if non LDAP user
+    job_title: string; // The job title selected on the user profile.
+    industry: string; // The industry selected on the user profile.
+    industry_code: string; // The industry code associated on the user profile
+    about_me: string; // The about me text on the user profile
+    language: string; // The language selected by the user
+    company: string; // The company on the user profile
+    created_date: string; // The datetime (UTC) the user was created
+    last_login_date: string; // The last login date (UTC) of the user.
+    eidm_guid: string; // Eidm Identifier.`
+    opt_in: boolean; // The flag that indicates if user opts in the marketing information.
+    social_userinfo_list: object[]; // Social provider name and provider identifier when the user is a social user or else empty list.
+    thumbnails: object; // Object with profile image thumbnail urls for each size by key.
 }
 
 /**
- * Client providing access to Autodesk Forge {@link https://forge.autodesk.com/en/docs/oauth/v2|authentication APIs}.
+ * Client providing access to APS Authentication API ({@link https://aps.autodesk.com/en/docs/oauth/v2/reference/http}).
  * @tutorial authentication
  */
 export class AuthenticationClient {
@@ -59,13 +76,13 @@ export class AuthenticationClient {
     }
 
     // Helper method for POST requests with urlencoded params
-    protected async post(endpoint: string, params: any) {
-        return axios.post(this.host + '/' + RootPath + '/' + endpoint, querystring.stringify(params));
+    protected async post(endpoint: string, params: any, config?: AxiosRequestConfig) {
+        return axios.post(this.host + '/' + RootPath + '/' + endpoint, querystring.stringify(params), config);
     }
 
     /**
      * Retrieves 2-legged access token for a specific set of scopes
-     * ({@link https://forge.autodesk.com/en/docs/oauth/v2/reference/http/authenticate-POST|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/oauth/v2/reference/http/gettoken-POST/}).
      * Unless the {@see force} parameter is used, the access tokens are cached
      * based on their scopes and the 'expires_in' field in the response.
      * @param {string[]} scopes List of requested {@link https://forge.autodesk.com/en/docs/oauth/v2/developers_guide/scopes|scopes}.
@@ -86,16 +103,16 @@ export class AuthenticationClient {
             }
         }
 
-        // Otherwise request a new token and cache it
         const params = {
-            'client_id': this.client_id,
-            'client_secret': this.client_secret,
             'grant_type': 'client_credentials',
             'scope': scopes.join(' ')
         };
+        const headers = {
+            'Authorization': `Basic ${Buffer.from(`${this.client_id}:${this.client_secret}`).toString('base64')}`
+        };
         const cache = this._cached[key] = {
             expires_at: Number.MAX_VALUE,
-            promise: this.post('authenticate', params).then((resp) => {
+            promise: this.post('token', params, { headers }).then((resp) => {
                 const { data } = resp;
                 this._cached[key].expires_at = Date.now() + data.expires_in * 1000;
                 return data.access_token;
@@ -108,8 +125,9 @@ export class AuthenticationClient {
     }
 
     /**
-     * Generates a URL for 3-legged authentication.
-     * @param {string[]} scopes List of requested {@link https://forge.autodesk.com/en/docs/oauth/v2/developers_guide/scopes|scopes}.
+     * Generates a URL for 3-legged authentication
+     * ({@link https://aps.autodesk.com/en/docs/oauth/v2/reference/http/authorize-GET/}).
+     * @param {string[]} scopes List of requested {@link https://aps.autodesk.com/en/docs/oauth/v2/developers_guide/scopes/}.
      * @param {string} redirectUri Same redirect URI as defined by the Forge app.
      * @returns {string} Autodesk login URL.
      */
@@ -119,7 +137,7 @@ export class AuthenticationClient {
 
     /**
      * Exchanges 3-legged authentication code for an access token
-     * ({@link https://forge.autodesk.com/en/docs/oauth/v2/reference/http/gettoken-POST|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/oauth/v2/reference/http/gettoken-POST/}).
      * @async
      * @param {string} code Authentication code returned from the Autodesk login process.
      * @param {string} redirectUri Same redirect URI as defined by the Forge app.
@@ -128,19 +146,20 @@ export class AuthenticationClient {
      */
     async getToken(code: string, redirectUri: string): Promise<IThreeLeggedToken> {
         const params = {
-            'client_id': this.client_id,
-            'client_secret': this.client_secret,
             'grant_type': 'authorization_code',
             'code': code,
             'redirect_uri': redirectUri
         };
-        const resp = await this.post(`gettoken`, params);
+        const headers = {
+            'Authorization': `Basic ${Buffer.from(`${this.client_id}:${this.client_secret}`).toString('base64')}`
+        };
+        const resp = await this.post(`token`, params, { headers });
         return resp.data;
     }
 
     /**
      * Refreshes 3-legged access token
-     * ({@link https://forge.autodesk.com/en/docs/oauth/v2/reference/http/refreshtoken-POST}).
+     * ({@link https://aps.autodesk.com/en/docs/oauth/v2/reference/http/gettoken-POST/}).
      * @async
      * @param {string[]} scopes List of requested {@link https://forge.autodesk.com/en/docs/oauth/v2/developers_guide/scopes|scopes}.
      * @param {string} refreshToken Refresh token.
@@ -149,30 +168,29 @@ export class AuthenticationClient {
      */
     async refreshToken(scopes: string[], refreshToken: string): Promise<IThreeLeggedToken> {
         const params = {
-            'client_id': this.client_id,
-            'client_secret': this.client_secret,
             'grant_type': 'refresh_token',
             'refresh_token': refreshToken,
             'scope': scopes.join(' ')
         };
-        const resp = await this.post(`refreshtoken`, params);
+        const headers = {
+            'Authorization': `Basic ${Buffer.from(`${this.client_id}:${this.client_secret}`).toString('base64')}`
+        };
+        const resp = await this.post(`token`, params, { headers });
         return resp.data;
     }
 
     /**
      * Gets profile information for a user based on their 3-legged auth token
-     * ({@link https://forge.autodesk.com/en/docs/oauth/v2/reference/http/users-@me-GET|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/profile/v1/reference/profile/oidcuserinfo/}).
      * @async
      * @param {string} token 3-legged authentication token.
      * @returns {Promise<IUserProfile>} User profile information.
      */
     async getUserProfile(token: string): Promise<IUserProfile> {
-        const config = {
-            headers: {
-                'Authorization': 'Bearer ' + token
-            }
+        const headers = {
+            'Authorization': `Bearer ${token}`
         };
-        const resp = await axios.get(this.host + '/userprofile/v1/users/@me', config);
+        const resp = await axios.get('https://api.userprofile.autodesk.com/userinfo', { headers });
         return resp.data;
     }
 }
