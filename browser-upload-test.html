@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forge Binary Transfer Demo</title>
+    <title>APS Binary Transfer Demo</title>
 </head>
 <body>
     <input type="file" name="input" id="input">
     <button onclick="upload()">Upload</button>
-    <script src="dist/browser/forge-server-utils.js"></script>
+    <script src="dist/browser/aps-sdk-node.js"></script>
     <script>
         async function upload() {
             const input = document.getElementById('input');
@@ -19,7 +19,7 @@
             /** @type {File} */
             const file = input.files[0];
             const buff = await file.arrayBuffer();
-            const client = new forge.DataManagementClient({ token: '...' });
+            const client = new APS.DataManagementClient({ token: '...' });
             try {
                 const obj = await client.uploadObject('...', file.name, buff, { contentType: 'image/png' });
                 console.log(obj);

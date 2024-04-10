@@ -4,9 +4,9 @@ module.exports = {
     mode: 'production',
     entry: './dist/index.js',
     output: {
-        filename: 'forge-server-utils.js',
+        filename: 'aps-sdk-node.js',
         path: path.resolve(__dirname, 'dist', 'browser'),
-        library: 'forge'
+        library: 'APS'
     },
     devtool: 'source-map'
 };

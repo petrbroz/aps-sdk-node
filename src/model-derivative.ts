@@ -1,6 +1,6 @@
 import { Readable } from 'stream';
 
-import { ForgeClient, IAuthOptions, Region, sleep } from './common';
+import { BaseClient, IAuthOptions, Region, sleep } from './common';
 
 const isNullOrUndefined = (value: any) => value === null || value === undefined;
 
@@ -257,18 +257,18 @@ export class ManifestHelper {
 }
 
 /**
- * Client providing access to Autodesk Forge
- * {@link https://forge.autodesk.com/en/docs/model-derivative/v2|model derivative APIs}.
+ * Client providing access to Autodesk Platform Services
+ * {@link https://aps.autodesk.com/en/docs/model-derivative/v2|model derivative APIs}.
  * @tutorial model-derivative
  */
-export class ModelDerivativeClient extends ForgeClient {
+export class ModelDerivativeClient extends BaseClient {
     /**
      * Initializes new client with specific authentication method.
      * @param {IAuthOptions} auth Authentication object,
      * containing either `client_id` and `client_secret` properties (for 2-legged authentication),
      * or a single `token` property (for 2-legged or 3-legged authentication with pre-generated access token).
-     * @param {string} [host="https://developer.api.autodesk.com"] Forge API host.
-     * @param {Region} [region="US"] Forge availability region.
+     * @param {string} [host="https://developer.api.autodesk.com"] APS host.
+     * @param {Region} [region="US"] APS availability region.
      */
     constructor(auth: IAuthOptions, host?: string, region?: Region) {
         super(RootPath, auth, host, region);
@@ -280,7 +280,7 @@ export class ModelDerivativeClient extends ForgeClient {
 
     /**
      * Gets a list of supported translation formats
-     * ({@link https://forge.autodesk.com/en/docs/model-derivative/v2/reference/http/formats-GET|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/model-derivative/v2/reference/http/formats-GET|docs}).
      * @async
      * @yields {Promise<IDerivativeFormats>} Dictionary of all supported output formats
      * mapped to arrays of formats these outputs can be obtained from.
@@ -293,14 +293,14 @@ export class ModelDerivativeClient extends ForgeClient {
 
     /**
      * Submits a translation job
-     * ({@link https://forge.autodesk.com/en/docs/model-derivative/v2/reference/http/job-POST|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/model-derivative/v2/reference/http/job-POST|docs}).
      * @async
      * @param {string} urn Document to be translated.
      * @param {IDerivativeOutputType[]} outputs List of requested output formats.
      * @param {string} [pathInArchive] Optional relative path to root design if the translated file is an archive.
      * @param {boolean} [force] Force translation even if a derivative already exists.
-     * @param {string} [workflowId] Optional workflow ID to be used with Forge Webhooks.
-     * @param {object} [workflowAttr] Optional workflow attributes to be used with Forge Webhooks.
+     * @param {string} [workflowId] Optional workflow ID to be used with APS Webhooks.
+     * @param {object} [workflowAttr] Optional workflow attributes to be used with APS Webhooks.
      * @returns {Promise<IJob>} Translation job details, with properties 'result',
      * 'urn', and 'acceptedJobs'.
      * @throws Error when the request fails, for example, due to insufficient rights.
@@ -338,7 +338,7 @@ export class ModelDerivativeClient extends ForgeClient {
 
     /**
      * Retrieves manifest of a derivative
-     * ({@link https://forge.autodesk.com/en/docs/model-derivative/v2/reference/http/urn-manifest-GET|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/model-derivative/v2/reference/http/urn-manifest-GET|docs}).
      * @async
      * @param {string} urn Document derivative URN.
      * @returns {Promise<IDerivativeManifest>} Document derivative manifest.
@@ -350,7 +350,7 @@ export class ModelDerivativeClient extends ForgeClient {
 
     /**
      * Deletes manifest
-     * ({@link https://forge.autodesk.com/en/docs/model-derivative/v2/reference/http/urn-manifest-DELETE|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/model-derivative/v2/reference/http/urn-manifest-DELETE|docs}).
      * @async
      * @param {string} urn Document derivative URN.
      * @throws Error when the request fails, for example, due to insufficient rights, or incorrect scopes.
@@ -360,7 +360,7 @@ export class ModelDerivativeClient extends ForgeClient {
     }
 
     // Generates URL for downloading specific derivative
-    // https://forge.autodesk.com/en/docs/model-derivative/v2/reference/http/urn-manifest-derivativeUrn-signedcookies-GET
+    // https://aps.autodesk.com/en/docs/model-derivative/v2/reference/http/urn-manifest-derivativeUrn-signedcookies-GET
     protected async getDerivativeDownloadUrl(modelUrn: string, derivativeUrn: string): Promise<IDerivativeDownloadInfo> {
         const endpoint = this.region === Region.EMEA
             ? `regions/eu/designdata/${modelUrn}/manifest/${derivativeUrn}/signedcookies`
@@ -386,7 +386,7 @@ export class ModelDerivativeClient extends ForgeClient {
 
     /**
      * Downloads content of a specific model derivative
-     * ({@link https://forge.autodesk.com/en/docs/model-derivative/v2/reference/http/urn-manifest-derivativeurn-GET/|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/model-derivative/v2/reference/http/urn-manifest-derivativeurn-GET/|docs}).
      * @async
      * @param {string} modelUrn Model URN.
      * @param {string} derivativeUrn Derivative URN.
@@ -407,7 +407,7 @@ export class ModelDerivativeClient extends ForgeClient {
 
     /**
      * Downloads content of a specific model derivative
-     * ({@link https://forge.autodesk.com/en/docs/model-derivative/v2/reference/http/urn-manifest-derivativeurn-GET/|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/model-derivative/v2/reference/http/urn-manifest-derivativeurn-GET/|docs}).
      * @async
      * @param {string} modelUrn Model URN.
      * @param {string} derivativeUrn Derivative URN.
@@ -425,7 +425,7 @@ export class ModelDerivativeClient extends ForgeClient {
 
     /**
      * Downloads content of a specific model derivative asset in chunks
-     * ({@link https://forge.autodesk.com/en/docs/model-derivative/v2/reference/http/urn-manifest-derivativeurn-GET/|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/model-derivative/v2/reference/http/urn-manifest-derivativeurn-GET/|docs}).
      * @param {string} modelUrn Model URN.
      * @param {string} derivativeUrn Derivative URN.
      * @param {number} [maxChunkSize=1<<24] Maximum size (in bytes) of a single downloaded chunk.
@@ -457,7 +457,7 @@ export class ModelDerivativeClient extends ForgeClient {
 
     /**
      * Retrieves metadata of a derivative
-     * ({@link https://forge.autodesk.com/en/docs/model-derivative/v2/reference/http/urn-metadata-GET|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/model-derivative/v2/reference/http/urn-metadata-GET|docs}).
      * @async
      * @param {string} urn Document derivative URN.
      * @returns {Promise<IDerivativeMetadata>} Document derivative metadata.
@@ -469,7 +469,7 @@ export class ModelDerivativeClient extends ForgeClient {
 
     /**
      * Retrieves metadata of a derivative as a readable stream
-     * ({@link https://forge.autodesk.com/en/docs/model-derivative/v2/reference/http/urn-metadata-GET|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/model-derivative/v2/reference/http/urn-metadata-GET|docs}).
      * @async
      * @param {string} urn Document derivative URN.
      * @returns {Promise<ReadableStream>} Document derivative metadata.
@@ -481,7 +481,7 @@ export class ModelDerivativeClient extends ForgeClient {
 
     /**
      * Retrieves object tree of a specific viewable
-     * ({@link https://forge.autodesk.com/en/docs/model-derivative/v2/reference/http/urn-metadata-guid-GET|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/model-derivative/v2/reference/http/urn-metadata-guid-GET|docs}).
      * @async
      * @param {string} urn Document derivative URN.
      * @param {string} guid Viewable GUID.
@@ -511,7 +511,7 @@ export class ModelDerivativeClient extends ForgeClient {
 
     /**
      * Retrieves object tree of a specific viewable as a readable stream
-     * ({@link https://forge.autodesk.com/en/docs/model-derivative/v2/reference/http/urn-metadata-guid-GET|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/model-derivative/v2/reference/http/urn-metadata-guid-GET|docs}).
      * @async
      * @param {string} urn Document derivative URN.
      * @param {string} guid Viewable GUID.
@@ -541,7 +541,7 @@ export class ModelDerivativeClient extends ForgeClient {
 
     /**
      * Retrieves properties of a specific viewable
-     * ({@link https://forge.autodesk.com/en/docs/model-derivative/v2/reference/http/urn-metadata-guid-properties-GET|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/model-derivative/v2/reference/http/urn-metadata-guid-properties-GET|docs}).
      * @async
      * @param {string} urn Document derivative URN.
      * @param {string} guid Viewable GUID.
@@ -571,7 +571,7 @@ export class ModelDerivativeClient extends ForgeClient {
 
     /**
      * Retrieves properties of a specific viewable as a readable stream
-     * ({@link https://forge.autodesk.com/en/docs/model-derivative/v2/reference/http/urn-metadata-guid-properties-GET|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/model-derivative/v2/reference/http/urn-metadata-guid-properties-GET|docs}).
      * @async
      * @param {string} urn Document derivative URN.
      * @param {string} guid Viewable GUID.
@@ -601,7 +601,7 @@ export class ModelDerivativeClient extends ForgeClient {
 
     /**
      * Retrieves derivative thumbnail
-     * ({@link https://forge.autodesk.com/en/docs/model-derivative/v2/reference/http/urn-thumbnail-GET|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/model-derivative/v2/reference/http/urn-thumbnail-GET|docs}).
      * @async
      * @param {string} urn Document derivative URN.
      * @param {ThumbnailSize} [size=ThumbnailSize.Medium] Thumbnail size (small: 100x100 px, medium: 200x200 px, or large: 400x400 px).
@@ -615,7 +615,7 @@ export class ModelDerivativeClient extends ForgeClient {
 
     /**
      * Retrieves derivative thumbnail stream
-     * ({@link https://forge.autodesk.com/en/docs/model-derivative/v2/reference/http/urn-thumbnail-GET|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/model-derivative/v2/reference/http/urn-thumbnail-GET|docs}).
      * @async
      * @param {string} urn Document derivative URN.
      * @param {ThumbnailSize} [size=ThumbnailSize.Medium] Thumbnail size (small: 100x100 px, medium: 200x200 px, or large: 400x400 px).

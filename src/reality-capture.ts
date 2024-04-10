@@ -1,6 +1,6 @@
 import FormData from 'form-data';
 import * as querystring from 'querystring';
-import { ForgeClient, IAuthOptions } from './common';
+import { BaseClient, IAuthOptions } from './common';
 
 const ReadTokenScopes = ['data:read'];
 const WriteTokenScopes = ['data:write'];
@@ -124,15 +124,15 @@ export interface IPhotoSceneProgress {
 }
 
 /**
- * Client providing access to Autodesk Forge {@link https://forge.autodesk.com/en/docs/reality-capture/v1/developers_guide/overview|reality capture APIs}.
+ * Client providing access to Autodesk Platform Services {@link https://aps.autodesk.com/en/docs/reality-capture/v1/developers_guide/overview|reality capture APIs}.
  * @tutorial realitycapture
  */
-export class RealityCaptureClient extends ForgeClient {
+export class RealityCaptureClient extends BaseClient {
     /**
      * Initializes new client with specific authentication method
      * @param {IAuthOptions} auth Authentication object,
      * containing `client_id` and `client_secret` properties (for 2-legged authentication).
-     * @param {string} [host="https://developer.api.autodesk.com"] Forge API host.
+     * @param {string} [host="https://developer.api.autodesk.com"] APS host.
      */
     constructor(auth: IAuthOptions, host?: string) {
         super('photo-to-3d/v1/', auth, host);
@@ -140,7 +140,7 @@ export class RealityCaptureClient extends ForgeClient {
 
     /**
      * Creates new photoscene
-     * {@link https://forge.autodesk.com/en/docs/reality-capture/v1/reference/http/photoscene-POST|docs}.
+     * {@link https://aps.autodesk.com/en/docs/reality-capture/v1/reference/http/photoscene-POST|docs}.
      * @async
      * @param {IPhotoSceneOptions} options Specifies the parameters for the new photoscene.
      * @returns {Promise<IPhotoScene>} A JSON object containing details of the photoscene that was created, with property 'photosceneid' ID of the photoscene that was created.
@@ -194,7 +194,7 @@ export class RealityCaptureClient extends ForgeClient {
      * Maximum size of a single file: 128 MB
      * Maximum uncompressed size of image in memory: 512 MB
      * Note: Uploaded files will be deleted after 30 days.
-     * {@link https://forge.autodesk.com/en/docs/reality-capture/v1/reference/http/file-POST|docs}.
+     * {@link https://aps.autodesk.com/en/docs/reality-capture/v1/reference/http/file-POST|docs}.
      * @async
      * @param {string} photosceneid Specifies the ID of the photoscene to add the files to.
      * @param {FileType} type Specifies the type of file being uploaded: image (default) or survey
@@ -221,7 +221,7 @@ export class RealityCaptureClient extends ForgeClient {
      * Maximum size of a single file: 128 MB
      * Maximum uncompressed size of image in memory: 512 MB
      * Note: Uploaded files will be deleted after 30 days.
-     * {@link https://forge.autodesk.com/en/docs/reality-capture/v1/reference/http/file-POST|docs}.
+     * {@link https://aps.autodesk.com/en/docs/reality-capture/v1/reference/http/file-POST|docs}.
      * @async
      * @param {string} photosceneid Specifies the ID of the photoscene to add the files to.
      * @param {FileType} type Specifies the type of file being uploaded: image (default) or survey
@@ -247,7 +247,7 @@ export class RealityCaptureClient extends ForgeClient {
      * The main processing steps involve: camera calibration, mesh reconstruction, texturing, and any necessary output file format conversions, in that order.
      * This method should not be called until a photoscene has been created and at least three images have been added to the photoscene.
      * Note: Progress of the processing can be monitored with the GET photoscene/:photosceneid/progress method.
-     * {@link https://forge.autodesk.com/en/docs/reality-capture/v1/reference/http/photoscene-:photosceneid-POST|docs}.
+     * {@link https://aps.autodesk.com/en/docs/reality-capture/v1/reference/http/photoscene-:photosceneid-POST|docs}.
      * @async
      * @param {string} photosceneid Specifies the ID of the photoscene to start processing.
      * @returns {Promise<IPhotoSceneProcess|IPhotoSceneError>} A JSON object containing a message for current processing job.

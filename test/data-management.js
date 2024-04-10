@@ -6,12 +6,12 @@ const { DataManagementClient } = require('..');
 
 describe('DataManagementClient', function() {
     beforeEach(function() {
-        const { FORGE_CLIENT_ID, FORGE_CLIENT_SECRET, FORGE_BUCKET } = process.env;
-        assert(FORGE_CLIENT_ID);
-        assert(FORGE_CLIENT_SECRET);
-        assert(FORGE_BUCKET);
-        this.client = new DataManagementClient({ client_id: FORGE_CLIENT_ID, client_secret: FORGE_CLIENT_SECRET });
-        this.bucket = FORGE_BUCKET;
+        const { APS_CLIENT_ID, APS_CLIENT_SECRET, APS_BUCKET } = process.env;
+        assert(APS_CLIENT_ID);
+        assert(APS_CLIENT_SECRET);
+        assert(APS_BUCKET);
+        this.client = new DataManagementClient({ client_id: APS_CLIENT_ID, client_secret: APS_CLIENT_SECRET });
+        this.bucket = APS_BUCKET;
         this.timeout(10000); // Increase timeout to 10 seconds
     });
 
@@ -176,7 +176,7 @@ describe('DataManagementClient', function() {
             for (let i = 0; i < arr2.length; i++) {
                 arr2[i] = i % 255;
             }
-            const objectKey = 'forge-serve-utils-test-file-' + new Date().toISOString();
+            const objectKey = 'aps-sdk-node-test-file-' + new Date().toISOString();
             const uploadParams = await this.client.getUploadUrls(this.bucket, objectKey, 2, 1);
             await axios.put(uploadParams.urls[0], arr1);
             await axios.put(uploadParams.urls[1], arr2);

@@ -1,4 +1,4 @@
-import { ForgeClient, IAuthOptions, Region } from './common';
+import { BaseClient, IAuthOptions, Region } from './common';
 import { AxiosRequestConfig } from 'axios';
 
 const ReadTokenScopes = ['data:read'];
@@ -211,17 +211,17 @@ export interface IUpdateWebhookParams {
 }
 
 /**
- * Client providing access to Autodesk Forge {@link https://forge.autodesk.com/en/docs/webhooks/v1/developers_guide/overview|webhooks APIs}.
+ * Client providing access to Autodesk Platform Services {@link https://aps.autodesk.com/en/docs/webhooks/v1/developers_guide/overview|webhooks APIs}.
  * @tutorial webhooks
  */
-export class WebhooksClient extends ForgeClient {
+export class WebhooksClient extends BaseClient {
     /**
      * Initializes new client with specific authentication method.
      * @param {IAuthOptions} auth Authentication object,
      * containing either `client_id` and `client_secret` properties (for 2-legged authentication),
      * or a single `token` property (for 2-legged or 3-legged authentication with pre-generated access token).
-     * @param {string} [host="https://developer.api.autodesk.com"] Forge API host.
-     * @param {Region} [region="US"] Forge availability region ("US" or "EMEA").
+     * @param {string} [host="https://developer.api.autodesk.com"] APS host.
+     * @param {Region} [region="US"] APS availability region ("US" or "EMEA").
      */
     constructor(auth: IAuthOptions, host?: string, region?: Region) {
         super('webhooks/v1', auth, host, region);
@@ -256,9 +256,9 @@ export class WebhooksClient extends ForgeClient {
 
     /**
      * Iterates over all webhooks, webhooks for specific system, or webhooks for specific system and event
-     * ({@link https://forge.autodesk.com/en/docs/webhooks/v1/reference/http/hooks-GET|docs},
-     * {@link https://forge.autodesk.com/en/docs/webhooks/v1/reference/http/systems-system-hooks-GET|docs},
-     * {@link https://forge.autodesk.com/en/docs/webhooks/v1/reference/http/systems-system-events-event-hooks-GET|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/webhooks/v1/reference/http/hooks-GET|docs},
+     * {@link https://aps.autodesk.com/en/docs/webhooks/v1/reference/http/systems-system-hooks-GET|docs},
+     * {@link https://aps.autodesk.com/en/docs/webhooks/v1/reference/http/systems-system-events-event-hooks-GET|docs}).
      * @async
      * @generator
      * @param {WebhookSystem} [system] Optional webhook system (e.g., "data") to filter the results.
@@ -280,9 +280,9 @@ export class WebhooksClient extends ForgeClient {
 
     /**
      * Lists all webhooks, webhooks for specific system, or webhooks for specific system and event
-     * ({@link https://forge.autodesk.com/en/docs/webhooks/v1/reference/http/hooks-GET|docs},
-     * {@link https://forge.autodesk.com/en/docs/webhooks/v1/reference/http/systems-system-hooks-GET|docs},
-     * {@link https://forge.autodesk.com/en/docs/webhooks/v1/reference/http/systems-system-events-event-hooks-GET|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/webhooks/v1/reference/http/hooks-GET|docs},
+     * {@link https://aps.autodesk.com/en/docs/webhooks/v1/reference/http/systems-system-hooks-GET|docs},
+     * {@link https://aps.autodesk.com/en/docs/webhooks/v1/reference/http/systems-system-events-event-hooks-GET|docs}).
      * @async
      * @param {WebhookSystem} [system] Optional webhook system (e.g., "data") to filter the results.
      * @param {WebhookEvent} [event] Optional webhook event (e.g., "dm.version.copied") to filter the results.
@@ -301,7 +301,7 @@ export class WebhooksClient extends ForgeClient {
 
     /**
      * Provides details about a specific webhook
-     * ({@link https://forge.autodesk.com/en/docs/webhooks/v1/reference/http/systems-system-events-event-hooks-hook_id-GET|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/webhooks/v1/reference/http/systems-system-events-event-hooks-hook_id-GET|docs}).
      * @async
      * @param {WebhookSystem} system Webhook system (e.g., "data").
      * @param {WebhookEvent} event Webhook event (e.g., "dm.version.copied").
@@ -316,8 +316,8 @@ export class WebhooksClient extends ForgeClient {
 
     /**
      * Creates new webhook, either for entire webhook system, or for a specific event
-     * ({@link https://forge.autodesk.com/en/docs/webhooks/v1/reference/http/systems-system-hooks-POST|docs},
-     * {@link https://forge.autodesk.com/en/docs/webhooks/v1/reference/http/systems-system-events-event-hooks-POST|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/webhooks/v1/reference/http/systems-system-hooks-POST|docs},
+     * {@link https://aps.autodesk.com/en/docs/webhooks/v1/reference/http/systems-system-events-event-hooks-POST|docs}).
      * @param {WebhookSystem} system Webhook system (e.g., "data").
      * @param {WebhookEvent | undefined} event Optional webhook event (e.g., "dm.version.copied").
      * If undefined, the webhook will be defined for the entire webhook system.
@@ -344,7 +344,7 @@ export class WebhooksClient extends ForgeClient {
 
     /**
      * Updates an existing webhook
-     * ({@link https://forge.autodesk.com/en/docs/webhooks/v1/reference/http/systems-system-events-event-hooks-hook_id-PATCH|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/webhooks/v1/reference/http/systems-system-events-event-hooks-hook_id-PATCH|docs}).
      * @async
      * @param {WebhookSystem} system Webhook system (e.g., "data").
      * @param {WebhookEvent} event Webhook event (e.g., "dm.version.copied").
@@ -358,7 +358,7 @@ export class WebhooksClient extends ForgeClient {
 
     /**
      * Deletes a webhook
-     * ({@link https://forge.autodesk.com/en/docs/webhooks/v1/reference/http/systems-system-events-event-hooks-hook_id-DELETE|docs}).
+     * ({@link https://aps.autodesk.com/en/docs/webhooks/v1/reference/http/systems-system-events-event-hooks-hook_id-DELETE|docs}).
      * @async
      * @param {WebhookSystem} system Webhook system (e.g., "data").
      * @param {WebhookEvent} event Webhook event (e.g., "dm.version.copied").

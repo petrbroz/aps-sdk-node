@@ -63,10 +63,10 @@ export class AuthenticationClient {
     get clientId() { return this.client_id; }
 
     /**
-     * Initializes new client with specific Forge app credentials.
-     * @param {string} client_id Forge application client ID. 
-     * @param {string} client_secret Forge application client secret.
-     * @param {string} [host="https://developer.api.autodesk.com"] Forge API host.
+     * Initializes new client with specific APS app credentials.
+     * @param {string} client_id APS application client ID. 
+     * @param {string} client_secret APS application client secret.
+     * @param {string} [host="https://developer.api.autodesk.com"] APS host.
      */
     constructor(client_id: string, client_secret: string, host: string = 'https://developer.api.autodesk.com') {
         this.client_id = client_id;
@@ -85,7 +85,7 @@ export class AuthenticationClient {
      * ({@link https://aps.autodesk.com/en/docs/oauth/v2/reference/http/gettoken-POST/}).
      * Unless the {@see force} parameter is used, the access tokens are cached
      * based on their scopes and the 'expires_in' field in the response.
-     * @param {string[]} scopes List of requested {@link https://forge.autodesk.com/en/docs/oauth/v2/developers_guide/scopes|scopes}.
+     * @param {string[]} scopes List of requested {@link https://aps.autodesk.com/en/docs/oauth/v2/developers_guide/scopes|scopes}.
      * @param {boolean} [force] Skip cache, if there is any, and retrieve a new token.
      * @returns {Promise<ITwoLeggedToken>} Promise of 2-legged authentication object containing two fields,
      * 'access_token' with the actual token, and 'expires_in' with expiration time (in seconds).
@@ -128,7 +128,7 @@ export class AuthenticationClient {
      * Generates a URL for 3-legged authentication
      * ({@link https://aps.autodesk.com/en/docs/oauth/v2/reference/http/authorize-GET/}).
      * @param {string[]} scopes List of requested {@link https://aps.autodesk.com/en/docs/oauth/v2/developers_guide/scopes/}.
-     * @param {string} redirectUri Same redirect URI as defined by the Forge app.
+     * @param {string} redirectUri Same redirect URI as defined by the APS app.
      * @returns {string} Autodesk login URL.
      */
     getAuthorizeRedirect(scopes: string[], redirectUri: string): string {
@@ -140,7 +140,7 @@ export class AuthenticationClient {
      * ({@link https://aps.autodesk.com/en/docs/oauth/v2/reference/http/gettoken-POST/}).
      * @async
      * @param {string} code Authentication code returned from the Autodesk login process.
-     * @param {string} redirectUri Same redirect URI as defined by the Forge app.
+     * @param {string} redirectUri Same redirect URI as defined by the APS app.
      * @returns {Promise<IThreeLeggedToken>} Promise of 3-legged authentication object containing
      * 'access_token', 'refresh_token', and 'expires_in' with expiration time (in seconds).
      */
@@ -161,7 +161,7 @@ export class AuthenticationClient {
      * Refreshes 3-legged access token
      * ({@link https://aps.autodesk.com/en/docs/oauth/v2/reference/http/gettoken-POST/}).
      * @async
-     * @param {string[]} scopes List of requested {@link https://forge.autodesk.com/en/docs/oauth/v2/developers_guide/scopes|scopes}.
+     * @param {string[]} scopes List of requested {@link https://aps.autodesk.com/en/docs/oauth/v2/developers_guide/scopes|scopes}.
      * @param {string} refreshToken Refresh token.
      * @returns {Promise<IThreeLeggedToken>} Promise of 3-legged authentication object containing
      * 'access_token', 'refresh_token', and 'expires_in' with expiration time (in seconds).

@@ -4,11 +4,11 @@ const { OutputFormat, RealityCaptureClient, SceneType } = require('..');
 
 describe('RealityCaptureClient', function() {
     beforeEach(function() {
-        // const { FORGE_CLIENT_ID, FORGE_CLIENT_SECRET, SCENE_ID } = process.env;
-        // assert(FORGE_CLIENT_ID);
-        // assert(FORGE_CLIENT_SECRET);
+        // const { APS_CLIENT_ID, APS_CLIENT_SECRET, SCENE_ID } = process.env;
+        // assert(APS_CLIENT_ID);
+        // assert(APS_CLIENT_SECRET);
         // assert(SCENE_ID);
-        // this.client = new RealityCaptureClient({ client_id: FORGE_CLIENT_ID, client_secret: FORGE_CLIENT_SECRET});
+        // this.client = new RealityCaptureClient({ client_id: APS_CLIENT_ID, client_secret: APS_CLIENT_SECRET});
         // this.sceneid = SCENE_ID;
     });
 

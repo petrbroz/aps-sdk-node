@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>forge-server-utils: basic test</title>
+    <title>APS SDK: basic test</title>
 </head>
 <body>
     <div>
@@ -20,11 +20,11 @@
         <select name="objects" id="objects"></select>
         <i id="objects-status"></i>
     </div>
-    <script src="../../dist/browser/forge-server-utils.js"></script>
+    <script src="../../dist/browser/aps-sdk-node.js"></script>
     <script>
         document.getElementById('list-buckets').addEventListener('click', async function() {
             const token = document.getElementById('access-token').value;
-            const data = new forge.DataManagementClient({ token });
+            const data = new APS.DataManagementClient({ token });
             const select = document.getElementById('buckets');
             while (select.lastChild) {
                 select.removeChild(select.lastChild);
@@ -47,7 +47,7 @@
         document.getElementById('list-objects').addEventListener('click', async function() {
             const token = document.getElementById('access-token').value;
             const bucket = document.getElementById('buckets').value;
-            const data = new forge.DataManagementClient({ token });
+            const data = new APS.DataManagementClient({ token });
             const select = document.getElementById('objects');
             while (select.lastChild) {
                 select.removeChild(select.lastChild);

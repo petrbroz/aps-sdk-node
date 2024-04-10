@@ -1,9 +1,9 @@
 # Basic usage of Webhooks APIs
 
 ```js
-const { WebhooksClient, WebhookSystem, WebhookEvent } = require('forge-server-utils');
-const { FORGE_CLIENT_ID, FORGE_CLIENT_SECRET } = process.env;
-const webhooks = new WebhooksClient({ client_id: FORGE_CLIENT_ID, client_secret: FORGE_CLIENT_SECRET });
+const { WebhooksClient, WebhookSystem, WebhookEvent } = require('aps-sdk-node');
+const { APS_CLIENT_ID, APS_CLIENT_SECRET } = process.env;
+const webhooks = new WebhooksClient({ client_id: APS_CLIENT_ID, client_secret: APS_CLIENT_SECRET });
 async function run() {
     // Enumerate through paginated webhooks
     for await (const hooks of webhooks.iterateHooks()) {

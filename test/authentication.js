@@ -4,10 +4,10 @@ const { AuthenticationClient } = require('..');
 
 describe('AuthenticationClient', function() {
     beforeEach(function() {
-        const { FORGE_CLIENT_ID, FORGE_CLIENT_SECRET } = process.env;
-        assert(FORGE_CLIENT_ID);
-        assert(FORGE_CLIENT_SECRET);
-        this.client = new AuthenticationClient(FORGE_CLIENT_ID, FORGE_CLIENT_SECRET);
+        const { APS_CLIENT_ID, APS_CLIENT_SECRET } = process.env;
+        assert(APS_CLIENT_ID);
+        assert(APS_CLIENT_SECRET);
+        this.client = new AuthenticationClient(APS_CLIENT_ID, APS_CLIENT_SECRET);
     });
 
     describe('authenticate()', function() {
