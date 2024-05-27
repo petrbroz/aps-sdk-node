@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed
-- Updated dependencies (adm-zip, axios, form-data, fs-extra, mocha, typedoc, @types/node) to patch some security vulnerabilities.
+- Updated dependencies (adm-zip, axios, form-data, fs-extra, mocha, node-polyfill-webpack-plugin, typedoc, @types/node) to patch some security vulnerabilities.
 
 ## [10.0.1] - 2024-04-10
 
