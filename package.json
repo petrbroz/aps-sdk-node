@@ -37,7 +37,7 @@
   "dependencies": {
     "@types/adm-zip": "^0.5.5",
     "@types/fs-extra": "^11.0.4",
-    "adm-zip": "^0.5.12",
+    "adm-zip": "^0.5.14",
     "axios": "^1.7.2",
     "form-data": "^4.0.0",
     "fs-extra": "^11.2.0",
